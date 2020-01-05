@@ -15,5 +15,6 @@ public:
 };
 
 using Paths = std::vector<Path>;
+using PathsPtr = std::vector<Path *>;
 
 }

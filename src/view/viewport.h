@@ -10,7 +10,7 @@ namespace View
 class Viewport : public QGraphicsView, private Ui::Viewport
 {
 public:
-	explicit Viewport();
+	explicit Viewport(const PathsPtr &paths);
 };
 
 }

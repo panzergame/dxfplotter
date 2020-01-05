@@ -13,20 +13,25 @@
 namespace View
 {
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(const QString &fileName)
 {
 	Ui::MainWindow::setupUi(this);
 	showMaximized();
 
 	connect(actionOpen, &QAction::triggered, this, &MainWindow::openFile);
+
+	if (!fileName.isEmpty()) {
+		if (!loadFile(fileName)) {
+			qCritical() << "Invalid file type " + fileName;
+		}
+	}
 }
 
-void MainWindow::loadFile(const QString &fileName)
+bool MainWindow::loadFile(const QString &fileName)
 {
 	const QMimeDatabase db;
 	const QMimeType mime = db.mimeTypeForFile(fileName);
 
-	qInfo() << mime.name();
 	if (mime.name() == "image/vnd.dxf") {
 		loadDxf(fileName);
 	}
@@ -34,9 +39,10 @@ void MainWindow::loadFile(const QString &fileName)
 		loadPlot(fileName);
 	}
 	else {
-		QMessageBox messageBox;
-		messageBox.critical(this, "Error", "Invalid file type " + fileName);
+		return false;
 	}
+
+	return true;
 }
 
 void MainWindow::loadDxf(const QString &fileName)
@@ -58,7 +64,10 @@ void MainWindow::openFile()
 {
 	const QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty()) {
-		loadFile(fileName);
+		if (!loadFile(fileName)) {
+			QMessageBox messageBox;
+			messageBox.critical(this, "Error", "Invalid file type " + fileName);
+		}
 	}
 }
 
