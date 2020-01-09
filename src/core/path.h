@@ -11,6 +11,7 @@ private:
 	Polyline m_polyline;
 
 public:
+	explicit Path() = default;
 	explicit Path(Polyline &&polyline);
 };
 

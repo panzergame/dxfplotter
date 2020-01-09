@@ -16,7 +16,7 @@ Interface::Interface(Importer &importer)
 {
 }
 
-#define PRINT_FUNC std::cout << __func__ << std::endl;
+#define PRINT_FUNC //std::cout << __func__ << std::endl;
 
 void Interface::addHeader(const DRW_Header* data)
 {

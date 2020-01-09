@@ -2,6 +2,8 @@
 
 #include <ui_viewport.h>
 
+#include <core/application.h>
+
 #include <QGraphicsView>
 
 namespace View
@@ -9,8 +11,10 @@ namespace View
 
 class Viewport : public QGraphicsView, private Ui::Viewport
 {
+	Core::Application &m_app;
+
 public:
-	explicit Viewport(const PathsPtr &paths);
+	explicit Viewport(Core::Application &app);
 };
 
 }

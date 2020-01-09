@@ -1,19 +1,21 @@
 #include <view/mainwindow.h>
+#include <core/application.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
 
 int main(int argc, char *argv[])
 {
-	QApplication app(argc, argv);
+	QApplication qapp(argc, argv);
 
 	QCommandLineParser parser;
 	parser.addPositionalArgument("file", "input file");
-	parser.process(app);
+	parser.process(qapp);
 
 	const QString fileName = parser.positionalArguments().value(0, "");
 
-	View::MainWindow window(fileName);
+	Core::Application app(fileName);
+	View::MainWindow window(app);
 
-	app.exec();
+	qapp.exec();
 }

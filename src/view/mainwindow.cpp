@@ -1,70 +1,43 @@
 #include <mainwindow.h>
-
-#include <importer/dxf/importer.h>
-
-#include <core/assembler.h>
+#include <task.h>
+#include <viewport.h>
 
 #include <QFileDialog>
-#include <QMimeDatabase>
 #include <QMessageBox>
-
+#include <QSplitter>
 #include <QDebug>
 
 namespace View
 {
 
-MainWindow::MainWindow(const QString &fileName)
+MainWindow::MainWindow(Core::Application &app)
+	:m_app(app),
+	m_task(new Task(m_app)),
+	m_viewport(new Viewport(m_app)) // TODO
 {
-	Ui::MainWindow::setupUi(this);
+	setupUi(this);
+
+	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
+	vertSplitter->addWidget(m_task);
+
+	QSplitter *horiSplitter = new QSplitter(Qt::Horizontal, this);
+	horiSplitter->addWidget(vertSplitter);
+	horiSplitter->addWidget(m_viewport);
+	horiSplitter->setStretchFactor(0, 0);
+	horiSplitter->setStretchFactor(1, 1);
+
+	horizontalLayout->addWidget(horiSplitter);
+
 	showMaximized();
 
 	connect(actionOpen, &QAction::triggered, this, &MainWindow::openFile);
-
-	if (!fileName.isEmpty()) {
-		if (!loadFile(fileName)) {
-			qCritical() << "Invalid file type " + fileName;
-		}
-	}
-}
-
-bool MainWindow::loadFile(const QString &fileName)
-{
-	const QMimeDatabase db;
-	const QMimeType mime = db.mimeTypeForFile(fileName);
-
-	if (mime.name() == "image/vnd.dxf") {
-		loadDxf(fileName);
-	}
-	else if (mime.name() == "text/plain") {
-		loadPlot(fileName);
-	}
-	else {
-		return false;
-	}
-
-	return true;
-}
-
-void MainWindow::loadDxf(const QString &fileName)
-{
-	Importer::Dxf::Importer imp(qPrintable(fileName));
-	Core::Assembler assembler(imp.polylines(), 0.001); // TODO
-	const Core::Polylines polylines = assembler.mergedPolylines();
-	for (const Core::Polyline &polyline : polylines) {
-		std::cout << polyline << std::endl;
-	}
-}
-
-void MainWindow::loadPlot(const QString &fileName)
-{
-	
 }
 
 void MainWindow::openFile()
 {
 	const QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty()) {
-		if (!loadFile(fileName)) {
+		if (!m_app.loadFile(fileName)) {
 			QMessageBox messageBox;
 			messageBox.critical(this, "Error", "Invalid file type " + fileName);
 		}

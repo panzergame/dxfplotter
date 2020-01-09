@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/path.h>
+#include <core/application.h>
 
 #include <ui_mainwindow.h>
 
@@ -9,17 +9,19 @@
 namespace View
 {
 
+class Task;
+class Viewport;
+
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	Core::Paths m_paths;
+	Core::Application &m_app;
 
-	bool loadFile(const QString &fileName);
-	void loadDxf(const QString &fileName);
-	void loadPlot(const QString &fileName);
+	Task *m_task;
+	Viewport *m_viewport;
 
 public:
-	explicit MainWindow(const QString &fileName);
+	explicit MainWindow(Core::Application &app);
 
 public Q_SLOTS:
 	void openFile();

@@ -36,8 +36,9 @@ target_link_libraries(dxfplotter
 	Qt5::Widgets
 	Qt5::Gui
 	view
+	control
+	core
 	dxf
 	converter
-	core
 	libdxfrw
 )
