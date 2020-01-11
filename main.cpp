@@ -1,5 +1,6 @@
-#include <view/mainwindow.h>
-#include <core/application.h>
+#include <ui_mainwindow.h>
+#include "view/mainwindow.h"
+#include <control/application.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
 
 	const QString fileName = parser.positionalArguments().value(0, "");
 
-	Core::Application app(fileName);
+	Control::Application app(fileName);
 	View::MainWindow window(app);
 
 	qapp.exec();

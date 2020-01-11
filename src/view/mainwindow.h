@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/application.h>
+#include <control/application.h>
 
 #include <ui_mainwindow.h>
 
@@ -15,13 +15,13 @@ class Viewport;
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	Core::Application &m_app;
+	Control::Application &m_app;
 
 	Task *m_task;
 	Viewport *m_viewport;
 
 public:
-	explicit MainWindow(Core::Application &app);
+	explicit MainWindow(Control::Application &app);
 
 public Q_SLOTS:
 	void openFile();

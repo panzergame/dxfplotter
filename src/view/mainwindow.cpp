@@ -10,7 +10,7 @@
 namespace View
 {
 
-MainWindow::MainWindow(Core::Application &app)
+MainWindow::MainWindow(Control::Application &app)
 	:m_app(app),
 	m_task(new Task(m_app)),
 	m_viewport(new Viewport(m_app)) // TODO

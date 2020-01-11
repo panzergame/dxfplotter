@@ -1,14 +1,14 @@
 #pragma once
 
-#include <core/polyline.h>
-#include <core/path.h>
+#include <model/polyline.h>
+#include <model/path.h>
 
 #include <nanoflann.hpp>
 
 #include <iostream>
 #include <set>
 
-namespace Core
+namespace Geometry
 {
 
 class Assembler
@@ -64,10 +64,10 @@ private:
 
 	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<float, TipAdaptor>, TipAdaptor, 2>;
 
-	Polylines m_polylines;
+	Model::Polylines m_polylines;
 	float m_closeTolerance;
 
-	Polylines m_mergedPolylines;
+	Model::Polylines m_mergedPolylines;
 
 	Tips constructTips();
 
@@ -139,12 +139,12 @@ private:
 		}
 	}
 
-	Polylines connectTips(const Tips &tips, const KDTree &tree);
+	Model::Polylines connectTips(const Tips &tips, const KDTree &tree);
 
 public:
-	explicit Assembler(Polylines &&polylines, float closeTolerance);
+	explicit Assembler(Model::Polylines &&polylines, float closeTolerance);
 
-	Polylines &&mergedPolylines();
+	Model::Polylines &&mergedPolylines();
 };
 
 }

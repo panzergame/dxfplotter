@@ -4,7 +4,7 @@
 
 #include <iostream> // TODO
 
-namespace Core
+namespace Geometry
 {
 
 Assembler::TipAdaptor::TipAdaptor(const Tips &tips)
@@ -28,7 +28,7 @@ Assembler::Tips Assembler::constructTips()
 	std::vector<Tip> tips;
 
 	for (int i = 0, size = m_polylines.size(); i < size; ++i) {
-		const Polyline &polyline = m_polylines[i];
+		const Model::Polyline &polyline = m_polylines[i];
 		tips.push_back({i, polyline.start(), Tip::START});
 		tips.push_back({i, polyline.end(), Tip::END});
 	}
@@ -36,7 +36,7 @@ Assembler::Tips Assembler::constructTips()
 	return tips;
 }
 
-Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
+Model::Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 {
 	std::set<PolylineIndex> unconnectedPolylines;
 
@@ -45,7 +45,7 @@ Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 		unconnectedPolylines.insert(i);
 	}
 
-	Polylines mergedPolylines;
+	Model::Polylines mergedPolylines;
 
 	while (!unconnectedPolylines.empty()) {
 		// Retrieve a polyline.
@@ -60,10 +60,10 @@ Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 		// Expand chain after polyline
 		expandChain(tips, unconnectedPolylines, tree, std::back_inserter(chain), index, Tip::END);
 
-		Polyline mergedPolyline;
+		Model::Polyline mergedPolyline;
 		// Build a single merged polyline.
 		for (const Item &item : chain) {
-			Polyline &polyline = m_polylines[item.polylineIndex];
+			Model::Polyline &polyline = m_polylines[item.polylineIndex];
 			if (item.dir == Item::INVERT) {
 				polyline.invert();
 			}
@@ -76,7 +76,7 @@ Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 	return mergedPolylines;
 }
 
-Assembler::Assembler(Polylines &&polylines, float closeTolerance)
+Assembler::Assembler(Model::Polylines &&polylines, float closeTolerance)
 	:m_polylines(polylines),
 	m_closeTolerance(closeTolerance)
 {
@@ -89,7 +89,7 @@ Assembler::Assembler(Polylines &&polylines, float closeTolerance)
 	m_mergedPolylines = connectTips(tips, tree);
 }
 
-Polylines &&Assembler::mergedPolylines()
+Model::Polylines &&Assembler::mergedPolylines()
 {
 	return std::move(m_mergedPolylines);
 }

@@ -1,4 +1,5 @@
 add_subdirectory(control)
-add_subdirectory(core)
+add_subdirectory(geometry)
 add_subdirectory(importer)
+add_subdirectory(model)
 add_subdirectory(view)
