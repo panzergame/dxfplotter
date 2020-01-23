@@ -1,6 +1,8 @@
 #include <interface.h>
 #include <importer.h>
 
+#include <converter/arc.h>
+#include <converter/circle.h>
 #include <converter/line.h>
 
 #include <iostream>
@@ -10,6 +12,13 @@ namespace Importer
 
 namespace Dxf
 {
+
+template <class Entity>
+inline Importer& operator<<(Importer &importer, const Entity& entity)
+{
+	importer << convertToPolylines(entity);
+	return importer;
+}
 
 Interface::Interface(Importer &importer)
 	:m_importer(importer)
@@ -76,7 +85,7 @@ void Interface::addPoint(const DRW_Point& data)
 void Interface::addLine(const DRW_Line& data)
 {
 	PRINT_FUNC;
-	m_importer << fromLine(data);
+	m_importer << data;
 }
 
 void Interface::addRay(const DRW_Ray& data)
@@ -97,6 +106,7 @@ void Interface::addArc(const DRW_Arc& data)
 void Interface::addCircle(const DRW_Circle& data)
 {
 	PRINT_FUNC;
+	m_importer << data;
 }
 
 void Interface::addEllipse(const DRW_Ellipse& data)

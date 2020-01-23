@@ -4,6 +4,8 @@
 
 #include <vector>
 
+#include <model/arc.h>
+
 namespace Model
 {
 
@@ -22,6 +24,10 @@ public:
 	const QVector2D &end() const;
 
 	void invert();
+
+	bool isLine() const;
+
+	Arc toArc() const;
 };
 
 using Bulges = std::vector<Bulge>;

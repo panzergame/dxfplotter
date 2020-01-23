@@ -15,14 +15,8 @@ private:
 
 	QPainterPath paintPath();
 
-protected Q_SLOTS:
-	void hoverEnterEvent(QGraphicsSceneHoverEvent *event) override;
-	void hoverLeaveEvent(QGraphicsSceneHoverEvent *event) override;
-
 public:
 	explicit PathItem(Model::Path *path);
-
-	QPainterPath shape() const override;
 };
 
 }

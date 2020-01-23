@@ -7,6 +7,6 @@
 namespace Importer::Dxf
 {
 
-Model::Polylines fromLine(const DRW_Line &line);
+Model::Polylines convertToPolylines(const DRW_Line &line);
 
 }

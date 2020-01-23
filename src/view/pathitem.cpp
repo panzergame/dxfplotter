@@ -1,12 +1,15 @@
 #include <pathitem.h>
+#include <model/arc.h>
+#include <QtMath>
+#include <QDebug>
 
 namespace View
 {
 
-static const QBrush normalBrush(QColor(0, 0, 255));
+static const QBrush normalBrush(QColor(255, 255, 255));
 static const QBrush selectBrush(QColor(255, 0, 255));
-static const QPen normalPen(normalBrush, 0);
-static const QPen selectPen(selectBrush, 0);
+static const QPen normalPen(normalBrush, 0.0f);
+static const QPen selectPen(selectBrush, 0.0f);
 
 class PaintBulge
 {
@@ -21,7 +24,24 @@ public:
 
 	void operator()(const Model::Bulge &bulge)
 	{
-		m_painter.lineTo(bulge.end().toPointF());
+		if (bulge.isLine()) {
+			m_painter.lineTo(bulge.end().toPointF());
+		}
+		else {
+			const Model::Arc arc = bulge.toArc();
+
+			const QVector2D &center = arc.center();
+			const float radius = arc.radius();
+			const QVector2D corner = center - QVector2D(radius, radius);
+			const float size = radius * 2.0f;
+
+			// Start at the bulge begining.
+			m_painter.moveTo(bulge.start().toPointF());
+
+			// Draw arc in a bounding square of the arc diameter.
+			m_painter.arcTo(corner.x(), corner.y(), size, size,
+							qRadiansToDegrees(arc.startAngle()), qRadiansToDegrees(arc.spanAngle()));
+		}
 	}
 };
 
@@ -37,31 +57,13 @@ QPainterPath PathItem::paintPath()
 	return painter;
 }
 
-void PathItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
-{
-	setPen(selectPen);
-	QGraphicsPathItem::hoverEnterEvent(event);
-}
-
-void PathItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
-{
-	setPen(normalPen);
-	QGraphicsPathItem::hoverLeaveEvent(event);
-}
-
 PathItem::PathItem(Model::Path *path)
 	:QGraphicsPathItem(QPainterPath()),
 	m_path(path)
 {
-	setAcceptHoverEvents(true);
-	setPath(paintPath());
-
 	setPen(normalPen);
-}
 
-QPainterPath PathItem::shape() const
-{
-	return path();
+	setPath(paintPath());
 }
 
 }

@@ -1,12 +1,14 @@
 set(SRC
-# 	spline.cpp
+	arc.cpp
+	circle.cpp
 	line.cpp
 # 	wpolyline.cpp
+# 	spline.cpp
 # 	polyline.cpp
-# 	circle.cpp
-# 	arc.cpp
 # 	ellipse.cpp
 
+	arc.h
+	circle.h
 	line.h
 	utils.h
 )

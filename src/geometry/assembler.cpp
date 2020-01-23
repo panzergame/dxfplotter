@@ -25,7 +25,7 @@ float Assembler::TipAdaptor::kdtree_get_pt(const size_t idx, const size_t dim) c
 
 Assembler::Tips Assembler::constructTips()
 {
-	std::vector<Tip> tips;
+	std::vector<Tip> tips; // TODO reserve and std::transform
 
 	for (int i = 0, size = m_polylines.size(); i < size; ++i) {
 		const Model::Polyline &polyline = m_polylines[i];
