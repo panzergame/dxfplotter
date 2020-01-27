@@ -16,6 +16,8 @@ private:
 	Control::Application &m_app;
 
 	void addPathItems();
+	void setupAxes();
+	void setupHighlights();
 
 protected Q_SLOTS:
 	void wheelEvent(QWheelEvent *event) override;

@@ -44,6 +44,17 @@ void Viewport::mousePressEvent(QMouseEvent *event)
 	QGraphicsView::mousePressEvent(event);
 }
 
+void Viewport::setupAxes()
+{
+	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen);
+	scene()->addLine(0.0f, 0.0f, 0.0f, 100.0f, yAxisPen);
+}
+
+void Viewport::setupHighlights()
+{
+	setupAxes();
+}
+
 Viewport::Viewport(Control::Application &app)
 	:QGraphicsView(new QGraphicsScene()),
 	m_app(app)
@@ -54,8 +65,7 @@ Viewport::Viewport(Control::Application &app)
 
 	scale(1.0f, -1.0f);
 
-	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen); // TODO function
-	scene()->addLine(0.0f, 0.0f, 0.0f, 100.0f, yAxisPen);
+	setupHighlights();
 
 	addPathItems();
 }
