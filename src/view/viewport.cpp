@@ -52,7 +52,7 @@ Viewport::Viewport(Control::Application &app)
 	setRenderHints(QPainter::Antialiasing);
 	setBackgroundBrush(View::backgroundBrush);
 
-// 	scale(1.0f, -1.0f);
+	scale(1.0f, -1.0f);
 
 	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen); // TODO function
 	scene()->addLine(0.0f, 0.0f, 0.0f, 100.0f, yAxisPen);
