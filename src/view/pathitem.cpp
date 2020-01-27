@@ -40,7 +40,9 @@ public:
 
 			// Draw arc in a bounding square of the arc diameter.
 			m_painter.arcTo(corner.x(), corner.y(), size, size,
-							qRadiansToDegrees(arc.startAngle()), qRadiansToDegrees(arc.spanAngle()));
+							qRadiansToDegrees(-arc.startAngle()),
+							// Negate span angle because of Y axis swap
+							qRadiansToDegrees(-arc.spanAngle()));
 		}
 	}
 };

@@ -101,6 +101,7 @@ void Interface::addXline(const DRW_Xline& data)
 void Interface::addArc(const DRW_Arc& data)
 {
 	PRINT_FUNC;
+	m_importer << data;
 }
 
 void Interface::addCircle(const DRW_Circle& data)

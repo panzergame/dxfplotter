@@ -6,6 +6,11 @@
 namespace View
 {
 
+static const QBrush xAxisBrush(QColor(255, 0, 0));
+static const QBrush yAxisBrush(QColor(0, 255, 0));
+static const QPen xAxisPen(xAxisBrush, 0);
+static const QPen yAxisPen(yAxisBrush, 0);
+
 static const QBrush backgroundBrush(QColor(0, 0, 0));
 
 void Viewport::addPathItems()
@@ -46,6 +51,11 @@ Viewport::Viewport(Control::Application &app)
 	setDragMode(QGraphicsView::ScrollHandDrag);
 	setRenderHints(QPainter::Antialiasing);
 	setBackgroundBrush(View::backgroundBrush);
+
+// 	scale(1.0f, -1.0f);
+
+	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen); // TODO function
+	scene()->addLine(0.0f, 0.0f, 0.0f, 100.0f, yAxisPen);
 
 	addPathItems();
 }
