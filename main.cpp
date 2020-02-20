@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
 	const QString fileName = parser.positionalArguments().value(0, "");
 
 	Control::Application app(fileName);
-	View::MainWindow window(app);
 
-	qapp.exec();
+	//View::MainWindow window(app);
+
+	//qapp.exec();
 }

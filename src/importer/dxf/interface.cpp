@@ -4,6 +4,7 @@
 #include <converter/arc.h>
 #include <converter/circle.h>
 #include <converter/line.h>
+#include <converter/spline.h>
 
 #include <iostream>
 
@@ -14,10 +15,16 @@ namespace Dxf
 {
 
 template <class Entity>
-inline Importer& operator<<(Importer &importer, const Entity& entity)
+inline Importer& operator<<(Importer &importer, const Entity &entity)
 {
 	importer << convertToPolylines(entity);
 	return importer;
+}
+
+template <class Entity>
+inline Importer& operator<<(Importer &importer, const Entity *entity)
+{
+	return importer << *entity;
 }
 
 Interface::Interface(Importer &importer)
@@ -128,6 +135,7 @@ void Interface::addPolyline(const DRW_Polyline& data)
 void Interface::addSpline(const DRW_Spline* data)
 {
 	PRINT_FUNC;
+	m_importer << data;
 }
 
 void Interface::addKnot(const DRW_Entity& data)

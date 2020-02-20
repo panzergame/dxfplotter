@@ -43,5 +43,6 @@ target_link_libraries(dxfplotter
 	model
 	dxf
 	converter
+	spline
 	libdxfrw
 )
