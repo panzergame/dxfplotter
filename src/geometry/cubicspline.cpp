@@ -8,16 +8,11 @@ namespace Geometry
 CubicSpline::CubicSpline(Point2DList &&points, bool closed)
 	:Spline(std::move(points), closed)
 {
-	qInfo() << "bezier points :";
-	for (const QVector2D &point : m_points) {
-		qInfo() << point;
-	}
 }
 
 Point2DList CubicSpline::convertClosedToBezierPoints() const
 {
 	const int nbcontrol = m_points.size();
-	const int lastcontrol = nbcontrol - 1;
 
 	const int size = nbcontrol * 3 + 1;
 

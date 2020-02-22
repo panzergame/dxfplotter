@@ -18,10 +18,12 @@ find_package(Qt5 COMPONENTS REQUIRED
 find_package(nanoflann)
 
 # Needed for qt
-add_definitions(-fPIC)
+add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-error=deprecated-copy)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_FLAGS )
+
 
 set(INCLUDE_DIRS
 	src

@@ -44,7 +44,6 @@ Arc Bulge::toArc() const
 	const float radius = (sagitta * sagitta + midline * midline) / (2.0f * sagitta);
 	const float lineAngle = std::atan2(line.y(), line.x());
 	const float theta4 = std::atan(m_tangent);
-	const float theta = theta4 * 4.0f;
 	const float angleToCenter = lineAngle + (M_PI_2 - 2.0f * theta4);
 
 	const QVector2D relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);

@@ -42,6 +42,14 @@ Geometry::Polylines convertToPolylines(const DRW_Spline &spline)
 		}
 	}
 
+	for (const Geometry::Bezier &bezier : beziers) {
+		qInfo() << "......................";
+		qInfo() << bezier.point1();
+		qInfo() << bezier.control1();
+		qInfo() << bezier.control2();
+		qInfo() << bezier.point2();
+	}
+
 	return {};
 }
 
