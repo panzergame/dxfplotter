@@ -20,7 +20,10 @@ find_package(nanoflann)
 # Needed for qt
 add_definitions(-fPIC)
 
-include_directories(
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+set(INCLUDE_DIRS
 	src
 	thirdparty
 	template
@@ -29,20 +32,23 @@ include_directories(
 	nanoflann::nanoflann
 )
 
-add_subdirectory(template)
-add_subdirectory(thirdparty)
-add_subdirectory(src)
-
-add_executable(dxfplotter main.cpp)
-target_link_libraries(dxfplotter
+set(LINK_LIBRARIES
 	Qt5::Widgets
 	Qt5::Gui
 	view
 	control
-	geometry
 	model
 	dxf
 	converter
-	spline
+	geometry
 	libdxfrw
 )
+include_directories(${INCLUDE_DIRS})
+
+add_subdirectory(template)
+add_subdirectory(thirdparty)
+add_subdirectory(src)
+add_subdirectory(test) # TODO seulement en cas de test
+
+add_executable(dxfplotter main.cpp)
+target_link_libraries(dxfplotter ${LINK_LIBRARIES})

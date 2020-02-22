@@ -1,9 +1,7 @@
 #include <line.h>
 #include <utils.h>
 
-#include <geometry/spline/cubicsplinetobezier.h>
-#include <geometry/spline/quadraticsplinetobezier.h>
-#include <geometry/spline/beziertobiarc.h>
+#include <geometry/cubicspline.h>
 
 #include <QDebug>
 
@@ -11,7 +9,7 @@ namespace Importer::Dxf
 {
 
 
-Model::Polylines convertToPolylines(const DRW_Spline &spline)
+Geometry::Polylines convertToPolylines(const DRW_Spline &spline)
 {
 	const bool closed = spline.flags & (1 << 0);
 	qInfo() << "new spline";
@@ -29,22 +27,20 @@ Model::Polylines convertToPolylines(const DRW_Spline &spline)
 	std::transform(spline.controllist.begin(), spline.controllist.end(),
 		controlPoints.begin(), [](DRW_Coord *coord){ return toVector2D(*coord); });
 
-	Geometry::Spline::Bezier::List beziers;
+	Geometry::Bezier::List beziers;
 	switch (spline.degree) {
 		case 2:
 		{
-// 			Geometry::Spline::QuadraticSplineToBezier converter(std::move(controlPoints));
+// 			Geometry::QuadraticSplineToBezier converter(std::move(controlPoints));
 			break;
 		}
 		case 3:
 		{
-			Geometry::Spline::CubicSplineToBezier converter(std::move(controlPoints), closed);
-			beziers = converter.beziers(); // TODO copy ?
+			Geometry::CubicSpline spline(std::move(controlPoints), closed);
+			beziers = spline.beziers();
 			break;
 		}
 	}
-
-	Geometry::Spline::BezierToBiarc biArcconverter(std::move(beziers));
 
 	return {};
 }

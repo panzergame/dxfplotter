@@ -6,7 +6,7 @@
 namespace Importer::Dxf
 {
 
-Model::Polylines convertToPolylines(const DRW_Arc &arc)
+Geometry::Polylines convertToPolylines(const DRW_Arc &arc)
 {
 	const float startAngle = arc.staangle;
 	const float endAngle = arc.endangle;
@@ -23,9 +23,9 @@ Model::Polylines convertToPolylines(const DRW_Arc &arc)
 	const QVector2D start = relativeStart + center;
 	const QVector2D end = relativeEnd + center;
 
-	const Model::Bulge bulge(start, end, tangent);
+	const Geometry::Bulge bulge(start, end, tangent);
 
-	return {Model::Polyline({bulge})};
+	return {Geometry::Polyline({bulge})};
 }
 
 };

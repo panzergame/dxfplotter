@@ -1,5 +1,5 @@
 #include <pathitem.h>
-#include <model/arc.h>
+#include <geometry/arc.h>
 #include <QtMath>
 #include <QDebug>
 
@@ -22,13 +22,13 @@ public:
 	{
 	}
 
-	void operator()(const Model::Bulge &bulge)
+	void operator()(const Geometry::Bulge &bulge)
 	{
 		if (bulge.isLine()) {
 			m_painter.lineTo(bulge.end().toPointF());
 		}
 		else {
-			const Model::Arc arc = bulge.toArc();
+			const Geometry::Arc arc = bulge.toArc();
 
 			const QVector2D &center = arc.center();
 			const float radius = arc.radius();
@@ -49,7 +49,7 @@ public:
 
 QPainterPath PathItem::paintPath()
 {
-	const Model::Polyline &polyline = m_path->polyline();
+	const Geometry::Polyline &polyline = m_path->polyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 

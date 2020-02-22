@@ -4,7 +4,7 @@
 
 #include <complex>
 
-namespace Geometry::Spline
+namespace Geometry
 {
 
 class Bezier
@@ -35,10 +35,13 @@ public:
 
 	InflexionPoints inflexions() const;
 	Pair split(float t) const;
+	Pair splitHalf() const;
 	QVector2D at(float t) const;
 
 	/// Split bezier keeping only convex shape.
 	List splitToConvex() const;
+
+	QVector2D incenter() const;
 };
 
 // using Beziers = std::vector<Bezier>; // TODO toujours faire Bezier::List pour éviter le problème comme Pair

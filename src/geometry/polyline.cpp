@@ -1,7 +1,7 @@
 #include <polyline.h>
 #include <utils.h>
 
-namespace Model
+namespace Geometry
 {
 
 Polyline::Polyline(Bulges &&bulges)
@@ -37,7 +37,7 @@ Polyline& Polyline::operator+=(const Polyline &other)
 	return *this;
 }
 
-std::ostream &operator<<(std::ostream &stream, const Polyline &polyline)
+/*std::ostream &operator<<(std::ostream &stream, const Polyline &polyline)
 {
 	stream << polyline.start();
 	for (const Bulge &bulge : polyline.m_bulges) {
@@ -45,6 +45,6 @@ std::ostream &operator<<(std::ostream &stream, const Polyline &polyline)
 	}
 
 	return stream;
-}
+} TODO qInfo */
 
 }

@@ -1,12 +1,12 @@
 #pragma once
 
-#include <model/polyline.h>
-#include <model/path.h>
+#include <geometry/polyline.h>
 
 #include <nanoflann.hpp>
 
-#include <iostream>
 #include <set>
+
+#include <QDebug>
 
 namespace Geometry
 {
@@ -64,10 +64,10 @@ private:
 
 	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<float, TipAdaptor>, TipAdaptor, 2>;
 
-	Model::Polylines m_polylines;
+	Geometry::Polylines m_polylines;
 	float m_closeTolerance;
 
-	Model::Polylines m_mergedPolylines;
+	Geometry::Polylines m_mergedPolylines;
 
 	Tips constructTips();
 
@@ -92,7 +92,7 @@ private:
 			* the shape is not a contour.
 			*/
 			if (nbMatches > 2) {
-				std::cout << "not a countour" << std::endl; // TODO logging
+				qInfo() << "not a countour"; // TODO logging
 				index = -1;
 			}
 			else if (nbMatches == 2) {
@@ -139,12 +139,12 @@ private:
 		}
 	}
 
-	Model::Polylines connectTips(const Tips &tips, const KDTree &tree);
+	Geometry::Polylines connectTips(const Tips &tips, const KDTree &tree);
 
 public:
-	explicit Assembler(Model::Polylines &&polylines, float closeTolerance);
+	explicit Assembler(Geometry::Polylines &&polylines, float closeTolerance);
 
-	Model::Polylines &&mergedPolylines();
+	Geometry::Polylines &&mergedPolylines();
 };
 
 }

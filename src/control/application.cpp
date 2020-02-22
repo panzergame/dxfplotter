@@ -51,12 +51,12 @@ void Application::loadDxf(const QString &fileName)
 	// Import data
 	Importer::Dxf::Importer imp(qPrintable(fileName));
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO
-	Model::Polylines polylines = assembler.mergedPolylines();
+	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO tolerance
+	Geometry::Polylines polylines = assembler.mergedPolylines();
 
-	for (const Model::Polyline &polyline : polylines) { // TODO debug
+	/*for (const Geometry::Polyline &polyline : polylines) { // TODO debug
 		std::cout << polyline << std::endl;
-	}
+	}*/
 
 	m_paths = Model::PathsFromPolylines(std::move(polylines));
 	m_task = Model::Task(m_paths);

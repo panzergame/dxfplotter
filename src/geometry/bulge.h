@@ -4,9 +4,9 @@
 
 #include <vector>
 
-#include <model/arc.h>
+#include <geometry/arc.h>
 
-namespace Model
+namespace Geometry
 {
 
 class Bulge

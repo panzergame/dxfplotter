@@ -1,9 +1,10 @@
 #include <bezier.h>
+#include <geometry/utils.h>
 
 #include <QDebug> // TODO
 #include <iostream> // TODO
 
-namespace Geometry::Spline
+namespace Geometry
 {
 
 Bezier::Bezier(const QVector2D &p1, const QVector2D &c1, const QVector2D &c2, const QVector2D &p2)
@@ -82,6 +83,23 @@ Bezier::Pair Bezier::split(float t) const
 	return {b1, b2};
 }
 
+Bezier::Pair Bezier::splitHalf() const
+{
+	const QVector2D qc = (m_control1 + m_control2) / 4.0f;
+
+	const QVector2D r2 = (m_point1 + m_control1) / 2.0f;
+	const QVector2D r3 = r2 / 2.0f + qc;
+
+	const QVector2D s3 = (m_control2 + m_point2) / 2.0f;
+	const QVector2D s2 = s3 / 2.0f + qc;
+	const QVector2D dp = (r3 + s2) / 2.0f;
+
+	const Bezier b1(m_point1, r2, r3, dp);
+	const Bezier b2(dp, s2, s3, m_point2);
+
+	return {b1, b2};
+}
+
 QVector2D Bezier::at(float t) const
 {
 	const float ot = 1.0f - t;
@@ -132,6 +150,16 @@ Bezier::List Bezier::splitToConvex() const
 
 	// No split
 	return {*this};
+}
+
+QVector2D Bezier::incenter() const
+{
+	/*const QVector2D v = LineIntersection(m_point1, m_control1, m_point2, m_control2);
+
+	qInfo() << "intersection :"  << v;
+
+	return v;*/
+	return QVector2D();
 }
 
 }

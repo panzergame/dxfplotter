@@ -2,11 +2,11 @@
 
 #include <libdxfrw/drw_entities.h>
 
-#include <model/polyline.h>
+#include <geometry/polyline.h>
 
 namespace Importer::Dxf
 {
 
-Model::Polylines convertToPolylines(const DRW_Line &line);
+Geometry::Polylines convertToPolylines(const DRW_Line &line);
 
 }

@@ -4,7 +4,7 @@
 
 #include <QDebug> // TODO
 
-namespace Model
+namespace Geometry
 {
 
 Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)

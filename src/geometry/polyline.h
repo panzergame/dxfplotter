@@ -1,15 +1,15 @@
 #pragma once
 
-#include <model/bulge.h>
+#include <geometry/bulge.h>
 
 #include <vector>
 
-namespace Model
+namespace Geometry
 {
 
 class Polyline
 {
-friend std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
+// friend std::ostream &operator<<(std::ostream &stream, const Polyline &polyline); TODO qInfo
 
 private:
 	Bulges m_bulges;
@@ -36,6 +36,6 @@ public:
 
 using Polylines = std::vector<Polyline>;
 
-std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
+// std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
 
 }

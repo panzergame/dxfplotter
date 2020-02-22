@@ -2,7 +2,7 @@
 
 #include <QVector2D>
 
-namespace Model
+namespace Geometry
 {
 
 class Arc

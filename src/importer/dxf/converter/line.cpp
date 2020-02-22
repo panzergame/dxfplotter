@@ -4,11 +4,11 @@
 namespace Importer::Dxf
 {
 
-Model::Polylines convertToPolylines(const DRW_Line &line)
+Geometry::Polylines convertToPolylines(const DRW_Line &line)
 {
-	const Model::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
+	const Geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
 
-	return {Model::Polyline({bulge})};
+	return {Geometry::Polyline({bulge})};
 }
 
 };

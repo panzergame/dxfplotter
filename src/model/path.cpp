@@ -3,13 +3,13 @@
 namespace Model
 {
 
-Path::Path(Polyline &&polyline, const std::string &name)
+Path::Path(Geometry::Polyline &&polyline, const std::string &name)
 	:m_polyline(polyline),
 	m_name(name)
 {
 }
 
-const Polyline &Path::polyline() const
+const Geometry::Polyline &Path::polyline() const
 {
 	return m_polyline;
 }
@@ -19,7 +19,7 @@ const std::string &Path::name() const
 	return m_name;
 }
 
-Paths PathsFromPolylines(Polylines &&polylines)
+Paths PathsFromPolylines(Geometry::Polylines &&polylines)
 {
 	const int size = polylines.size();
 	Paths paths(size);

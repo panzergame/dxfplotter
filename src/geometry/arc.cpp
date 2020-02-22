@@ -1,9 +1,7 @@
 #include <arc.h>
-#include <math.h>
+#include <utils.h>
 
-#include <QDebug> // TODO
-
-namespace Model
+namespace Geometry
 {
 
 Arc::Arc(const QVector2D &center, float radius, float starAngle, float endAngle)
@@ -11,12 +9,8 @@ Arc::Arc(const QVector2D &center, float radius, float starAngle, float endAngle)
 	m_radius(radius),
 	m_startAngle(starAngle),
 	m_endAngle(endAngle),
-	m_spanAngle(m_endAngle - m_startAngle)
+	m_spanAngle(NormalizedAngle(m_endAngle - m_startAngle))
 {
-	if (m_spanAngle < 0.0f) {
-		m_spanAngle += M_PI * 2.0f;
-	}
-	qInfo() << m_spanAngle;
 }
 
 const QVector2D &Arc::center() const
