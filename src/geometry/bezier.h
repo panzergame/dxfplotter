@@ -6,6 +6,8 @@
 
 #include <complex>
 
+#include <geometry/biarc.h>
+
 namespace Geometry
 {
 
@@ -34,14 +36,22 @@ public:
 	const QVector2D &control1() const;
 	const QVector2D &control2() const;
 
+	QVector2D at(float t) const;
+	QVector2D derivativeAt(float t) const;
+
 	Pair split(float t) const;
 	Pair splitHalf() const;
-	QVector2D at(float t) const;
-
 	/// Split bezier keeping only convex shape.
 	List splitToConvex() const;
 
-	QVector2D incenter() const;
+	std::optional<Biarc> toBiarc() const;
+	float findTAtPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const;
 };
 
 }
+
+class ATest
+{
+public:
+	void test();
+};

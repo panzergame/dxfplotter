@@ -18,13 +18,10 @@ Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier)
 	while (!m_bezierQueue.empty()) {
 		const Geometry::Bezier &bezier = m_bezierQueue.back();
 
-		const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
-		if (optBiarc) {
-			const Geometry::Biarc &biarc = *optBiarc;
-			if (bezier.maxError(biarc) < 0.1) {
-				// The approximation is close enough.
-				continue;
-			}
+		const std::optional<Geometry::Biarc> biarc = bezier.toBiarc();
+		if (biarc) {
+			
+			continue;
 		}
 
 		
@@ -84,8 +81,13 @@ Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 		subBeziers.push_back(curBezier);
 	}*/
 
-	for (const Geometry::Bezier &bezier : convexBeziers) {
+<<<<<<< HEAD
+	for (const Geometry::Bezier &bezier : subBeziers) {
 		/*qInfo() << "......................";
+=======
+	for (const Geometry::Bezier &bezier : convexBeziers) {
+		qInfo() << "......................";
+>>>>>>> temp2
 		qInfo() << bezier.point1();
 		qInfo() << bezier.control1();
 		qInfo() << bezier.control2();

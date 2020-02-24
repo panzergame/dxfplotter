@@ -14,7 +14,7 @@ private:
 public:
 	explicit CubicSpline(Point2DList &&points, bool closed);
 
-	Bezier::List beziers() const;
+	Bezier::List toBeziers() const;
 };
 
 }

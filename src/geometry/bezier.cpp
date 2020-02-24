@@ -71,6 +71,26 @@ const QVector2D &Bezier::control2() const
 	return m_control2;
 }
 
+QVector2D Bezier::at(float t) const
+{
+	const float ot = 1.0f - t;
+
+	return (ot * ot * ot) * m_point1 +
+			(3.0f * (ot * ot) * t) * m_control1 +
+			(3.0f * ot * (t * t)) * m_control2 +
+			(t * t * t) * m_point2;
+}
+
+QVector2D Bezier::derivativeAt(float t) const
+{
+	const float s = 1.0 - t;
+	const float s2 = s * s;
+	const float t2 = t * t;
+
+	return (-3.0f * m_point1 * s2 + 3.0f * m_control1 * (s2 - 2.0f * t * s) +
+			3.0f * m_control2 * (2.0f * t * s - t2) + 3.0f * m_point2 * t2);
+}
+
 Bezier::Pair Bezier::split(float t) const
 {
 	const QVector2D p0 = m_point1 + t * (m_control1 - m_point1);
@@ -103,16 +123,6 @@ Bezier::Pair Bezier::splitHalf() const
 	const Bezier b2(dp, s2, s3, m_point2);
 
 	return {b1, b2};
-}
-
-QVector2D Bezier::at(float t) const
-{
-	const float ot = 1.0f - t;
-
-	return (ot * ot * ot) * m_point1 +
-			(3.0f * (ot * ot) * t) * m_control1 +
-			(3.0f * ot * (t * t)) * m_control2 +
-			(t * t * t) * m_point2;
 }
 
 Bezier::List Bezier::splitToConvex() const
@@ -152,14 +162,47 @@ Bezier::List Bezier::splitToConvex() const
 	return {*this};
 }
 
-QVector2D Bezier::incenter() const
+std::optional<Biarc> Bezier::toBiarc() const
 {
-	/*const QVector2D v = LineIntersection(m_point1, m_control1, m_point2, m_control2);
+	// First find V, second vertex of triangle.
+	const std::optional<QVector2D> optIntersection = ForwardLineIntersection(m_point1, m_control1, m_point2, m_control2);
 
-	qInfo() << "intersection :"  << v;
+	/* If the intersection is not forward (from direction P1 -> C1) or the tangents are parrallels,
+	 * no biars can be computed.
+	 */
+	if (!optIntersection) {
+		return std::nullopt;
+	}
 
-	return v;*/
-	return QVector2D();
+	const QVector2D v = *optIntersection;
+
+	// Find (G) incenter of triangle P1 V P2
+	const QVector2D incenter = TriangleIncenter(m_point1, v, m_point2);
+
+	// Create biarc passing by P1 G P2 and with tangent at P1 and P2
+	Biarc biarc(m_point1, incenter, m_point2, (m_control1 - m_point1), (m_control2 - m_point2));
+
+	return std::make_optional(biarc);
+}
+
+float Bezier::findTAtPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const
+{
+	float tn = 0.5f;
+	QVector2D Q_tn = at(tn);
+
+	const float dpt = QVector2D::dotProduct(point, tangent);
+	float fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
+
+	while (std::abs(fn) > maxError) {
+		const QVector2D d_Q_tn = derivativeAt(tn);
+		const float d_fn = QVector2D::dotProduct(d_Q_tn, tangent);
+
+		tn = tn - fn / d_fn;
+		Q_tn = at(tn);
+		fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
+	}
+
+	return tn;
 }
 
 }

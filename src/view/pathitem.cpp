@@ -22,6 +22,13 @@ public:
 	{
 	}
 
+	void lineToArcPoint(const QVector2D &center, float radius, float angle)
+	{
+		const QVector2D relativeNormalizedPoint(std::cos(angle), std::sin(angle));
+		const QPointF point = (center + relativeNormalizedPoint * radius).toPointF();
+		m_painter.lineTo(point);
+	}
+
 	void operator()(const Geometry::Bulge &bulge)
 	{
 		if (bulge.isLine()) {
@@ -30,19 +37,30 @@ public:
 		else {
 			const Geometry::Arc arc = bulge.toArc();
 
-			const QVector2D &center = arc.center();
+			const float maxError = 0.01; // TODO const
+
 			const float radius = arc.radius();
-			const QVector2D corner = center - QVector2D(radius, radius);
-			const float size = radius * 2.0f;
+			const QVector2D &center = arc.center();
 
-			// Start at the bulge begining.
-			m_painter.moveTo(bulge.start().toPointF());
+			// Calculate the angle step to not exceed allowed error (distance from line to arc).
+			const float angleStep = std::fmax(std::acos(1.0f - maxError / radius) * 2.0f, 0.0001); // TODO const
 
-			// Draw arc in a bounding square of the arc diameter.
-			m_painter.arcTo(corner.x(), corner.y(), size, size,
-							qRadiansToDegrees(-arc.startAngle()),
-							// Negate span angle because of Y axis swap
-							qRadiansToDegrees(-arc.spanAngle()));
+			// Pass by starting point.
+			m_painter.lineTo(arc.start().toPointF());
+
+			if (arc.orientation() == Geometry::Orientation::CCW) {
+				for (float angle = arc.startAngle() + angleStep, end = arc.endAngle(); angle < end; angle += angleStep) {
+					lineToArcPoint(center, radius, angle);
+				}
+			}
+			else {
+				for (float angle = arc.startAngle() - angleStep, end = arc.endAngle(); angle > end; angle -= angleStep) {
+					lineToArcPoint(center, radius, angle);
+				}
+			}
+
+			// Pass by ending point.
+			m_painter.lineTo(arc.end().toPointF());
 		}
 	}
 };
@@ -54,7 +72,7 @@ QPainterPath PathItem::paintPath()
 	QPainterPath painter(polyline.start().toPointF());
 
 	PaintBulge functor(painter);
-	polyline.travelAlong(functor);
+	polyline.travelAlong(functor); // TODO rename visitor
 
 	return painter;
 }

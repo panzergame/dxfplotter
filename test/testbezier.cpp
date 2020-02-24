@@ -15,12 +15,12 @@ void print(const Geometry::Bezier &b)
 int main()
 {
 	const QVector2D sa(0, 0);
-	const QVector2D ea(1, 5);
+	const QVector2D ea(50, 50);
 
-	const QVector2D sb(10, 0);
-	const QVector2D eb(9, 5);
+	const QVector2D sb(100, 0);
+	const QVector2D eb(50, 50);
 
-	const std::optional<QVector2D> intersection = Geometry::ForwardLineIntersection(sa, ea, sb, eb);
+	/*const std::optional<QVector2D> intersection = Geometry::ForwardLineIntersection(sa, ea, sb, eb);
 	if (intersection) {
 		const QVector2D &in = *intersection;
 		qInfo() << in;
@@ -30,11 +30,19 @@ int main()
 	}
 	else {
 		qInfo() << "no intersection";
-	}
+	}*/
 
-	/*Geometry::Bezier b(sa, ea, eb, sb);
+	// CCW bezier
+	Geometry::Bezier bcw(sa, ea, eb, sb);
+	// CW bezier
+	Geometry::Bezier bccw(sb, eb, ea, sa);
 
-	Geometry::Bezier::Pair p1 = b.splitHalf();
+	bcw.toBiarc()->toPolyline();
+	qInfo() << "..........................";
+	bccw.toBiarc()->toPolyline();
+
+
+	/*Geometry::Bezier::Pair p1 = b.splitHalf();
 	Geometry::Bezier::Pair p2 = b.split(0.5f);
 
 	print(b);
@@ -59,4 +67,6 @@ int main()
 // 	const float s2 = d / (ta.lengthSquared() * tb.lengthSquared());
 // 
 // 	qInfo() << "sin2" << s2;
+
+
 }
