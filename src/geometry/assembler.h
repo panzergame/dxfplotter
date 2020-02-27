@@ -16,7 +16,7 @@ class Assembler
 private:
 	using PolylineIndex = int;
 
-	struct Tip
+	struct Tip : Common::Aggregable<Tip>
 	{
 		PolylineIndex polylineIndex;
 		QVector2D point;
@@ -26,8 +26,6 @@ private:
 			END
 		} type;
 	};
-
-	using Tips = std::vector<Tip>;
 
 	struct Item
 	{
@@ -44,10 +42,10 @@ private:
 	class TipAdaptor
 	{
 	private:
-		const std::vector<Tip> &m_tips;
+		const Tip::List &m_tips;
 
 	public:
-		explicit TipAdaptor(const std::vector<Tip> &tips);
+		explicit TipAdaptor(const Tip::List &tips);
 
 		size_t kdtree_get_point_count() const;
 		float kdtree_get_pt(const size_t idx, const size_t dim) const;
@@ -59,23 +57,22 @@ private:
 		}
 	};
 
-	using Connection = std::pair<const Tip *, const Tip *>;
-	using Connections = std::vector<Connection>;
-
 	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<float, TipAdaptor>, TipAdaptor, 2>;
 
-	Geometry::Polylines m_polylines;
+	Polyline::List m_polylines;
 	float m_closeTolerance;
 
-	Geometry::Polylines m_mergedPolylines;
+	Polyline::List m_mergedPolylines;
 
-	Tips constructTips();
+	Tip::List constructTips();
 
 	template <class Inserter>
-	void expandChain(const Tips &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, Inserter inserter, PolylineIndex index, Tip::Type side)
+	void expandChain(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, Inserter inserter, PolylineIndex index, Tip::Type side)
 	{
 		// Direction of polyline, at first normal direction.
 		Item::Direction direction = Item::NORMAL;
+		// Nearest neighbour with distance.
+		std::vector<std::pair<size_t, float> > matches;
 
 		while (index != -1) {
 			// Tips of the current polyline at the right side.
@@ -84,7 +81,6 @@ private:
 			// Coordinate of search point.
 			const float coord[2] = {tip.point.x(), tip.point.y()};
 
-			std::vector<std::pair<size_t, float> > matches;
 			// Search for the nearest neighbours.
 			const int nbMatches = tree.radiusSearch(coord, m_closeTolerance, matches, nanoflann::SearchParams());
 
@@ -139,12 +135,12 @@ private:
 		}
 	}
 
-	Geometry::Polylines connectTips(const Tips &tips, const KDTree &tree);
+	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree);
 
 public:
-	explicit Assembler(Geometry::Polylines &&polylines, float closeTolerance);
+	explicit Assembler(Polyline::List &&polylines, float closeTolerance);
 
-	Geometry::Polylines &&mergedPolylines();
+	Polyline::List &&mergedPolylines();
 };
 
 }

@@ -4,7 +4,7 @@
 namespace Importer::Dxf
 {
 
-Geometry::Polylines convertToPolylines(const DRW_Circle &circle)
+Geometry::Polyline::List convertToPolylines(const DRW_Circle &circle)
 {
 	const float radius = circle.radious;
 	const QVector2D center(toVector2D(circle.basePoint));

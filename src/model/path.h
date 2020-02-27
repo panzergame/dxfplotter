@@ -2,12 +2,14 @@
 
 #include <geometry/polyline.h>
 
+#include <common/aggregable.h>
+
 #include <string>
 
 namespace Model
 {
 
-class Path
+class Path : public Common::Aggregable<Path>
 {
 private:
 	Geometry::Polyline m_polyline;
@@ -23,9 +25,6 @@ public:
 	const std::string &name() const;
 };
 
-using Paths = std::vector<Path>;
-using PathsPtr = std::vector<Path *>;
-
-Paths PathsFromPolylines(Geometry::Polylines &&polylines);
+Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines);
 
 }

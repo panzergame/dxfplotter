@@ -9,7 +9,7 @@ namespace Importer::Dxf
 {
 
 
-Geometry::Polylines convertToPolylines(const DRW_Spline &spline)
+Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 {
 	const bool closed = spline.flags & (1 << 0);
 	qInfo() << "new spline";

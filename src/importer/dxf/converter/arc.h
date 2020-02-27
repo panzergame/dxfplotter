@@ -7,6 +7,6 @@
 namespace Importer::Dxf
 {
 
-Geometry::Polylines convertToPolylines(const DRW_Arc &arc);
+Geometry::Polyline::List convertToPolylines(const DRW_Arc &arc);
 
 }

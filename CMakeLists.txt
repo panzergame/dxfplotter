@@ -22,7 +22,6 @@ add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS )
 
 
 set(INCLUDE_DIRS

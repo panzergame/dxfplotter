@@ -6,7 +6,7 @@
 namespace Importer::Dxf
 {
 
-Geometry::Polylines convertToPolylines(const DRW_Arc &arc)
+Geometry::Polyline::List convertToPolylines(const DRW_Arc &arc)
 {
 	const float startAngle = arc.staangle;
 	const float endAngle = arc.endangle;

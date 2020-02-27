@@ -23,7 +23,7 @@ Model::Task &Application::task()
 	return m_task;
 }
 
-Model::Paths &Application::paths()
+Model::Path::List &Application::paths()
 {
 	return m_paths;
 }
@@ -52,7 +52,7 @@ void Application::loadDxf(const QString &fileName)
 	Importer::Dxf::Importer imp(qPrintable(fileName));
 	// Merge polylines to create longest contours
 	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO tolerance
-	Geometry::Polylines polylines = assembler.mergedPolylines();
+	Geometry::Polyline::List polylines = assembler.mergedPolylines();
 
 	/*for (const Geometry::Polyline &polyline : polylines) { // TODO debug
 		std::cout << polyline << std::endl;

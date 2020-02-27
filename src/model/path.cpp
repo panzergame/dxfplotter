@@ -19,10 +19,10 @@ const std::string &Path::name() const
 	return m_name;
 }
 
-Paths PathsFromPolylines(Geometry::Polylines &&polylines)
+Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines)
 {
 	const int size = polylines.size();
-	Paths paths(size);
+	Path::List paths(size);
 
 	for (int i = 0; i < size; ++i) {
 		paths[i] = Path(std::move(polylines[i]), "Path " + std::to_string(i));

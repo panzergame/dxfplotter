@@ -15,7 +15,7 @@ static const QBrush backgroundBrush(QColor(0, 0, 0));
 
 void Viewport::addPathItems()
 {
-	const Model::PathsPtr &paths = m_app.task().stack();
+	const Model::Path::ListPtr &paths = m_app.task().stack();
 
 	for (Model::Path *path : paths) {
 		PathItem *item = new PathItem(path);

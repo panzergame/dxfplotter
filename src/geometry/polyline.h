@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common/aggregable.h>
+
 #include <geometry/bulge.h>
 
 #include <vector>
@@ -7,16 +9,16 @@
 namespace Geometry
 {
 
-class Polyline
+class Polyline : public Common::Aggregable<Polyline>
 {
 // friend std::ostream &operator<<(std::ostream &stream, const Polyline &polyline); TODO qInfo
 
 private:
-	Bulges m_bulges;
+	Bulge::List m_bulges;
 
 public:
 	explicit Polyline() = default;
-	explicit Polyline(Bulges &&bulges);
+	explicit Polyline(Bulge::List &&bulges);
 
 	const QVector2D &start() const;
 	const QVector2D &end() const;
@@ -33,8 +35,6 @@ public:
 		}
 	}
 };
-
-using Polylines = std::vector<Polyline>;
 
 // std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
 

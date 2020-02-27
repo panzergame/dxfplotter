@@ -1,5 +1,7 @@
 #pragma once
 
+#include <common/aggregable.h>
+
 #include <QVector2D>
 
 #include <complex>
@@ -7,10 +9,11 @@
 namespace Geometry
 {
 
-class Bezier
+class Bezier : public Common::Aggregable<Bezier>
 {
 private:
 	using Complex = std::complex<float>;
+	using InflexionPoints = std::array<Complex, 2>;
 
 	QVector2D m_point1;
 	QVector2D m_point2;
@@ -19,11 +22,9 @@ private:
 
 	static bool isRealInflexionPoint(const Bezier::Complex &point);
 
-public:
-	using InflexionPoints = std::array<Complex, 2>;
-	using Pair = std::array<Bezier, 2>;
-	using List = std::vector<Bezier>;
+	InflexionPoints inflexions() const;
 
+public:
 	explicit Bezier(const QVector2D &p1, const QVector2D &c1,
 			const QVector2D &c2, const QVector2D &p2);
 	Bezier() = default;
@@ -33,7 +34,6 @@ public:
 	const QVector2D &control1() const;
 	const QVector2D &control2() const;
 
-	InflexionPoints inflexions() const;
 	Pair split(float t) const;
 	Pair splitHalf() const;
 	QVector2D at(float t) const;
@@ -43,7 +43,5 @@ public:
 
 	QVector2D incenter() const;
 };
-
-// using Beziers = std::vector<Bezier>; // TODO toujours faire Bezier::List pour éviter le problème comme Pair
 
 }

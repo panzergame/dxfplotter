@@ -7,6 +7,6 @@
 namespace Importer::Dxf
 {
 
-Geometry::Polylines convertToPolylines(const DRW_Spline &spline);
+Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline);
 
 }

@@ -5,7 +5,7 @@
 namespace Geometry
 {
 
-Assembler::TipAdaptor::TipAdaptor(const Tips &tips)
+Assembler::TipAdaptor::TipAdaptor(const Tip::List &tips)
 	:m_tips(tips)
 {
 }
@@ -21,20 +21,20 @@ float Assembler::TipAdaptor::kdtree_get_pt(const size_t idx, const size_t dim) c
 }
 
 
-Assembler::Tips Assembler::constructTips()
+Assembler::Tip::List Assembler::constructTips()
 {
-	std::vector<Tip> tips; // TODO reserve and std::transform
+	Tip::List tips; // TODO reserve and std::transform
 
 	for (int i = 0, size = m_polylines.size(); i < size; ++i) {
-		const Geometry::Polyline &polyline = m_polylines[i];
-		tips.push_back({i, polyline.start(), Tip::START});
-		tips.push_back({i, polyline.end(), Tip::END});
+		const Polyline &polyline = m_polylines[i];
+		tips.push_back({{}, i, polyline.start(), Tip::START});
+		tips.push_back({{}, i, polyline.end(), Tip::END});
 	}
 
 	return tips;
 }
 
-Geometry::Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
+Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 {
 	std::set<PolylineIndex> unconnectedPolylines;
 
@@ -43,7 +43,7 @@ Geometry::Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 		unconnectedPolylines.insert(i);
 	}
 
-	Geometry::Polylines mergedPolylines;
+	Polyline::List mergedPolylines;
 
 	while (!unconnectedPolylines.empty()) {
 		// Retrieve a polyline.
@@ -58,10 +58,10 @@ Geometry::Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 		// Expand chain after polyline
 		expandChain(tips, unconnectedPolylines, tree, std::back_inserter(chain), index, Tip::END);
 
-		Geometry::Polyline mergedPolyline;
+		Polyline mergedPolyline;
 		// Build a single merged polyline.
 		for (const Item &item : chain) {
-			Geometry::Polyline &polyline = m_polylines[item.polylineIndex];
+			Polyline &polyline = m_polylines[item.polylineIndex];
 			if (item.dir == Item::INVERT) {
 				polyline.invert();
 			}
@@ -74,11 +74,11 @@ Geometry::Polylines Assembler::connectTips(const Tips &tips, const KDTree &tree)
 	return mergedPolylines;
 }
 
-Assembler::Assembler(Geometry::Polylines &&polylines, float closeTolerance)
+Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	:m_polylines(polylines),
 	m_closeTolerance(closeTolerance)
 {
-	const Tips tips = constructTips();
+	const Tip::List tips = constructTips();
 
 	TipAdaptor adaptor(tips);
 	KDTree tree(2, adaptor);
@@ -87,7 +87,7 @@ Assembler::Assembler(Geometry::Polylines &&polylines, float closeTolerance)
 	m_mergedPolylines = connectTips(tips, tree);
 }
 
-Geometry::Polylines &&Assembler::mergedPolylines()
+Polyline::List &&Assembler::mergedPolylines()
 {
 	return std::move(m_mergedPolylines);
 }

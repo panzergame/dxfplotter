@@ -14,12 +14,12 @@ Importer::Importer(const std::string& filename)
 	rw.read(&interface, false);
 }
 
-Geometry::Polylines &&Importer::polylines()
+Geometry::Polyline::List &&Importer::polylines()
 {
 	return std::move(m_polylines);
 }
 
-void operator<<(Importer &importer, const Geometry::Polylines &polylines)
+void operator<<(Importer &importer, const Geometry::Polyline::List &polylines)
 {
 	importer.m_polylines.insert(importer.m_polylines.begin(), polylines.begin(), polylines.end());
 }

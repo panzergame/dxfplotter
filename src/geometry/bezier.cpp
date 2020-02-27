@@ -7,32 +7,9 @@
 namespace Geometry
 {
 
-Bezier::Bezier(const QVector2D &p1, const QVector2D &c1, const QVector2D &c2, const QVector2D &p2)
-	:m_point1(p1),
-	m_point2(p2),
-	m_control1(c1),
-	m_control2(c2)
+bool Bezier::isRealInflexionPoint(const Bezier::Complex &point)
 {
-}
-
-const QVector2D &Bezier::point1() const
-{
-	return m_point1;
-}
-
-const QVector2D &Bezier::point2() const
-{
-	return m_point2;
-}
-
-const QVector2D &Bezier::control1() const
-{
-	return m_control1;
-}
-
-const QVector2D &Bezier::control2() const
-{
-	return m_control2;
+	return (point.real() > 0.0f && point.real() < 1.0f && point.imag() == 0.0f); // TODO epsilon
 }
 
 Bezier::InflexionPoints Bezier::inflexions() const
@@ -64,6 +41,34 @@ Bezier::InflexionPoints Bezier::inflexions() const
 	}
 
 	return {t1, t2};
+}
+
+Bezier::Bezier(const QVector2D &p1, const QVector2D &c1, const QVector2D &c2, const QVector2D &p2)
+	:m_point1(p1),
+	m_point2(p2),
+	m_control1(c1),
+	m_control2(c2)
+{
+}
+
+const QVector2D &Bezier::point1() const
+{
+	return m_point1;
+}
+
+const QVector2D &Bezier::point2() const
+{
+	return m_point2;
+}
+
+const QVector2D &Bezier::control1() const
+{
+	return m_control1;
+}
+
+const QVector2D &Bezier::control2() const
+{
+	return m_control2;
 }
 
 Bezier::Pair Bezier::split(float t) const
@@ -108,11 +113,6 @@ QVector2D Bezier::at(float t) const
 			(3.0f * (ot * ot) * t) * m_control1 +
 			(3.0f * ot * (t * t)) * m_control2 +
 			(t * t * t) * m_point2;
-}
-
-bool Bezier::isRealInflexionPoint(const Bezier::Complex &point)
-{
-	return (point.real() > 0.0f && point.real() < 1.0f && point.imag() == 0.0f); // TODO epsilon
 }
 
 Bezier::List Bezier::splitToConvex() const

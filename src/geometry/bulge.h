@@ -1,15 +1,15 @@
 #pragma once
 
-#include <QVector2D>
-
-#include <vector>
+#include <common/aggregable.h>
 
 #include <geometry/arc.h>
+
+#include <QVector2D>
 
 namespace Geometry
 {
 
-class Bulge
+class Bulge : public Common::Aggregable<Bulge>
 {
 private:
 	QVector2D m_start;
@@ -29,7 +29,5 @@ public:
 
 	Arc toArc() const;
 };
-
-using Bulges = std::vector<Bulge>;
 
 }

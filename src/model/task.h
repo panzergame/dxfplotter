@@ -8,14 +8,14 @@ namespace Model
 class Task
 {
 private:
-	PathsPtr m_stack;
+	Path::ListPtr m_stack;
 
 public:
 	Task() = default;
-	explicit Task(Paths &paths);
+	explicit Task(Path::List &paths);
 
 	int count() const;
-	const PathsPtr &stack() const;
+	const Path::ListPtr &stack() const;
 };
 
 }

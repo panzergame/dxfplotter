@@ -4,7 +4,7 @@
 namespace Geometry
 {
 
-Polyline::Polyline(Bulges &&bulges)
+Polyline::Polyline(Bulge::List &&bulges)
 	:m_bulges(bulges)
 {
 }

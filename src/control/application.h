@@ -10,7 +10,7 @@ namespace Control
 class Application : public QObject
 {
 private:
-	Model::Paths m_paths;
+	Model::Path::List m_paths;
 	Model::Task m_task;
 
 	QString m_currentFileName;
@@ -19,7 +19,7 @@ public:
 	explicit Application(const QString &fileName);
 
 	Model::Task &task();
-	Model::Paths &paths();
+	Model::Path::List &paths();
 
 	bool loadFile(const QString &fileName);
 	void loadDxf(const QString &fileName);

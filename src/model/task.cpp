@@ -3,7 +3,7 @@
 namespace Model
 {
 
-Task::Task(Paths &paths)
+Task::Task(Path::List &paths)
 {
 	m_stack.resize(paths.size());
 	std::transform(paths.begin(), paths.end(), m_stack.begin(),
@@ -15,7 +15,7 @@ int Task::count() const
 	return m_stack.size();
 }
 
-const PathsPtr &Task::stack() const
+const Path::ListPtr &Task::stack() const
 {
 	return m_stack;
 }

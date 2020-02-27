@@ -9,17 +9,17 @@ namespace Importer::Dxf
 
 class Importer
 {
-	friend void operator<<(Importer &importer, const Geometry::Polylines &polylines);
+	friend void operator<<(Importer &importer, const Geometry::Polyline::List &polylines);
 
 private:
-	Geometry::Polylines m_polylines;
+	Geometry::Polyline::List m_polylines;
 
 public:
 	explicit Importer(const std::string &filename);
 
-	Geometry::Polylines &&polylines();
+	Geometry::Polyline::List &&polylines();
 };
 
-void operator<<(Importer &importer, const Geometry::Polylines &polylines);
+void operator<<(Importer &importer, const Geometry::Polyline::List &polylines);
 
 }
