@@ -41,7 +41,7 @@ QVector2D Biarc::tangentAtMiddle() const
 	const QVector2D perpendicularLine1 = PerpendicularLine(normalizedLine1);
 
 	// Tangent at middle is the reflect of tangent at start by perpendicular line start to end.
-	return ReflectLine(m_tangent1, perpendicularLine1); // TODO normalize or not ?
+	return ReflectLine(m_tangent1.normalized(), perpendicularLine1);
 }
 
 Polyline Biarc::toPolyline() const

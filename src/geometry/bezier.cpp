@@ -43,6 +43,42 @@ Bezier::InflexionPoints Bezier::inflexions() const
 	return {t1, t2};
 }
 
+QVector2D Bezier::derivativeAt(float t) const
+{
+	const float s = 1.0 - t;
+	const float s2 = s * s;
+	const float t2 = t * t;
+
+	return (-3.0f * m_point1 * s2 + 3.0f * m_control1 * (s2 - 2.0f * t * s) +
+			3.0f * m_control2 * (2.0f * t * s - t2) + 3.0f * m_point2 * t2);
+}
+
+QVector2D Bezier::findNearestPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const
+{
+	float tn = 0.5f;
+	QVector2D Q_tn = at(tn);
+
+	const float dpt = QVector2D::dotProduct(point, tangent);
+	float fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
+
+	while (std::abs(fn) > maxError) {
+		const QVector2D d_Q_tn = derivativeAt(tn);
+		const float d_fn = QVector2D::dotProduct(d_Q_tn, tangent);
+
+		tn = tn - fn / d_fn;
+
+		// Stop when out of range
+		if (tn < 0.0f || tn > 1.0f) {
+			break;
+		}
+
+		Q_tn = at(tn);
+		fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
+	}
+
+	return Q_tn;
+}
+
 Bezier::Bezier(const QVector2D &p1, const QVector2D &c1, const QVector2D &c2, const QVector2D &p2)
 	:m_point1(p1),
 	m_point2(p2),
@@ -73,6 +109,8 @@ const QVector2D &Bezier::control2() const
 
 QVector2D Bezier::at(float t) const
 {
+	assert(0.0f <= t && t <= 1.0f);
+
 	const float ot = 1.0f - t;
 
 	return (ot * ot * ot) * m_point1 +
@@ -81,18 +119,10 @@ QVector2D Bezier::at(float t) const
 			(t * t * t) * m_point2;
 }
 
-QVector2D Bezier::derivativeAt(float t) const
-{
-	const float s = 1.0 - t;
-	const float s2 = s * s;
-	const float t2 = t * t;
-
-	return (-3.0f * m_point1 * s2 + 3.0f * m_control1 * (s2 - 2.0f * t * s) +
-			3.0f * m_control2 * (2.0f * t * s - t2) + 3.0f * m_point2 * t2);
-}
-
 Bezier::Pair Bezier::split(float t) const
 {
+	assert(0.0f <= t && t <= 1.0f);
+
 	const QVector2D p0 = m_point1 + t * (m_control1 - m_point1);
 	const QVector2D p1 = m_control1 + t * (m_control2 - m_control1);
 	const QVector2D p2 = m_control2 + t * (m_point2 - m_control2);
@@ -185,24 +215,15 @@ std::optional<Biarc> Bezier::toBiarc() const
 	return std::make_optional(biarc);
 }
 
-float Bezier::findTAtPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const
+float Bezier::maxError(const Biarc &biarc) const
 {
-	float tn = 0.5f;
-	QVector2D Q_tn = at(tn);
+	const QVector2D &middle = biarc.middle();
+	const QVector2D tangent = biarc.tangentAtMiddle();
 
-	const float dpt = QVector2D::dotProduct(point, tangent);
-	float fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
+	// Find nearest point on curve to biarc middle with same tangent.
+	const QVector2D nearest = findNearestPointWithTangent(middle, tangent, 0.001); // TODO const
 
-	while (std::abs(fn) > maxError) {
-		const QVector2D d_Q_tn = derivativeAt(tn);
-		const float d_fn = QVector2D::dotProduct(d_Q_tn, tangent);
-
-		tn = tn - fn / d_fn;
-		Q_tn = at(tn);
-		fn = QVector2D::dotProduct(Q_tn, tangent) - dpt;
-	}
-
-	return tn;
+	return (middle - nearest).lengthSquared();
 }
 
 }

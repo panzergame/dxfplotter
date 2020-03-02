@@ -3,6 +3,8 @@
 
 #include <geometry/cubicspline.h>
 
+#include <stack>
+
 #include <QDebug>
 
 namespace Importer::Dxf
@@ -11,24 +13,32 @@ namespace Importer::Dxf
 Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier)
 {
 	// Queue of bezier to convert to biarc
-	Geometry::Bezier::List m_bezierQueue = {rootBezier};
+	std::stack<Geometry::Bezier, Geometry::Bezier::List> bezierStack({rootBezier});
 
-	Geometry::Biarc::List
+	Geometry::Polyline polyline;
 
-	while (!m_bezierQueue.empty()) {
-		const Geometry::Bezier &bezier = m_bezierQueue.back();
+	while (!bezierStack.empty()) {
+		const Geometry::Bezier &bezier = bezierStack.top();
+		bezierStack.pop();
 
 		const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
 		if (optBiarc) {
 			const Geometry::Biarc &biarc = *optBiarc;
-			if (bezier.maxError(biarc) < 0.1) {
+			const float error = bezier.maxError(biarc);
+			if (error < 0.0001) { // TODO const
 				// The approximation is close enough.
+				polyline += biarc.toPolyline();
 				continue;
 			}
 		}
 
-		
+		// Split bezier and schedule to conversion
+		const Geometry::Bezier::Pair splitted = bezier.splitHalf();
+		bezierStack.push(splitted[1]);
+		bezierStack.push(splitted[0]);
 	}
+
+	return polyline;
 }
 
 Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
@@ -72,31 +82,8 @@ Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 
 	// Full spline polyline
 	Geometry::Polyline polyline;
-
-	/*Geometry::Bezier::List subBeziers;
 	for (const Geometry::Bezier &bezier : convexBeziers) {
-		Geometry::Bezier curBezier = bezier;
-		for (int i = 0; i < 2; ++i) {
-			Geometry::Bezier::Pair pair = curBezier.split(1.0f / (2 - i));
-			subBeziers.push_back(pair[0]);
-			curBezier = pair[1];
-		}
-		subBeziers.push_back(curBezier);
-	}*/
-
-	for (const Geometry::Bezier &bezier : convexBeziers) {
-		/*qInfo() << "......................";
-		qInfo() << bezier.point1();
-		qInfo() << bezier.control1();
-		qInfo() << bezier.control2();
-		qInfo() << bezier.point2();*/
-
-		const std::optional<Geometry::Biarc> biarc = bezier.toBiarc();
-		if (biarc) {
-			polyline += biarc->toPolyline();
-			const float t = bezier.findTAtPointWithTangent(biarc->middle(), biarc->tangentAtMiddle(), 0.01);
-			qInfo() << "t :" << t;
-		}
+		polyline += bezierToPolyline(bezier);
 	}
 
 	return {polyline};

@@ -2,13 +2,15 @@
 
 #include <QVector2D>
 
+#include <common/aggregable.h>
+
 #include <geometry/utils.h>
 #include <geometry/polyline.h>
 
 namespace Geometry
 {
 
-class Biarc
+class Biarc : public Common::Aggregable<Biarc>
 {
 private:
 	QVector2D m_point1;

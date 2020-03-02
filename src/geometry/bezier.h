@@ -25,6 +25,9 @@ private:
 	static bool isRealInflexionPoint(const Bezier::Complex &point);
 
 	InflexionPoints inflexions() const;
+	QVector2D derivativeAt(float t) const;
+
+	QVector2D findNearestPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const;
 
 public:
 	explicit Bezier(const QVector2D &p1, const QVector2D &c1,
@@ -37,7 +40,6 @@ public:
 	const QVector2D &control2() const;
 
 	QVector2D at(float t) const;
-	QVector2D derivativeAt(float t) const;
 
 	Pair split(float t) const;
 	Pair splitHalf() const;
@@ -45,7 +47,8 @@ public:
 	List splitToConvex() const;
 
 	std::optional<Biarc> toBiarc() const;
-	float findTAtPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const;
+
+	float maxError(const Biarc &biarc) const;
 };
 
 }
