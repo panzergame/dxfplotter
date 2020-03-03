@@ -7,6 +7,7 @@ namespace Geometry
 Polyline::Polyline(Bulge::List &&bulges)
 	:m_bulges(bulges)
 {
+	assert(!m_bulges.empty());
 }
 
 const QVector2D &Polyline::start() const

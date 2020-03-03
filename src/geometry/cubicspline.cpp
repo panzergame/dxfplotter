@@ -90,11 +90,11 @@ Point2DList CubicSpline::convertOpenedToBezierPoints() const
 	return bezierPoints;
 }
 
-Bezier::List CubicSpline::beziers() const
+Bezier::List CubicSpline::toBeziers() const
 {
 	const Point2DList bezierPoints = (m_closed) ? convertClosedToBezierPoints() : convertOpenedToBezierPoints();
 
-	return toBeziers(bezierPoints);
+	return Spline::toBeziers(bezierPoints);
 }
 
 

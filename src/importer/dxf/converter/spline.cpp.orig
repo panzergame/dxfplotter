@@ -83,7 +83,32 @@ Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 	// Full spline polyline
 	Geometry::Polyline polyline;
 	for (const Geometry::Bezier &bezier : convexBeziers) {
+<<<<<<< HEAD
+		Geometry::Bezier curBezier = bezier;
+		for (int i = 0; i < 2; ++i) {
+			Geometry::Bezier::Pair pair = curBezier.split(1.0f / (2 - i));
+			subBeziers.push_back(pair[0]);
+			curBezier = pair[1];
+		}
+		subBeziers.push_back(curBezier);
+	}*/
+
+	for (const Geometry::Bezier &bezier : convexBeziers) {
+		/*qInfo() << "......................";
+		qInfo() << bezier.point1();
+		qInfo() << bezier.control1();
+		qInfo() << bezier.control2();
+		qInfo() << bezier.point2();*/
+
+		const std::optional<Geometry::Biarc> biarc = bezier.toBiarc();
+		if (biarc) {
+			polyline += biarc->toPolyline();
+			const float t = bezier.findTAtPointWithTangent(biarc->middle(), biarc->tangentAtMiddle(), 0.01);
+			qInfo() << "t :" << t;
+		}
+=======
 		polyline += bezierToPolyline(bezier);
+>>>>>>> Bezier splitting to increase biarc precision.
 	}
 
 	return {polyline};

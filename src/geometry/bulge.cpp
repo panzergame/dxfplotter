@@ -1,8 +1,11 @@
 #include <bulge.h>
-#include <cmath>
+#include <utils.h>
 #include <limits>
 
 #include <QDebug> // TODO
+#include <iostream> // TODO
+#include <iomanip>
+#include <limits>
 
 namespace Geometry
 {
@@ -32,31 +35,42 @@ void Bulge::invert()
 
 bool Bulge::isLine() const
 {
-	return std::abs(m_tangent) < std::numeric_limits<float>::epsilon();
+	return std::abs(m_tangent) < std::numeric_limits<float>::epsilon(); // TODO utils
+}
+
+Orientation Bulge::orientation() const
+{
+	return (m_tangent < 0.0f) ? Orientation::CW : Orientation::CCW;
 }
 
 Arc Bulge::toArc() const
 {
-	const QVector2D line = m_end - m_start;
+	const float absTangent = std::abs(m_tangent);
+	const Orientation ori = orientation();
+
+	// Tangent is at end point, so we get line from end to start.
+	const QVector2D line = m_start - m_end;
+
 	const float midline = line.length() / 2.0f;
-	const float sagitta = midline * m_tangent;
-	// WARNING It is not real radius because it can be negative
+	const float sagitta = midline * absTangent;
 	const float radius = (sagitta * sagitta + midline * midline) / (2.0f * sagitta);
-	const float lineAngle = std::atan2(line.y(), line.x());
-	const float theta4 = std::atan(m_tangent);
-	const float angleToCenter = lineAngle + (M_PI_2 - 2.0f * theta4);
+
+	// Angle of line end -> start
+	const float lineAngle = LineAngle(line);
+	// Angle between line and line from end to middle of arc
+	const float absTheta4 = std::atan(absTangent);
+	
+	// Absolute angle at end point from line to arc center.
+	const float relativeAngleToCenter = M_PI_2 - 2.0f * absTheta4;
+	const float angleToCenter = (ori == Orientation::CCW) ? (lineAngle - relativeAngleToCenter) : (lineAngle + relativeAngleToCenter);
 
 	const QVector2D relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);
-	const QVector2D center = relativeCenter + m_start;
+	const QVector2D center = relativeCenter + m_end;
 
-// 	const float startAngle = std::atan2(-relativeCenter.y(), -relativeCenter.x());
-// 	const float endAngle = m_tangent > 0.0f ? startAngle - theta : startAngle + theta; // TODO optimization
+	const float startAngle = LineAngle(m_start - center);
+	const float endAngle = LineAngle(m_end - center);
 
-
-	const float startAngle = std::atan2(m_start.y() - center.y(), m_start.x() - center.x());
-	const float endAngle = std::atan2(m_end.y() - center.y(), m_end.x() - center.x());
-
-	return Arc(center, std::abs(radius), startAngle, endAngle);
+	return Arc(center, m_start, m_end, radius, startAngle, endAngle, ori);
 }
 
 }

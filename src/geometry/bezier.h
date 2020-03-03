@@ -6,6 +6,8 @@
 
 #include <complex>
 
+#include <geometry/biarc.h>
+
 namespace Geometry
 {
 
@@ -23,6 +25,9 @@ private:
 	static bool isRealInflexionPoint(const Bezier::Complex &point);
 
 	InflexionPoints inflexions() const;
+	QVector2D derivativeAt(float t) const;
+
+	QVector2D findNearestPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const;
 
 public:
 	explicit Bezier(const QVector2D &p1, const QVector2D &c1,
@@ -34,14 +39,22 @@ public:
 	const QVector2D &control1() const;
 	const QVector2D &control2() const;
 
-	Pair split(float t) const;
-	Pair splitHalf() const;
 	QVector2D at(float t) const;
 
+	Pair split(float t) const;
+	Pair splitHalf() const;
 	/// Split bezier keeping only convex shape.
 	List splitToConvex() const;
 
-	QVector2D incenter() const;
+	std::optional<Biarc> toBiarc() const;
+
+	float maxError(const Biarc &biarc) const;
 };
 
 }
+
+class ATest
+{
+public:
+	void test();
+};

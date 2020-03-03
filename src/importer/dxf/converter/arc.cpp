@@ -16,7 +16,11 @@ Geometry::Polyline::List convertToPolylines(const DRW_Arc &arc)
 	const QVector2D relativeStart = QVector2D(std::cos(startAngle), std::sin(startAngle)) * radius;
 	const QVector2D relativeEnd = QVector2D(std::cos(endAngle), std::sin(endAngle)) * radius;
 
-	const float theta = endAngle - startAngle;
+	const float theta = Geometry::DeltaAngle(startAngle, endAngle);
+
+	// Dxf arcs are CCW
+	assert(theta > 0.0f);
+
 	const float theta4 = theta / 4.0f;
 	const float tangent = std::tan(theta4);
 

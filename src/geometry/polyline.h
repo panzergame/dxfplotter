@@ -34,6 +34,14 @@ public:
 			functor(bulge);
 		}
 	}
+
+	template <class Functor>
+	void travelAlong(Functor &&functor) const
+	{
+		for (const Bulge &bulge : m_bulges) {
+			functor(bulge);
+		}
+	}
 };
 
 // std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
