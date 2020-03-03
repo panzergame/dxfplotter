@@ -19,6 +19,7 @@ private:
 
 public:
 	explicit Bulge(const QVector2D &start, const QVector2D &end, float tangent);
+	Bulge() = default;
 
 	const QVector2D &start() const;
 	const QVector2D &end() const;

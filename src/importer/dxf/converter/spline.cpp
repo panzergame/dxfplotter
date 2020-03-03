@@ -12,7 +12,7 @@ namespace Importer::Dxf
 Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 {
 	const bool closed = spline.flags & (1 << 0);
-	qInfo() << "new spline";
+	/*qInfo() << "new spline";
 	qInfo() << "degree" << spline.degree;
 	qInfo() << "nknots" << spline.nknots;
 	qInfo() << "nfit" << spline.nfit;
@@ -21,7 +21,7 @@ Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 
 	for (DRW_Coord *coord : spline.controllist) {
 		qInfo() << toVector2D(*coord);
-	}
+	}*/
 
 	Geometry::Point2DList controlPoints(spline.ncontrol);
 	std::transform(spline.controllist.begin(), spline.controllist.end(),
@@ -42,13 +42,13 @@ Geometry::Polyline::List convertToPolylines(const DRW_Spline &spline)
 		}
 	}
 
-	for (const Geometry::Bezier &bezier : beziers) {
+	/*for (const Geometry::Bezier &bezier : beziers) {
 		qInfo() << "......................";
 		qInfo() << bezier.point1();
 		qInfo() << bezier.control1();
 		qInfo() << bezier.control2();
 		qInfo() << bezier.point2();
-	}
+	}*/
 
 	return {};
 }

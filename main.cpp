@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 	Control::Application app(fileName);
 
-	//View::MainWindow window(app);
+	View::MainWindow window(app);
 
-	//qapp.exec();
+	qapp.exec();
 }

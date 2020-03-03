@@ -4,6 +4,7 @@
 #include <converter/arc.h>
 #include <converter/circle.h>
 #include <converter/line.h>
+#include <converter/lwpolyline.h>
 #include <converter/spline.h>
 
 #include <iostream>
@@ -125,6 +126,7 @@ void Interface::addEllipse(const DRW_Ellipse& data)
 void Interface::addLWPolyline(const DRW_LWPolyline& data)
 {
 	PRINT_FUNC;
+	m_importer << data;
 }
 
 void Interface::addPolyline(const DRW_Polyline& data)
