@@ -1,9 +1,6 @@
 #include <bezier.h>
 #include <geometry/utils.h>
 
-#include <QDebug> // TODO
-#include <iostream> // TODO
-
 namespace Geometry
 {
 
@@ -160,9 +157,6 @@ Bezier::List Bezier::splitToConvex() const
 	const InflexionPoints inflex = inflexions();
 	const bool isReal1 = isRealInflexionPoint(inflex[0]);
 	const bool isReal2 = isRealInflexionPoint(inflex[1]);
-
-	std::cout << inflex[0] << " " << inflex[1] << std::endl;
-	qInfo() << isReal1 << isReal2;
 
 	// Split at first point
 	if (isReal1 && !isReal2) {
