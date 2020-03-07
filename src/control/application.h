@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/task.h>
+#include <model/config.h>
 
 #
 
@@ -14,6 +15,8 @@ class Application : public QObject
 	Q_OBJECT;
 
 private:
+	Model::Config m_config;
+
 	Model::Path::ListPtr m_paths; // TODO parent destruct
 	Model::Task *m_task;
 

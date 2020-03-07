@@ -46,7 +46,7 @@ void Application::loadDxf(const QString &fileName)
 	// Import data
 	Importer::Dxf::Importer imp(qPrintable(fileName));
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO tolerance
+	Geometry::Assembler assembler(imp.polylines(), m_config.dxf().assembleTolerance);
 	Geometry::Polyline::List polylines = assembler.mergedPolylines();
 
 	const Model::PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract

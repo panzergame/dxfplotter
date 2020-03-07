@@ -52,9 +52,3 @@ public:
 };
 
 }
-
-class ATest
-{
-public:
-	void test();
-};
