@@ -15,9 +15,10 @@ int Task::count() const
 	return m_stack.size();
 }
 
-const Path::ListPtr &Task::stack() const
+Path *Task::pathAt(int index) const
 {
-	return m_stack;
+	assert(0 <= index && index < count());
+	return m_stack[index];
 }
 
 }

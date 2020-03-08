@@ -15,7 +15,15 @@ public:
 	explicit Task(Path::List &paths);
 
 	int count() const;
-	const Path::ListPtr &stack() const;
+	Path *pathAt(int index) const;
+
+	template <class Functor>
+	void forEachPath(Functor &&functor) const
+	{
+		for (Path *path : m_stack) {
+			functor(path);
+		}
+	}
 };
 
 }

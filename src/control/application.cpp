@@ -23,11 +23,6 @@ Model::Task &Application::task()
 	return m_task;
 }
 
-Model::Path::List &Application::paths()
-{
-	return m_paths;
-}
-
 bool Application::loadFile(const QString &fileName)
 {
 	const QMimeDatabase db;
@@ -54,11 +49,9 @@ void Application::loadDxf(const QString &fileName)
 	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO tolerance
 	Geometry::Polyline::List polylines = assembler.mergedPolylines();
 
-	/*for (const Geometry::Polyline &polyline : polylines) { // TODO debug
-		std::cout << polyline << std::endl;
-	}*/
+	const Model::Path::Settings defaultPathSettings(120.0f); // TODO config extract
 
-	m_paths = Model::PathsFromPolylines(std::move(polylines));
+	m_paths = Model::PathsFromPolylines(std::move(polylines), defaultPathSettings);
 	m_task = Model::Task(m_paths);
 }
 

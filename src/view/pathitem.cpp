@@ -72,7 +72,7 @@ QPainterPath PathItem::paintPath()
 	QPainterPath painter(polyline.start().toPointF());
 
 	PaintBulge functor(painter);
-	polyline.travelAlong(functor); // TODO rename visitor
+	polyline.forEachBulge(functor);
 
 	return painter;
 }

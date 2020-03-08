@@ -40,6 +40,7 @@ set(LINK_LIBRARIES
 	control
 	model
 	dxf
+	gcode
 	converter
 	geometry
 	libdxfrw

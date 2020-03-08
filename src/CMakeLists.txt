@@ -1,5 +1,6 @@
 add_subdirectory(common)
 add_subdirectory(control)
+add_subdirectory(exporter)
 add_subdirectory(geometry)
 add_subdirectory(importer)
 add_subdirectory(model)
