@@ -7,7 +7,7 @@
 namespace Exporter::GCode
 {
 
-class PathConverter; // TODO
+class PostProcessor;
 
 class Exporter
 {
@@ -17,8 +17,8 @@ private:
 
 	void convertToGCode(const Model::Task &task);
 	void convertToGCode(Model::Path *path);
-	void convertToGCode(PathConverter &converter, const Geometry::Polyline &polyline);
-	void convertToGCode(PathConverter &converter, const Geometry::Bulge &bulge);
+	void convertToGCode(PostProcessor &processor, const Geometry::Polyline &polyline);
+	void convertToGCode(PostProcessor &processor, const Geometry::Bulge &bulge);
 
 public:
 	explicit Exporter(const Model::Task &task, const std::string &filename);

@@ -27,6 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(INCLUDE_DIRS
 	src
 	thirdparty
+	thirdparty/fmt/include
 	template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
@@ -44,6 +45,7 @@ set(LINK_LIBRARIES
 	converter
 	geometry
 	libdxfrw
+	fmt
 )
 include_directories(${INCLUDE_DIRS})
 
