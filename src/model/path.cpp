@@ -3,9 +3,25 @@
 namespace Model
 {
 
-Path::Path(Geometry::Polyline &&polyline, const std::string &name)
+Path::Settings::Settings(float feedRate)
+	:m_feedRate(feedRate)
+{
+}
+
+float Path::Settings::feedRate() const
+{
+	return m_feedRate;
+}
+
+void Path::Settings::setFeedRate(float feedRate)
+{
+	m_feedRate = feedRate;
+}
+
+Path::Path(Geometry::Polyline &&polyline, const std::string &name, const Settings &settings)
 	:m_polyline(polyline),
-	m_name(name)
+	m_name(name),
+	m_settings(settings)
 {
 }
 
@@ -19,13 +35,18 @@ const std::string &Path::name() const
 	return m_name;
 }
 
-Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines)
+const Model::Path::Settings &Path::settings() const
+{
+	return m_settings;
+}
+
+Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines, const Path::Settings &settings)
 {
 	const int size = polylines.size();
 	Path::List paths(size);
 
 	for (int i = 0; i < size; ++i) {
-		paths[i] = Path(std::move(polylines[i]), "Path " + std::to_string(i));
+		paths[i] = Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
 	}
 
 	return paths;

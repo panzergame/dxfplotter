@@ -43,10 +43,11 @@ Orientation Bulge::orientation() const
 	return (m_tangent < 0.0f) ? Orientation::CW : Orientation::CCW;
 }
 
-Arc Bulge::toArc() const
+Circle Bulge::toCircle() const
 {
-	const float absTangent = std::abs(m_tangent);
 	const Orientation ori = orientation();
+
+	const float absTangent = std::abs(m_tangent);
 
 	// Tangent is at end point, so we get line from end to start.
 	const QVector2D line = m_start - m_end;
@@ -59,7 +60,7 @@ Arc Bulge::toArc() const
 	const float lineAngle = LineAngle(line);
 	// Angle between line and line from end to middle of arc
 	const float absTheta4 = std::atan(absTangent);
-	
+
 	// Absolute angle at end point from line to arc center.
 	const float relativeAngleToCenter = M_PI_2 - 2.0f * absTheta4;
 	const float angleToCenter = (ori == Orientation::CCW) ? (lineAngle - relativeAngleToCenter) : (lineAngle + relativeAngleToCenter);
@@ -67,10 +68,19 @@ Arc Bulge::toArc() const
 	const QVector2D relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);
 	const QVector2D center = relativeCenter + m_end;
 
+	return Circle(center, radius, ori);
+}
+
+Arc Bulge::toArc() const
+{
+	const Circle circle = toCircle();
+	const QVector2D &center = circle.center();
+	const float radius = circle.radius();
+
 	const float startAngle = LineAngle(m_start - center);
 	const float endAngle = LineAngle(m_end - center);
 
-	return Arc(center, m_start, m_end, radius, startAngle, endAngle, ori);
+	return Arc(circle, m_start, m_end, startAngle, endAngle);
 }
 
 }

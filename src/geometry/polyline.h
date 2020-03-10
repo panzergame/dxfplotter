@@ -28,15 +28,7 @@ public:
 	Polyline& operator+=(const Polyline &other);
 
 	template <class Functor>
-	void travelAlong(Functor &functor) const
-	{
-		for (const Bulge &bulge : m_bulges) {
-			functor(bulge);
-		}
-	}
-
-	template <class Functor>
-	void travelAlong(Functor &&functor) const
+	void forEachBulge(Functor &&functor) const
 	{
 		for (const Bulge &bulge : m_bulges) {
 			functor(bulge);

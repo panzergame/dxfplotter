@@ -1,33 +1,27 @@
 #pragma once
 
-#include <QVector2D>
-
-#include <geometry/utils.h>
+#include <geometry/circle.h>
 
 namespace Geometry
 {
 
-class Arc
+/** Arcs are considered as angle clamped circles
+ */
+class Arc : public Circle
 {
 private:
-	QVector2D m_center;
 	QVector2D m_start;
 	QVector2D m_end;
-	float m_radius;
 	float m_startAngle;
 	float m_endAngle;
 	float m_spanAngle;
-	Orientation m_orientation;
 
 public:
-	explicit Arc(const QVector2D &center, const QVector2D &start, const QVector2D &end,
-				 float radius, float starAngle, float endAngle, Orientation orientation);
+	explicit Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
+			float starAngle, float endAngle);
 
-	const QVector2D &center() const;
 	const QVector2D &start() const;
 	const QVector2D &end() const;
-	Orientation orientation() const;
-	float radius() const;
 	float startAngle() const;
 	float endAngle() const;
 	float spanAngle() const;

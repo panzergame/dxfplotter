@@ -19,7 +19,6 @@ public:
 	explicit Application(const QString &fileName);
 
 	Model::Task &task();
-	Model::Path::List &paths();
 
 	bool loadFile(const QString &fileName);
 	void loadDxf(const QString &fileName);

@@ -15,6 +15,8 @@ namespace Importer
 namespace Dxf
 {
 
+// TODO déplacer tout les convertX dans Importer pour limiter la duplication de code
+
 template <class Entity>
 inline Importer& operator<<(Importer &importer, const Entity &entity)
 {

@@ -15,12 +15,12 @@ static const QBrush backgroundBrush(QColor(0, 0, 0));
 
 void Viewport::addPathItems()
 {
-	const Model::Path::ListPtr &paths = m_app.task().stack();
-
-	for (Model::Path *path : paths) {
-		PathItem *item = new PathItem(path);
-		scene()->addItem(item);
-	}
+	m_app.task().forEachPath(
+		[scene = scene()](Model::Path *path) {
+			PathItem *item = new PathItem(path);
+			scene->addItem(item);
+		}
+	);
 }
 
 void Viewport::wheelEvent(QWheelEvent *event)

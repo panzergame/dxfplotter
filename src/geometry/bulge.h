@@ -3,6 +3,7 @@
 #include <common/aggregable.h>
 
 #include <geometry/arc.h>
+#include <geometry/circle.h>
 #include <geometry/utils.h>
 
 #include <QVector2D>
@@ -37,6 +38,7 @@ public:
 	bool isLine() const;
 	Orientation orientation() const;
 
+	Circle toCircle() const;
 	Arc toArc() const;
 };
 
