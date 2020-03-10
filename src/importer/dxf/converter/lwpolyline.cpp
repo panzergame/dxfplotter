@@ -8,16 +8,21 @@ namespace Importer::Dxf
 
 Geometry::Polyline::List convertToPolylines(const DRW_LWPolyline &lwpolyline)
 {
-	if (lwpolyline.vertlist.size() <= 1) {
+	const int size = lwpolyline.vertlist.size();
+	if (size <= 1) {
 		return {};
 	}
 
-	Geometry::Bulge::List bulges(lwpolyline.vertlist.size() - 1);
+	const bool opened = !(lwpolyline.flags & (1 << 0));
 
-	DRW_Vertex2D *vertex = lwpolyline.vertlist.front();
+	// One bulge more if openeded polyline, to connect last vertex to first vertex.
+	Geometry::Bulge::List bulges(size - ((int)opened));
+
+	DRW_Vertex2D *firstVertex = lwpolyline.vertlist.front();
+	DRW_Vertex2D *vertex = firstVertex;
 	QVector2D start(vertex->x, vertex->y);
 
-	for (int i = 1, size = lwpolyline.vertlist.size(); i < size; ++i) {
+	for (int i = 1; i < size; ++i) {
 		DRW_Vertex2D *nextVertex = lwpolyline.vertlist[i];
 		const QVector2D end(nextVertex->x, nextVertex->y);
 
@@ -26,6 +31,12 @@ Geometry::Polyline::List convertToPolylines(const DRW_LWPolyline &lwpolyline)
 		// Pass to next vertex begin
 		vertex = nextVertex;
 		start = end;
+	}
+
+	// Create end to start bulge if closed polyline.
+	if (!opened) {
+		const QVector2D end(firstVertex->x, firstVertex->y);
+		bulges.back() = Geometry::Bulge(start, end, 0.0f);
 	}
 
 	return {Geometry::Polyline(std::move(bulges))};
