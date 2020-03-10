@@ -40,8 +40,8 @@ public:
 	void laserOff();
 	void linearMove(const QVector2D &to);
 	void fastMove(const QVector2D &to);
-	void cwArc();
-	void ccwArc();
+	void cwArc(const QVector2D &relativeCenter, const QVector2D &to);
+	void ccwArc(const QVector2D &relativeCenter, const QVector2D &to);
 };
 
 }

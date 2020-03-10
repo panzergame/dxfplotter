@@ -33,7 +33,21 @@ void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Bulge &b
 		processor.linearMove(bulge.end());
 	}
 	else {
-		
+		const Geometry::Circle circle = bulge.toCircle();
+		// Relative center to start
+		const QVector2D relativeCenter = circle.center() - bulge.start();
+		switch (circle.orientation()) {
+			case Geometry::Orientation::CW:
+			{
+				processor.cwArc(relativeCenter, bulge.end());
+				break;
+			}
+			case Geometry::Orientation::CCW:
+			{
+				processor.ccwArc(relativeCenter, bulge.end());
+				break;
+			}
+		}
 	}
 }
 
