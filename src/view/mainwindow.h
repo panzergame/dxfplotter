@@ -17,8 +17,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 private:
 	Control::Application &m_app;
 
-	Task *m_task;
-	Viewport *m_viewport;
+	QWidget *setupLeftPanel();
+	QWidget *setupCenterPanel();
+	void setupUi();
 
 public:
 	explicit MainWindow(Control::Application &app);

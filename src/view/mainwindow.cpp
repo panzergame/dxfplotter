@@ -1,4 +1,5 @@
 #include <mainwindow.h>
+#include <path.h>
 #include <task.h>
 #include <viewport.h>
 
@@ -10,23 +11,44 @@
 namespace View
 {
 
-MainWindow::MainWindow(Control::Application &app)
-	:m_app(app),
-	m_task(new Task(m_app)),
-	m_viewport(new Viewport(m_app)) // TODO
+QWidget *MainWindow::setupLeftPanel()
 {
-	setupUi(this);
+	Task *task = new Task(m_app);
+	Path *path = new Path(m_app);
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
-	vertSplitter->addWidget(m_task);
+	vertSplitter->addWidget(path);
+	vertSplitter->addWidget(task);
+	vertSplitter->setStretchFactor(0, 0);
+	vertSplitter->setStretchFactor(1, 1);
+
+	return vertSplitter;
+}
+
+QWidget *MainWindow::setupCenterPanel()
+{
+	Viewport *viewport = new Viewport(m_app);
+	return viewport;
+}
+
+void MainWindow::setupUi()
+{
+	Ui::MainWindow::setupUi(this);
 
 	QSplitter *horiSplitter = new QSplitter(Qt::Horizontal, this);
-	horiSplitter->addWidget(vertSplitter);
-	horiSplitter->addWidget(m_viewport);
+	horiSplitter->addWidget(setupLeftPanel());
+	horiSplitter->addWidget(setupCenterPanel());
 	horiSplitter->setStretchFactor(0, 0);
 	horiSplitter->setStretchFactor(1, 1);
 
 	horizontalLayout->addWidget(horiSplitter);
+}
+
+
+MainWindow::MainWindow(Control::Application &app)
+	:m_app(app)
+{
+	setupUi();
 
 	showMaximized();
 
