@@ -16,13 +16,17 @@ public:
 	{
 	private:
 		float m_feedRate;
+		float m_intensity;
 
 	public:
 		explicit Settings() = default;
-		explicit Settings(float feedRate);
+		explicit Settings(float feedRate, float intensity);
 
 		float feedRate() const;
 		void setFeedRate(float feedRate);
+
+		float intensity() const;
+		void setIntensity(float intensity);
 	};
 
 private:

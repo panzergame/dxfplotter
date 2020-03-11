@@ -3,8 +3,9 @@
 namespace Model
 {
 
-Path::Settings::Settings(float feedRate)
-	:m_feedRate(feedRate)
+Path::Settings::Settings(float feedRate, float intensity)
+	:m_feedRate(feedRate),
+	m_intensity(intensity)
 {
 }
 
@@ -17,6 +18,17 @@ void Path::Settings::setFeedRate(float feedRate)
 {
 	m_feedRate = feedRate;
 }
+
+float Path::Settings::intensity() const
+{
+	return m_intensity;
+}
+
+void Path::Settings::setIntensity(float intensity)
+{
+	m_intensity = intensity;
+}
+
 
 Path::Path(Geometry::Polyline &&polyline, const std::string &name, const Settings &settings)
 	:m_polyline(polyline),
