@@ -18,6 +18,9 @@ private:
 
 public:
 	explicit Task(Control::Application &app);
+
+protected Q_SLOTS:
+	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 
 }

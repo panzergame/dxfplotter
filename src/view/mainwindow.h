@@ -24,7 +24,7 @@ private:
 public:
 	explicit MainWindow(Control::Application &app);
 
-public Q_SLOTS:
+protected Q_SLOTS:
 	void openFile();
 };
 

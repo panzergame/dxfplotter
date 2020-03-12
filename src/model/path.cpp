@@ -52,13 +52,23 @@ const Model::Path::Settings &Path::settings() const
 	return m_settings;
 }
 
-Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines, const Path::Settings &settings)
+void Path::select()
+{
+	emit selected();
+}
+
+void Path::deselect()
+{
+	emit deselected();
+}
+
+Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const Path::Settings &settings)
 {
 	const int size = polylines.size();
-	Path::List paths(size);
+	Path::ListPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
-		paths[i] = Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
+		paths[i] = new Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
 	}
 
 	return paths;

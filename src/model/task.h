@@ -12,7 +12,7 @@ private:
 
 public:
 	Task() = default;
-	explicit Task(Path::List &paths);
+	explicit Task(const Path::ListPtr &paths);
 
 	int count() const;
 	Path *pathAt(int index) const;

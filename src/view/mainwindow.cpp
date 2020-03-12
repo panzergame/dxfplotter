@@ -17,10 +17,10 @@ QWidget *MainWindow::setupLeftPanel()
 	Path *path = new Path(m_app);
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
-	vertSplitter->addWidget(path);
 	vertSplitter->addWidget(task);
-	vertSplitter->setStretchFactor(0, 0);
-	vertSplitter->setStretchFactor(1, 1);
+	vertSplitter->addWidget(path);
+	vertSplitter->setStretchFactor(0, 1);
+	vertSplitter->setStretchFactor(1, 0);
 
 	return vertSplitter;
 }
@@ -43,7 +43,6 @@ void MainWindow::setupUi()
 
 	horizontalLayout->addWidget(horiSplitter);
 }
-
 
 MainWindow::MainWindow(Control::Application &app)
 	:m_app(app)

@@ -9,8 +9,10 @@ namespace Control
 
 class Application : public QObject
 {
+	Q_OBJECT;
+
 private:
-	Model::Path::List m_paths;
+	Model::Path::ListPtr m_paths;
 	Model::Task m_task;
 
 	QString m_currentFileName;

@@ -5,7 +5,7 @@
 namespace View
 {
 
-TaskListModel::TaskListModel(Model::Task& task, QObject *parent)
+TaskListModel::TaskListModel(Model::Task &task, QObject *parent)
 	:QAbstractListModel(parent),
 	m_task(task)
 {

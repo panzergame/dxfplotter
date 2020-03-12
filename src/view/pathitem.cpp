@@ -7,7 +7,7 @@ namespace View
 {
 
 static const QBrush normalBrush(QColor(255, 255, 255));
-static const QBrush selectBrush(QColor(255, 0, 255));
+static const QBrush selectBrush(QColor(80, 0, 255));
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
 
@@ -84,6 +84,20 @@ PathItem::PathItem(Model::Path *path)
 	setPen(normalPen);
 
 	setPath(paintPath());
+
+	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
+	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);
 }
+
+void PathItem::selected()
+{
+	setPen(selectPen);
+}
+
+void PathItem::deselected()
+{
+	setPen(normalPen);
+}
+
 
 }

@@ -47,17 +47,17 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="name">
        <property name="text">
         <string>TextLabel</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+      <widget class="QDoubleSpinBox" name="feedRate"/>
      </item>
      <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_2"/>
+      <widget class="QDoubleSpinBox" name="intensity"/>
      </item>
     </layout>
    </item>
