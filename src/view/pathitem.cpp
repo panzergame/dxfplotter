@@ -94,12 +94,15 @@ PathItem::PathItem(Model::Path *path)
 	m_shapePath(shapePath())
 {
 	setPen(normalPen);
-	setFlag(QGraphicsItem::ItemIsSelectable);
-// 	setFlag(QGraphicsItem::ItemClipsToShape);
 	setPath(m_shapePath);
 
 	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
 	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);
+}
+
+Model::Path *PathItem::path() const
+{
+	return m_path;
 }
 
 QPainterPath PathItem::shape() const

@@ -47,13 +47,32 @@ void Viewport::wheelEvent(QWheelEvent *event)
 
 void Viewport::mousePressEvent(QMouseEvent *event)
 {
-// 	const QPointF pos = mapToScene(event->pos());
-
-	/*QGraphicsItem *item = scene()->itemAt(pos, QTransform());
-	qInfo() << item;*/
-	qInfo() << items(event->pos());
+	if (event->buttons() & Qt::MiddleButton) {
+		m_lastMousePosition = event->pos();
+	}
 
 	QGraphicsView::mousePressEvent(event);
+}
+
+void Viewport::mouseMoveEvent(QMouseEvent *event)
+{
+	if (event->buttons() & Qt::MiddleButton) {
+		const QPoint pos = event->pos();
+		const QPointF delta = mapToScene(pos) - mapToScene(m_lastMousePosition);
+
+		// Disable anchor to avoid interferences
+		setTransformationAnchor(NoAnchor);
+
+		translate(delta.x(), delta.y());
+
+		// Restore anchor
+		setTransformationAnchor(AnchorUnderMouse);
+
+		m_lastMousePosition = pos;
+	}
+
+	// Forward event used for anchors
+	QGraphicsView::mouseMoveEvent(event);
 }
 
 void Viewport::selectionChanged()
@@ -67,13 +86,23 @@ Viewport::Viewport(Control::Application &app)
 	:QGraphicsView(new QGraphicsScene()),
 	m_app(app)
 {
-	//setDragMode(QGraphicsView::RubberBandDrag);
-	setResizeAnchor(QGraphicsView::AnchorUnderMouse);
-	setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+	// Almost infinte scene boundaries
+	setSceneRect(INT_MIN / 2, INT_MIN / 2, INT_MAX, INT_MAX);
+
+	// Disable dragging support
+	setDragMode(NoDrag);
+
+	// Anchor under mouse for zooming
+	setTransformationAnchor(AnchorUnderMouse);
+
 	setRenderHints(QPainter::Antialiasing);
 	setBackgroundBrush(View::backgroundBrush);
 
-	scale(1.0f, 1.0f);
+	// Hid scroll bars
+	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+	scale(1.0f, -1.0f);
 
 	connect(scene(), &QGraphicsScene::selectionChanged, this, &Viewport::selectionChanged);
 

@@ -14,6 +14,10 @@ class Viewport : public QGraphicsView
 {
 private:
 	Control::Application &m_app;
+	/// List of selected path.
+	Model::Path::ListPtr m_selectedPaths;
+	/// Last mouse position in scene.
+	QPoint m_lastMousePosition;
 
 	void setupPathItems();
 	void setupAxes();
@@ -22,6 +26,7 @@ private:
 protected Q_SLOTS:
 	void wheelEvent(QWheelEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
 	void selectionChanged();
 
 public:

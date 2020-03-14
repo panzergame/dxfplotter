@@ -22,6 +22,8 @@ private:
 
 public:
 	explicit PathItem(Model::Path *path);
+
+	Model::Path *path() const;
 	QPainterPath shape() const override;
 
 protected Q_SLOTS:
