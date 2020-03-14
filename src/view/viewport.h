@@ -22,6 +22,7 @@ private:
 protected Q_SLOTS:
 	void wheelEvent(QWheelEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
+	void selectionChanged();
 
 public:
 	explicit Viewport(Control::Application &app);

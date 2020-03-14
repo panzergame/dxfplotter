@@ -14,11 +14,15 @@ class PathItem : public QObject, public QGraphicsPathItem
 
 private:
 	Model::Path *m_path;
+	QPainterPath m_paintPath;
+	QPainterPath m_shapePath;
 
-	QPainterPath paintPath();
+	QPainterPath paintPath() const;
+	QPainterPath shapePath() const;
 
 public:
 	explicit PathItem(Model::Path *path);
+	QPainterPath shape() const override;
 
 protected Q_SLOTS:
 	void selected();

@@ -23,27 +23,6 @@ void Viewport::setupPathItems()
 	);
 }
 
-void Viewport::wheelEvent(QWheelEvent *event)
-{
-	constexpr float SCALE_STEP = 0.2f;
-
-	const float factor = 1.0f + ((event->delta() > 0) ? SCALE_STEP : -SCALE_STEP);
-
-	scale(factor, factor);
-
-	QGraphicsView::wheelEvent(event);
-}
-
-void Viewport::mousePressEvent(QMouseEvent *event)
-{
-	const QPointF pos = mapToScene(event->pos());
-
-	QGraphicsItem *item = scene()->itemAt(pos, QTransform());
-	qInfo() << item;
-
-	QGraphicsView::mousePressEvent(event);
-}
-
 void Viewport::setupAxes()
 {
 	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen);
@@ -55,15 +34,48 @@ void Viewport::setupHighlights()
 	setupAxes();
 }
 
+void Viewport::wheelEvent(QWheelEvent *event)
+{
+	constexpr float SCALE_STEP = 0.2f;
+
+	const float factor = 1.0f + ((event->delta() > 0) ? SCALE_STEP : -SCALE_STEP);
+
+	scale(factor, factor);
+
+	event->accept();
+}
+
+void Viewport::mousePressEvent(QMouseEvent *event)
+{
+// 	const QPointF pos = mapToScene(event->pos());
+
+	/*QGraphicsItem *item = scene()->itemAt(pos, QTransform());
+	qInfo() << item;*/
+	qInfo() << items(event->pos());
+
+	QGraphicsView::mousePressEvent(event);
+}
+
+void Viewport::selectionChanged()
+{
+	/*for (QGraphicsItem *item : scene()->selectedItems()) {
+		qInfo() << item;
+	}*/
+}
+
 Viewport::Viewport(Control::Application &app)
 	:QGraphicsView(new QGraphicsScene()),
 	m_app(app)
 {
-	setDragMode(QGraphicsView::ScrollHandDrag);
+	//setDragMode(QGraphicsView::RubberBandDrag);
+	setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+	setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 	setRenderHints(QPainter::Antialiasing);
 	setBackgroundBrush(View::backgroundBrush);
 
-	scale(1.0f, -1.0f);
+	scale(1.0f, 1.0f);
+
+	connect(scene(), &QGraphicsScene::selectionChanged, this, &Viewport::selectionChanged);
 
 	setupHighlights();
 

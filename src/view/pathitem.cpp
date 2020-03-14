@@ -65,7 +65,7 @@ public:
 	}
 };
 
-QPainterPath PathItem::paintPath()
+QPainterPath PathItem::paintPath() const
 {
 	const Geometry::Polyline &polyline = m_path->polyline();
 
@@ -77,16 +77,34 @@ QPainterPath PathItem::paintPath()
 	return painter;
 }
 
+QPainterPath PathItem::shapePath() const
+{
+	QPainterPathStroker stroker;
+	stroker.setWidth(2);
+	stroker.setCapStyle(Qt::RoundCap);
+	stroker.setJoinStyle(Qt::RoundJoin);
+
+	return stroker.createStroke(m_paintPath);
+}
+
 PathItem::PathItem(Model::Path *path)
 	:QGraphicsPathItem(QPainterPath()),
-	m_path(path)
+	m_path(path),
+	m_paintPath(paintPath()),
+	m_shapePath(shapePath())
 {
 	setPen(normalPen);
-
-	setPath(paintPath());
+	setFlag(QGraphicsItem::ItemIsSelectable);
+// 	setFlag(QGraphicsItem::ItemClipsToShape);
+	setPath(m_shapePath);
 
 	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
 	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);
+}
+
+QPainterPath PathItem::shape() const
+{
+	return m_shapePath;
 }
 
 void PathItem::selected()
