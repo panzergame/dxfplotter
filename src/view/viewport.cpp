@@ -13,7 +13,7 @@ static const QPen yAxisPen(yAxisBrush, 0);
 
 static const QBrush backgroundBrush(QColor(0, 0, 0));
 
-void Viewport::addPathItems()
+void Viewport::setupPathItems()
 {
 	m_app.task().forEachPath(
 		[scene = scene()](Model::Path *path) {
@@ -67,7 +67,7 @@ Viewport::Viewport(Control::Application &app)
 
 	setupHighlights();
 
-	addPathItems();
+	setupPathItems();
 }
 
 }

@@ -49,7 +49,7 @@ void Application::loadDxf(const QString &fileName)
 	Geometry::Assembler assembler(imp.polylines(), 0.001); // TODO tolerance
 	Geometry::Polyline::List polylines = assembler.mergedPolylines();
 
-	const Model::Path::Settings defaultPathSettings(120.0f); // TODO config extract
+	const Model::PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
 
 	m_paths = Model::PathsFromPolylines(std::move(polylines), defaultPathSettings);
 	m_task = Model::Task(m_paths);

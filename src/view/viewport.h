@@ -15,7 +15,7 @@ class Viewport : public QGraphicsView
 private:
 	Control::Application &m_app;
 
-	void addPathItems();
+	void setupPathItems();
 	void setupAxes();
 	void setupHighlights();
 

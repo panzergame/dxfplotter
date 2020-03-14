@@ -3,22 +3,7 @@
 namespace Model
 {
 
-Path::Settings::Settings(float feedRate)
-	:m_feedRate(feedRate)
-{
-}
-
-float Path::Settings::feedRate() const
-{
-	return m_feedRate;
-}
-
-void Path::Settings::setFeedRate(float feedRate)
-{
-	m_feedRate = feedRate;
-}
-
-Path::Path(Geometry::Polyline &&polyline, const std::string &name, const Settings &settings)
+Path::Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings &settings)
 	:m_polyline(polyline),
 	m_name(name),
 	m_settings(settings)
@@ -35,18 +20,33 @@ const std::string &Path::name() const
 	return m_name;
 }
 
-const Model::Path::Settings &Path::settings() const
+const Model::PathSettings &Path::settings() const
 {
 	return m_settings;
 }
 
-Path::List PathsFromPolylines(Geometry::Polyline::List &&polylines, const Path::Settings &settings)
+Model::PathSettings &Path::settings()
+{
+	return m_settings;
+}
+
+void Path::select()
+{
+	emit selected();
+}
+
+void Path::deselect()
+{
+	emit deselected();
+}
+
+Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings)
 {
 	const int size = polylines.size();
-	Path::List paths(size);
+	Path::ListPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
-		paths[i] = Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
+		paths[i] = new Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
 	}
 
 	return paths;

@@ -3,7 +3,7 @@
 namespace Exporter::GCode
 {
 
-PostProcessor::PostProcessor(const Model::Path::Settings &settings, std::stringstream &stream)
+PostProcessor::PostProcessor(const Model::PathSettings &settings, std::stringstream &stream)
 	:m_settings(settings),
 	m_stream(stream)
 {
@@ -11,7 +11,7 @@ PostProcessor::PostProcessor(const Model::Path::Settings &settings, std::strings
 
 void PostProcessor::laserOn()
 {
-	printLaser("M1");
+	printLaser("M1 {S}", "S"_a=m_settings.intensity());
 }
 
 void PostProcessor::laserOff()
