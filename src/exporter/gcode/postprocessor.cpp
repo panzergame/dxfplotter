@@ -3,7 +3,7 @@
 namespace Exporter::GCode
 {
 
-PostProcessor::PostProcessor(const Model::Path::Settings &settings, std::stringstream &stream)
+PostProcessor::PostProcessor(const Model::PathSettings &settings, std::stringstream &stream)
 	:m_settings(settings),
 	m_stream(stream)
 {

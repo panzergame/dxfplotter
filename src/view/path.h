@@ -2,7 +2,8 @@
 
 #include <ui_path.h>
 
-#include <control/application.h>
+#include <model/pathgroupsettings.h>
+#include <model/task.h>
 
 #include <QWidget>
 
@@ -12,12 +13,23 @@ namespace View
 class Path : public QWidget, private Ui::Path
 {
 private:
-	Control::Application &m_app;
+	Model::PathGroupSettings m_groupSettings;
 
-	void pathSelected(Model::Path *path);
+	void selectionChanged(int size);
+
+	template <typename T>
+	void updateValue(QDoubleSpinBox *field, std::optional<T> &&valueOpt)
+	{
+		if (valueOpt) {
+			field->setValue(*valueOpt);
+		}
+		else {
+			field->clear();
+		}
+	}
 
 public:
-	explicit Path(Control::Application &app);
+	explicit Path(const Model::Task &task);
 
 };
 

@@ -4,6 +4,8 @@
 
 #include <common/aggregable.h>
 
+#include <model/pathsettings.h>
+
 #include <string>
 
 #include <QObject>
@@ -15,35 +17,18 @@ class Path : public QObject, public Common::Aggregable<Path>
 {
 	Q_OBJECT;
 
-public:
-	class Settings
-	{
-	private:
-		float m_feedRate;
-		float m_intensity;
-
-	public:
-		explicit Settings() = default;
-		explicit Settings(float feedRate, float intensity);
-
-		float feedRate() const;
-		void setFeedRate(float feedRate);
-
-		float intensity() const;
-		void setIntensity(float intensity);
-	};
-
 private:
 	Geometry::Polyline m_polyline;
 	std::string m_name;
-	Settings m_settings;
+	PathSettings m_settings;
 
 public:
-	explicit Path(Geometry::Polyline &&polyline, const std::string &name, const Settings& settings);
+	explicit Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings& settings);
 
 	const Geometry::Polyline &polyline() const;
 	const std::string &name() const;
-	const Settings &settings() const;
+	const PathSettings &settings() const;
+	PathSettings &settings();
 
 	void select();
 	void deselect();
@@ -53,6 +38,6 @@ Q_SIGNALS:
 	void deselected();
 };
 
-Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const Path::Settings &settings); // TODO move in class
+Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings); // TODO move in class
 
 }

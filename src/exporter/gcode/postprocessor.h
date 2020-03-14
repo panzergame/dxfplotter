@@ -12,11 +12,11 @@ using namespace fmt::literals;
 class PostProcessor
 {
 private:
-	const Model::Path::Settings &m_settings;
+	const Model::PathSettings &m_settings;
 	std::stringstream &m_stream;
 
 public:
-	explicit PostProcessor(const Model::Path::Settings &settings, std::stringstream &stream);
+	explicit PostProcessor(const Model::PathSettings &settings, std::stringstream &stream);
 
 	template <class ...Args>
 	void print(const std::string &format, Args&& ...args)
