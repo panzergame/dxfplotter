@@ -40,13 +40,13 @@ public:
 		else {
 			const Geometry::Arc arc = bulge.toArc();
 
-			const float maxError = 0.01; // TODO const
+			const float maxError = 0.0001; // TODO const
 
 			const float radius = arc.radius();
 			const QVector2D &center = arc.center();
 
 			// Calculate the angle step to not exceed allowed error (distance from line to arc).
-			const float angleStep = std::fmax(std::acos(1.0f - maxError / radius) * 2.0f, 0.0001); // TODO const
+			const float angleStep = std::fmax(std::acos(1.0f - maxError) * 2.0f, maxError);
 
 			// Pass by starting point.
 			m_painter.lineTo(arc.start().toPointF());

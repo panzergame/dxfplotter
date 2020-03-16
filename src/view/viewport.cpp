@@ -175,11 +175,6 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
-void Viewport::showEvent(QShowEvent *event)
-{
-// 	fitInView(scene()->sceneRect(), Qt::KeepAspectRatioByExpanding);
-}
-
 Viewport::Viewport(Control::Application &app)
 	:QGraphicsView(new QGraphicsScene()),
 	m_app(app)
