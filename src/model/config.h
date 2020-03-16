@@ -33,7 +33,7 @@ public:
 private:
 	INI::File m_file;
 	Dxf m_dxf;
-// 	GcodeFormat m_gcodeFormat;
+	GcodeFormat m_gcodeFormat;
 
 public:
 	explicit Config();
@@ -42,7 +42,7 @@ public:
 	/// Dxf configuration variables
 	Dxf &dxf();
 	/// Gcode format configuration variables
-// 	GcodeFormat &gcodeFormat();
+	GcodeFormat &gcodeFormat();
 };
 
 }

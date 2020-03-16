@@ -2,6 +2,7 @@
 #include <geometry/assembler.h>
 
 #include <importer/dxf/importer.h>
+#include <exporter/gcode/exporter.h>
 
 #include <QMimeDatabase>
 #include <QDebug>
@@ -58,6 +59,12 @@ void Application::loadDxf(const QString &fileName)
 void Application::loadPlot(const QString &fileName)
 {
 	
+}
+
+void Application::exportToGcode(const QString &fileName)
+{
+	Exporter::GCode::Format format(m_config.gcodeFormat());
+	Exporter::GCode::Exporter exporter(m_task, format, qPrintable(fileName));
 }
 
 }

@@ -3,11 +3,9 @@
 #include <model/task.h>
 #include <model/config.h>
 
-#
-
 #include <QObject>
 
-namespace Control
+namespace Control // TODO move in model because it's near to Task/Path goal'
 {
 
 class Application : public QObject
@@ -30,6 +28,7 @@ public:
 	bool loadFile(const QString &fileName);
 	void loadDxf(const QString &fileName);
 	void loadPlot(const QString &fileName);
+	void exportToGcode(const QString &fileName);
 };
 
 }

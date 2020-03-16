@@ -11,7 +11,6 @@ set(SRC
 	pathsettings.h
 	pathgroupsettings.h
 	task.h
-	utils.h
 )
 
 add_library(model ${SRC})

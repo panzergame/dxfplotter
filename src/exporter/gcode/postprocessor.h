@@ -1,6 +1,8 @@
 #pragma once
 
 #include <model/path.h>
+#include <exporter/gcode/exporter.h>
+
 #include <fmt/format.h>
 #include <sstream>
 
@@ -13,10 +15,11 @@ class PostProcessor
 {
 private:
 	const Model::PathSettings &m_settings;
+	const Format &m_format;
 	std::stringstream &m_stream;
 
 public:
-	explicit PostProcessor(const Model::PathSettings &settings, std::stringstream &stream);
+	explicit PostProcessor(const Model::PathSettings &settings, const Format &format, std::stringstream &stream);
 
 	template <class ...Args>
 	void print(const std::string &format, Args&& ...args)
@@ -25,7 +28,7 @@ public:
 	}
 
 	template <class ...Args>
-	void printLaser(const std::string &format, Args&& ...args)
+	void printTool(const std::string &format, Args&& ...args)
 	{
 		print(format, std::forward<Args>(args)...);
 	}
@@ -36,8 +39,8 @@ public:
 		print(format, std::forward<Args>(args)..., "F"_a=m_settings.feedRate());
 	}
 
-	void laserOn();
-	void laserOff();
+	void toolOn();
+	void toolOff();
 	void linearMove(const QVector2D &to);
 	void fastMove(const QVector2D &to);
 	void cwArc(const QVector2D &relativeCenter, const QVector2D &to);
