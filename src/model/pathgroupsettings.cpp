@@ -14,9 +14,9 @@ void PathGroupSettings::pathSelected(Path *path)
 
 void PathGroupSettings::pathDeselected(Path *path)
 {
-	Path::ListPtr::const_iterator it = std::find(m_selectedPaths.begin(), m_selectedPaths.end(), path);
+	Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
 
-	assert(it != m_selectedPaths.end());
+	assert(it != m_selectedPaths.cend());
 
 
 	m_selectedPaths.erase(it);

@@ -32,14 +32,13 @@ private:
 
 	void startRubberBand(const QPoint &mousePos);
 	void updateRubberBand(const QPoint &mousePos);
-	void endRubberBand(const QPoint &mousePos);
+	void endRubberBand(const QPoint &mousePos, bool addToSelection);
 
 protected Q_SLOTS:
 	void wheelEvent(QWheelEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
-	void selectionChanged();
 
 public:
 	explicit Viewport(Control::Application &app);

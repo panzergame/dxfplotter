@@ -93,6 +93,7 @@ QPainterPath PathItem::shapePath() const
 PathItem::PathItem(Model::Path *path)
 	:QGraphicsPathItem(QPainterPath()),
 	m_path(path),
+	m_outsideSelectionBlocked(false),
 	m_paintPath(paintPath()),
 	m_shapePath(shapePath())
 {
@@ -129,14 +130,34 @@ QPainterPath PathItem::shape() const
 	return m_shapePath;
 }
 
+QVariant PathItem::itemChange(GraphicsItemChange change, const QVariant &value)
+{
+	if (change & ItemSelectedChange) {
+		m_outsideSelectionBlocked = true;
+		if (isSelected()) {
+			m_path->select();
+		}
+		else {
+			m_path->deselect();
+		}
+		m_outsideSelectionBlocked = false;
+	}
+
+	return QGraphicsItem::itemChange(change, value);
+}
+
 void PathItem::selected()
 {
-	setSelected(true);
+	if (!m_outsideSelectionBlocked) {
+		setSelected(true);
+	}
 }
 
 void PathItem::deselected()
 {
-	setSelected(false);
+	if (!m_outsideSelectionBlocked) {
+		setSelected(false);
+	}
 }
 
 

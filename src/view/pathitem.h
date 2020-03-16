@@ -14,6 +14,8 @@ class PathItem : public QObject, public QGraphicsPathItem
 
 private:
 	Model::Path *m_path;
+	bool m_outsideSelectionBlocked;
+
 	QPainterPath m_paintPath;
 	QPainterPath m_shapePath;
 
@@ -29,6 +31,7 @@ public:
 	QPainterPath shape() const override;
 
 protected Q_SLOTS:
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 	void selected();
 	void deselected();
 };

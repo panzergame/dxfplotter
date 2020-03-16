@@ -1,5 +1,7 @@
 #include <task.h>
 
+#include <iterator>
+
 namespace Model
 {
 
@@ -23,6 +25,15 @@ Path *Task::pathAt(int index) const
 {
 	assert(0 <= index && index < count());
 	return m_stack[index];
+}
+
+int Task::indexFor(Path *path) const
+{
+	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), path);
+
+	assert(it != m_stack.cend());
+
+	return std::distance(m_stack.cbegin(), it);
 }
 
 }

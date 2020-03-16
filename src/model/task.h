@@ -17,6 +17,7 @@ public:
 
 	int count() const;
 	Path *pathAt(int index) const;
+	int indexFor(Path *path) const;
 
 	template <class Functor>
 	void forEachPath(Functor &&functor) const

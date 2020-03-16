@@ -68,34 +68,40 @@ void Viewport::updateRubberBand(const QPoint &mousePos)
 	m_rubberBand.update(mousePos, mapToScene(mousePos));
 }
 
-void Viewport::endRubberBand(const QPoint &mousePos)
+void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 {
 	m_rubberBand.end(mousePos, mapToScene(mousePos));
 
-	QList<QGraphicsItem *> selectedItems;
-
+	// Point selection
 	if (m_rubberBand.empty(rubberBandTolerance)) {
-		// Selection area
-		/*const QRect rect(mousePos - pointSelectionRectExtend, mousePos + pointSelectionRectExtend);
+		// Fake selection area
+		const QRect rect(mousePos - pointSelectionRectExtend, mousePos + pointSelectionRectExtend);
 
+		// Find items in fake selection area
 		const QList<QGraphicsItem *> items = QGraphicsView::items(rect);
 		if (!items.empty()) {
-			selectedItems.push_back(items.front());
-		}*/
+			// Obtain only the first item.
+			QGraphicsItem *item = items.front();
+
+			if (!addToSelection) {
+				// Clear all and select one in replacive selection
+				scene()->clearSelection();
+				item->setSelected(true);
+			}
+			else {
+				// Toggle selection in additive selection
+				item->setSelected(!item->isSelected());
+			}
+		}
 	}
+	// Area selection
 	else {
+		// Create a path with selection area
 		QPainterPath path;
 		path.addRect(m_rubberBand.rect());
-		scene()->setSelectionArea(path);
-		qInfo() << "selection area";
-		//selectedItems = scene()->items(m_rubberBand.rect());
-	}
 
-	/*qInfo() << selectedItems;
-	for (QGraphicsItem *item : selectedItems) {
-		PathItem *pathItem = static_cast<PathItem *>(item);
-		pathItem->path()->toggleSelect();
-	}*/
+		scene()->setSelectionArea(path, addToSelection ? Qt::AddToSelection : Qt::ReplaceSelection);
+	}
 }
 
 void Viewport::wheelEvent(QWheelEvent *event)
@@ -141,7 +147,8 @@ void Viewport::mouseReleaseEvent(QMouseEvent *event)
 	switch (event->button()) {
 		case Qt::LeftButton:
 		{
-			endRubberBand(mousePos);
+			const bool addToSelection = event->modifiers() & Qt::ControlModifier;
+			endRubberBand(mousePos, addToSelection);
 			break;
 		}
 		default:
@@ -168,11 +175,6 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 
 	// Forward event used for anchors
 	QGraphicsView::mouseMoveEvent(event);
-}
-
-void Viewport::selectionChanged()
-{
-	qInfo() << scene()->selectedItems();
 }
 
 Viewport::Viewport(Control::Application &app)
@@ -204,8 +206,6 @@ Viewport::Viewport(Control::Application &app)
 	setupHighlights();
 
 	setupPathItems();
-
-	connect(scene(), &QGraphicsScene::selectionChanged, this, &Viewport::selectionChanged);
 }
 
 }
