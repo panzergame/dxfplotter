@@ -31,12 +31,13 @@ public:
 	};
 
 private:
+	std::string m_filePath;
 	INI::File m_file;
 	Dxf m_dxf;
 	GcodeFormat m_gcodeFormat;
 
 public:
-	explicit Config();
+	explicit Config(const std::string &filePath);
 	~Config();
 
 	/// Dxf configuration variables

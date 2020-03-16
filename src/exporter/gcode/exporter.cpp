@@ -6,8 +6,6 @@
 namespace Exporter::GCode
 {
 
-
-
 void Exporter::convertToGCode(const Model::Task *task)
 {
 	task->forEachPath([this](Model::Path *path){ convertToGCode(path); });

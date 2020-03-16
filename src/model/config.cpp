@@ -23,8 +23,9 @@ Config::GcodeFormat::GcodeFormat(INI::Section *section)
 {
 }
 
-Config::Config()
-	:m_file("settings.ini"),
+Config::Config(const std::string &filePath)
+	:m_filePath(filePath),
+	m_file(m_filePath),
 	m_dxf(m_file.GetSection("Dxf")),
 	m_gcodeFormat(m_file.GetSection("Gcode"))
 {
@@ -32,7 +33,7 @@ Config::Config()
 
 Config::~Config()
 {
-	m_file.Save("settings.ini"); // TODO path
+	m_file.Save(m_filePath);
 }
 
 Config::Dxf &Config::dxf()

@@ -5,12 +5,32 @@
 #include <exporter/gcode/exporter.h>
 
 #include <QMimeDatabase>
+#include <QStandardPaths>
+#include <QDir>
 #include <QDebug>
 
 namespace Control
 {
 
+static const QString configFileName = "config.ini";
+
+/** Retrieves application config file path
+ * @return config file path
+ */
+static std::string configFilePath()
+{
+	const QDir dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+
+	// Ensure the path exists
+	dir.mkpath(".");
+
+	const QString path = dir.filePath(configFileName);
+
+	return path.toStdString();
+}
+
 Application::Application(const QString &fileName)
+	:m_config(configFilePath())
 {
 	if (!fileName.isEmpty()) {
 		if (!loadFile(fileName)) {
@@ -45,7 +65,7 @@ bool Application::loadFile(const QString &fileName)
 void Application::loadDxf(const QString &fileName)
 {
 	// Import data
-	Importer::Dxf::Importer imp(qPrintable(fileName));
+	Importer::Dxf::Importer imp(fileName.toStdString());
 	// Merge polylines to create longest contours
 	Geometry::Assembler assembler(imp.polylines(), m_config.dxf().assembleTolerance);
 	Geometry::Polyline::List polylines = assembler.mergedPolylines();
@@ -63,8 +83,10 @@ void Application::loadPlot(const QString &fileName)
 
 void Application::exportToGcode(const QString &fileName)
 {
+	// Copy gcode format from config file
 	Exporter::GCode::Format format(m_config.gcodeFormat());
-	Exporter::GCode::Exporter exporter(m_task, format, qPrintable(fileName));
+
+	Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
 }
 
 }

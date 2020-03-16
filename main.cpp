@@ -8,6 +8,8 @@
 int main(int argc, char *argv[])
 {
 	QApplication qapp(argc, argv);
+	qapp.setApplicationName("dxfplotter");
+	qapp.setApplicationDisplayName("dxfplotter");
 
 	QCommandLineParser parser;
 	parser.addPositionalArgument("file", "input file");
