@@ -18,7 +18,7 @@ Application::Application(const QString &fileName)
 	}
 }
 
-Model::Task &Application::task()
+Model::Task *Application::task()
 {
 	return m_task;
 }
@@ -52,7 +52,7 @@ void Application::loadDxf(const QString &fileName)
 	const Model::PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
 
 	m_paths = Model::PathsFromPolylines(std::move(polylines), defaultPathSettings);
-	m_task = Model::Task(m_paths);
+	m_task = new Model::Task(this, m_paths);
 }
 
 void Application::loadPlot(const QString &fileName)

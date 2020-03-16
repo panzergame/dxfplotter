@@ -6,7 +6,8 @@ namespace Model
 Path::Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings &settings)
 	:m_polyline(polyline),
 	m_name(name),
-	m_settings(settings)
+	m_settings(settings),
+	m_selected(false)
 {
 }
 
@@ -32,12 +33,30 @@ Model::PathSettings &Path::settings()
 
 void Path::select()
 {
-	emit selected();
+	if (!m_selected) {
+		m_selected = true;
+
+		emit selected();
+	}
 }
 
 void Path::deselect()
 {
-	emit deselected();
+	if (m_selected) {
+		m_selected = false;
+
+		emit deselected();
+	}
+}
+
+void Path::toggleSelect()
+{
+	if (m_selected) {
+		deselect();
+	}
+	else {
+		select();
+	}
 }
 
 Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings)

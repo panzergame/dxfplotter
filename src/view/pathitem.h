@@ -23,6 +23,8 @@ private:
 public:
 	explicit PathItem(Model::Path *path);
 
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
 	Model::Path *path() const;
 	QPainterPath shape() const override;
 

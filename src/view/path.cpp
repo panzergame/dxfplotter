@@ -3,7 +3,7 @@
 namespace View
 {
 
-Path::Path(const Model::Task &task)
+Path::Path(const Model::Task *task)
 	:m_groupSettings(task)
 {
 	setupUi(this);

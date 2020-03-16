@@ -13,7 +13,7 @@ namespace View
 
 QWidget *MainWindow::setupLeftPanel()
 {
-	Task *task = new Task(m_app);
+	Task *task = new Task(m_app.task());
 	Path *path = new Path(m_app.task());
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);

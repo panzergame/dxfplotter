@@ -1,12 +1,15 @@
 #include <pathitem.h>
 #include <geometry/arc.h>
+
 #include <QtMath>
+#include <QStyleOptionGraphicsItem>
+#include <QPainter>
 #include <QDebug>
 
 namespace View
 {
 
-static const QBrush normalBrush(QColor(255, 255, 255));
+static const QBrush normalBrush(Qt::white);
 static const QBrush selectBrush(QColor(80, 0, 255));
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
@@ -80,7 +83,7 @@ QPainterPath PathItem::paintPath() const
 QPainterPath PathItem::shapePath() const
 {
 	QPainterPathStroker stroker;
-	stroker.setWidth(2);
+	stroker.setWidth(0.001f); // TODO const or config
 	stroker.setCapStyle(Qt::RoundCap);
 	stroker.setJoinStyle(Qt::RoundJoin);
 
@@ -94,10 +97,26 @@ PathItem::PathItem(Model::Path *path)
 	m_shapePath(shapePath())
 {
 	setPen(normalPen);
-	setPath(m_shapePath);
+	setPath(m_paintPath);
+	setFlag(ItemIsSelectable);
 
 	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
 	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);
+}
+
+void PathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+	QStyleOptionGraphicsItem fixedOption(*option);
+
+	if (fixedOption.state & QStyle::State_Selected) {
+		fixedOption.state &= ~QStyle::State_Selected;
+		setPen(selectPen);
+	}
+	else {
+		setPen(normalPen);
+	}
+
+    QGraphicsPathItem::paint(painter, &fixedOption, widget);
 }
 
 Model::Path *PathItem::path() const
@@ -112,12 +131,12 @@ QPainterPath PathItem::shape() const
 
 void PathItem::selected()
 {
-	setPen(selectPen);
+	setSelected(true);
 }
 
 void PathItem::deselected()
 {
-	setPen(normalPen);
+	setSelected(false);
 }
 
 

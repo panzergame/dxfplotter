@@ -5,14 +5,15 @@
 namespace Model
 {
 
-class Task
+class Task : public QObject
 {
+	Q_OBJECT;
+
 private:
 	Path::ListPtr m_stack;
 
 public:
-	Task() = default;
-	explicit Task(const Path::ListPtr &paths);
+	explicit Task(QObject *parent, const Path::ListPtr &paths);
 
 	int count() const;
 	Path *pathAt(int index) const;
@@ -24,6 +25,10 @@ public:
 			functor(path);
 		}
 	}
+
+Q_SIGNALS:
+	void pathSelected(Path *path);
+	void pathDeselected(Path *path);
 };
 
 }

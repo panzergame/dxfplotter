@@ -11,13 +11,10 @@ namespace Model
 
 class PathGroupSettings : public QObject
 {
-Q_OBJECT;
+	Q_OBJECT;
 
 private:
 	Path::ListPtr m_selectedPaths;
-
-	void pathSelected(Path *path);
-	void pathDeselected(Path *path);
 
 	/** Return value of a path settings property if all path have
 	 * the same value for the given property.
@@ -54,8 +51,12 @@ private:
 		}
 	}
 
+protected Q_SLOTS:
+	void pathSelected(Path *path);
+	void pathDeselected(Path *path);
+
 public:
-	explicit PathGroupSettings(const Task &task);
+	explicit PathGroupSettings(const Task *task);
 
 	std::optional<float> feedRate() const;
 	void setFeedRate(float feedRate);

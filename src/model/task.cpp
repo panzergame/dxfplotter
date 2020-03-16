@@ -3,9 +3,15 @@
 namespace Model
 {
 
-Task::Task(const Path::ListPtr &paths)
-	:m_stack(paths)
+Task::Task(QObject *parent, const Path::ListPtr &paths)
+	:QObject(parent),
+	m_stack(paths)
 {
+	// Register selection/deselection on all paths.
+	forEachPath([this](Path *path) {
+		connect(path, &Path::selected, this, [this, path](){ emit pathSelected(path); });
+		connect(path, &Path::deselected, this, [this, path](){ emit pathDeselected(path); });
+	});
 }
 
 int Task::count() const

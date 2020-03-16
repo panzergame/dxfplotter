@@ -2,6 +2,7 @@ set(SRC
 	mainwindow.cpp
 	path.cpp
 	pathitem.cpp
+	rubberband.cpp
 	task.cpp
 	tasklistmodel.cpp
 	viewport.cpp
@@ -9,6 +10,7 @@ set(SRC
 	mainwindow.h
 	path.h
 	pathitem.h
+	rubberband.h
 	task.h
 	tasklistmodel.h
 	viewport.h
