@@ -14,10 +14,10 @@ class TaskListModel : public QAbstractListModel
     Q_OBJECT
 
 private:
-	Model::Task &m_task;
+	const Model::Task *m_task;
 
 public:
-	explicit TaskListModel(Model::Task &task, QObject *parent);
+	explicit TaskListModel(const Model::Task *task, QObject *parent);
 
 	virtual QVariant data(const QModelIndex &index, int role) const override;
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role=Qt::DisplayRole) const override;

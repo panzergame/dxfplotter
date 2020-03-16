@@ -1,5 +1,7 @@
 #include <pathgroupsettings.h>
 
+#include <QDebug> // TODO
+
 namespace Model
 {
 
@@ -12,22 +14,20 @@ void PathGroupSettings::pathSelected(Path *path)
 
 void PathGroupSettings::pathDeselected(Path *path)
 {
-	Path::ListPtr::const_iterator it = std::find(m_selectedPaths.begin(), m_selectedPaths.end(), path);
+	Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
 
-	assert(it != m_selectedPaths.end());
+	assert(it != m_selectedPaths.cend());
+
 
 	m_selectedPaths.erase(it);
 
 	emit selectionChanged(m_selectedPaths.size());
 }
 
-PathGroupSettings::PathGroupSettings(const Task &task)
+PathGroupSettings::PathGroupSettings(const Task *task)
 {
-	// Register selection/deselection on all paths.
-	task.forEachPath([this](Path *path) {
-		connect(path, &Path::selected, this, [this, path](){ pathSelected(path); });
-		connect(path, &Path::deselected, this, [this, path](){ pathDeselected(path); });
-	});
+	connect(task, &Task::pathSelected, this, &PathGroupSettings::pathSelected);
+	connect(task, &Task::pathDeselected, this, &PathGroupSettings::pathDeselected);
 }
 
 std::optional<float> PathGroupSettings::feedRate() const

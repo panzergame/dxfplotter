@@ -21,6 +21,7 @@ private:
 	Geometry::Polyline m_polyline;
 	std::string m_name;
 	PathSettings m_settings;
+	bool m_selected;
 
 public:
 	explicit Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings& settings);
@@ -32,6 +33,7 @@ public:
 
 	void select();
 	void deselect();
+	void toggleSelect();
 
 Q_SIGNALS:
 	void selected();

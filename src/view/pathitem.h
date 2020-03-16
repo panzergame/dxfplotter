@@ -14,13 +14,24 @@ class PathItem : public QObject, public QGraphicsPathItem
 
 private:
 	Model::Path *m_path;
+	bool m_outsideSelectionBlocked;
 
-	QPainterPath paintPath();
+	QPainterPath m_paintPath;
+	QPainterPath m_shapePath;
+
+	QPainterPath paintPath() const;
+	QPainterPath shapePath() const;
 
 public:
 	explicit PathItem(Model::Path *path);
 
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+
+	Model::Path *path() const;
+	QPainterPath shape() const override;
+
 protected Q_SLOTS:
+	QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 	void selected();
 	void deselected();
 };

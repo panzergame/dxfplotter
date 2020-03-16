@@ -29,7 +29,7 @@ private:
 	}
 
 public:
-	explicit Path(const Model::Task &task);
+	explicit Path(const Model::Task *task);
 
 };
 

@@ -5,7 +5,7 @@
 namespace View
 {
 
-TaskListModel::TaskListModel(Model::Task &task, QObject *parent)
+TaskListModel::TaskListModel(const Model::Task *task, QObject *parent)
 	:QAbstractListModel(parent),
 	m_task(task)
 {
@@ -15,7 +15,7 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DisplayRole) {
 		if (index.isValid()) {
-			Model::Path *path = m_task.pathAt(index.row());
+			Model::Path *path = m_task->pathAt(index.row());
 			return QString::fromStdString(path->name());
 		}
 
@@ -36,7 +36,7 @@ QVariant TaskListModel::headerData(int section, Qt::Orientation orientation, int
 
 int TaskListModel::rowCount(const QModelIndex& parent) const
 {
-	return m_task.count();
+	return m_task->count();
 }
 
 }
