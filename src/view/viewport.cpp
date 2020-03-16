@@ -136,7 +136,6 @@ void Viewport::mousePressEvent(QMouseEvent *event)
 		}
 	}
 
-// 	QGraphicsView::mousePressEvent(event);
 	event->accept();
 }
 
@@ -157,7 +156,6 @@ void Viewport::mouseReleaseEvent(QMouseEvent *event)
 		}
 	}
 
-// 	QGraphicsView::mouseReleaseEvent(event);
 	event->accept();
 }
 
@@ -177,21 +175,22 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
+void Viewport::showEvent(QShowEvent *event)
+{
+// 	fitInView(scene()->sceneRect(), Qt::KeepAspectRatioByExpanding);
+}
+
 Viewport::Viewport(Control::Application &app)
 	:QGraphicsView(new QGraphicsScene()),
 	m_app(app)
 {
 	scene()->addItem(&m_rubberBand);
 
-	setViewportUpdateMode(FullViewportUpdate);
-
-	// Almost infinte scene boundaries
-	setSceneRect(INT_MIN / 2, INT_MIN / 2, INT_MAX, INT_MAX);
-
 	// Disable dragging support
 	setDragMode(NoDrag);
 
 	// Anchor under mouse for zooming
+	setResizeAnchor(NoAnchor);
 	setTransformationAnchor(AnchorUnderMouse);
 
 	setRenderHints(QPainter::Antialiasing);
@@ -206,6 +205,16 @@ Viewport::Viewport(Control::Application &app)
 	setupHighlights();
 
 	setupPathItems();
+
+	// Fit scene in view
+	const QRectF sceneRect = scene()->sceneRect();
+	qInfo() << sceneRect;
+
+	// Triple de scene boundaries
+	/*const QRectF extendedSceneRect = sceneRect.adjusted(-sceneRect.width() * 10.0f, -sceneRect.height() * 10.0f, sceneRect.width() * 10.0f, sceneRect.height() * 10.0f);
+	setSceneRect(extendedSceneRect);*/
+
+	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 
 }
