@@ -38,7 +38,6 @@ set(LINK_LIBRARIES
 	Qt5::Widgets
 	Qt5::Gui
 	view
-	control
 	model
 	dxf
 	gcode

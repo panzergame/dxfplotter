@@ -2,8 +2,6 @@
 
 #include <model/task.h>
 
-#include <control/application.h>
-
 #include <QAbstractItemModel>
 
 namespace View

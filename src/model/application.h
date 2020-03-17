@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-namespace Control // TODO move in model because it's near to Task/Path goal'
+namespace Model
 {
 
 class Application : public QObject
@@ -13,10 +13,10 @@ class Application : public QObject
 	Q_OBJECT;
 
 private:
-	Model::Config m_config;
+	Config m_config;
 
-	Model::Path::ListPtr m_paths; // TODO parent destruct
-	Model::Task *m_task;
+	Path::ListPtr m_paths; // TODO parent destruct
+	Task *m_task;
 
 	QString m_currentFileName;
 

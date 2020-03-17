@@ -1,6 +1,6 @@
 #include <ui_mainwindow.h>
 #include <view/mainwindow.h>
-#include <control/application.h>
+#include <model/application.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
 
 	const QString fileName = parser.positionalArguments().value(0, "");
 
-	Control::Application app(fileName);
+	Model::Application app(fileName);
 
 	View::MainWindow window(app);
 

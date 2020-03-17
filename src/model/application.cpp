@@ -11,7 +11,7 @@
 #include <QDir>
 #include <QDebug>
 
-namespace Control
+namespace Model
 {
 
 static const QString configFileName = "config.ini";
@@ -41,7 +41,7 @@ Application::Application(const QString &fileName)
 	}
 }
 
-Model::Task *Application::task()
+Task *Application::task()
 {
 	return m_task;
 }
@@ -80,10 +80,10 @@ bool Application::loadDxf(const QString &fileName)
 	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance);
 	Geometry::Polyline::List mergedPolylines = assembler.mergedPolylines();
 
-	const Model::PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
+	const PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
 
-	m_paths = Model::Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings);
-	m_task = new Model::Task(this, m_paths);
+	m_paths = Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings);
+	m_task = new Task(this, m_paths);
 
 	return true;
 }

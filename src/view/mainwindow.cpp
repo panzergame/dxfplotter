@@ -44,7 +44,7 @@ void MainWindow::setupUi()
 	horizontalLayout->addWidget(horiSplitter);
 }
 
-MainWindow::MainWindow(Control::Application &app)
+MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
 	setupUi();

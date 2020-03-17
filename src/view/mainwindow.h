@@ -1,6 +1,6 @@
 #pragma once
 
-#include <control/application.h>
+#include <model/application.h>
 
 #include <ui_mainwindow.h>
 
@@ -15,14 +15,14 @@ class Viewport;
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	Control::Application &m_app;
+	Model::Application &m_app;
 
 	QWidget *setupLeftPanel();
 	QWidget *setupCenterPanel();
 	void setupUi();
 
 public:
-	explicit MainWindow(Control::Application &app);
+	explicit MainWindow(Model::Application &app);
 
 protected Q_SLOTS:
 	void openFile();

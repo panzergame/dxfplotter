@@ -1,4 +1,4 @@
-#include <control/application.h>
+#include <model/application.h>
 
 #include <QStandardPaths>
 #include <QDebug>
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");
 
-	Control::Application app(argv[1]);
+	Model::Application app(argv[1]);
 
 	app.exportToGcode("");
 }
