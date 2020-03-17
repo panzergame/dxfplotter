@@ -19,7 +19,7 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 
 void Viewport::setupPathItems()
 {
-	m_app.task()->forEachPath(
+	m_task->forEachPath(
 		[scene = scene()](Model::Path *path) {
 			PathItem *item = new PathItem(path);
 			scene->addItem(item);
@@ -175,9 +175,9 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
-Viewport::Viewport(Control::Application &app)
+Viewport::Viewport(Model::Task *task)
 	:QGraphicsView(new QGraphicsScene()),
-	m_app(app)
+	m_task(task)
 {
 	scene()->addItem(&m_rubberBand);
 
@@ -203,12 +203,6 @@ Viewport::Viewport(Control::Application &app)
 
 	// Fit scene in view
 	const QRectF sceneRect = scene()->sceneRect();
-	qInfo() << sceneRect;
-
-	// Triple de scene boundaries
-	/*const QRectF extendedSceneRect = sceneRect.adjusted(-sceneRect.width() * 10.0f, -sceneRect.height() * 10.0f, sceneRect.width() * 10.0f, sceneRect.height() * 10.0f);
-	setSceneRect(extendedSceneRect);*/
-
 	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 

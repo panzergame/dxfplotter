@@ -27,7 +27,7 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	Viewport *viewport = new Viewport(m_app);
+	Viewport *viewport = new Viewport(m_app.task());
 	return viewport;
 }
 

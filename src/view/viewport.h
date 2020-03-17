@@ -1,6 +1,6 @@
 #pragma once
 
-#include <control/application.h>
+#include <model/task.h>
 
 #include <view/rubberband.h>
 
@@ -15,9 +15,7 @@ namespace View
 class Viewport : public QGraphicsView
 {
 private:
-	Control::Application &m_app;
-	/// List of selected path.
-	Model::Path::ListPtr m_selectedPaths;
+	Model::Task *m_task;
 	/// Last mouse position in scene.
 	QPoint m_lastMousePosition;
 
@@ -41,7 +39,7 @@ protected Q_SLOTS:
 	void mouseMoveEvent(QMouseEvent *event) override;
 
 public:
-	explicit Viewport(Control::Application &app);
+	explicit Viewport(Model::Task *task);
 };
 
 }
