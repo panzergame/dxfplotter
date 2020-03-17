@@ -11,7 +11,7 @@ public:
 	class Dxf
 	{
 	public:
-		ConfigVariable<float> splinePrecision;
+		ConfigVariable<float> splineToArcPrecision;
 		ConfigVariable<float> assembleTolerance;
 
 		explicit Dxf(INI::Section *section);

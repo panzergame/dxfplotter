@@ -28,7 +28,7 @@ public:
 	bool loadFile(const QString &fileName);
 	void loadDxf(const QString &fileName);
 	void loadPlot(const QString &fileName);
-	void exportToGcode(const QString &fileName);
+	bool exportToGcode(const QString &fileName);
 };
 
 }

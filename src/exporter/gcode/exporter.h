@@ -4,7 +4,7 @@
 
 #include <exporter/gcode/format.h>
 
-#include <sstream>
+#include <fstream>
 
 namespace Exporter::GCode
 {
@@ -14,7 +14,7 @@ class PostProcessor;
 class Exporter
 {
 private:
-	std::stringstream m_fileContent;
+	std::ofstream m_file;
 	Format m_format;
 
 	void convertToGCode(const Model::Task *task);
@@ -24,6 +24,9 @@ private:
 
 public:
 	explicit Exporter(const Model::Task *task, const Format& format, const std::string &filename);
+	~Exporter() = default;
+
+	bool failed() const;
 };
 
 }

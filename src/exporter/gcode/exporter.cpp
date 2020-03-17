@@ -1,8 +1,6 @@
 #include <exporter.h>
 #include <postprocessor.h>
 
-#include <iostream> // TODO
-
 namespace Exporter::GCode
 {
 
@@ -13,7 +11,7 @@ void Exporter::convertToGCode(const Model::Task *task)
 
 void Exporter::convertToGCode(const Model::Path *path)
 {
-	PostProcessor processor(path->settings(), m_format, m_fileContent);
+	PostProcessor processor(path->settings(), m_format, m_file);
 	convertToGCode(processor, path->polyline());
 }
 
@@ -52,10 +50,17 @@ void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Bulge &b
 }
 
 Exporter::Exporter(const Model::Task *task, const Format &format, const std::string &filename)
-	:m_format(format)
+	:m_file(filename),
+	m_format(format)
 {
-	convertToGCode(task);
-	std::cout << m_fileContent.str();
+	if (!failed()) {
+		convertToGCode(task);
+	}
+}
+
+bool Exporter::failed() const
+{
+	return !m_file;
 }
 
 }

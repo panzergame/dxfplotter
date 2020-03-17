@@ -65,7 +65,7 @@ bool Application::loadFile(const QString &fileName)
 void Application::loadDxf(const QString &fileName)
 {
 	// Import data
-	Importer::Dxf::Importer imp(fileName.toStdString());
+	Importer::Dxf::Importer imp(fileName.toStdString()); // TODO check error
 	// Merge polylines to create longest contours
 	Geometry::Assembler assembler(imp.polylines(), m_config.dxf().assembleTolerance);
 	Geometry::Polyline::List polylines = assembler.mergedPolylines();
@@ -81,12 +81,14 @@ void Application::loadPlot(const QString &fileName)
 	
 }
 
-void Application::exportToGcode(const QString &fileName)
+bool Application::exportToGcode(const QString &fileName)
 {
 	// Copy gcode format from config file
 	Exporter::GCode::Format format(m_config.gcodeFormat());
 
 	Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
+
+	return !exporter.failed();
 }
 
 }

@@ -52,6 +52,7 @@ MainWindow::MainWindow(Control::Application &app)
 	showMaximized();
 
 	connect(actionOpen, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionExport, &QAction::triggered, this, &MainWindow::exportFile);
 }
 
 void MainWindow::openFile()
@@ -64,5 +65,18 @@ void MainWindow::openFile()
 		}
 	}
 }
+
+void MainWindow::exportFile()
+{
+	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", "", "Text files (*.ngc *.txt)");
+
+	if (!fileName.isEmpty()) {
+		if (!m_app.exportToGcode(fileName)) {
+			QMessageBox messageBox;
+			messageBox.critical(this, "Error", "Couldn't save " + fileName);
+		}
+	}
+}
+
 
 }

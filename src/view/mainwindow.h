@@ -26,6 +26,7 @@ public:
 
 protected Q_SLOTS:
 	void openFile();
+	void exportFile();
 };
 
 }

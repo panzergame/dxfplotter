@@ -20,7 +20,7 @@
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
      <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
      </property>
      <property name="formAlignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

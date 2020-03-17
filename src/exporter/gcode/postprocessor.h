@@ -16,10 +16,10 @@ class PostProcessor
 private:
 	const Model::PathSettings &m_settings;
 	const Format &m_format;
-	std::stringstream &m_stream;
+	std::ostream &m_stream;
 
 public:
-	explicit PostProcessor(const Model::PathSettings &settings, const Format &format, std::stringstream &stream);
+	explicit PostProcessor(const Model::PathSettings &settings, const Format &format, std::ostream &stream);
 
 	template <class ...Args>
 	void print(const std::string &format, Args&& ...args)

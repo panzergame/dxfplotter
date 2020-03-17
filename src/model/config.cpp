@@ -8,7 +8,7 @@ namespace Model
 {
 
 Config::Dxf::Dxf(INI::Section *section)
-	:splinePrecision("spline_precision", 0.001, section),
+	:splineToArcPrecision("spline_to_arc_precision", 0.001, section),
 	assembleTolerance("assemble_tolerance", 0.001, section)
 {
 }
