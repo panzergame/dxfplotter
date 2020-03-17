@@ -1,7 +1,7 @@
 #pragma once
 
 #include <model/task.h>
-#include <model/config.h>
+#include <config/config.h>
 
 #include <QObject>
 
@@ -13,7 +13,7 @@ class Application : public QObject
 	Q_OBJECT;
 
 private:
-	Config m_config;
+	Config::Config m_config;
 
 	Path::ListPtr m_paths; // TODO parent destruct
 	Task *m_task;

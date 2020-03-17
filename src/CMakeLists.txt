@@ -1,4 +1,5 @@
 add_subdirectory(common)
+add_subdirectory(config)
 add_subdirectory(exporter)
 add_subdirectory(geometry)
 add_subdirectory(importer)

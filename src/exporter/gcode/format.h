@@ -1,6 +1,6 @@
 #pragma once
 
-#include <model/config.h> // TODO move config in model/config/
+#include <config/config.h> // TODO move config in config/config/
 
 namespace Exporter::GCode
 {
@@ -8,7 +8,7 @@ namespace Exporter::GCode
 class Format
 {
 public:
-	explicit Format(const Model::Config::GcodeFormat &format);
+	explicit Format(const Config::Config::GcodeFormat &format);
 
 	std::string toolOn;
 	std::string toolOff;

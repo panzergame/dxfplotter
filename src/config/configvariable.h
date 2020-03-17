@@ -3,7 +3,7 @@
 #include <leksysini/iniparser.hpp>
 #include <string>
 
-namespace Model
+namespace Config
 {
 
 template <class Type>

@@ -39,6 +39,7 @@ set(LINK_LIBRARIES
 	Qt5::Gui
 	view
 	model
+	config
 	dxf
 	gcode
 	converter

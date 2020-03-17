@@ -3,7 +3,7 @@
 namespace Exporter::GCode
 {
 
-Format::Format(const Model::Config::GcodeFormat &format)
+Format::Format(const Config::Config::GcodeFormat &format)
 	:toolOn(format.toolOn),
 	toolOff(format.toolOff),
 	linearMove(format.linearMove),

@@ -4,7 +4,7 @@
 
 #include <climits>
 
-namespace Model
+namespace Config
 {
 
 Config::Dxf::Dxf(INI::Section *section)

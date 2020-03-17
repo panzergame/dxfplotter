@@ -1,8 +1,8 @@
 #pragma once
 
-#include <model/configvariable.h>
+#include <config/configvariable.h>
 
-namespace Model
+namespace Config
 {
 
 class Config
