@@ -1,6 +1,8 @@
 #include <exporter.h>
 #include <postprocessor.h>
 
+#include <common/exception.h>
+
 namespace Exporter::GCode
 {
 
@@ -53,14 +55,11 @@ Exporter::Exporter(const Model::Task *task, const Format &format, const std::str
 	:m_file(filename),
 	m_format(format)
 {
-	if (!failed()) {
-		convertToGCode(task);
+	if (!m_file) {
+		throw Common::FileException();
 	}
-}
 
-bool Exporter::failed() const
-{
-	return !m_file;
+	convertToGCode(task);
 }
 
 }

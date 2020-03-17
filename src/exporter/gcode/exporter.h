@@ -25,8 +25,6 @@ private:
 public:
 	explicit Exporter(const Model::Task *task, const Format& format, const std::string &filename);
 	~Exporter() = default;
-
-	bool failed() const;
 };
 
 }

@@ -4,6 +4,8 @@
 #include <importer/dxf/importer.h>
 #include <exporter/gcode/exporter.h>
 
+#include <common/exception.h>
+
 #include <QMimeDatabase>
 #include <QStandardPaths>
 #include <QDir>
@@ -62,18 +64,28 @@ bool Application::loadFile(const QString &fileName)
 	return true;
 }
 
-void Application::loadDxf(const QString &fileName)
+bool Application::loadDxf(const QString &fileName)
 {
-	// Import data
-	Importer::Dxf::Importer imp(fileName.toStdString()); // TODO check error
+	Geometry::Polyline::List polylines;
+	try {
+		// Import data
+		Importer::Dxf::Importer imp(fileName.toStdString());
+		polylines = imp.polylines();
+	}
+	catch (const Common::FileException &e) {
+		return false;
+	}
+
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(imp.polylines(), m_config.dxf().assembleTolerance);
-	Geometry::Polyline::List polylines = assembler.mergedPolylines();
+	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance);
+	Geometry::Polyline::List mergedPolylines = assembler.mergedPolylines();
 
 	const Model::PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
 
-	m_paths = Model::Path::FromPolylines(std::move(polylines), defaultPathSettings);
+	m_paths = Model::Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings);
 	m_task = new Model::Task(this, m_paths);
+
+	return true;
 }
 
 void Application::loadPlot(const QString &fileName)
@@ -86,9 +98,14 @@ bool Application::exportToGcode(const QString &fileName)
 	// Copy gcode format from config file
 	Exporter::GCode::Format format(m_config.gcodeFormat());
 
-	Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
+	try {
+		Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
+	}
+	catch (const Common::FileException &e) {
+		return false;
+	}
 
-	return !exporter.failed();
+	return true;
 }
 
 }
