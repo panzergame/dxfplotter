@@ -11,6 +11,18 @@ Path::Path(Geometry::Polyline &&polyline, const std::string &name, const PathSet
 {
 }
 
+Path::ListPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings)
+{
+	const int size = polylines.size();
+	Path::ListPtr paths(size);
+
+	for (int i = 0; i < size; ++i) {
+		paths[i] = new Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
+	}
+
+	return paths;
+}
+
 const Geometry::Polyline &Path::polyline() const
 {
 	return m_polyline;
@@ -57,18 +69,6 @@ void Path::toggleSelect()
 	else {
 		select();
 	}
-}
-
-Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings)
-{
-	const int size = polylines.size();
-	Path::ListPtr paths(size);
-
-	for (int i = 0; i < size; ++i) {
-		paths[i] = new Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
-	}
-
-	return paths;
 }
 
 }

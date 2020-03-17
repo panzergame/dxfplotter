@@ -26,6 +26,8 @@ private:
 public:
 	explicit Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings& settings);
 
+	static ListPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings);
+
 	const Geometry::Polyline &polyline() const;
 	const std::string &name() const;
 	const PathSettings &settings() const;
@@ -35,12 +37,10 @@ public:
 	void deselect();
 	void toggleSelect();
 
+
 Q_SIGNALS:
 	void selected();
 	void deselected();
 };
-
-// TODO move in class
-Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings); // TODO move in class
 
 }
