@@ -3,41 +3,42 @@
 namespace Exporter::GCode
 {
 
-PostProcessor::PostProcessor(const Model::PathSettings &settings, std::stringstream &stream)
+PostProcessor::PostProcessor(const Model::PathSettings &settings, const Format &format, std::stringstream &stream)
 	:m_settings(settings),
+	m_format(format),
 	m_stream(stream)
 {
 }
 
-void PostProcessor::laserOn()
+void PostProcessor::toolOn()
 {
-	printLaser("M1 {S}", "S"_a=m_settings.intensity());
+	printTool(m_format.toolOn, "S"_a=m_settings.intensity());
 }
 
-void PostProcessor::laserOff()
+void PostProcessor::toolOff()
 {
-	printLaser("M2");
+	printTool(m_format.toolOff);
 }
 
 void PostProcessor::linearMove(const QVector2D &to)
 {
-	printMove("G1 X {X} Y {Y} F {F}", "X"_a=to.x(), "Y"_a=to.y());
+	printMove(m_format.linearMove, "X"_a=to.x(), "Y"_a=to.y());
 }
 
 void PostProcessor::fastMove(const QVector2D &to)
 {
-	printMove("G0 X {X} Y {Y}", "X"_a=to.x(), "Y"_a=to.y());
+	printMove(m_format.fastMove, "X"_a=to.x(), "Y"_a=to.y());
 }
 
 void PostProcessor::cwArc(const QVector2D &relativeCenter, const QVector2D &to)
 {
-	printMove("G2 X {X} Y {Y} I {I} J {J} F {F}", "X"_a=to.x(), "Y"_a=to.y(),
+	printMove(m_format.cwArc, "X"_a=to.x(), "Y"_a=to.y(),
 		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y());
 }
 
 void PostProcessor::ccwArc(const QVector2D &relativeCenter, const QVector2D &to)
 {
-	printMove("G3 X {X} Y {Y} I {I} J {J} F {F}", "X"_a=to.x(), "Y"_a=to.y(),
+	printMove(m_format.ccwArc, "X"_a=to.x(), "Y"_a=to.y(),
 		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y());
 }
 

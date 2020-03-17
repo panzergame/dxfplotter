@@ -75,7 +75,6 @@ Arc Bulge::toArc() const
 {
 	const Circle circle = toCircle();
 	const QVector2D &center = circle.center();
-	const float radius = circle.radius();
 
 	const float startAngle = LineAngle(m_start - center);
 	const float endAngle = LineAngle(m_end - center);

@@ -13,18 +13,18 @@ void Exporter::convertToGCode(const Model::Task *task)
 
 void Exporter::convertToGCode(const Model::Path *path)
 {
-	PostProcessor processor(path->settings(), m_fileContent);
+	PostProcessor processor(path->settings(), m_format, m_fileContent);
 	convertToGCode(processor, path->polyline());
 }
 
 void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Polyline &polyline)
 {
 	processor.fastMove(polyline.start());
-	processor.laserOn();
+	processor.toolOn();
 
 	polyline.forEachBulge([this, &processor](const Geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
 
-	processor.laserOff();
+	processor.toolOff();
 }
 
 void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Bulge &bulge)
@@ -51,7 +51,8 @@ void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Bulge &b
 	}
 }
 
-Exporter::Exporter(const Model::Task *task, const std::string &filename)
+Exporter::Exporter(const Model::Task *task, const Format &format, const std::string &filename)
+	:m_format(format)
 {
 	convertToGCode(task);
 	std::cout << m_fileContent.str();

@@ -40,6 +40,7 @@ Q_SIGNALS:
 	void deselected();
 };
 
+// TODO move in class
 Path::ListPtr PathsFromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings); // TODO move in class
 
 }
