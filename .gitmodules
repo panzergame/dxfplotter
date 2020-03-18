@@ -1,0 +1,6 @@
+[submodule "thirdparty/fmt"]
+	path = thirdparty/fmt
+	url = https://github.com/fmtlib/fmt.git
+[submodule "thirdparty/nanoflann"]
+	path = thirdparty/nanoflann
+	url = https://github.com/jlblancoc/nanoflann.git

@@ -1,0 +1,16 @@
+language: cpp
+
+addons:
+	apt:
+		packages:
+			cmake
+			qtbase5-dev
+			gcc-8
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - VERBOSE=1 make
