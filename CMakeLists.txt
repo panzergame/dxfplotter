@@ -10,14 +10,14 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${PROJECT_SOURCE_DIR}/template)
 
+set(BUILD_TESTS OFF)
+set(BUILD_EXAMPLES OFF)
+
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui
 )
 
-find_package(nanoflann)
-
-# Needed for qt
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-error=deprecated-copy)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -28,10 +28,10 @@ set(INCLUDE_DIRS
 	src
 	thirdparty
 	thirdparty/fmt/include
+	thirdparty/nanoflann/include
 	template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	nanoflann::nanoflann
 )
 
 set(LINK_LIBRARIES
@@ -53,6 +53,7 @@ add_subdirectory(template)
 add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(test) # TODO seulement en cas de test
+
 
 add_executable(dxfplotter main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
