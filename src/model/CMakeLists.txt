@@ -10,6 +10,7 @@ set(SRC
 	pathsettings.h
 	pathgroupsettings.h
 	task.h
+	taskmodelobserver.h
 )
 
 add_library(model ${SRC})

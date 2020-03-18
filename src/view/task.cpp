@@ -7,19 +7,17 @@
 namespace View
 {
 
-Task::Task(Model::Task *task)
-	:m_task(task),
-	m_model(new TaskListModel(m_task, this)),
+Task::Task(Model::Application &app)
+	:TaskModelObserver(app),
 	m_outsideSelectionBlocked(false)
 {
 	setupUi(this);
-
-	setupModel();
 }
 
 void Task::setupModel()
 {
-	treeView->setModel(m_model);
+	m_model.reset(new TaskListModel(m_task, this)),
+	treeView->setModel(m_model.get());
 
 	// Configure selection model
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
@@ -38,6 +36,11 @@ void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::Selection
 		const int index = m_task->indexFor(path);
 		selectionModel->select(m_model->index(index, 0), flag);
 	}
+}
+
+void Task::taskChanged()
+{
+	setupModel();
 }
 
 void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)

@@ -27,17 +27,6 @@ void Viewport::setupPathItems()
 	);
 }
 
-void Viewport::setupAxes()
-{
-	scene()->addLine(0.0f, 0.0f, 100.0f, 0.0f, xAxisPen);
-	scene()->addLine(0.0f, 0.0f, 0.0f, 100.0f, yAxisPen);
-}
-
-void Viewport::setupHighlights()
-{
-// 	setupAxes(); // TODO background
-}
-
 void Viewport::startMovement(const QPoint &mousePos)
 {
 	m_lastMousePosition = mousePos;
@@ -102,6 +91,24 @@ void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 
 		scene()->setSelectionArea(path, addToSelection ? Qt::AddToSelection : Qt::ReplaceSelection);
 	}
+}
+
+void Viewport::setupModel()
+{
+	setScene(new QGraphicsScene());
+
+	scene()->addItem(&m_rubberBand);
+
+	setupPathItems();
+
+	// Fit scene in view
+	const QRectF sceneRect = scene()->sceneRect();
+	fitInView(sceneRect, Qt::KeepAspectRatio);
+}
+
+void Viewport::taskChanged()
+{
+	setupModel();
 }
 
 void Viewport::wheelEvent(QWheelEvent *event)
@@ -175,12 +182,9 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
-Viewport::Viewport(Model::Task *task)
-	:QGraphicsView(new QGraphicsScene()),
-	m_task(task)
+Viewport::Viewport(Model::Application &app)
+	:TaskModelObserver(app)
 {
-	scene()->addItem(&m_rubberBand);
-
 	// Disable dragging support
 	setDragMode(NoDrag);
 
@@ -196,14 +200,6 @@ Viewport::Viewport(Model::Task *task)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	scale(1.0f, -1.0f);
-
-	setupHighlights();
-
-	setupPathItems();
-
-	// Fit scene in view
-	const QRectF sceneRect = scene()->sceneRect();
-	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 
 }

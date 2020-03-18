@@ -37,7 +37,6 @@ public:
 	void deselect();
 	void toggleSelect();
 
-
 Q_SIGNALS:
 	void selected();
 	void deselected();

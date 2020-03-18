@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");
 
-	Model::Application app(argv[1]);
+	Model::Application app;
+	app.loadFileFromCmd(argv[1]);
 
 	app.exportToGcode("");
 }

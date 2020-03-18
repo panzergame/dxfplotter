@@ -21,14 +21,16 @@ private:
 	QString m_currentFileName;
 
 public:
-	explicit Application(const QString &fileName);
+	explicit Application();
 
-	Model::Task *task();
-
+	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadDxf(const QString &fileName);
 	void loadPlot(const QString &fileName);
 	bool exportToGcode(const QString &fileName);
+
+Q_SIGNALS:
+	void taskChanged(Task *newTask);
 };
 
 }

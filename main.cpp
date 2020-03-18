@@ -15,11 +15,13 @@ int main(int argc, char *argv[])
 	parser.addPositionalArgument("file", "input file");
 	parser.process(qapp);
 
-	const QString fileName = parser.positionalArguments().value(0, "");
 
-	Model::Application app(fileName);
-
+	Model::Application app;
 	View::MainWindow window(app);
+
+	// File loading from command line.
+	const QString fileName = parser.positionalArguments().value(0, "");
+	app.loadFileFromCmd(fileName);
 
 	qapp.exec();
 }

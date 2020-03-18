@@ -31,19 +31,18 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
-Application::Application(const QString &fileName)
+Application::Application()
 	:m_config(configFilePath())
+{
+}
+
+void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
 		if (!loadFile(fileName)) {
 			qCritical() << "Invalid file type " + fileName;
 		}
 	}
-}
-
-Task *Application::task()
-{
-	return m_task;
 }
 
 bool Application::loadFile(const QString &fileName)
@@ -84,6 +83,8 @@ bool Application::loadDxf(const QString &fileName)
 
 	m_paths = Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings);
 	m_task = new Task(this, m_paths);
+
+	emit taskChanged(m_task);
 
 	return true;
 }

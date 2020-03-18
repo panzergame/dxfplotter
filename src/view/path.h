@@ -4,16 +4,17 @@
 
 #include <model/pathgroupsettings.h>
 #include <model/task.h>
+#include <model/taskmodelobserver.h>
 
 #include <QWidget>
 
 namespace View
 {
 
-class Path : public QWidget, private Ui::Path
+class Path : public Model::TaskModelObserver<QWidget>, private Ui::Path
 {
 private:
-	Model::PathGroupSettings m_groupSettings;
+	std::unique_ptr<Model::PathGroupSettings> m_groupSettings;
 
 	void selectionChanged(int size);
 
@@ -28,8 +29,13 @@ private:
 		}
 	}
 
+	void setupModel();
+
+protected:
+	void taskChanged() override;
+
 public:
-	explicit Path(const Model::Task *task);
+	explicit Path(Model::Application &app);
 
 };
 
