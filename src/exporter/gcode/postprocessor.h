@@ -28,15 +28,11 @@ public:
 	}
 
 	template <class ...Args>
-	void printTool(const std::string &format, Args&& ...args)
+	void printCommand(const std::string &format, Args&& ...args)
 	{
-		print(format, std::forward<Args>(args)...);
-	}
-
-	template <class ...Args>
-	void printMove(const std::string &format, Args&& ...args)
-	{
-		print(format, std::forward<Args>(args)..., "F"_a=m_settings.feedRate());
+		print(format, std::forward<Args>(args)...,
+			  "F"_a=m_settings.feedRate(),
+			  "S"_a=m_settings.intensity());
 	}
 
 	void toolOn();
