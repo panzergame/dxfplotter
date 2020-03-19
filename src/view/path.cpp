@@ -11,7 +11,7 @@ void Path::setupModel()
 
 	connect(m_groupSettings.get(), &Model::PathGroupSettings::selectionChanged, this, &Path::selectionChanged);
 
-	connect(feedRate, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
+	connect(feedRate, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this](double value) {
 		m_groupSettings->setFeedRate(value);
 	});
 	// TODO intensity
