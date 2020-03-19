@@ -38,8 +38,6 @@ set(INCLUDE_DIRS
 )
 
 set(LINK_LIBRARIES
-	Qt5::Widgets
-# 	Qt5::Gui
 	view
 	model
 	config
@@ -49,6 +47,7 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt
+	Qt5::Widgets
 )
 include_directories(${INCLUDE_DIRS})
 
