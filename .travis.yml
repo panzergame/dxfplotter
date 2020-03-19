@@ -4,10 +4,12 @@ dist: trusty
 
 addons:
   apt:
+    sources:
+      - ubuntu-toolchain-r-test
     packages:
-      cmake
-      qtbase5-dev
-      gcc-8
+      - cmake
+      - qtbase5-dev
+      - gcc-8
 
 before_script:
   - mkdir build
