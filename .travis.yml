@@ -2,14 +2,19 @@ language: cpp
 
 dist: trusty
 
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - cmake
-      - qtbase5-dev
-      - gcc-8
+matrix:
+  include:
+    - os: linux
+    addons:
+      apt:
+        sources:
+          - ubuntu-toolchain-r-test
+        packages:
+          - g++-8
+          - cmake
+          - qtbase5-dev
+    env:
+      - MATRIX_EVAL="CC=gcc-8 && CXX=g++-/"
 
 before_script:
   - mkdir build
