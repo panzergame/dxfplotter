@@ -18,7 +18,7 @@ find_package(Qt5 COMPONENTS REQUIRED
 	Gui
 )
 
-add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas)
+add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
 	add_compile_options(-Wno-error=deprecated-copy)
