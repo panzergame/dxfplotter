@@ -14,15 +14,12 @@ matrix:
             - cmake
             - qtbase5-dev
       env:
-        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8/"
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+      script:
+        - mkdir build
+        - cd build
+        - cmake ..
+        - VERBOSE=1 make
 
 before_install:
     - eval "${MATRIX_EVAL}"
-
-before_script:
-  - mkdir build
-  - cd build
-  - cmake ..
-
-script:
-  - VERBOSE=1 make
