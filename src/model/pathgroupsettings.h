@@ -4,6 +4,8 @@
 #include <model/path.h>
 #include <model/pathsettings.h>
 
+#include <cassert>
+
 #include <common/function.h>
 
 namespace Model
