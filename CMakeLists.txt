@@ -39,7 +39,7 @@ set(INCLUDE_DIRS
 
 set(LINK_LIBRARIES
 	Qt5::Widgets
-	Qt5::Gui
+# 	Qt5::Gui
 	view
 	model
 	config
