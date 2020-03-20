@@ -11,10 +11,8 @@ void Path::setupModel()
 
 	connect(m_groupSettings.get(), &Model::PathGroupSettings::selectionChanged, this, &Path::selectionChanged);
 
-	connect(feedRate, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, [this](double value) {
-		m_groupSettings->setFeedRate(value);
-	});
-	// TODO intensity
+	connectOnFieldChanged<double>(feedRate, [this](double value) { m_groupSettings->setFeedRate(value); });
+	connectOnFieldChanged<double>(intensity, [this](double value) { m_groupSettings->setIntensity(value); });
 }
 
 void Path::taskChanged()
@@ -33,8 +31,8 @@ void Path::selectionChanged(int size)
 	if (size > 0) {
 		show();
 
-		updateValue(feedRate, m_groupSettings->feedRate());
-		updateValue(intensity, m_groupSettings->intensity());
+		updateFieldValue(feedRate, m_groupSettings->feedRate());
+		updateFieldValue(intensity, m_groupSettings->intensity());
 	}
 	else {
 		hide();

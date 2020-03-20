@@ -18,8 +18,14 @@ private:
 
 	void selectionChanged(int size);
 
-	template <typename T>
-	void updateValue(QDoubleSpinBox *field, std::optional<T> &&valueOpt)
+	template <typename ValueType, class Field>
+	void connectOnFieldChanged(Field *field, std::function<void (ValueType)> &&func)
+	{
+		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), this, func);
+	}
+
+	template <class Field, typename T>
+	void updateFieldValue(Field *field, std::optional<T> &&valueOpt)
 	{
 		if (valueOpt) {
 			field->setValue(*valueOpt);
