@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include <model/task.h>
 
 #include <QAbstractItemModel>

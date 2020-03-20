@@ -1,16 +1,25 @@
 language: cpp
 
-addons:
-	apt:
-		packages:
-			cmake
-			qtbase5-dev
-			gcc-8
+dist: xenial
 
-before_script:
-  - mkdir build
-  - cd build
-  - cmake ..
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - cmake
+            - qtbase5-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+      script:
+        - mkdir build
+        - cd build
+        - cmake ..
+        - VERBOSE=1 make
 
-script:
-  - VERBOSE=1 make
+before_install:
+    - eval "${MATRIX_EVAL}"

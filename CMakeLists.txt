@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12.0)
+cmake_minimum_required(VERSION 3.9)
 
 project(dxfplotter)
 
@@ -10,15 +10,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC_SEARCH_PATHS ${PROJECT_SOURCE_DIR}/template)
 
-set(BUILD_TESTS OFF)
-set(BUILD_EXAMPLES OFF)
-
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui
 )
 
-add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas)
+add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
 	add_compile_options(-Wno-error=deprecated-copy)
@@ -38,8 +35,6 @@ set(INCLUDE_DIRS
 )
 
 set(LINK_LIBRARIES
-	Qt5::Widgets
-	Qt5::Gui
 	view
 	model
 	config
@@ -49,6 +44,7 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt
+	Qt5::Widgets
 )
 include_directories(${INCLUDE_DIRS})
 

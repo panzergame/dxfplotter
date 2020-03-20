@@ -3,6 +3,7 @@
 #include <vector>
 #include <optional>
 #include <cmath>
+#include <cassert>
 
 #include <QVector2D>
 
