@@ -11,6 +11,7 @@ class ConfigVariable
 {
 private:
 	const std::string m_name;
+	const std::string m_description;
 	INI::Section *m_section;
 
 	void initDefaultValue(const Type &defaultValue)
@@ -21,8 +22,9 @@ private:
 	}
 
 public:
-	explicit ConfigVariable(const std::string& name, const Type &defaultValue, INI::Section *section)
+	explicit ConfigVariable(const std::string& name, const std::string &description, const Type &defaultValue, INI::Section *section)
 		:m_name(name),
+		m_description(description),
 		m_section(section)
 	{
 		initDefaultValue(defaultValue);
