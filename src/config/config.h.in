@@ -1,0 +1,69 @@
+#pragma once
+
+#include <config/configvariable.h>
+
+namespace Config
+{
+
+class Config
+{
+public:
+{% for section in sections %}
+	class {{ section.class_name }}
+	{
+	private:
+		std::tuple<{% for prop in section.properties %}ConfigVariable<{{ prop.base_type }}>{{ ", " if not loop.last }}{% endfor%}> m_variables;
+
+	public:
+		explicit {{ section.class_name }}(INI::Section *section)
+			:m_variables({
+	{% for prop in section.properties %}
+				ConfigVariable<{{ prop.base_type }}>("{{ prop.ini_name }}", "{{ prop.description }}", {{ prop.default_value }}, section){{ ", " if not loop.last }}
+	{% endfor %}
+			})
+		{
+		}
+
+	{% for prop in section.properties %}
+		ConfigVariable<{{ prop.base_type }}> &{{ prop.cpp_name }}()
+		{
+			return std::get<{{loop.index - 1}}>(m_variables);
+		}
+
+		const ConfigVariable<{{ prop.base_type }}> &{{ prop.cpp_name }}() const
+		{
+			return std::get<{{loop.index - 1}}>(m_variables);
+		}
+	{% endfor %}
+	};
+{% endfor %}
+
+private:
+	std::string m_filePath;
+	INI::File m_file;
+{% for section in sections %}
+	{{ section.class_name }} m_{{ section.cpp_name }};
+{% endfor %}
+
+public:
+	explicit Config(const std::string &filePath)
+		:m_filePath(filePath),
+		m_file(m_filePath),
+{% for section in sections %}
+		m_{{ section.cpp_name }}(m_file.GetSection("{{ section.ini_name }}")){{", " if not loop.last}}
+{% endfor %}
+	{
+	}
+
+	~Config();
+
+{% for section in sections %}
+	{{ section.class_name }} &{{ section.cpp_name }}()
+	{
+		return m_{{ section.cpp_name }};
+	}
+{% endfor %}
+};
+
+}
+
