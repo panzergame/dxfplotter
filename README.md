@@ -55,12 +55,12 @@ Simple set of GCode command is used:
 
 | Description | Default Command | Available Variables |
 | - | - | - |
-| Tool On | M1 S \{S} | S F |
+| Tool On | M1 S \{S:.0f} | S F |
 | Tool Off | M2 | S F|
-| Fast Move | G0 X \{X} Y \{Y} | S F X Y |
-| Linear Move | G1 X \{X} Y \{Y} F \{F} | S F X Y |
-| CW Arc Move | G2 X \{X} Y \{Y} I \{I} J \{J} F \{F} | S F X Y I J |
-| CCW Arc Move | G3 X \{X} Y \{Y} I \{I} J \{J} F \{F} | S F X Y I J |
+| Fast Move | G0 X \{X:.2f} Y \{Y:.2f} | S F X Y |
+| Linear Move | G1 X \{X:.2f} Y \{Y:.2f} F \{F:.0f} | S F X Y |
+| CW Arc Move | G2 X \{X:.2f} Y \{Y:.2f} I \{I:.2f} J \{J:.2f} F \{F:.0f} | S F X Y I J |
+| CCW Arc Move | G3 X \{X:.2f} Y \{Y:.2f} I \{I:.2f} J \{J:.2f} F \{F:.0f} | S F X Y I J |
 
 They can be customized from Settings panel `Configuration->Settings` or from dxfplotter/config.ini file in your applications configuration folder.
 
