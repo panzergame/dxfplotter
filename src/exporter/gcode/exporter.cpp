@@ -8,6 +8,7 @@ namespace Exporter::GCode
 
 void Exporter::convertToGCode(const Model::Task *task)
 {
+	// TODO go to 0 at start and end
 	task->forEachPath([this](Model::Path *path){ convertToGCode(path); });
 }
 

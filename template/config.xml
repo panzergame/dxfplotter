@@ -1,6 +1,6 @@
 <config>
 	<section name="gcode">
-		<property name="tool on" type="std::string">"M1 {S}"</property>
+		<property name="tool on" type="std::string">"M1 S {S}"</property>
 		<property name="tool off" type="std::string">"M2"</property>
 		<property name="linear move" type="std::string">"G1 X {X} Y {Y} F {F}"</property>
 		<property name="fast move" type="std::string">"G0 X {X} Y {Y}"</property>

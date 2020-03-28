@@ -55,7 +55,7 @@ Simple set of GCode command is used:
 
 | Description | Default Command | Available Variables |
 | - | - | - |
-| Tool On | M1 \{S} | S F |
+| Tool On | M1 S \{S} | S F |
 | Tool Off | M2 | S F|
 | Fast Move | G0 X \{X} Y \{Y} | S F X Y |
 | Linear Move | G1 X \{X} Y \{Y} F \{F} | S F X Y |
