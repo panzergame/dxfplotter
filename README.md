@@ -48,6 +48,7 @@ Once opened, select path from left panel or from viewport and modify settings of
 
 Export with `File->Export` or `Ctrl+E`
 
+
 ## GCode format
 
 Simple set of GCode command is used:
@@ -77,7 +78,9 @@ Commands introduce variables with {#} where # is one fo the supported variables:
 
 The two first properties are exposed in path settings in the UI.
 
+
 ## Meta
+
 
 Tristan Porteries
 
