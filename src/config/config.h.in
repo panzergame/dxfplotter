@@ -1,6 +1,7 @@
 #pragma once
 
-#include <config/configvariable.h>
+#include <config/variable.h>
+#include <config/section.h>
 
 namespace Config
 {
@@ -9,60 +10,78 @@ class Config
 {
 public:
 {% for section in sections %}
-	class {{ section.class_name }}
+	class {{ section.class_name }} : public Section
 	{
 	private:
-		std::tuple<{% for prop in section.properties %}ConfigVariable<{{ prop.base_type }}>{{ ", " if not loop.last }}{% endfor%}> m_variables;
+		INI::Section *m_section;
+		std::tuple<{% for prop in section.properties %}Variable<{{ prop.base_type }}>{{ ", " if not loop.last }}{% endfor%}> m_variables;
 
 	public:
-		explicit {{ section.class_name }}(INI::Section *section)
-			:m_variables({
+		explicit {{ section.class_name }}(INI::File &file)
+			:Section("{{ section.ini_name }}", "{{ section.description }}"),
+			m_section(file.GetSection(m_name)),
+			m_variables({
 	{% for prop in section.properties %}
-				ConfigVariable<{{ prop.base_type }}>("{{ prop.ini_name }}", "{{ prop.description }}", {{ prop.default_value }}, section){{ ", " if not loop.last }}
+				Variable<{{ prop.base_type }}>("{{ prop.ini_name }}", "{{ prop.description }}", {{ prop.default_value }}, m_section){{ ", " if not loop.last }}
 	{% endfor %}
 			})
 		{
 		}
 
 	{% for prop in section.properties %}
-		ConfigVariable<{{ prop.base_type }}> &{{ prop.cpp_name }}()
+		Variable<{{ prop.base_type }}> &{{ prop.cpp_name }}()
 		{
 			return std::get<{{loop.index - 1}}>(m_variables);
 		}
 
-		const ConfigVariable<{{ prop.base_type }}> &{{ prop.cpp_name }}() const
+		const Variable<{{ prop.base_type }}> &{{ prop.cpp_name }}() const
 		{
 			return std::get<{{loop.index - 1}}>(m_variables);
 		}
 	{% endfor %}
+
+	template <class Visitor>
+	void visitVariables(Visitor &&visitor)
+	{
+		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_variables);
+	}
+
 	};
 {% endfor %}
 
 private:
 	std::string m_filePath;
 	INI::File m_file;
-{% for section in sections %}
-	{{ section.class_name }} m_{{ section.cpp_name }};
-{% endfor %}
+	std::tuple<{% for section in sections %}{{section.class_name}}{{ ", " if not loop.last }}{% endfor %}> m_sections;
 
 public:
 	explicit Config(const std::string &filePath)
 		:m_filePath(filePath),
 		m_file(m_filePath),
+		m_sections({
 {% for section in sections %}
-		m_{{ section.cpp_name }}(m_file.GetSection("{{ section.ini_name }}")){{", " if not loop.last}}
+				{{ section.class_name }}(m_file){{ ", " if not loop.last }}
 {% endfor %}
+		})
 	{
 	}
 
 	~Config();
 
+	void save();
+
 {% for section in sections %}
 	{{ section.class_name }} &{{ section.cpp_name }}()
 	{
-		return m_{{ section.cpp_name }};
+		return std::get<{{loop.index - 1}}>(m_sections);
 	}
 {% endfor %}
+
+	template <class Visitor>
+	void visitSections(Visitor &&visitor)
+	{
+		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_sections);
+	}
 };
 
 }

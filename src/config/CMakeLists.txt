@@ -1,9 +1,11 @@
 set_property(SOURCE config.h PROPERTY SKIP_AUTOGEN ON)
 set(SRC
 	config.cpp
+	item.cpp
 
 	config.h
-	configvariable.h
+	item.h
+	variable.h
 )
 
 add_library(config ${SRC})

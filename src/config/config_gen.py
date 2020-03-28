@@ -52,8 +52,6 @@ template_dir_name = argv[2]
 template_file_name = argv[3]
 output_file_name = argv[4]
 
-print(template_dir_name, template_file_name)
-
 sections = load_sections_from_xml(propertie_file_name)
 
 file_loader = FileSystemLoader(template_dir_name)

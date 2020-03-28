@@ -36,6 +36,11 @@ Application::Application()
 {
 }
 
+Config::Config &Application::config()
+{
+	return m_config;
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {

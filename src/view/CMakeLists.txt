@@ -1,4 +1,5 @@
 set(SRC
+	settings.cpp
 	mainwindow.cpp
 	path.cpp
 	pathitem.cpp
@@ -7,6 +8,8 @@ set(SRC
 	tasklistmodel.cpp
 	viewport.cpp
 
+	settings.h
+	settingentry.h
 	mainwindow.h
 	path.h
 	pathitem.h
