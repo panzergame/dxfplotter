@@ -36,6 +36,11 @@ Application::Application()
 {
 }
 
+Config::Config &Application::config()
+{
+	return m_config;
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
@@ -76,7 +81,7 @@ bool Application::loadDxf(const QString &fileName)
 	}
 
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance);
+	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance());
 	Geometry::Polyline::List mergedPolylines = assembler.mergedPolylines();
 
 	const PathSettings defaultPathSettings(120.0f, 200.0f); // TODO config extract
@@ -97,7 +102,7 @@ void Application::loadPlot(const QString &fileName)
 bool Application::exportToGcode(const QString &fileName)
 {
 	// Copy gcode format from config file
-	Exporter::GCode::Format format(m_config.gcodeFormat());
+	Exporter::GCode::Format format(m_config.gcode());
 
 	try {
 		Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());

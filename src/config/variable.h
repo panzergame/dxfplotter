@@ -1,16 +1,17 @@
 #pragma once
 
 #include <leksysini/iniparser.hpp>
-#include <string>
+#include <config/item.h>
+
+#include <QDebug> // TODO
 
 namespace Config
 {
 
 template <class Type>
-class ConfigVariable
+class Variable : public Item
 {
 private:
-	const std::string m_name;
 	INI::Section *m_section;
 
 	void initDefaultValue(const Type &defaultValue)
@@ -21,8 +22,8 @@ private:
 	}
 
 public:
-	explicit ConfigVariable(const std::string& name, const Type &defaultValue, INI::Section *section)
-		:m_name(name),
+	explicit Variable(const std::string& name, const std::string &description, const Type &defaultValue, INI::Section *section)
+		:Item(name, description),
 		m_section(section)
 	{
 		initDefaultValue(defaultValue);
@@ -33,7 +34,7 @@ public:
 		return m_section->GetValue(m_name).template Get<Type>();
 	}
 
-	ConfigVariable<Type> &operator=(const Type &value)
+	Variable<Type> &operator=(const Type &value)
 	{
 		m_section->SetValue(m_name, value);
 		return *this;

@@ -22,28 +22,28 @@
      <x>0</x>
      <y>0</y>
      <width>469</width>
-     <height>27</height>
+     <height>34</height>
     </rect>
    </property>
    <widget class="QMenu" name="menusrgd">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="actionOpenFile"/>
     <addaction name="actionQuit"/>
-    <addaction name="actionExport"/>
+    <addaction name="actionExportFile"/>
    </widget>
    <widget class="QMenu" name="menuConfiguration">
     <property name="title">
      <string>Configuration</string>
     </property>
-    <addaction name="actionSettings"/>
+    <addaction name="actionOpenSettings"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuConfiguration"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionOpen">
+  <action name="actionOpenFile">
    <property name="text">
     <string>Open</string>
    </property>
@@ -59,7 +59,7 @@
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionExport">
+  <action name="actionExportFile">
    <property name="text">
     <string>Export</string>
    </property>
@@ -67,7 +67,7 @@
     <string>Ctrl+E</string>
    </property>
   </action>
-  <action name="actionSettings">
+  <action name="actionOpenSettings">
    <property name="text">
     <string>Settings</string>
    </property>

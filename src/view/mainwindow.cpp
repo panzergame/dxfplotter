@@ -2,6 +2,7 @@
 #include <path.h>
 #include <task.h>
 #include <viewport.h>
+#include <settings.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -51,8 +52,9 @@ MainWindow::MainWindow(Model::Application &app)
 
 	showMaximized();
 
-	connect(actionOpen, &QAction::triggered, this, &MainWindow::openFile);
-	connect(actionExport, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 }
 
 void MainWindow::openFile()
@@ -78,5 +80,10 @@ void MainWindow::exportFile()
 	}
 }
 
+void MainWindow::openSettings()
+{
+	Settings *settings = new Settings(m_app.config());
+	settings->exec();
+}
 
 }

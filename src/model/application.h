@@ -23,10 +23,13 @@ private:
 public:
 	explicit Application();
 
+	Config::Config &config();
+
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadDxf(const QString &fileName);
 	void loadPlot(const QString &fileName);
+
 	bool exportToGcode(const QString &fileName);
 
 Q_SIGNALS:
