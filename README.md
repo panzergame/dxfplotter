@@ -32,13 +32,13 @@ make
 
 ## Usage example
 
-Launch GUI:
+Launch GUI
 
 ```sh
 build$ ./dxfplotter
 ```
 
-Or with a dxf file:
+Or with a dxf file
 
 ```sh
 build$ ./dxfplotter input.dxf
@@ -48,8 +48,7 @@ Once opened, select path from left panel or from viewport and modify settings of
 
 Export with `File->Export` or `Ctrl+E`
 
-
-## GCode format
+## GCode format
 
 Simple set of GCode command is used:
 
@@ -78,9 +77,7 @@ Commands introduce variables with {#} where # is one fo the supported variables:
 
 The two first properties are exposed in path settings in the UI.
 
-
-## Meta
-
+## Meta
 
 Tristan Porteries
 
