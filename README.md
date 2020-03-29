@@ -64,7 +64,7 @@ Simple set of GCode command is used:
 
 They can be customized from Settings panel `Configuration->Settings` or from dxfplotter/config.ini file in your applications configuration folder.
 
-Commands introduce variables with {#} where # is one fo the supported variables: 
+Commands introduce variables with {#:nf} where # is one fo the supported variables and n the precision: 
 
 | Name | Description |
 | - | - |
