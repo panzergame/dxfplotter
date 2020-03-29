@@ -11,4 +11,8 @@
 		<property name="spline to arc precision" type="float">0.001</property>
 		<property name="assemble tolerance" type="float">0.001</property>
 	</section>
+	<section name="default path">
+		<property name="feed rate" type="float">40</property>
+		<property name="intensity" type="float">50</property>
+	</section>
 </config>

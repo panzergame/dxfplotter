@@ -31,6 +31,12 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
+PathSettings Application::defaultPathSettings() const
+{
+	const Config::Config::DefaultPath &defaultPath = m_config.defaultPath();
+	return PathSettings(defaultPath.feedRate(), defaultPath.intensity());
+}
+
 Application::Application()
 	:m_config(configFilePath())
 {
@@ -84,9 +90,7 @@ bool Application::loadDxf(const QString &fileName)
 	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance());
 	Geometry::Polyline::List mergedPolylines = assembler.mergedPolylines();
 
-	const PathSettings defaultPathSettings(40.0f, 200.0f); // TODO config extract
-
-	m_paths = Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings);
+	m_paths = Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings());
 	m_task = new Task(this, m_paths);
 
 	emit taskChanged(m_task);

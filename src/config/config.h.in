@@ -77,6 +77,13 @@ public:
 	}
 {% endfor %}
 
+{% for section in sections %}
+	const {{ section.class_name }} &{{ section.cpp_name }}() const
+	{
+		return std::get<{{loop.index - 1}}>(m_sections);
+	}
+{% endfor %}
+
 	template <class Visitor>
 	void visitSections(Visitor &&visitor)
 	{

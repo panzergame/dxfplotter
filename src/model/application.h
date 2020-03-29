@@ -18,7 +18,10 @@ private:
 	Path::ListPtr m_paths; // TODO parent destruct
 	Task *m_task;
 
+
 	QString m_currentFileName;
+
+	PathSettings defaultPathSettings() const;
 
 public:
 	explicit Application();
