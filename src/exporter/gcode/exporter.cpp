@@ -1,5 +1,5 @@
 #include <exporter.h>
-#include <postprocessor.h>
+#include <pathpostprocessor.h>
 
 #include <common/exception.h>
 
@@ -8,14 +8,18 @@ namespace Exporter::GCode
 
 void Exporter::convertToGCode(const Model::Task *task)
 {
-	// TODO go to 0 at start and end
+	PostProcessor processor(m_format, m_file);
+
 	task->forEachPath([this](Model::Path *path){ convertToGCode(path); });
+
+	// Back to home
+	processor.fastMove(QVector2D(0.0f, 0.0f));
 }
 
 void Exporter::convertToGCode(const Model::Path *path)
 {
 	const Model::PathSettings &settings = path->settings();
-	PostProcessor processor(settings, m_format, m_file);
+	PathPostProcessor processor(settings, m_format, m_file);
 
 	// Repeat for each passes
 	for (int i = 0, passes = settings.passes(); i < passes; ++i) {
@@ -23,7 +27,7 @@ void Exporter::convertToGCode(const Model::Path *path)
 	}
 }
 
-void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Polyline &polyline)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline)
 {
 	processor.fastMove(polyline.start());
 	processor.toolOn();
@@ -33,7 +37,7 @@ void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Polyline
 	processor.toolOff();
 }
 
-void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Bulge &bulge)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge)
 {
 	if (bulge.isLine()) {
 		processor.linearMove(bulge.end());

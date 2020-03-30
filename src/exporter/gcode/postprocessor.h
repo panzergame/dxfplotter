@@ -14,33 +14,27 @@ using namespace fmt::literals;
 class PostProcessor
 {
 private:
-	const Model::PathSettings &m_settings;
-	const Format &m_format;
 	std::ostream &m_stream;
 
-public:
-	explicit PostProcessor(const Model::PathSettings &settings, const Format &format, std::ostream &stream);
+protected:
+	const Format &m_format;
 
+	// TODO manage exception
+	/** Print a command to stream with a format and a list of named arguments
+	 * @param format A fmt valid format string.
+	 * @param args List of named arguments
+	 */
 	template <class ...Args>
 	void print(const std::string &format, Args&& ...args)
 	{
 		m_stream << fmt::format(format, std::forward<Args>(args)...) << "\n";
 	}
 
-	template <class ...Args>
-	void printCommand(const std::string &format, Args&& ...args)
-	{
-		print(format, std::forward<Args>(args)...,
-			  "F"_a=m_settings.feedRate(),
-			  "S"_a=m_settings.intensity());
-	}
+public:
+	explicit PostProcessor(const Format &format, std::ostream &stream);
 
-	void toolOn();
 	void toolOff();
-	void linearMove(const QVector2D &to);
 	void fastMove(const QVector2D &to);
-	void cwArc(const QVector2D &relativeCenter, const QVector2D &to);
-	void ccwArc(const QVector2D &relativeCenter, const QVector2D &to);
 };
 
 }

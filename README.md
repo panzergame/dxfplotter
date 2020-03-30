@@ -56,8 +56,8 @@ Simple set of GCode command is used:
 | Description | Default Command | Available Variables |
 | - | - | - |
 | Tool On | M1 S \{S:.0f} | S F |
-| Tool Off | M2 | S F|
-| Fast Move | G0 X \{X:.2f} Y \{Y:.2f} | S F X Y |
+| Tool Off | M2 | |
+| Fast Move | G0 X \{X:.2f} Y \{Y:.2f} | X Y |
 | Linear Move | G1 X \{X:.2f} Y \{Y:.2f} F \{F:.0f} | S F X Y |
 | CW Arc Move | G2 X \{X:.2f} Y \{Y:.2f} I \{I:.2f} J \{J:.2f} F \{F:.0f} | S F X Y I J |
 | CCW Arc Move | G3 X \{X:.2f} Y \{Y:.2f} I \{I:.2f} J \{J:.2f} F \{F:.0f} | S F X Y I J |
