@@ -14,8 +14,13 @@ void Exporter::convertToGCode(const Model::Task *task)
 
 void Exporter::convertToGCode(const Model::Path *path)
 {
-	PostProcessor processor(path->settings(), m_format, m_file);
-	convertToGCode(processor, path->polyline());
+	const Model::PathSettings &settings = path->settings();
+	PostProcessor processor(settings, m_format, m_file);
+
+	// Repeat for each passes
+	for (int i = 0, passes = settings.passes(); i < passes; ++i) {
+		convertToGCode(processor, path->polyline());
+	}
 }
 
 void Exporter::convertToGCode(PostProcessor &processor, const Geometry::Polyline &polyline)

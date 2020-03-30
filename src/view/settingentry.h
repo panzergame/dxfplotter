@@ -47,6 +47,26 @@ public:
 };
 
 template <>
+class SettingEntry<int> : public QSpinBox, public ISettingEntry
+{
+private:
+	Config::Variable<int> &m_variable;
+
+public:
+	explicit SettingEntry(Config::Variable<int> &variable, QWidget *parent)
+		:QSpinBox(parent),
+		m_variable(variable)
+	{
+		setValue(m_variable);
+	}
+
+	void save() const override
+	{
+		m_variable = value();
+	}
+};
+
+template <>
 class SettingEntry<std::string> : public QLineEdit, public ISettingEntry
 {
 private:

@@ -66,6 +66,9 @@ public:
 	std::optional<float> intensity() const;
 	void setIntensity(float intensity);
 
+	std::optional<int> passes() const;
+	void setPasses(int passes);
+
 Q_SIGNALS:
 	void selectionChanged(int size);
 };

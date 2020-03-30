@@ -14,5 +14,6 @@
 	<section name="default path">
 		<property name="feed rate" type="float">40</property>
 		<property name="intensity" type="float">50</property>
+		<property name="passes" type="int">1</property>
 	</section>
 </config>

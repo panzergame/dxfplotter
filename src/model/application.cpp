@@ -34,7 +34,7 @@ static std::string configFilePath()
 PathSettings Application::defaultPathSettings() const
 {
 	const Config::Config::DefaultPath &defaultPath = m_config.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity());
+	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.passes());
 }
 
 Application::Application()
