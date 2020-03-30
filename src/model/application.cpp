@@ -9,6 +9,7 @@
 #include <QMimeDatabase>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFileInfo>
 #include <QDebug>
 
 namespace Model
@@ -70,6 +71,10 @@ bool Application::loadFile(const QString &fileName)
 	else {
 		return false;
 	}
+
+	// Update window title based on file name.
+	const QString title = QFileInfo(fileName).fileName();
+	emit titleChanged(title);
 
 	return true;
 }

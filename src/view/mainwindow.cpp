@@ -55,6 +55,8 @@ MainWindow::MainWindow(Model::Application &app)
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
+
+	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 }
 
 void MainWindow::openFile()
