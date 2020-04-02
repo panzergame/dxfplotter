@@ -71,65 +71,65 @@ private:
 	{
 		// Direction of polyline, at first normal direction.
 		Item::Direction direction = Item::NORMAL;
-		// Nearest neighbour with distance.
-		std::vector<std::pair<size_t, float> > matches;
 
 		while (index != -1) {
+			const size_t tipIndex = index * 2 + side;
 			// Tips of the current polyline at the right side.
-			const Tip &tip = tips[index * 2 + side];
+			const Tip &tip = tips[tipIndex];
 
 			// Coordinate of search point.
 			const float coord[2] = {tip.point.x(), tip.point.y()};
 
-			// Search for the nearest neighbours.
-			const int nbMatches = tree.radiusSearch(coord, m_closeTolerance, matches, nanoflann::SearchParams());
+			// Nearest neighbour with distance.
+			std::array<size_t, 2> matchIndices;
+			std::array<float, 2> matchDistances;
 
-			/* If there's more than 1 real neighbour (2 with it self included)
-			* the shape is not a contour.
-			*/
-			if (nbMatches > 2) {
-				qInfo() << "not a countour"; // TODO logging
-				index = -1;
-			}
-			else if (nbMatches == 2) {
+			// Search for the nearest neighbours.
+			const int nbMatches = tree.knnSearch(coord, 2, matchIndices.data(), matchDistances.data());
+
+			if (nbMatches == 2) {
 				// Find neighbour that it's not ourself.
-				const Tip *neighbour;
-				for (const auto &match : matches) {
-					neighbour = &tips[match.first];
-					if (neighbour != &tip) {
-						break;
+				const int neighbourMatchIndex = (matchIndices[0] == tipIndex) ? 1 : 0;
+				const int neighbourIndex = matchIndices[neighbourMatchIndex];
+				// Check if neighbour is not further than tolerance
+				if (matchDistances[neighbourMatchIndex] <= m_closeTolerance) {
+					const Tip &neighbour = tips[neighbourIndex];
+
+					assert(&tip != &neighbour);
+
+					const PolylineIndex neighbourIndex = neighbour.polylineIndex;
+					/* If polyline is already connected (in case of circular shape
+					* one side can already connect all polylines) we discard.
+					*/
+					if (unconnectedPolylines.find(neighbourIndex) == unconnectedPolylines.end()) {
+						index = -1;
+					}
+					else {
+						// If end matchs start then polylines are in same direction, otherwise they are opposed.
+						const bool opposed = (tip.type == neighbour.type);
+						Item::Direction neighbourDirection = (Item::Direction)((direction + opposed) % 2);
+
+						// Insert the polyline.
+						*inserter++ = {neighbourIndex, neighbourDirection};
+
+						// Remove polyline from unconnected list.
+						unconnectedPolylines.erase(neighbourIndex);
+
+						// Continue with the neighbour polyline.
+						index = neighbourIndex;
+						// Change to opposite side if polylines are opposed.
+						side = (Tip::Type)((side + opposed) % 2);
+						// Update direction
+						direction = neighbourDirection;
 					}
 				}
-
-				assert(&tip != neighbour);
-
-				const PolylineIndex neighbourIndex = neighbour->polylineIndex;
-				/* If polyline is already connected (in case of circular shape
-				 * one side can already connect all polylines) we discard.
-				 */
-				if (unconnectedPolylines.find(neighbourIndex) == unconnectedPolylines.end()) {
-					index = -1;
-				}
 				else {
-					// If end matchs start then polylines are in same direction, otherwise they are opposed.
-					const bool opposed = (tip.type == neighbour->type);
-					Item::Direction neighbourDirection = (Item::Direction)((direction + opposed) % 2);
-
-					// Insert the polyline.
-					*inserter++ = {neighbourIndex, neighbourDirection};
-
-					// Remove polyline from unconnected list.
-					unconnectedPolylines.erase(neighbourIndex);
-
-					// Continue with the neighbour polyline.
-					index = neighbourIndex;
-					// Change to opposite side if polylines are opposed.
-					side = (Tip::Type)((side + opposed) % 2);
-					// Update direction
-					direction = neighbourDirection;
+					// Neighbour too far
+					index = -1;
 				}
 			}
 			else {
+				// No neighbour
 				index = -1;
 			}
 		}
