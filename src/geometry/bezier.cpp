@@ -172,12 +172,22 @@ Bezier::List Bezier::splitToConvex() const
 	}
 	// Split at both point
 	if (isReal1 && isReal2) {
-		// TODO besoin d'ordonner ?
 		const float t1 = inflex[0].real();
 		const float t2 = (1.0f - t1) * inflex[1].real();
 
-		const Pair splitted1 = split(t1);
-		const Pair splitted2 = split(t2);
+		float tmax;
+		float tmin;
+		if (t1 < t2) {
+			tmin = t1;
+			tmax = t2;
+		}
+		else {
+			tmin = t2;
+			tmax = t1;
+		}
+
+		const Pair splitted1 = split(tmin);
+		const Pair splitted2 = split(tmax);
 
 		return {splitted1[0], splitted2[0], splitted2[1]};
 	}
