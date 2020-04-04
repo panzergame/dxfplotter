@@ -118,7 +118,7 @@ QVector2D Bezier::at(float t) const
 
 Bezier::Pair Bezier::split(float t) const
 {
-	assert(0.0f <= t && t <= 1.0f);
+	assert(0.0f < t && t < 1.0f);
 
 	const QVector2D p0 = m_point1 + t * (m_control1 - m_point1);
 	const QVector2D p1 = m_control1 + t * (m_control2 - m_control1);
@@ -128,7 +128,7 @@ Bezier::Pair Bezier::split(float t) const
 	const QVector2D p12 = p1 + t * (p2 - p1);
 
 	const QVector2D dp = p01 + t * (p12 - p01);
-    
+
 	const Bezier b1(m_point1, p0, p01, dp);
 	const Bezier b2(dp, p12, p2, m_point2);
 
@@ -172,24 +172,29 @@ Bezier::List Bezier::splitToConvex() const
 	}
 	// Split at both point
 	if (isReal1 && isReal2) {
-		const float t1 = inflex[0].real();
-		const float t2 = (1.0f - t1) * inflex[1].real();
+		float t1 = inflex[0].real();
+		float t2 = inflex[1].real();
 
-		float tmax;
-		float tmin;
-		if (t1 < t2) {
-			tmin = t1;
-			tmax = t2;
+		const Pair splitted1 = split(t1);
+
+		if (std::abs(t1 - t2) < 0.01) {
+			return {splitted1[0], splitted1[1]};
 		}
 		else {
-			tmin = t2;
-			tmax = t1;
+			// Order splitting points
+			if (t1 > t2) {
+				std::swap(t1, t2);
+			}
+
+			assert(t1 < t2);
+
+			// Make t2 relative to second bezier.
+			t2 = (1.0f - t1) * t2;
+
+			const Pair splitted2 = splitted1[1].split(t2);
+
+			return {splitted1[0], splitted2[0], splitted2[1]};
 		}
-
-		const Pair splitted1 = split(tmin);
-		const Pair splitted2 = split(tmax);
-
-		return {splitted1[0], splitted2[0], splitted2[1]};
 	}
 
 	// No split
