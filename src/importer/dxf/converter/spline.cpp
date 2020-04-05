@@ -21,14 +21,25 @@ Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier)
 		const Geometry::Bezier &bezier = bezierStack.top();
 		bezierStack.pop();
 
-		const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
-		if (optBiarc) {
-			const Geometry::Biarc &biarc = *optBiarc;
-			const float error = bezier.maxError(biarc);
-			if (error < 0.0001) { // TODO const
-				// The approximation is close enough.
-				polyline += biarc.toPolyline();
-				continue;
+		if (bezier.approximateLength() < 0.01) {
+// 			qInfo() << "to line";
+
+			polyline += bezier.toLine();
+			continue;
+		}
+		else {
+// 			qInfo() << "to arc" << bezier.approximateLength();
+
+			const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
+			if (optBiarc) {
+				const Geometry::Biarc &biarc = *optBiarc;
+				const float error = bezier.maxError(biarc);
+				if (error < 0.001) { // TODO const
+// 					qInfo() << (bezier.point1() - bezier.point2()).length();
+					// The approximation is close enough.
+					polyline += biarc.toPolyline();
+					continue;
+				}
 			}
 		}
 
