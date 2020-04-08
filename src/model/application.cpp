@@ -92,9 +92,12 @@ bool Application::loadDxf(const QString &fileName)
 		return false;
 	}
 
+	Config::Config::Dxf &dxf = m_config.dxf();
+
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance());
-	Geometry::Cleaner cleaner(assembler.polylines(), 0.01f);
+	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
+	// Remove small bulges
+	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength());
 
 	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
 	m_task = new Task(this, m_paths);
