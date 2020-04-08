@@ -1,5 +1,6 @@
 #include <application.h>
 #include <geometry/assembler.h>
+#include <geometry/cleaner.h>
 
 #include <importer/dxf/importer.h>
 #include <exporter/gcode/exporter.h>
@@ -91,11 +92,14 @@ bool Application::loadDxf(const QString &fileName)
 		return false;
 	}
 
-	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), m_config.dxf().assembleTolerance());
-	Geometry::Polyline::List mergedPolylines = assembler.mergedPolylines();
+	Config::Config::Dxf &dxf = m_config.dxf();
 
-	m_paths = Path::FromPolylines(std::move(mergedPolylines), defaultPathSettings());
+	// Merge polylines to create longest contours
+	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
+	// Remove small bulges
+	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength());
+
+	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
 	m_task = new Task(this, m_paths);
 
 	emit taskChanged(m_task);

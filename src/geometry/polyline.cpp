@@ -38,14 +38,4 @@ Polyline& Polyline::operator+=(const Polyline &other)
 	return *this;
 }
 
-/*std::ostream &operator<<(std::ostream &stream, const Polyline &polyline)
-{
-	stream << polyline.start();
-	for (const Bulge &bulge : polyline.m_bulges) {
-		stream << " -> " << bulge.end();
-	}
-
-	return stream;
-} TODO qInfo */
-
 }

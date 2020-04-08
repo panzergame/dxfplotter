@@ -4,6 +4,7 @@ set(SRC
 	bezier.cpp
 	biarc.cpp
 	bulge.cpp
+	cleaner.cpp
 	circle.cpp
 	cubicspline.cpp
 	polyline.cpp
@@ -15,6 +16,7 @@ set(SRC
 	bezier.h
 	biarc.h
 	bulge.h
+	cleaner.h
 	circle.h
 	cubicspline.h
 	polyline.h

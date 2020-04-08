@@ -11,8 +11,6 @@ namespace Geometry
 
 class Polyline : public Common::Aggregable<Polyline>
 {
-// friend std::ostream &operator<<(std::ostream &stream, const Polyline &polyline); TODO qInfo
-
 private:
 	Bulge::List m_bulges;
 
@@ -35,7 +33,5 @@ public:
 		}
 	}
 };
-
-// std::ostream &operator<<(std::ostream &stream, const Polyline &polyline);
 
 }
