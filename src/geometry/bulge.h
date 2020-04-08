@@ -33,7 +33,12 @@ public:
 	const QVector2D &start() const;
 	const QVector2D &end() const;
 
+	float length() const;
+
 	void invert();
+
+	Bulge extendStart(const QVector2D &start) const;
+	Bulge extendEnd(const QVector2D &end) const;
 
 	bool isLine() const;
 	Orientation orientation() const;

@@ -27,10 +27,26 @@ const QVector2D &Bulge::end() const
 	return m_end;
 }
 
+float Bulge::length() const
+{
+	// Radius is line length p 1 + t^2 / (4 * |t|)
+	return (m_start - m_end).length() * (1.0f + m_tangent * m_tangent);
+}
+
 void Bulge::invert()
 {
 	std::swap(m_start, m_end);
 	m_tangent = -m_tangent;
+}
+
+Bulge Bulge::extendStart(const QVector2D &start) const
+{
+	return Bulge(start, m_end, m_tangent);
+}
+
+Bulge Bulge::extendEnd(const QVector2D &end) const
+{
+	return Bulge(m_start, end, m_tangent);
 }
 
 bool Bulge::isLine() const
@@ -52,9 +68,8 @@ Circle Bulge::toCircle() const
 	// Tangent is at end point, so we get line from end to start.
 	const QVector2D line = m_start - m_end;
 
-	const float midline = line.length() / 2.0f;
-	const float sagitta = midline * absTangent;
-	const float radius = (sagitta * sagitta + midline * midline) / (2.0f * sagitta);
+	const float lineLength = line.length();
+	const float radius = (lineLength * (1.0f + m_tangent * m_tangent)) / (4.0f * absTangent);
 
 	// Angle of line end -> start
 	const float lineAngle = LineAngle(line);

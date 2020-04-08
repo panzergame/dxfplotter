@@ -60,7 +60,7 @@ private:
 	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<float, TipAdaptor>, TipAdaptor, 2>;
 
 	Polyline::List m_polylines;
-	float m_closeTolerance;
+	const float m_closeTolerance;
 
 	Polyline::List m_mergedPolylines;
 
@@ -140,7 +140,7 @@ private:
 public:
 	explicit Assembler(Polyline::List &&polylines, float closeTolerance);
 
-	Polyline::List &&mergedPolylines();
+	Polyline::List &&polylines();
 };
 
 }

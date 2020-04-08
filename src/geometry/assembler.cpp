@@ -78,7 +78,7 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	:m_polylines(polylines),
 	m_closeTolerance(closeTolerance)
 {
-	const Tip::List tips = constructTips();
+	const Tip::List tips = constructTips(); // TODO move all in member variable and no arguments
 
 	TipAdaptor adaptor(tips);
 	KDTree tree(2, adaptor);
@@ -87,7 +87,7 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	m_mergedPolylines = connectTips(tips, tree);
 }
 
-Polyline::List &&Assembler::mergedPolylines()
+Polyline::List &&Assembler::polylines()
 {
 	return std::move(m_mergedPolylines);
 }
