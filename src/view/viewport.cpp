@@ -6,13 +6,6 @@
 namespace View
 {
 
-static const QBrush xAxisBrush(QColor(255, 0, 0));
-static const QBrush yAxisBrush(QColor(0, 255, 0));
-static const QPen xAxisPen(xAxisBrush, 0);
-static const QPen yAxisPen(yAxisBrush, 0);
-
-static const QBrush backgroundBrush(QColor(0, 0, 0));
-
 constexpr int rubberBandTolerance = 2;
 // Rectangle extend used when clicking with empty rubber band.
 constexpr QPoint pointSelectionRectExtend(10, 10);
@@ -106,6 +99,25 @@ void Viewport::setupModel()
 	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 
+void Viewport::drawOrigin(QPainter *painter)
+{
+	static const QBrush brush(QColor(255, 0, 0));
+	static const QPen pen(brush, 0);
+
+	static const QPointF center(0.0f, 0.0f);
+	static const QPointF x(1.0f, 0.0f);
+	static const QPointF y(0.0f, 1.0f);
+	static const float scale = 0.5f;
+
+	// X Axis
+	painter->setPen(pen);
+	painter->drawLine(center - x * scale, center + x * scale);
+
+	// Y Axis
+	painter->setPen(pen);
+	painter->drawLine(center - y * scale, center + y * scale);
+}
+
 void Viewport::taskChanged()
 {
 	setupModel();
@@ -182,6 +194,14 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
+void Viewport::drawBackground(QPainter *painter, const QRectF &rect)
+{
+	static const QBrush brush(QColor(0, 0, 0));
+	painter->fillRect(rect, brush);
+
+	drawOrigin(painter);
+}
+
 Viewport::Viewport(Model::Application &app)
 	:TaskModelObserver(app)
 {
@@ -193,7 +213,6 @@ Viewport::Viewport(Model::Application &app)
 	setTransformationAnchor(AnchorUnderMouse);
 
 	setRenderHints(QPainter::Antialiasing);
-	setBackgroundBrush(View::backgroundBrush);
 
 	// Hid scroll bars
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
