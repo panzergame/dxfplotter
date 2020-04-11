@@ -8,9 +8,9 @@ namespace Geometry
 {
 
 template<typename T>
-typename std::vector<T>::iterator insert_sorted(std::vector<T> &vec, const T &item)
+typename std::vector<T>::iterator insertSortedReverse(std::vector<T> &vec, const T &item)
 {
-    return vec.insert(std::upper_bound(vec.begin(), vec.end(), item), item);
+    return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, std::greater()), item);
 }
 
 class PolylineLengthCleaner
@@ -29,9 +29,9 @@ private:
 		{
 		}
 
-		bool operator<(const Item &other) const
+		bool operator>(const Item &other) const
 		{
-			return length < other.length;
+			return length > other.length;
 		}
 	};
 
@@ -58,8 +58,8 @@ private:
 			}
 		}
 
-		// Sort small bulges by lengthè
-		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end());
+		// Sort small bulges by length in descending order
+		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end(), std::greater());
 	}
 
 	BulgeLinkedList::iterator extendNeighbourBulge(const BulgeLinkedList::iterator &it)
@@ -108,7 +108,7 @@ private:
 		const float length = neighbourIt->length();
 		// Reinsert extended bulge if still need to be merged.
 		if (length < m_minimumPolylineLength) {
-			insert_sorted(m_itemsToMerge, Item(neighbourIt, length));
+			insertSortedReverse(m_itemsToMerge, Item(neighbourIt, length));
 		}
 	}
 
