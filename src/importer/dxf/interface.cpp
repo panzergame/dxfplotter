@@ -1,12 +1,6 @@
 #include <interface.h>
 #include <importer.h>
 
-#include <converter/arc.h>
-#include <converter/circle.h>
-#include <converter/line.h>
-#include <converter/lwpolyline.h>
-#include <converter/spline.h>
-
 #include <iostream>
 
 namespace Importer
@@ -14,21 +8,6 @@ namespace Importer
 
 namespace Dxf
 {
-
-// TODO déplacer tout les convertX dans Importer pour limiter la duplication de code
-
-template <class Entity>
-inline Importer& operator<<(Importer &importer, const Entity &entity)
-{
-	importer << convertToPolylines(entity);
-	return importer;
-}
-
-template <class Entity>
-inline Importer& operator<<(Importer &importer, const Entity *entity)
-{
-	return importer << *entity;
-}
 
 Interface::Interface(Importer &importer)
 	:m_importer(importer)
@@ -95,7 +74,7 @@ void Interface::addPoint(const DRW_Point& data)
 void Interface::addLine(const DRW_Line& data)
 {
 	PRINT_FUNC;
-	m_importer << data;
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addRay(const DRW_Ray& data)
@@ -111,13 +90,14 @@ void Interface::addXline(const DRW_Xline& data)
 void Interface::addArc(const DRW_Arc& data)
 {
 	PRINT_FUNC;
-	m_importer << data;
+	m_importer.convertToPolylines(data);
+
 }
 
 void Interface::addCircle(const DRW_Circle& data)
 {
 	PRINT_FUNC;
-	m_importer << data;
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addEllipse(const DRW_Ellipse& data)
@@ -128,7 +108,7 @@ void Interface::addEllipse(const DRW_Ellipse& data)
 void Interface::addLWPolyline(const DRW_LWPolyline& data)
 {
 	PRINT_FUNC;
-	m_importer << data;
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addPolyline(const DRW_Polyline& data)
@@ -139,7 +119,7 @@ void Interface::addPolyline(const DRW_Polyline& data)
 void Interface::addSpline(const DRW_Spline* data)
 {
 	PRINT_FUNC;
-	m_importer << data;
+	m_importer.convertToPolylines(*data);
 }
 
 void Interface::addKnot(const DRW_Entity& data)

@@ -78,14 +78,14 @@ namespace Geometry
 		return std::atan2(line.y(), line.x());
 	}
 
-	/** Ensure start < end assuming start and end are engle of a CCW arc.
+	/** Ensure start < end assuming start and end are angle of a CCW arc.
 	 * @return new end angle, may remain unchanged
 	 */
 	inline float EnsureEndGreater(float start, float end)
 	{
 		if (end < start) {
 			// Add pi*2 ensuring end is greater than start.
-			end = M_PI * 2.0f + end;
+			end += M_PI * 2.0f;
 		}
 
 		assert(start < end);
@@ -96,10 +96,6 @@ namespace Geometry
 	/// Return counter clockwise delta angle between start and end
 	inline float DeltaAngle(float start, float end)
 	{
-		// End before start, meaning start is modulus PI*2
-		if (end < start) {
-			return (M_PI * 2.0f + end) - start;
-		}
-		return (end - start);
+		return (EnsureEndGreater(start, end) - start);
 	}
 }

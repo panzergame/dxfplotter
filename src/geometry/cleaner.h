@@ -13,10 +13,9 @@ class Cleaner
 {
 private:
 	Polyline::List m_polylines;
-	const float m_mergeTolerance;
 
 public:
-	explicit Cleaner(Polyline::List &&polylines, float mergeTolerance);
+	explicit Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength);
 
 	Polyline::List &&polylines();
 };

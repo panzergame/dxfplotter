@@ -41,12 +41,15 @@ public:
 
 	QVector2D at(float t) const;
 
+	float approximateLength() const;
+
 	Pair split(float t) const;
 	Pair splitHalf() const;
 	/// Split bezier keeping only convex shape.
 	List splitToConvex() const;
 
 	std::optional<Biarc> toBiarc() const;
+	Polyline toLine() const;
 
 	float maxError(const Biarc &biarc) const;
 };

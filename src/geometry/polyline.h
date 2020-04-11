@@ -32,6 +32,14 @@ public:
 			functor(bulge);
 		}
 	}
+
+	template <class Functor>
+	void transformEachBulge(Functor &&functor)
+	{
+		for (Bulge &bulge : m_bulges) {
+			functor(bulge);
+		}
+	}
 };
 
 }

@@ -43,7 +43,6 @@ set(LINK_LIBRARIES
 	config
 	dxf
 	gcode
-	converter
 	geometry
 	libdxfrw
 	fmt

@@ -2,6 +2,8 @@
 
 #include <iterator>
 
+#include <QDebug> // TODO
+
 namespace Geometry
 {
 
@@ -11,7 +13,7 @@ typename std::vector<T>::iterator insert_sorted(std::vector<T> &vec, const T &it
     return vec.insert(std::upper_bound(vec.begin(), vec.end(), item), item);
 }
 
-class PolylineCleaner
+class PolylineLengthCleaner
 {
 private:
 	using BulgeLinkedList = std::list<Bulge>;
@@ -34,7 +36,7 @@ private:
 	};
 
 	const Polyline &m_polyline;
-	const float m_mergeTolerance;
+	const float m_minimumPolylineLength;
 
 	BulgeLinkedList m_bulges;
 	Item::List m_itemsToMerge;
@@ -48,13 +50,15 @@ private:
 
 	void initBulgesToMerge()
 	{
+		// Add every small bulges
 		for (BulgeLinkedList::iterator it = m_bulges.begin(), end = m_bulges.end(); it != end; ++it) {
 			const float length = it->length();
-			if (length < m_mergeTolerance) {
+			if (length < m_minimumPolylineLength) {
 				m_itemsToMerge.emplace_back(it, length);
 			}
 		}
 
+		// Sort small bulges by lengthè
 		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end());
 	}
 
@@ -103,15 +107,15 @@ private:
 
 		const float length = neighbourIt->length();
 		// Reinsert extended bulge if still need to be merged.
-		if (length < m_mergeTolerance) {
+		if (length < m_minimumPolylineLength) {
 			insert_sorted(m_itemsToMerge, Item(neighbourIt, length));
 		}
 	}
 
 public:
-	explicit PolylineCleaner(const Polyline &polyline, float mergeTolerance)
+	explicit PolylineLengthCleaner(const Polyline &polyline, float minimumPolylineLength)
 		:m_polyline(polyline),
-		m_mergeTolerance(mergeTolerance)
+		m_minimumPolylineLength(minimumPolylineLength)
 	{
 		constructLinkedList();
 
@@ -123,7 +127,11 @@ public:
 
 			mergeItem(item);
 		}
+	}
 
+	bool empty() const
+	{
+		return m_bulges.empty();
 	}
 
 	Polyline polyline() const
@@ -132,16 +140,41 @@ public:
 	}
 };
 
-Cleaner::Cleaner(Polyline::List &&polylines, float mergeTolerance)
-	:m_polylines(polylines.size()),
-	m_mergeTolerance(mergeTolerance)
+class ArcLengthCleaner
 {
-	std::transform(polylines.begin(), polylines.end(), m_polylines.begin(),
-		[mergeTolerance = m_mergeTolerance](const Polyline &polyline)
-		{
-			PolylineCleaner cleaner(polyline, mergeTolerance);
-			return cleaner.polyline();
+private:
+	Polyline m_polyline;
+
+public:
+	explicit ArcLengthCleaner(Polyline &&polyline, float minimumArcLength)
+		:m_polyline(polyline)
+	{
+		m_polyline.transformEachBulge([minimumArcLength](Bulge &bulge){
+			if (bulge.isArc() && bulge.length() < minimumArcLength) {
+				bulge.linify();
+			}
 		});
+	}
+
+	Polyline &&polyline()
+	{
+		return std::move(m_polyline);
+	}
+};
+
+Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength)
+{
+	for (const Polyline &polyline : polylines) {
+		// Prune small polyline length
+		PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
+
+		if (!lengthCleaner.empty()) {
+			// Convert small arcs to lines
+			ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+
+			m_polylines.push_back(arcCleaner.polyline());
+		}
+	}
 }
 
 Polyline::List &&Cleaner::polylines()

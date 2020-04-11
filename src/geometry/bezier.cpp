@@ -116,6 +116,16 @@ QVector2D Bezier::at(float t) const
 			(t * t * t) * m_point2;
 }
 
+float Bezier::approximateLength() const
+{
+	const float chord = (m_point2 - m_point1).length();
+	const float controlNet = (m_control1 - m_point1).length() +
+		(m_control2 - m_control1).length() +
+		(m_point2 - m_control2).length();
+
+	return (chord + controlNet) / 2.0f;
+}
+
 Bezier::Pair Bezier::split(float t) const
 {
 	assert(0.0f < t && t < 1.0f);
@@ -222,6 +232,11 @@ std::optional<Biarc> Bezier::toBiarc() const
 	Biarc biarc(m_point1, incenter, m_point2, (m_control1 - m_point1), (m_control2 - m_point2));
 
 	return std::make_optional(biarc);
+}
+
+Polyline Bezier::toLine() const
+{
+	return Polyline({Bulge{m_point1, m_point2, 0.0f}});
 }
 
 float Bezier::maxError(const Biarc &biarc) const
