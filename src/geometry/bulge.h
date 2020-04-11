@@ -35,12 +35,18 @@ public:
 
 	float length() const;
 
+	/// Change direction
 	void invert();
+	/// Transform to line, means tangent is 0.
+	void linify();
 
+	// Extend bulge start point
 	Bulge extendStart(const QVector2D &start) const;
+	// Extend bulge end point
 	Bulge extendEnd(const QVector2D &end) const;
 
 	bool isLine() const;
+	bool isArc() const;
 	Orientation orientation() const;
 
 	Circle toCircle() const;

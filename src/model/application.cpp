@@ -82,22 +82,22 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadDxf(const QString &fileName)
 {
+	Config::Config::Dxf &dxf = m_config.dxf();
+
 	Geometry::Polyline::List polylines;
 	try {
 		// Import data
-		Importer::Dxf::Importer imp(fileName.toStdString());
+		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
 		polylines = imp.polylines();
 	}
 	catch (const Common::FileException &e) {
 		return false;
 	}
 
-	Config::Config::Dxf &dxf = m_config.dxf();
-
 	// Merge polylines to create longest contours
 	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
 	// Remove small bulges
-	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength());
+	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
 	m_task = new Task(this, m_paths);

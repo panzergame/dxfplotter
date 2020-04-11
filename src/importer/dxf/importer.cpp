@@ -18,7 +18,46 @@ void Importer::addPolyline(const Geometry::Polyline& polyline)
 	m_polylines.push_back(polyline);
 }
 
-Importer::Importer(const std::string& filename)
+Geometry::Polyline Importer::bezierToPolyline(const Geometry::Bezier &rootBezier)
+{
+	// Queue of bezier to convert to biarc
+	std::stack<Geometry::Bezier, Geometry::Bezier::List> bezierStack({rootBezier});
+
+	Geometry::Polyline polyline;
+
+	while (!bezierStack.empty()) {
+		const Geometry::Bezier bezier = bezierStack.top();
+		bezierStack.pop();
+
+		if (bezier.approximateLength() < m_minimumSplineLength) {
+			polyline += bezier.toLine();
+			continue;
+		}
+		else {
+			const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
+			if (optBiarc) {
+				const Geometry::Biarc &biarc = *optBiarc;
+				const float error = bezier.maxError(biarc);
+				if (error < m_splineToArcPrecision) {
+					// The approximation is close enough.
+					polyline += biarc.toPolyline();
+					continue;
+				}
+			}
+		}
+
+		// Split bezier and schedule to conversion
+		const Geometry::Bezier::Pair splitted = bezier.splitHalf();
+		bezierStack.push(splitted[1]);
+		bezierStack.push(splitted[0]);
+	}
+
+	return polyline;
+}
+
+Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength)
+	:m_splineToArcPrecision(splineToArcPrecision),
+	m_minimumSplineLength(minimumSplineLength)
 {
 	Interface interface(*this);
 
@@ -38,44 +77,6 @@ void Importer::convertToPolylines(const DRW_Line &line)
 	const Geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
 
 	addPolyline(Geometry::Polyline({bulge}));
-}
-
-
-Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier)
-{
-	// Queue of bezier to convert to biarc
-	std::stack<Geometry::Bezier, Geometry::Bezier::List> bezierStack({rootBezier});
-
-	Geometry::Polyline polyline;
-
-	while (!bezierStack.empty()) {
-		const Geometry::Bezier bezier = bezierStack.top();
-		bezierStack.pop();
-
-		if (bezier.approximateLength() < 0.01) {
-			polyline += bezier.toLine();
-			continue;
-		}
-		else {
-			const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
-			if (optBiarc) {
-				const Geometry::Biarc &biarc = *optBiarc;
-				const float error = bezier.maxError(biarc);
-				if (error < 0.001) { // TODO const
-					// The approximation is close enough.
-					polyline += biarc.toPolyline();
-					continue;
-				}
-			}
-		}
-
-		// Split bezier and schedule to conversion
-		const Geometry::Bezier::Pair splitted = bezier.splitHalf();
-		bezierStack.push(splitted[1]);
-		bezierStack.push(splitted[0]);
-	}
-
-	return polyline;
 }
 
 void Importer::convertToPolylines(const DRW_Spline &spline)

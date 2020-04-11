@@ -39,6 +39,11 @@ void Bulge::invert()
 	m_tangent = -m_tangent;
 }
 
+void Bulge::linify()
+{
+	m_tangent = 0.0f;
+}
+
 Bulge Bulge::extendStart(const QVector2D &start) const
 {
 	return Bulge(start, m_end, m_tangent);
@@ -52,6 +57,11 @@ Bulge Bulge::extendEnd(const QVector2D &end) const
 bool Bulge::isLine() const
 {
 	return std::abs(m_tangent) < std::numeric_limits<float>::epsilon(); // TODO utils
+}
+
+bool Bulge::isArc() const
+{
+	return !isLine();
 }
 
 Orientation Bulge::orientation() const

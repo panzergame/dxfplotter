@@ -1,6 +1,7 @@
 #pragma once
 
 #include <geometry/polyline.h>
+#include <geometry/bezier.h>
 
 #include <string>
 
@@ -14,10 +15,15 @@ class Importer
 private:
 	Geometry::Polyline::List m_polylines;
 
+	const float m_splineToArcPrecision;
+	const float m_minimumSplineLength;
+
 	void addPolyline(const Geometry::Polyline &polyline);
 
+	Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier);
+
 public:
-	explicit Importer(const std::string &filename);
+	explicit Importer(const std::string &filename, float splineToArcPrecision, float minimumSplineLength);
 
 	Geometry::Polyline::List &&polylines();
 
