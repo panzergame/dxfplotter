@@ -19,6 +19,7 @@ class Path : public QObject, public Common::Aggregable<Path>
 
 private:
 	Geometry::Polyline m_polyline;
+	Geometry::Polyline::List m_offsetedPolylines;
 	std::string m_name;
 	PathSettings m_settings;
 	bool m_selected;
@@ -29,9 +30,12 @@ public:
 	static ListPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings);
 
 	const Geometry::Polyline &polyline() const;
+	const Geometry::Polyline::List &offsetedPolylines() const;
 	const std::string &name() const;
 	const PathSettings &settings() const;
 	PathSettings &settings();
+
+	void offset(float offset);
 
 	void select();
 	void deselect();

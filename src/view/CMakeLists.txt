@@ -1,6 +1,8 @@
 set(SRC
+	bulgepainter.cpp
 	settings.cpp
 	mainwindow.cpp
+	offsetedpathitem.cpp
 	path.cpp
 	pathitem.cpp
 	rubberband.cpp
@@ -8,9 +10,11 @@ set(SRC
 	tasklistmodel.cpp
 	viewport.cpp
 
+	bulgepainter.h
 	settings.h
 	settingentry.h
 	mainwindow.h
+	offsetedpathitem.h
 	path.h
 	pathitem.h
 	rubberband.h

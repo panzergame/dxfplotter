@@ -2,8 +2,9 @@
 
 #include <model/path.h>
 
+#include <view/offsetedpathitem.h>
+
 #include <QGraphicsPathItem>
-#include <QPen>
 
 namespace View
 {
@@ -18,6 +19,9 @@ private:
 
 	QPainterPath m_paintPath;
 	QPainterPath m_shapePath;
+
+	// Item of offseted polylines of the same path.
+	OffsetedPathItem m_offsetedPath;
 
 	QPainterPath paintPath() const;
 	QPainterPath shapePath() const;

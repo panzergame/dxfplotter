@@ -14,11 +14,11 @@ Arc::Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
 {
 	if (m_orientation == Orientation::CCW) {
 		m_endAngle = EnsureEndGreater(m_startAngle, m_endAngle);
-		assert(m_startAngle < m_endAngle);
+		assert(m_startAngle <= m_endAngle);
 	}
 	else {
 		m_startAngle = EnsureEndGreater(m_endAngle, m_startAngle);
-		assert(m_endAngle < m_startAngle);
+		assert(m_endAngle <= m_startAngle);
 	}
 
 	m_spanAngle = m_endAngle - m_startAngle;

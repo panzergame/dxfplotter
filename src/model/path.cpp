@@ -28,6 +28,11 @@ const Geometry::Polyline &Path::polyline() const
 	return m_polyline;
 }
 
+const Geometry::Polyline::List &Path::offsetedPolylines() const
+{
+	return m_offsetedPolylines;
+}
+
 const std::string &Path::name() const
 {
 	return m_name;

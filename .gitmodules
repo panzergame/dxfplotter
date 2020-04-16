@@ -4,6 +4,6 @@
 [submodule "thirdparty/nanoflann"]
 	path = thirdparty/nanoflann
 	url = https://github.com/jlblancoc/nanoflann.git
-[submodule "thirdparty/CavalierContours"]
-	path = thirdparty/CavalierContours
+[submodule "thirdparty/cavaliercontours"]
+	path = thirdparty/cavaliercontours
 	url = https://github.com/jbuckmccready/CavalierContours.git

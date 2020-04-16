@@ -17,6 +17,13 @@ Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)
 {
 }
 
+Bulge::Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double> &v2)
+	:m_start(v1.x(), v1.y()),
+	m_end(v2.x(), v2.y()),
+	m_tangent(v1.bulge())
+{
+}
+
 const QVector2D &Bulge::start() const
 {
 	return m_start;
@@ -25,6 +32,11 @@ const QVector2D &Bulge::start() const
 const QVector2D &Bulge::end() const
 {
 	return m_end;
+}
+
+float Bulge::tangent() const
+{
+	return m_tangent;
 }
 
 float Bulge::length() const
