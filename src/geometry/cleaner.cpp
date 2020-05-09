@@ -10,7 +10,7 @@ namespace Geometry
 template<typename T>
 typename std::vector<T>::iterator insertSortedReverse(std::vector<T> &vec, const T &item)
 {
-    return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, std::greater()), item);
+    return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, std::greater<T>()), item);
 }
 
 class PolylineLengthCleaner
@@ -59,7 +59,7 @@ private:
 		}
 
 		// Sort small bulges by length in descending order
-		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end(), std::greater());
+		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end(), std::greater<Item>());
 	}
 
 	BulgeLinkedList::iterator extendNeighbourBulge(const BulgeLinkedList::iterator &it)
