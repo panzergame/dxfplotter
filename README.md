@@ -17,6 +17,7 @@ It targets only laser CNC following every lines and arcs from DXF file.
 * DXF support line, arc, circle, polyline, spline
 * Configurable GCode command format
 * Multi selected path setting edition
+* Path offseting (Tool Compensation)
 
 ## Installation
 
