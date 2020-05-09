@@ -9,7 +9,7 @@ void Path::setupModel()
 
 	hide();
 
-	connect(m_groupSettings.get(), &Model::PathGroupSettings::selectionChanged, this, &Path::selectionChanged);
+	connect(m_task, &Model::Task::selectionChanged, this, &Path::selectionChanged);
 
 	connectOnFieldChanged<double>(feedRate, [this](double value) { m_groupSettings->setFeedRate(value); });
 	connectOnFieldChanged<double>(intensity, [this](double value) { m_groupSettings->setIntensity(value); });

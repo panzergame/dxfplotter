@@ -4,6 +4,8 @@
 
 #include <geometry/bulge.h>
 
+#include "cavc/polylineoffset.hpp"
+
 #include <vector>
 
 namespace Geometry
@@ -13,6 +15,8 @@ class Polyline : public Common::Aggregable<Polyline>
 {
 private:
 	Bulge::List m_bulges;
+
+	explicit Polyline(const cavc::Polyline<double> &polyline);
 
 public:
 	explicit Polyline() = default;
@@ -24,6 +28,7 @@ public:
 	Polyline &invert();
 
 	Polyline& operator+=(const Polyline &other);
+
 
 	template <class Functor>
 	void forEachBulge(Functor &&functor) const
@@ -40,6 +45,8 @@ public:
 			functor(bulge);
 		}
 	}
+
+	Polyline::List offsetted(float offset) const;
 };
 
 }

@@ -88,7 +88,7 @@ namespace Geometry
 			end += M_PI * 2.0f;
 		}
 
-		assert(start < end);
+		assert(start <= end);
 
 		return end;
 	}

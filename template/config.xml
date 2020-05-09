@@ -19,5 +19,8 @@
 		<property name="intensity" type="float">50</property>
 		<property name="passes" type="int">1</property>
 	</section>
+	<section name="tool">
+		<property name="radius" type="float">0.1</property>
+	</section>
 </config>
-s
+

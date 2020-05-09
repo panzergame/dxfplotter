@@ -16,7 +16,7 @@ class PathGroupSettings : public QObject
 	Q_OBJECT;
 
 private:
-	Path::ListPtr m_selectedPaths;
+	const Model::Task *m_task;
 
 	/** Return value of a path settings property if all path have
 	 * the same value for the given property.
@@ -27,14 +27,12 @@ private:
 	template <typename Getter, typename Return = typename Common::MemberFunctionTraits<Getter>::Return>
 	std::optional<Return> valueIfAllEqual(Getter &&getter) const
 	{
-		assert(!m_selectedPaths.empty());
-
-		Path::ListPtr::const_iterator it = m_selectedPaths.begin();
+		Path::ListPtr::const_iterator it = m_task->selectedPaths().begin();
 
 		// Reference value to compare with.
 		const Return &reference = ((*it)->settings().*getter)();
 
-		if (std::all_of(++it, m_selectedPaths.end(), [reference, &getter](Path *path)
+		if (std::all_of(++it, m_task->selectedPaths().end(), [reference, &getter](Path *path)
 			{
 				const Return& value = (path->settings().*getter)();
 				return value == reference;
@@ -48,14 +46,10 @@ private:
 	template <typename Setter, typename T>
 	void setValue(Setter &&setter, T value)
 	{
-		for (Path *path : m_selectedPaths) {
+		m_task->forEachSelectedPath([value, &setter](Model::Path *path){
 			(path->settings().*setter)(value);
-		}
+		});
 	}
-
-protected Q_SLOTS:
-	void pathSelected(Path *path);
-	void pathDeselected(Path *path);
 
 public:
 	explicit PathGroupSettings(const Task *task);
@@ -68,9 +62,6 @@ public:
 
 	std::optional<int> passes() const;
 	void setPasses(int passes);
-
-Q_SIGNALS:
-	void selectionChanged(int size);
 };
 
 }

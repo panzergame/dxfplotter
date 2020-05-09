@@ -8,10 +8,12 @@
 
 #include <QVector2D>
 
+#include <cavc/plinesegment.hpp>
+
 namespace Geometry
 {
 
-class Bulge : public Common::Aggregable<Bulge>
+class Bulge : public Common::Aggregable<Bulge> // TODO rename segment and tangent bulge ?
 {
 private:
 	QVector2D m_start;
@@ -28,10 +30,12 @@ public:
 	 * otherwise anti clockwise from start to end.
 	 */
 	explicit Bulge(const QVector2D &start, const QVector2D &end, float tangent);
-	Bulge() = default;
+	explicit Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double> &v2);
+	explicit Bulge() = default;
 
 	const QVector2D &start() const;
 	const QVector2D &end() const;
+	float tangent() const;
 
 	float length() const;
 

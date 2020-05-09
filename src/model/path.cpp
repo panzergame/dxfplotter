@@ -1,10 +1,12 @@
 #include <path.h>
 
+#include <geometry/cleaner.h>
+
 namespace Model
 {
 
-Path::Path(Geometry::Polyline &&polyline, const std::string &name, const PathSettings &settings)
-	:m_polyline(polyline),
+Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
+	:m_basePolyline(basePolyline),
 	m_name(name),
 	m_settings(settings),
 	m_selected(false)
@@ -23,9 +25,22 @@ Path::ListPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const Pa
 	return paths;
 }
 
-const Geometry::Polyline &Path::polyline() const
+const Geometry::Polyline &Path::basePolyline() const
 {
-	return m_polyline;
+	return m_basePolyline;
+}
+
+const Geometry::Polyline::List &Path::offsetedPolylines() const
+{
+	return m_offsetedPolylines;
+}
+
+Geometry::Polyline::List Path::finalPolylines() const
+{
+	if (m_offsetedPolylines.empty()) {
+		return {m_basePolyline};
+	}
+	return m_offsetedPolylines;
 }
 
 const std::string &Path::name() const
@@ -41,6 +56,24 @@ const Model::PathSettings &Path::settings() const
 Model::PathSettings &Path::settings()
 {
 	return m_settings;
+}
+
+void Path::offset(float offset, float minimumPolylineLength, float minimumArcLength)
+{
+	Geometry::Polyline::List offsetedPolylines = m_basePolyline.offsetted(offset);
+
+	Geometry::Cleaner cleaner(std::move(offsetedPolylines), minimumPolylineLength, minimumArcLength);
+
+	m_offsetedPolylines = cleaner.polylines();
+
+	emit offseted();
+}
+
+void Path::resetOffset()
+{
+	m_offsetedPolylines.clear();
+
+	emit offseted();
 }
 
 void Path::select()
@@ -72,3 +105,4 @@ void Path::toggleSelect()
 }
 
 }
+

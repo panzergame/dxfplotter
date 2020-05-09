@@ -20,6 +20,7 @@ private:
 	QWidget *setupLeftPanel();
 	QWidget *setupCenterPanel();
 	void setupUi();
+	void setupActions();
 
 public:
 	explicit MainWindow(Model::Application &app);

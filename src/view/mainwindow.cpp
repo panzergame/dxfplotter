@@ -45,6 +45,19 @@ void MainWindow::setupUi()
 	horizontalLayout->addWidget(horiSplitter);
 }
 
+void MainWindow::setupActions()
+{
+	// File actions
+	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
+
+	// Edit actions
+	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &Model::Application::leftCutterCompensation);
+	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &Model::Application::rightCutterCompensation);
+	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
+}
+
 MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
@@ -52,9 +65,7 @@ MainWindow::MainWindow(Model::Application &app)
 
 	showMaximized();
 
-	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
-	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
-	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
+	setupActions();
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 }
