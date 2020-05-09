@@ -25,6 +25,8 @@ public:
 	const QVector2D &start() const;
 	const QVector2D &end() const;
 
+	bool isClosed() const;
+
 	Polyline &invert();
 
 	Polyline& operator+=(const Polyline &other);

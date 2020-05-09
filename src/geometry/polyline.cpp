@@ -30,6 +30,11 @@ const QVector2D &Polyline::end() const
 	return m_bulges.back().end();
 }
 
+bool Polyline::isClosed() const
+{
+	return (start() == end());
+}
+
 Polyline &Polyline::invert()
 {
 	for (Bulge &bulge : m_bulges) {
@@ -53,16 +58,18 @@ Polyline::List Polyline::offsetted(float offset) const
 	cavc::Polyline<double> ccPolyline;
 
 	// Convert to CAVC polyline
-	const Bulge &first = m_bulges.front();
-
 	forEachBulge([&ccPolyline](const Bulge &bulge){
 		const QVector2D &start = bulge.start();
 		ccPolyline.addVertex(start.x(), start.y(), bulge.tangent());
 	});
 
-	// TODO open polyline
+	const bool closed = isClosed();
+	if (!closed) {
+		const QVector2D &endV = end();
+		ccPolyline.addVertex(endV.x(), endV.y(), 0.0f);
+	}
 
-	ccPolyline.isClosed() = true;
+	ccPolyline.isClosed() = closed;
 
 	std::vector<cavc::Polyline<double> > offsetedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
 
