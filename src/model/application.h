@@ -20,6 +20,8 @@ private:
 
 	PathSettings defaultPathSettings() const;
 
+	void cutterCompensation(float scale);
+
 public:
 	explicit Application();
 
@@ -31,6 +33,10 @@ public:
 	void loadPlot(const QString &fileName);
 
 	bool exportToGcode(const QString &fileName);
+
+	void leftCutterCompensation();
+	void rightCutterCompensation();
+	void resetCutterCompensation();
 
 Q_SIGNALS:
 	void taskChanged(Task *newTask);

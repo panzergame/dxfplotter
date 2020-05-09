@@ -5,6 +5,7 @@ set(SRC
 	offsetedpathitem.cpp
 	path.cpp
 	pathitem.cpp
+	pathmenu.cpp
 	rubberband.cpp
 	task.cpp
 	tasklistmodel.cpp
@@ -17,6 +18,7 @@ set(SRC
 	offsetedpathitem.h
 	path.h
 	pathitem.h
+	pathmenu.h
 	rubberband.h
 	task.h
 	tasklistmodel.h

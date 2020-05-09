@@ -18,7 +18,7 @@ static const QPen selectPen(selectBrush, 0.0f);
 
 QPainterPath PathItem::paintPath() const
 {
-	const Geometry::Polyline &polyline = m_path->polyline();
+	const Geometry::Polyline &polyline = m_path->basePolyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 
@@ -47,11 +47,11 @@ PathItem::PathItem(Model::Path *path)
 	m_offsetedPath(path)
 {
 	setPen(normalPen);
-	setPath(m_shapePath);
+	setPath(m_paintPath);
 	setFlag(ItemIsSelectable);
 
 	// Link our offsetted path item for drawing
-	m_offsetedPath.setParentItem(this);
+	m_offsetedPath.setParentItem(this); // TODO use QGraphicsItemGroup
 
 	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
 	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);

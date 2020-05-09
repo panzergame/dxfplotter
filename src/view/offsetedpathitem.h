@@ -7,8 +7,10 @@
 namespace View
 {
 
-class OffsetedPathItem : public QGraphicsPathItem
+class OffsetedPathItem : public QObject, public QGraphicsPathItem
 {
+	Q_OBJECT;
+
 private:
 	Model::Path *m_path;
 
@@ -23,6 +25,9 @@ public:
 
 	void selected();
 	void deselected();
+
+protected Q_SLOTS:
+	void pathChanged();
 };
 
 }

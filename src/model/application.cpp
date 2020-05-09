@@ -39,6 +39,18 @@ PathSettings Application::defaultPathSettings() const
 	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.passes());
 }
 
+void Application::cutterCompensation(float scale)
+{
+	const Config::Config::Tool &tool = m_config.tool();
+	const Config::Config::Dxf &dxf = m_config.dxf();
+
+	const float radius = tool.radius() * scale;
+	m_task->forEachSelectedPath([radius, minimumPolylineLength=dxf.minimumPolylineLength(),
+		minimumArcLength=dxf.minimumArcLength()](Model::Path *path){
+			path->offset(radius, minimumPolylineLength, minimumArcLength);
+	});
+}
+
 Application::Application()
 	:m_config(configFilePath())
 {
@@ -82,7 +94,7 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadDxf(const QString &fileName)
 {
-	Config::Config::Dxf &dxf = m_config.dxf();
+	const Config::Config::Dxf &dxf = m_config.dxf();
 
 	Geometry::Polyline::List polylines;
 	try {
@@ -125,6 +137,21 @@ bool Application::exportToGcode(const QString &fileName)
 	}
 
 	return true;
+}
+
+void Application::leftCutterCompensation()
+{
+	cutterCompensation(-1.0f);
+}
+
+void Application::rightCutterCompensation()
+{
+	cutterCompensation(1.0f);
+}
+
+void Application::resetCutterCompensation()
+{
+	m_task->forEachSelectedPath([](Model::Path *path){ path->resetOffset(); });
 }
 
 }

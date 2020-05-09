@@ -44,6 +44,8 @@ OffsetedPathItem::OffsetedPathItem(Model::Path *path)
 {
 	setPen(normalPen);
 	setPath(m_paintPath);
+
+	connect(path, &Model::Path::offseted, this, &OffsetedPathItem::pathChanged);
 }
 
 void OffsetedPathItem::selected()
@@ -54,6 +56,12 @@ void OffsetedPathItem::selected()
 void OffsetedPathItem::deselected()
 {
 	setPen(normalPen);
+}
+
+void OffsetedPathItem::pathChanged()
+{
+	m_paintPath = paintPath();
+	setPath(m_paintPath);
 }
 
 

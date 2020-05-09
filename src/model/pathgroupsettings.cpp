@@ -5,29 +5,9 @@
 namespace Model
 {
 
-void PathGroupSettings::pathSelected(Path *path)
-{
-	m_selectedPaths.push_back(path);
-
-	emit selectionChanged(m_selectedPaths.size());
-}
-
-void PathGroupSettings::pathDeselected(Path *path)
-{
-	Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
-
-	assert(it != m_selectedPaths.cend());
-
-
-	m_selectedPaths.erase(it);
-
-	emit selectionChanged(m_selectedPaths.size());
-}
-
 PathGroupSettings::PathGroupSettings(const Task *task)
+	:m_task(task)
 {
-	connect(task, &Task::pathSelected, this, &PathGroupSettings::pathSelected);
-	connect(task, &Task::pathDeselected, this, &PathGroupSettings::pathDeselected);
 }
 
 std::optional<float> PathGroupSettings::feedRate() const

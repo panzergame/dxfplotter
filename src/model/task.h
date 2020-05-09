@@ -12,12 +12,16 @@ class Task : public QObject
 private:
 	Path::ListPtr m_stack;
 
+	Path::ListPtr m_selectedPaths;
+
 public:
 	explicit Task(QObject *parent, const Path::ListPtr &paths);
 
 	int count() const;
 	Path *pathAt(int index) const;
 	int indexFor(Path *path) const;
+
+	const Path::ListPtr& selectedPaths() const; // TODO avoid
 
 	template <class Functor>
 	void forEachPath(Functor &&functor) const
@@ -27,9 +31,18 @@ public:
 		}
 	}
 
+	template <class Functor>
+	void forEachSelectedPath(Functor &&functor) const
+	{
+		for (Path *path : m_selectedPaths) {
+			functor(path);
+		}
+	}
+
 Q_SIGNALS:
 	void pathSelected(Path *path);
 	void pathDeselected(Path *path);
+	void selectionChanged(int size);
 };
 
 }

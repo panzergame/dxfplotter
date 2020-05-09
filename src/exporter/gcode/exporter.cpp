@@ -21,20 +21,24 @@ void Exporter::convertToGCode(const Model::Path *path)
 	const Model::PathSettings &settings = path->settings();
 	PathPostProcessor processor(settings, m_format, m_file);
 
-	// Repeat for each passes
-	for (int i = 0, passes = settings.passes(); i < passes; ++i) {
-		convertToGCode(processor, path->polyline());
+	const Geometry::Polyline::List polylines = path->finalPolylines();
+
+	for (const Geometry::Polyline &polyline : polylines) {
+		processor.fastMove(polyline.start());
+		processor.toolOn();
+
+		// Repeat for each passes
+		for (int i = 0, passes = settings.passes(); i < passes; ++i) {
+			convertToGCode(processor, polyline);
+		}
+
+		processor.toolOff();
 	}
 }
 
 void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline)
 {
-	processor.fastMove(polyline.start());
-	processor.toolOn();
-
 	polyline.forEachBulge([this, &processor](const Geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
-
-	processor.toolOff();
 }
 
 void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge)

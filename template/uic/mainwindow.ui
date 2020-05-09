@@ -39,7 +39,16 @@
     </property>
     <addaction name="actionOpenSettings"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionLeftCutterCompensation"/>
+    <addaction name="actionRightCutterCompensation"/>
+    <addaction name="actionResetCutterCompensation"/>
+   </widget>
    <addaction name="menusrgd"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuConfiguration"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -70,6 +79,30 @@
   <action name="actionOpenSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionLeftCutterCompensation">
+   <property name="text">
+    <string>Left Cutter Compensation</string>
+   </property>
+   <property name="shortcut">
+    <string>L</string>
+   </property>
+  </action>
+  <action name="actionRightCutterCompensation">
+   <property name="text">
+    <string>Right Cutter Compensation</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+  </action>
+  <action name="actionResetCutterCompensation">
+   <property name="text">
+    <string>Reset Cutter Compensation</string>
+   </property>
+   <property name="shortcut">
+    <string>C</string>
    </property>
   </action>
  </widget>
