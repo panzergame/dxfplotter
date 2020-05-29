@@ -32,7 +32,8 @@ private:
 
 	void setupModel();
 
-	void drawOrigin(QPainter *painter);
+	void drawOriginAxis(QPainter *painter, const QPointF &dir, float scale, const QPen &pen);
+	void drawOrigin(QPainter *painter, float pixelRatio);
 
 protected:
 	void taskChanged() override;

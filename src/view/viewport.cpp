@@ -99,23 +99,35 @@ void Viewport::setupModel()
 	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 
-void Viewport::drawOrigin(QPainter *painter)
+void Viewport::drawOriginAxis(QPainter *painter, const QPointF &dir, float scale, const QPen &pen)
 {
-	static const QBrush brush(QColor(255, 0, 0));
-	static const QPen pen(brush, 0);
-
 	static const QPointF center(0.0f, 0.0f);
+
+	painter->setPen(pen);
+	painter->drawLine(center, center + dir * scale);
+}
+
+void Viewport::drawOrigin(QPainter *painter, float pixelRatio)
+{
+	// X axis color
+	static const QBrush xBrush(QColor(255, 0, 0));
+	static const QPen xPen(xBrush, 0);
+
+	// Y axis color
+	static const QBrush yBrush(QColor(0, 255, 0));
+	static const QPen yPen(yBrush, 0);
+
 	static const QPointF x(1.0f, 0.0f);
 	static const QPointF y(0.0f, 1.0f);
-	static const float scale = 0.5f;
 
-	// X Axis
-	painter->setPen(pen);
-	painter->drawLine(center - x * scale, center + x * scale);
+	// Axis size in pixel
+	static const int axisSize = 20;
 
-	// Y Axis
-	painter->setPen(pen);
-	painter->drawLine(center - y * scale, center + y * scale);
+	const float scale = axisSize / pixelRatio;
+
+	// raw each axis
+	drawOriginAxis(painter, x, scale, xPen);
+	drawOriginAxis(painter, y, scale, yPen);
 }
 
 void Viewport::taskChanged()
@@ -197,9 +209,19 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 void Viewport::drawBackground(QPainter *painter, const QRectF &rect)
 {
 	static const QBrush brush(QColor(0, 0, 0));
+
+	//qInfo() << rect << screenRect << geometry();
+
+	const QRectF screenRect = geometry();
+
+	const float pixelRatio = std::max(screenRect.width() / rect.width(), screenRect.height() / rect.height());
+	const int resolution = std::log10(pixelRatio);
+
+// 	qInfo() << resolution << pixelRatio;
+
 	painter->fillRect(rect, brush);
 
-	drawOrigin(painter);
+	drawOrigin(painter, pixelRatio);
 }
 
 Viewport::Viewport(Model::Application &app)
@@ -214,7 +236,7 @@ Viewport::Viewport(Model::Application &app)
 
 	setRenderHints(QPainter::Antialiasing);
 
-	// Hid scroll bars
+	// Hide scroll bars
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
