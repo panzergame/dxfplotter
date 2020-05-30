@@ -32,8 +32,6 @@ private:
 
 	void setupModel();
 
-	void drawOrigin(QPainter *painter);
-
 protected:
 	void taskChanged() override;
 
@@ -41,7 +39,7 @@ protected:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
-	void drawBackground(QPainter *painter, const QRectF &rect) override;
+	void drawBackground(QPainter *painter, const QRectF &updatedRect) override;
 
 public:
 	explicit Viewport(Model::Application &app);

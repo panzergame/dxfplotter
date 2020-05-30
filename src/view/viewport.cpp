@@ -99,24 +99,120 @@ void Viewport::setupModel()
 	fitInView(sceneRect, Qt::KeepAspectRatio);
 }
 
-void Viewport::drawOrigin(QPainter *painter)
+/** @brief Painter for grid and axis into background
+ */
+class BackgroundPainter
 {
-	static const QBrush brush(QColor(255, 0, 0));
-	static const QPen pen(brush, 0);
+private:
+	QPainter *m_painter;
+	const QRectF &m_sceneRect;
+	float m_pixelRatio;
 
-	static const QPointF center(0.0f, 0.0f);
-	static const QPointF x(1.0f, 0.0f);
-	static const QPointF y(0.0f, 1.0f);
-	static const float scale = 0.5f;
+	// Draw grid using dashed lines
+	void drawLineGrid(float step)
+	{
+		// Point grid color
+		static const QBrush brush(QColor(120, 120, 120));
+		static const QPen pen(brush, 0, Qt::DashLine);
 
-	// X Axis
-	painter->setPen(pen);
-	painter->drawLine(center - x * scale, center + x * scale);
+		m_painter->setPen(pen);
 
-	// Y Axis
-	painter->setPen(pen);
-	painter->drawLine(center - y * scale, center + y * scale);
-}
+		const float startX = m_sceneRect.left();
+		const float startY = m_sceneRect.top();
+		const float endX = m_sceneRect.right();
+		const float endY = m_sceneRect.bottom();
+
+		// Reduce resolution to have the same as the grid
+		const float gridStartX = std::ceil(startX / step) * step;
+		const float gridStartY = std::ceil(startY / step) * step;
+
+		for (float x = gridStartX; x <= endX; x += step) {
+			const QPointF start(x, startY);
+			const QPointF end(x, endY);
+			m_painter->drawLine(start, end);
+		}
+
+		for (float y = gridStartY; y <= endY; y += step) {
+			const QPointF start(startX, y);
+			const QPointF end(endX, y);
+			m_painter->drawLine(start, end);
+		}
+	}
+
+	// Draw grid using points
+	void drawPointGrid(float step)
+	{
+		// Point grid color
+		static const QBrush brush(QColor(180, 180, 180));
+		static const QPen pen(brush, 0);
+
+		m_painter->setPen(pen);
+
+		// Reduce resolution to have the same as the grid
+		const float gridStartX = std::ceil(m_sceneRect.left() / step) * step;
+		const float gridStartY = std::ceil(m_sceneRect.top() / step) * step;
+
+		for (float x = gridStartX, endX = m_sceneRect.right(); x <= endX; x += step) {
+			for (float y = gridStartY, endY = m_sceneRect.bottom(); y <= endY; y += step) {
+				const QPointF point(x, y);
+				m_painter->drawPoint(point);
+			}
+		}
+	}
+
+	void drawGrid()
+	{
+		// Minimum pixel spacing two lines
+		static const float minimumPixelStep = 20;
+
+		const int resolution = std::ceil(std::log10(m_pixelRatio * minimumPixelStep));
+		const float step = std::pow(10.0f, resolution);
+
+		drawPointGrid(step);
+		drawLineGrid(step * 10.0f);
+	}
+
+	void drawOriginAxis(const QPointF &dir, float scale, const QPen &pen)
+	{
+		static const QPointF center(0.0f, 0.0f);
+
+		m_painter->setPen(pen);
+		m_painter->drawLine(center, center + dir * scale);
+	}
+
+	void drawOrigin()
+	{
+		// X axis color
+		static const QBrush xBrush(QColor(255, 0, 0));
+		static const QPen xPen(xBrush, 0);
+
+		// Y axis color
+		static const QBrush yBrush(QColor(0, 255, 0));
+		static const QPen yPen(yBrush, 0);
+
+		static const QPointF x(1.0f, 0.0f);
+		static const QPointF y(0.0f, 1.0f);
+
+		// Axis size in pixel
+		static const int axisSize = 20;
+
+		const float scale = axisSize * m_pixelRatio;
+
+		// raw each axis
+		drawOriginAxis(x, scale, xPen);
+		drawOriginAxis(y, scale, yPen);
+	}
+
+public:
+	explicit BackgroundPainter(QPainter *painter, const QRectF &sceneRect, float pixelRatio)
+		:m_painter(painter),
+		m_sceneRect(sceneRect),
+		m_pixelRatio(pixelRatio)
+	{
+		drawGrid();
+		drawOrigin();
+	}
+};
 
 void Viewport::taskChanged()
 {
@@ -194,17 +290,27 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 }
 
-void Viewport::drawBackground(QPainter *painter, const QRectF &rect)
+void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 {
-	static const QBrush brush(QColor(0, 0, 0));
-	painter->fillRect(rect, brush);
 
-	drawOrigin(painter);
+	const QRect screenRect = rect();
+	const QRectF sceneRect = mapToScene(rect()).boundingRect();
+
+	const float pixelRatio = std::max(sceneRect.width() / screenRect.width(), sceneRect.height() / screenRect.height());
+
+	// Basic background color
+	static const QBrush brush(QColor(0, 0, 0));
+	painter->fillRect(updatedRect, brush);
+
+	BackgroundPainter backgroundPainter(painter, sceneRect, pixelRatio);
 }
 
 Viewport::Viewport(Model::Application &app)
 	:TaskModelObserver(app)
 {
+	// Invert Y axis
+	scale(1.0f, -1.0f);
+
 	// Disable dragging support
 	setDragMode(NoDrag);
 
@@ -214,11 +320,9 @@ Viewport::Viewport(Model::Application &app)
 
 	setRenderHints(QPainter::Antialiasing);
 
-	// Hid scroll bars
+	// Hide scroll bars
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-	scale(1.0f, -1.0f);
 }
 
 }
