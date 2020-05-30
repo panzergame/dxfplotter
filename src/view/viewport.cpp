@@ -94,9 +94,10 @@ void Viewport::setupModel()
 
 	setupPathItems();
 
-	// Fit scene in view
-	const QRectF sceneRect = scene()->sceneRect();
-	fitInView(sceneRect, Qt::KeepAspectRatio);
+	// Expand scene rect by margin allowing moving out of bound
+	static const float rectMargin = 200.0f;
+	const QRectF rect = sceneRect() + QMarginsF(rectMargin, rectMargin, rectMargin, rectMargin);
+	setSceneRect(rect);
 }
 
 /** @brief Painter for grid and axis into background
