@@ -289,6 +289,8 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 
 	// Forward event used for anchors
 	QGraphicsView::mouseMoveEvent(event);
+
+	emit cursorMoved(mapToScene(mousePos));
 }
 
 void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)

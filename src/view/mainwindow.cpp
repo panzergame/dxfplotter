@@ -1,4 +1,5 @@
 #include <mainwindow.h>
+#include <info.h>
 #include <path.h>
 #include <task.h>
 #include <viewport.h>
@@ -29,7 +30,17 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	Viewport *viewport = new Viewport(m_app);
-	return viewport;
+	Info *info = new Info(viewport);
+
+	QWidget *container = new QWidget(this);
+	QVBoxLayout *layout = new QVBoxLayout();
+
+	layout->addWidget(viewport);
+	layout->addWidget(info);
+
+	container->setLayout(layout);
+
+	return container;
 }
 
 void MainWindow::setupUi()

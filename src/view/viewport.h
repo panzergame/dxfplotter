@@ -15,6 +15,8 @@ namespace View
 
 class Viewport : public Model::TaskModelObserver<QGraphicsView>
 {
+	Q_OBJECT;
+
 private:
 	/// Last mouse position in scene.
 	QPoint m_lastMousePosition;
@@ -43,6 +45,9 @@ protected:
 
 public:
 	explicit Viewport(Model::Application &app);
+
+Q_SIGNALS:
+	void cursorMoved(const QPointF &position);
 };
 
 }
