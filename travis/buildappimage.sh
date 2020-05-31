@@ -45,7 +45,8 @@ wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/cont
 chmod +x linuxdeploy*.AppImage
 
 # initialize AppDir, bundle shared libraries for QtQuickApp, use Qt plugin to bundle additional resources, and build AppImage, all in one single command
-./linuxdeploy-x86_64.AppImage --appdir AppDir -e dxfplotter -d ${REPO_ROOT}/meta/dxfplotter.desktop -i ${REPO_ROOT}/meta/dxfplotter.png --plugin qt -l /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 --output appimage
+# Ensure qt5 version is selected
+QT_SELECT=qt5 ./linuxdeploy-x86_64.AppImage --appdir AppDir -e dxfplotter -d ${REPO_ROOT}/meta/dxfplotter.desktop -i ${REPO_ROOT}/meta/dxfplotter.png --plugin qt -l /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 --output appimage
 
 # move built AppImage back into original CWD
 mkdir ${OLD_CWD}/out
