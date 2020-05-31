@@ -57,5 +57,7 @@ add_subdirectory(src)
 add_subdirectory(test) # TODO seulement en cas de test
 
 
-add_executable(dxfplotter main.cpp)
+add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
+
+install(TARGETS dxfplotter DESTINATION bin)
