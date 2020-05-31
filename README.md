@@ -21,6 +21,14 @@ It targets only laser CNC following every lines and arcs from DXF file.
 
 ## Installation
 
+### Manual installation from source
+
+This project depends on Qt5, for debian like distribution installing `qtbase5-dev` is sufficient:
+
+```sh
+sudo apt-get install qtbase5-dev
+```
+
 ```sh
 git submodule init
 git submodule update
