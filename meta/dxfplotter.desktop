@@ -1,0 +1,7 @@
+[Desktop Entry]
+Categories=Utility;
+Type=Application
+Icon=dxfplotter
+Name=dxfplotter
+Exec=dxfplotter
+

@@ -1,8 +1,6 @@
 #include <interface.h>
 #include <importer.h>
 
-#include <converter/line.h>
-
 #include <iostream>
 
 namespace Importer
@@ -16,7 +14,7 @@ Interface::Interface(Importer &importer)
 {
 }
 
-#define PRINT_FUNC std::cout << __func__ << std::endl;
+#define PRINT_FUNC //std::cout << __func__ << std::endl;
 
 void Interface::addHeader(const DRW_Header* data)
 {
@@ -76,7 +74,7 @@ void Interface::addPoint(const DRW_Point& data)
 void Interface::addLine(const DRW_Line& data)
 {
 	PRINT_FUNC;
-	m_importer << fromLine(data);
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addRay(const DRW_Ray& data)
@@ -92,11 +90,14 @@ void Interface::addXline(const DRW_Xline& data)
 void Interface::addArc(const DRW_Arc& data)
 {
 	PRINT_FUNC;
+	m_importer.convertToPolylines(data);
+
 }
 
 void Interface::addCircle(const DRW_Circle& data)
 {
 	PRINT_FUNC;
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addEllipse(const DRW_Ellipse& data)
@@ -107,6 +108,7 @@ void Interface::addEllipse(const DRW_Ellipse& data)
 void Interface::addLWPolyline(const DRW_LWPolyline& data)
 {
 	PRINT_FUNC;
+	m_importer.convertToPolylines(data);
 }
 
 void Interface::addPolyline(const DRW_Polyline& data)
@@ -117,6 +119,7 @@ void Interface::addPolyline(const DRW_Polyline& data)
 void Interface::addSpline(const DRW_Spline* data)
 {
 	PRINT_FUNC;
+	m_importer.convertToPolylines(*data);
 }
 
 void Interface::addKnot(const DRW_Entity& data)

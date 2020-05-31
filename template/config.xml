@@ -1,0 +1,26 @@
+<config>
+	<section name="gcode">
+		<property name="tool on" type="std::string">"M4 S {S:.3f}"</property>
+		<property name="tool off" type="std::string">"M5"</property>
+		<property name="linear move" type="std::string">"G1 X {X:.3f} Y {Y:.3f} F {F:.3f}"</property>
+		<property name="fast move" type="std::string">"G0 X {X:.3f} Y {Y:.3f}"</property>
+		<property name="cw arc" type="std::string">"G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"</property>
+		<property name="ccw arc" type="std::string">"G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"</property>
+	</section>
+	<section name="dxf">
+		<property name="spline to arc precision" type="float">0.001</property>
+		<property name="assemble tolerance" type="float">0.001</property>
+		<property name="minimum polyline length" type="float">0.01</property>
+		<property name="minimum spline length" type="float">0.01</property>
+		<property name="minimum arc length" type="float">0.01</property>
+	</section>
+	<section name="default path">
+		<property name="feed rate" type="float">40</property>
+		<property name="intensity" type="float">50</property>
+		<property name="passes" type="int">1</property>
+	</section>
+	<section name="tool">
+		<property name="radius" type="float">0.1</property>
+	</section>
+</config>
+

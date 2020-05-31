@@ -1,0 +1,38 @@
+language: cpp
+dist: xenial
+
+matrix:
+  include:
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-8
+        - cmake
+        - qtbase5-dev
+    env:
+    - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
+    script:
+    - if [ "$TRAVIS_BRANCH" == "develop" ]; then bash travis/build.sh; fi
+    - if [ "$TRAVIS_BRANCH" == "master" ]; then bash travis/buildappimage.sh; fi
+
+before_install:
+- eval "${MATRIX_EVAL}"
+
+env:
+  global:
+    secure: CczW/q8gsljue/kaitaAHOP1WSglniiGgDkfNjkUNEqwL4ZHSiKRewK1++XcoN6MnCbfXyjEoiPfoSoPh3tXPGn620rhZKQyysVZWuL4Zd7DXpjQBHaFe5eIFdfgcBPj1fS51JNomGhYmelo6z9ylipWtHjBFp00TePJGENySTXQ7aGIcYsf5VEDxq6sBG1eN2Z63Y9EA9Iah8uDFWHZvv0pzEZVt0rDf+13gsERA3bvg52QBxOfJvUHjqsC10+vIUaxQDiCOUMUEm7AO7A3l/j/RR3sS8MpHbfv7C6s6zNg/G3xdm6TjYpj4nGb5jXBkcXPjrS/mycNigRxq45MnEhzFJhqBlTjf3XQQycrz9c172LxHMWCt89q41x97a93obZ5cgWCE9kEAYqfXGwBjmFexdsrRxECiZmoWIHcDs6kieFi2HjYbQy8sEE0gqL6APkmBrV1e2GzHN/5/tbj4MgBPy1Zuo1kr7/XaMsPlHz0JZsvAUFU9ZAjhMPdaJGDQGpg439fNU7RXsp91gp5RaXArX1db4m0QKSflyKfi/E1wGvhROsSVF94arkbQK3EjCVMY6tClSOdfhPiaZJ/U81OuaSRBRMz77KpG2UBseWMy2XctTbE0bS9llnOojwuoroWJJo2PM3tbJUxa7wlgHo2zc7a4lTK/6JkzmXgf0Q=
+
+after_success:
+- wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+- bash upload.sh out/*
+
+branches:
+    only:
+    - master
+    - develop
+    except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous.*)$/

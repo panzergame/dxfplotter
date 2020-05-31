@@ -1,65 +1,113 @@
 #include <mainwindow.h>
-
-#include <importer/dxf/importer.h>
-
-#include <core/assembler.h>
+#include <info.h>
+#include <path.h>
+#include <task.h>
+#include <viewport.h>
+#include <settings.h>
 
 #include <QFileDialog>
-#include <QMimeDatabase>
 #include <QMessageBox>
-
+#include <QSplitter>
 #include <QDebug>
 
 namespace View
 {
 
-MainWindow::MainWindow()
+QWidget *MainWindow::setupLeftPanel()
+{
+	Task *task = new Task(m_app);
+	Path *path = new Path(m_app);
+
+	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
+	vertSplitter->addWidget(task);
+	vertSplitter->addWidget(path);
+	vertSplitter->setStretchFactor(0, 1);
+	vertSplitter->setStretchFactor(1, 0);
+
+	return vertSplitter;
+}
+
+QWidget *MainWindow::setupCenterPanel()
+{
+	Viewport *viewport = new Viewport(m_app);
+	Info *info = new Info(viewport);
+
+	QWidget *container = new QWidget(this);
+	QVBoxLayout *layout = new QVBoxLayout();
+
+	layout->addWidget(viewport);
+	layout->addWidget(info);
+
+	container->setLayout(layout);
+
+	return container;
+}
+
+void MainWindow::setupUi()
 {
 	Ui::MainWindow::setupUi(this);
+
+	QSplitter *horiSplitter = new QSplitter(Qt::Horizontal, this);
+	horiSplitter->addWidget(setupLeftPanel());
+	horiSplitter->addWidget(setupCenterPanel());
+	horiSplitter->setStretchFactor(0, 0);
+	horiSplitter->setStretchFactor(1, 1);
+
+	horizontalLayout->addWidget(horiSplitter);
+}
+
+void MainWindow::setupActions()
+{
+	// File actions
+	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
+
+	// Edit actions
+	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &Model::Application::leftCutterCompensation);
+	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &Model::Application::rightCutterCompensation);
+	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
+}
+
+MainWindow::MainWindow(Model::Application &app)
+	:m_app(app)
+{
+	setupUi();
+
 	showMaximized();
 
-	connect(actionOpen, &QAction::triggered, this, &MainWindow::openFile);
-}
+	setupActions();
 
-void MainWindow::loadFile(const QString &fileName)
-{
-	const QMimeDatabase db;
-	const QMimeType mime = db.mimeTypeForFile(fileName);
-
-	qInfo() << mime.name();
-	if (mime.name() == "image/vnd.dxf") {
-		loadDxf(fileName);
-	}
-	else if (mime.name() == "text/plain") {
-		loadPlot(fileName);
-	}
-	else {
-		QMessageBox messageBox;
-		messageBox.critical(this, "Error", "Invalid file type " + fileName);
-	}
-}
-
-void MainWindow::loadDxf(const QString &fileName)
-{
-	Importer::Dxf::Importer imp(qPrintable(fileName));
-	Core::Assembler assembler(imp.polylines(), 0.001); // TODO
-	const Core::Polylines polylines = assembler.mergedPolylines();
-	for (const Core::Polyline &polyline : polylines) {
-		std::cout << polyline << std::endl;
-	}
-}
-
-void MainWindow::loadPlot(const QString &fileName)
-{
-	
+	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 }
 
 void MainWindow::openFile()
 {
 	const QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty()) {
-		loadFile(fileName);
+		if (!m_app.loadFile(fileName)) {
+			QMessageBox messageBox;
+			messageBox.critical(this, "Error", "Invalid file type " + fileName);
+		}
 	}
+}
+
+void MainWindow::exportFile()
+{
+	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", "", "Text files (*.ngc *.txt)");
+
+	if (!fileName.isEmpty()) {
+		if (!m_app.exportToGcode(fileName)) {
+			QMessageBox messageBox;
+			messageBox.critical(this, "Error", "Couldn't save " + fileName);
+		}
+	}
+}
+
+void MainWindow::openSettings()
+{
+	Settings *settings = new Settings(m_app.config());
+	settings->exec();
 }
 
 }

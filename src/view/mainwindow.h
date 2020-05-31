@@ -1,5 +1,7 @@
 #pragma once
 
+#include <model/application.h>
+
 #include <ui_mainwindow.h>
 
 #include <QMainWindow>
@@ -7,18 +9,26 @@
 namespace View
 {
 
+class Task;
+class Viewport;
+
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	void loadFile(const QString &fileName);
-	void loadDxf(const QString &fileName);
-	void loadPlot(const QString &fileName);
+	Model::Application &m_app;
+
+	QWidget *setupLeftPanel();
+	QWidget *setupCenterPanel();
+	void setupUi();
+	void setupActions();
 
 public:
-	explicit MainWindow();
+	explicit MainWindow(Model::Application &app);
 
-public Q_SLOTS:
+protected Q_SLOTS:
 	void openFile();
+	void exportFile();
+	void openSettings();
 };
 
 }
