@@ -7,5 +7,5 @@ install:
 build_script:
     - md build
     - cd build
-    - mingw64-cmake ..
-    - mingw64-make
+    - cmake -G "MinGW Makefiles" ..
+    - make
