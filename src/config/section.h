@@ -1,13 +1,25 @@
 #pragma once
 
-#include <config/item.h>
+#include <variant>
+
+#include <tinyxml2.h>
+
+#include <config/nodelist.h>
+#include <config/variable.h>
 
 namespace Config
 {
 
-class Section : public Item
+/** @brief A configuration section.
+ * Section contains properties.
+ */
+class Section : public NodeList<Variable>
 {
-	using Item::Item;
+private:
+	void addVariable(tinyxml2::XMLElement *elem);
+
+public:
+	explicit Section(tinyxml2::XMLElement *root);
 };
 
 }

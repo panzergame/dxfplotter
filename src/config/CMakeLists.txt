@@ -1,20 +1,23 @@
-set_property(SOURCE config.h PROPERTY SKIP_AUTOGEN ON)
+set(CONFIG_RAW_XML configrawxml.cpp)
+
 set(SRC
 	config.cpp
-	item.cpp
+	group.cpp
+	node.cpp
+	section.cpp
+	${CONFIG_RAW_XML}
 
 	config.h
-	item.h
+	group.h
+	node.h
+	section.h
 	variable.h
 )
 
-add_library(config ${SRC})
-add_dependencies(config generate_config)
-
 add_custom_command(
-	OUTPUT config.h
-	COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/config_gen.py ${TEMPLATE_DIR}/config.xml ${CMAKE_CURRENT_SOURCE_DIR} config.h.in config.h
-	DEPENDS config.h.in ${TEMPLATE_DIR}/config.xml
+       OUTPUT ${CONFIG_RAW_XML}
+       COMMAND ${CMAKE_COMMAND} -DINPUT=${TEMPLATE_DIR}/config.xml -DTEMPLATE=${CMAKE_CURRENT_SOURCE_DIR}/${CONFIG_RAW_XML}.in -DOUTPUT=${CONFIG_RAW_XML} -P ${CMAKE_CURRENT_SOURCE_DIR}/generaterawxml.cmake
+       DEPENDS ${TEMPLATE_DIR}/config.xml ${CMAKE_CURRENT_SOURCE_DIR}/${CONFIG_RAW_XML}.in 
 )
 
-add_custom_target(generate_config DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+add_library(config ${SRC})

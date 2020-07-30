@@ -14,4 +14,3 @@ set(SRC
 )
 
 add_library(model ${SRC})
-add_dependencies(model generate_config)

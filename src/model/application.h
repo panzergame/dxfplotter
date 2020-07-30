@@ -13,7 +13,12 @@ class Application : public QObject
 	Q_OBJECT;
 
 private:
+	/// Global configuration
 	Config::Config m_config;
+	/// Importing configuration (e.g dxf, default path values)
+	Config::Group m_importConfig;
+	/// Selected tool configuration
+	Config::Group m_toolConfig;
 
 	Path::ListPtr m_paths; // TODO parent destruct
 	Task *m_task;
@@ -26,6 +31,8 @@ public:
 	explicit Application();
 
 	Config::Config &config();
+
+	void selectTool(const std::string &toolName);
 
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);

@@ -5,14 +5,15 @@
 namespace Config
 {
 
-class Item
+class Node
 {
 protected:
-	const std::string m_name;
-	const std::string m_description;
+	std::string m_name;
+	std::string m_description;
 
 public:
-	explicit Item(const std::string& name, const std::string &description);
+	explicit Node() = default;
+	explicit Node(const std::string &name);
 
 	const std::string &name() const;
 	const std::string &description() const;

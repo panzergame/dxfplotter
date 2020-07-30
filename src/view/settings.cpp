@@ -10,7 +10,7 @@ namespace View
 
 /** @brief Visitor populating an entry for each configuration variable.
  */
-class VariableVisitor
+/*class VariableVisitor
 {
 private:
 	QWidget *m_box;
@@ -25,19 +25,18 @@ public:
 	{
 	}
 
-	template <class VariableType>
-	void operator()(Config::Variable<VariableType> &variable)
+	void operator()(Config::Variable &variable)
 	{
 		SettingEntry<VariableType> *entry = new SettingEntry<VariableType>(variable, m_box);
 		m_entries.push_back(entry);
 
 		m_layout->addRow(QString::fromStdString(variable.description()), entry);
 	}
-};
+};*/
 
 /** @brief Visitor populating a tab for each configuration section.
  */
-class SectionVisitor
+/*class SectionVisitor
 {
 private:
 	QTabWidget *m_tab;
@@ -65,7 +64,7 @@ public:
 		// Add tab to the switcher widget
 		m_tab->addTab(box, QString::fromStdString(section.description()));
 	}
-};
+};*/
 
 void Settings::setupUi()
 {
@@ -73,9 +72,9 @@ void Settings::setupUi()
 
 	QTabWidget *tab = new QTabWidget(this);
 
-	SectionVisitor visitor(tab, m_entries);
+// 	SectionVisitor visitor(tab, m_entries);
 	// Populate tab and entry.
-	m_config.visitSections(visitor);
+// 	m_config.visitSections(visitor);
 
 	verticalLayout->addWidget(tab);
 }

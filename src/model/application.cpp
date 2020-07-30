@@ -35,24 +35,26 @@ static std::string configFilePath()
 
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Config::DefaultPath &defaultPath = m_config.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.passes());
+	const Config::Section &defaultPath = m_importConfig.section("default_path");
+	return PathSettings(defaultPath["feed_rate"], defaultPath["intensity"], defaultPath["passes"]);
 }
 
 void Application::cutterCompensation(float scale)
 {
-	const Config::Config::Tool &tool = m_config.tool();
-	const Config::Config::Dxf &dxf = m_config.dxf();
+	const Config::Section &dxf = m_importConfig.section("dxf");
 
-	const float radius = tool.radius() * scale;
-	m_task->forEachSelectedPath([radius, minimumPolylineLength=dxf.minimumPolylineLength(),
-		minimumArcLength=dxf.minimumArcLength()](Model::Path *path){
-			path->offset(radius, minimumPolylineLength, minimumArcLength);
+	const float radius = m_toolConfig.section("general")["radius"];
+	const float scaledRadius = radius * scale;
+
+	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=dxf["minimum_polyline_length"],
+		minimumArcLength=dxf["minimum_arc_length"]](Model::Path *path){
+			path->offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
 
 Application::Application()
-	:m_config(configFilePath())
+	:m_config(Config::Config::Create(configFilePath())),
+	m_importConfig(m_config.group("import"))
 {
 }
 
@@ -94,12 +96,12 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadDxf(const QString &fileName)
 {
-	const Config::Config::Dxf &dxf = m_config.dxf();
+	const Config::Section &dxf = m_importConfig.section("dxf");
 
 	Geometry::Polyline::List polylines;
 	try {
 		// Import data
-		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
+		Importer::Dxf::Importer imp(fileName.toStdString(), dxf["spline_to_arc_precision"], dxf["minimum_spline_length"]);
 		polylines = imp.polylines();
 	}
 	catch (const Common::FileException &e) {
@@ -107,9 +109,9 @@ bool Application::loadDxf(const QString &fileName)
 	}
 
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
+	Geometry::Assembler assembler(std::move(polylines), dxf["assemble_to_tolerance"]);
 	// Remove small bulges
-	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+	Geometry::Cleaner cleaner(assembler.polylines(), dxf["minimum_polyline_length"], dxf["minimum_arc_length"]);
 
 	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
 	m_task = new Task(this, m_paths);
@@ -126,8 +128,9 @@ void Application::loadPlot(const QString &fileName)
 
 bool Application::exportToGcode(const QString &fileName)
 {
+	const Config::Section& gcode = m_toolConfig.section("gcode");
 	// Copy gcode format from config file
-	Exporter::GCode::Format format(m_config.gcode());
+	Exporter::GCode::Format format(gcode);
 
 	try {
 		Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());

@@ -6,8 +6,6 @@
 #include <config/variable.h>
 #include <common/aggregable.h>
 
-#include <QDebug> // TODO
-
 namespace View
 {
 
@@ -15,7 +13,15 @@ namespace View
  */
 class ISettingEntry : public Common::Aggregable<ISettingEntry>
 {
+protected:
+	Config::Variable &m_variable;
+
 public:
+	explicit ISettingEntry(Config::Variable &variable)
+		:m_variable(variable)
+	{
+	}
+
 	/// Save entry value to config variable
 	virtual void save() const = 0;
 };
@@ -28,13 +34,10 @@ class SettingEntry : public ISettingEntry
 template <>
 class SettingEntry<float> : public QDoubleSpinBox, public ISettingEntry
 {
-private:
-	Config::Variable<float> &m_variable;
-
 public:
-	explicit SettingEntry(Config::Variable<float> &variable, QWidget *parent)
+	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
 		:QDoubleSpinBox(parent),
-		m_variable(variable)
+		ISettingEntry(variable)
 	{
 		setDecimals(4);
 		setValue((double)m_variable);
@@ -49,13 +52,10 @@ public:
 template <>
 class SettingEntry<int> : public QSpinBox, public ISettingEntry
 {
-private:
-	Config::Variable<int> &m_variable;
-
 public:
-	explicit SettingEntry(Config::Variable<int> &variable, QWidget *parent)
+	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
 		:QSpinBox(parent),
-		m_variable(variable)
+		ISettingEntry(variable)
 	{
 		setValue(m_variable);
 	}
@@ -69,13 +69,10 @@ public:
 template <>
 class SettingEntry<std::string> : public QLineEdit, public ISettingEntry
 {
-private:
-	Config::Variable<std::string> &m_variable;
-
 public:
-	explicit SettingEntry(Config::Variable<std::string> &variable, QWidget *parent)
+	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
 		:QLineEdit(parent),
-		m_variable(variable)
+		ISettingEntry(variable)
 	{
 		setText(QString::fromStdString(m_variable));
 	}
