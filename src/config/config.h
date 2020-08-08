@@ -5,17 +5,14 @@
 namespace Config
 {
 
-class Config : public Group
+class Config
 {
 private:
 	std::string m_filePath;
-	INI::File m_file;
 	Group m_root;
 
-	explicit Config(const std::string &filePath, tinyxml2::XMLElement *root);
-
 public:
-	static Config Create(const std::string &filePath);
+	explicit Config(const std::string &filePath);
 	~Config();
 
 	Group& root();

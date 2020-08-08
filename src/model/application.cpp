@@ -53,8 +53,8 @@ void Application::cutterCompensation(float scale)
 }
 
 Application::Application()
-	:m_config(Config::Config::Create(configFilePath())),
-	m_importConfig(m_config.group("import"))
+	:m_config(Config::Config(configFilePath())),
+	m_importConfig(m_config.root().group("import"))
 {
 }
 

@@ -34,7 +34,7 @@ private:
 
 public:
 	explicit Group() = default;
-	explicit Group(tinyxml2::XMLElement *root);
+	explicit Group(tinyxml2::XMLElement *root, YAML::Node &section);
 
 	Section &section(const std::string &name);
 	const Section &section(const std::string &name) const;

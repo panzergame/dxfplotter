@@ -9,22 +9,19 @@ namespace Config
 
 extern const char *CONFIG_RAW_XML_STRING;
 
-Config::Config(const std::string &filePath, tinyxml2::XMLElement *root)
-	:Group(root),
-	m_filePath(filePath),
-	m_file(m_filePath)
+Config::Config(const std::string &filePath)
+	:m_filePath(filePath)
 {
-}
+	YAML::Node root = YAML::LoadFile(filePath);
 
-Config Config::Create(const std::string &filePath)
-{
 	// Load XML content
 	tinyxml2::XMLDocument doc;
 	const tinyxml2::XMLError parseStatus = doc.Parse(CONFIG_RAW_XML_STRING);
 
 	assert(parseStatus == tinyxml2::XML_SUCCESS);
 
-	return Config(filePath, doc.FirstChildElement());
+	// Instantiation of root group
+	m_root = Group(doc.FirstChildElement(), root);
 }
 
 Config::~Config()
@@ -44,7 +41,7 @@ const Group &Config::root() const
 
 void Config::save()
 {
-	m_file.Save(m_filePath);
+	// TODO
 }
 
 }

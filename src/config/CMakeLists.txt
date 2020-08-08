@@ -6,6 +6,7 @@ set(SRC
 	node.cpp
 	section.cpp
 	${CONFIG_RAW_XML}
+	variable.cpp
 
 	config.h
 	group.h

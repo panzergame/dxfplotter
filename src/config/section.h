@@ -16,10 +16,10 @@ namespace Config
 class Section : public NodeList<Variable>
 {
 private:
-	void addVariable(tinyxml2::XMLElement *elem);
+	void addVariable(tinyxml2::XMLElement *elem, YAML::Node &section);
 
 public:
-	explicit Section(tinyxml2::XMLElement *root);
+	explicit Section(tinyxml2::XMLElement *root, YAML::Node &section);
 };
 
 }

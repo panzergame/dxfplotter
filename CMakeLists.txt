@@ -21,8 +21,9 @@ find_package(Qt5 COMPONENTS REQUIRED
 )
 
 find_package(TinyXML2 REQUIRED)
+find_package(yaml-cpp REQUIRED)
 
-# Compilation flag with all warning and error as much as possible on warning.
+# Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
@@ -38,11 +39,12 @@ set(INCLUDE_DIRS
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
+	thirdparty/tomlplusplus/include
 	template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
 	${TinyXML2_INCLUDE_DIRS}
-	${CMAKE_BINARY_DIR}/src
+	${YAML_CPP_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -56,6 +58,7 @@ set(LINK_LIBRARIES
 	fmt
 	Qt5::Widgets
 	${TinyXML2_LIBRARIES}
+	${YAML_CPP_LIBRARIES}
 )
 
 include_directories(${INCLUDE_DIRS})

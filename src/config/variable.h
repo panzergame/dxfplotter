@@ -1,6 +1,6 @@
 #pragma once
 
-#include <leksysini/iniparser.hpp>
+#include <yaml-cpp/yaml.h>
 #include <config/node.h>
 
 namespace Config
@@ -19,34 +19,33 @@ public:
 
 private:
 	Type m_type;
-	INI::Section *m_section;
+	YAML::Node m_property;
 
 public:
-	template <class Type>
-	void init(const Type &defaultValue)
-	{
-		/*if (!m_section->ContainsKey(m_name)) {
-			m_section->SetValue(m_name, defaultValue); // TODO comment
-		}*/
-	}
-
-	explicit Variable(const std::string& name, Type type)
+	template <class ValueType>
+	explicit Variable(const std::string& name, Type type, YAML::Node &section, const ValueType &defaultValue)
 		:Node(name),
 		m_type(type),
-		m_section(nullptr) // TODO
+		m_property(section[name])
 	{
+		// Assigne default value if node isn't defined
+		if (!m_property.IsDefined()) {
+			m_property = defaultValue;
+		}
 	}
 
-	template <typename Type>
-	operator Type() const
+	Type type() const;
+
+	template <typename ValueType>
+	operator ValueType() const
 	{
-		return m_section->GetValue(m_name).template Get<Type>();
+		return m_property.as<ValueType>();
 	}
 
-	template <typename Type>
-	Variable &operator=(const Type &value)
+	template <typename ValueType>
+	Variable &operator=(const ValueType &value)
 	{
-		m_section->SetValue(m_name, value);
+		m_property = value;
 		return *this;
 	}
 };
