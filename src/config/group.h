@@ -17,16 +17,16 @@ namespace Config
 class Group : public NodeList<std::variant<Group, Section>>
 {
 private:
-	template <class Item>
-	Item &at(const std::string &name)
+	template <class Item, class Index>
+	Item &at(const Index &id)
 	{
-		return std::get<Item>(NodeList::operator[](name));
+		return std::get<Item>(NodeList::operator[](id));
 	}
 
-	template <class Item>
-	const Item &at(const std::string &name) const
+	template <class Item, class Index>
+	const Item &at(const Index &id) const
 	{
-		return std::get<Item>(NodeList::operator[](name));
+		return std::get<Item>(NodeList::operator[](id));
 	}
 
 	/// Update name to child indices association
@@ -36,10 +36,29 @@ public:
 	explicit Group() = default;
 	explicit Group(tinyxml2::XMLElement *root, YAML::Node &section);
 
-	Section &section(const std::string &name);
-	const Section &section(const std::string &name) const;
-	Group &group(const std::string &name);
-	const Group &group(const std::string &name) const;
+	template <class Index>
+	Section &section(const Index &id)
+	{
+		return at<Section>(id);
+	}
+
+	template <class Index>
+	const Section &section(const Index &id) const
+	{
+		return at<Section>(id);
+	}
+
+	template <class Index>
+	Group &group(const Index &id)
+	{
+		return at<Group>(id);
+	}
+
+	template <class Index>
+	const Group &group(const Index &id) const
+	{
+		return at<Group>(id);
+	}
 };
 
 }

@@ -13,6 +13,7 @@ Section::Section(tinyxml2::XMLElement *root, YAML::Node &section)
 	tinyxml2::XMLElement *child = root->FirstChildElement();
 	while (child) {
 		addVariable(child, section);
+		child = child->NextSiblingElement();
 	}
 
 	updateNameToIndexMap();
@@ -22,7 +23,7 @@ void Section::addVariable(tinyxml2::XMLElement *elem, YAML::Node &section)
 {
 	const std::string name = elem->Attribute("name");
 
-	static const std::unordered_map<std::string, std::function<Variable()>> creator = {
+	const std::unordered_map<std::string, std::function<Variable()>> creator = {
 		{"float", [&name, &section, &elem](){
 			return Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
 		}},

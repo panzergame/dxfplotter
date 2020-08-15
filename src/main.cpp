@@ -12,12 +12,20 @@ int main(int argc, char *argv[])
 	qapp.setApplicationDisplayName("dxfplotter");
 
 	QCommandLineParser parser;
+	parser.addHelpOption();
 	parser.addPositionalArgument("file", "input file");
+	QCommandLineOption toolOption("t", QCoreApplication::translate("main", "Select tool"),
+		QCoreApplication::translate("main", "tool"));
+	parser.addOption(toolOption);
 	parser.process(qapp);
-
 
 	Model::Application app;
 	View::MainWindow window(app);
+
+	if (parser.isSet(toolOption)) {
+		const QString toolName = parser.value(toolOption);
+		app.selectToolFromCmd(toolName);
+	}
 
 	// File loading from command line.
 	const QString fileName = parser.positionalArguments().value(0, "");

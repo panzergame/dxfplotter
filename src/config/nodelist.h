@@ -32,6 +32,16 @@ protected:
 	}
 
 public:
+	Item &operator[](int index)
+	{
+		return m_children[index];
+	}
+
+	const Item &operator[](int index) const
+	{
+		return m_children[index];
+	}
+
 	Item &operator[](const std::string &name)
 	{
 		return m_children[m_nameToIndex.at(name)];
@@ -40,6 +50,11 @@ public:
 	const Item &operator[](const std::string &name) const
 	{
 		return m_children[m_nameToIndex.at(name)];
+	}
+
+	bool has(const std::string &name) const
+	{
+		return m_nameToIndex.find(name) != m_nameToIndex.end();
 	}
 
 	template <class Visitor>

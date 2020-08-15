@@ -32,7 +32,9 @@ public:
 
 	Config::Config &config();
 
-	void selectTool(const std::string &toolName);
+	/// Select tool used as configuration for further operations
+	bool selectTool(const QString &toolName);
+	void selectToolFromCmd(const QString &toolName);
 
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);

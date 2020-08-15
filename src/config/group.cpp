@@ -40,24 +40,4 @@ Group::Group(tinyxml2::XMLElement *root, YAML::Node &section)
 	updateNameToIndexMap();
 }
 
-Section &Group::section(const std::string &name)
-{
-	return at<Section>(name);
-}
-
-const Section &Group::section(const std::string &name) const
-{
-	return at<Section>(name);
-}
-
-Group &Group::group(const std::string &name)
-{
-	return at<Group>(name);
-}
-
-const Group &Group::group(const std::string &name) const
-{
-	return at<Group>(name);
-}
-
 }

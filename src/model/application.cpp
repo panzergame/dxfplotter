@@ -54,7 +54,9 @@ void Application::cutterCompensation(float scale)
 
 Application::Application()
 	:m_config(Config::Config(configFilePath())),
-	m_importConfig(m_config.root().group("import"))
+	m_importConfig(m_config.root().group("import")),
+	// Default select first tool
+	m_toolConfig(m_config.root().group("tools").group(0))
 {
 }
 
@@ -63,11 +65,31 @@ Config::Config &Application::config()
 	return m_config;
 }
 
+bool Application::selectTool(const QString &toolName)
+{
+	const Config::Group tools = m_config.root().group("tools");
+	const std::string name = toolName.toStdString();
+	const bool exists = tools.has(name);
+
+	if (exists) {
+		m_toolConfig = tools.group(name);
+	}
+
+	return exists;
+}
+
+void Application::selectToolFromCmd(const QString &toolName)
+{
+	if (!selectTool(toolName)) {
+		qCritical() << "Invalid tool name " << toolName;
+	}
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
 		if (!loadFile(fileName)) {
-			qCritical() << "Invalid file type " + fileName;
+			qCritical() << "Invalid file type " << fileName;
 		}
 	}
 }
@@ -109,7 +131,7 @@ bool Application::loadDxf(const QString &fileName)
 	}
 
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), dxf["assemble_to_tolerance"]);
+	Geometry::Assembler assembler(std::move(polylines), dxf["assemble_tolerance"]);
 	// Remove small bulges
 	Geometry::Cleaner cleaner(assembler.polylines(), dxf["minimum_polyline_length"], dxf["minimum_arc_length"]);
 
