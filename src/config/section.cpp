@@ -3,6 +3,8 @@
 
 #include <section.h>
 
+#include <QDebug>
+
 namespace Config
 {
 
@@ -23,15 +25,16 @@ void Section::addVariable(tinyxml2::XMLElement *elem, YAML::Node &section)
 {
 	const std::string name = elem->Attribute("name");
 
+	// INitialization function for each type
 	const std::unordered_map<std::string, std::function<Variable()>> creator = {
 		{"float", [&name, &section, &elem](){
 			return Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
 		}},
 		{"int", [&name, &section, &elem](){
-			return Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
+			return Variable(name, Variable::Type::FLOAT, section, elem->IntText());
 		}},
 		{"string", [&name, &section, &elem](){
-			return Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
+			return Variable(name, Variable::Type::FLOAT, section, elem->GetText());
 		}},
 	};
 

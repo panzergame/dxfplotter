@@ -16,7 +16,7 @@
 namespace Model
 {
 
-static const QString configFileName = "config.ini";
+static const QString configFileName = "config.yml";
 
 /** Retrieves application config file path
  * @return config file path

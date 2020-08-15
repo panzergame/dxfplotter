@@ -2,7 +2,9 @@
 
 #include <tinyxml2.h>
 
-#include <QDebug> // TODO
+#include <QDebug>
+
+#include <fstream>
 
 namespace Config
 {
@@ -12,7 +14,12 @@ extern const char *CONFIG_RAW_XML_STRING;
 Config::Config(const std::string &filePath)
 	:m_filePath(filePath)
 {
-	YAML::Node root = YAML::LoadFile(filePath);
+	try {
+		m_yamlRoot = YAML::LoadFile(filePath);
+	}
+	catch (const YAML::BadFile &e) {
+		qInfo() << "Initializing configuration from defaults";
+	}
 
 	// Load XML content
 	tinyxml2::XMLDocument doc;
@@ -21,7 +28,7 @@ Config::Config(const std::string &filePath)
 	assert(parseStatus == tinyxml2::XML_SUCCESS);
 
 	// Instantiation of root group
-	m_root = Group(doc.FirstChildElement(), root);
+	m_root = Group(doc.FirstChildElement(), m_yamlRoot);
 }
 
 Config::~Config()
@@ -41,7 +48,8 @@ const Group &Config::root() const
 
 void Config::save()
 {
-	// TODO
+	std::ofstream outStream(m_filePath);
+	outStream << m_yamlRoot;
 }
 
 }

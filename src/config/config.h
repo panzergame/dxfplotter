@@ -9,6 +9,7 @@ class Config
 {
 private:
 	std::string m_filePath;
+	YAML::Node m_yamlRoot;
 	Group m_root;
 
 public:
