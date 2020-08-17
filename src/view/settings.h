@@ -11,11 +11,15 @@
 namespace View
 {
 
+class SettingTreeModel;
+
 class Settings : public QDialog, private Ui::Settings
 {
 private:
 	Config::Config &m_config;
 	ISettingEntry::ListPtr m_entries;
+
+	std::unique_ptr<SettingTreeModel> m_model;
 
 	void setupUi();
 

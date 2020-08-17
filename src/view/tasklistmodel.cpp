@@ -13,13 +13,9 @@ TaskListModel::TaskListModel(const Model::Task *task, QObject *parent)
 
 QVariant TaskListModel::data(const QModelIndex &index, int role) const
 {
-	if (role == Qt::DisplayRole) {
-		if (index.isValid()) {
-			Model::Path *path = m_task->pathAt(index.row());
-			return QString::fromStdString(path->name());
-		}
-
-		return QVariant();
+	if (role == Qt::DisplayRole && index.isValid()) {
+		Model::Path *path = m_task->pathAt(index.row());
+		return QString::fromStdString(path->name());
 	}
 
 	return QVariant();

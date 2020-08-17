@@ -14,24 +14,8 @@ namespace Config
 /** @brief A configuration group.
  * Group contains either sections or groups.
  */
-class Group : public NodeList<std::variant<Group, Section>>
+class Group : public NodeList
 {
-private:
-	template <class Item, class Index>
-	Item &at(const Index &id)
-	{
-		return std::get<Item>(NodeList::operator[](id));
-	}
-
-	template <class Item, class Index>
-	const Item &at(const Index &id) const
-	{
-		return std::get<Item>(NodeList::operator[](id));
-	}
-
-	/// Update name to child indices association
-	void updateNameToIndexMap();
-
 public:
 	explicit Group() = default;
 	explicit Group(tinyxml2::XMLElement *root, YAML::Node &section);

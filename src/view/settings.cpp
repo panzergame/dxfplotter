@@ -1,4 +1,5 @@
 #include <settings.h>
+#include <settingtreemodel.h>
 
 #include <QTabWidget>
 #include <QFormLayout>
@@ -70,13 +71,15 @@ void Settings::setupUi()
 {
 	Ui::Settings::setupUi(this);
 
-	QTabWidget *tab = new QTabWidget(this);
+	treeView->setModel(m_model.get());
+
+// 	QTabWidget *tab = new QTabWidget(this);
 
 // 	SectionVisitor visitor(tab, m_entries);
 	// Populate tab and entry.
 // 	m_config.visitSections(visitor);
 
-	verticalLayout->addWidget(tab);
+// 	verticalLayout->addWidget(tab);
 }
 
 void Settings::save()
@@ -90,7 +93,8 @@ void Settings::save()
 }
 
 Settings::Settings(Config::Config &config)
-	:m_config(config)
+	:m_config(config),
+	m_model(new SettingTreeModel(m_config.root(), this))
 {
 	setupUi();
 

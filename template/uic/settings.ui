@@ -16,7 +16,16 @@
   <layout class="QVBoxLayout" name="verticalLayout2">
    <item>
     <widget class="QWidget" name="central" native="true">
-     <layout class="QVBoxLayout" name="verticalLayout"/>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTreeView" name="treeView"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="widget" native="true">
+        <layout class="QFormLayout" name="formLayout"/>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>

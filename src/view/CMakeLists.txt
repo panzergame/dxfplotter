@@ -7,6 +7,7 @@ set(SRC
 	pathitem.cpp
 	rubberband.cpp
 	settings.cpp
+	settingtreemodel.cpp
 	task.cpp
 	tasklistmodel.cpp
 	viewport.cpp
@@ -20,6 +21,7 @@ set(SRC
 	rubberband.h
 	settings.h
 	settingentry.h
+	settingtreemodel.h
 	task.h
 	tasklistmodel.h
 	viewport.h

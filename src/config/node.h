@@ -15,6 +15,8 @@ public:
 	explicit Node() = default;
 	explicit Node(const std::string &name);
 
+	virtual ~Node() = default;
+
 	const std::string &name() const;
 	const std::string &description() const;
 };
