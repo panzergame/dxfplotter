@@ -62,15 +62,6 @@ Qt::ItemFlags SettingTreeModel::flags(const QModelIndex &index) const
 	return QAbstractItemModel::flags(index);
 }
 
-QVariant SettingTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-		return QString("Name");
-	}
-
-	return QVariant();
-}
-
 QModelIndex SettingTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
 	if (!hasIndex(row, column, parent)) {
@@ -121,5 +112,16 @@ int SettingTreeModel::columnCount(const QModelIndex& parent) const
 {
 	return 1;
 }
+
+Config::Section *SettingTreeModel::section(const QModelIndex &index) const
+{
+	Node *node = static_cast<Node *>(index.internalPointer());
+
+	// Test if node is a section
+	Config::Section *section = dynamic_cast<Config::Section *>(node->configNode);
+
+	return section;
+}
+
 
 }

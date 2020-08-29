@@ -12,7 +12,7 @@ public:
 	/// Type of the variable
 	enum class Type
 	{
-		INT,
+		INT = 0,
 		FLOAT,
 		STRING
 	};

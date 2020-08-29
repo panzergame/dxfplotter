@@ -35,23 +35,22 @@ public:
 	}
 };*/
 
-/** @brief Visitor populating a tab for each configuration section.
+/** @brief Visitor populating form for each variable of configuration section.
  */
-/*class SectionVisitor
+/*class Visitor
 {
 private:
-	QTabWidget *m_tab;
+	QFormLayout *m_layout;
 	ISettingEntry::ListPtr &m_entries;
 
 public:
-	explicit SectionVisitor(QTabWidget *tab, ISettingEntry::ListPtr &entries)
-		:m_tab(tab),
+	explicit SectionVisitor(ISettingEntry::ListPtr &entries)
+		:m_layout(new QFormLayout()),
 		m_entries(entries)
 	{
 	}
 
-	template <class Section>
-	void operator()(Section &section)
+	void operator()(Config::Node &variable)
 	{
 		// Create tab box and layout
 		QWidget *box = new QWidget(m_tab);
@@ -72,14 +71,7 @@ void Settings::setupUi()
 	Ui::Settings::setupUi(this);
 
 	treeView->setModel(m_model.get());
-
-// 	QTabWidget *tab = new QTabWidget(this);
-
-// 	SectionVisitor visitor(tab, m_entries);
-	// Populate tab and entry.
-// 	m_config.visitSections(visitor);
-
-// 	verticalLayout->addWidget(tab);
+	treeView->expandAll();
 }
 
 void Settings::save()
@@ -92,13 +84,63 @@ void Settings::save()
 	m_config.save();
 }
 
+ISettingEntry *Settings::createEntry(Config::Variable &variable, QWidget *parent) const
+{
+	switch (variable.type()) {
+		case Config::Variable::Type::INT:
+		{
+			return new SettingEntry<int>(variable, parent);
+		}
+		case Config::Variable::Type::FLOAT:
+		{
+			return new SettingEntry<float>(variable, parent);
+		}
+		case Config::Variable::Type::STRING:
+		{
+			return new SettingEntry<std::string>(variable, parent);
+		}
+		default:
+		{
+			return nullptr;
+		}
+	}
+}
+
 Settings::Settings(Config::Config &config)
 	:m_config(config),
 	m_model(new SettingTreeModel(m_config.root(), this))
 {
 	setupUi();
 
+	connect(treeView, &QTreeView::clicked, this, &Settings::clicked);
 	connect(this, &QDialog::accepted, this, &Settings::save);
+}
+
+void Settings::clicked(const QModelIndex &index)
+{
+	Config::Section *section = m_model->section(index);
+
+	if (section) {
+		// Save previous values
+		save();
+
+		// Cmear all entries, they are destructed when removing form rows
+		m_entries.clear();
+
+		// Delete all items
+		for (int i = 0, size = formLayout->rowCount(); i < size; ++i) {
+			formLayout->removeRow(0);
+		}
+
+		// Insert new entries
+		section->visitVariables([this](Config::Variable &variable){
+			ISettingEntry *entry = createEntry(variable, center);
+			QWidget *item = dynamic_cast<QWidget *>(entry);
+
+			formLayout->addRow(QString::fromStdString(variable.description()), item);
+			m_entries.push_back(entry);
+		});
+	}
 }
 
 }

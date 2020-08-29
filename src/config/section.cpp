@@ -1,6 +1,3 @@
-#include <unordered_map>
-#include <functional>
-
 #include <section.h>
 
 #include <QDebug>
@@ -21,25 +18,28 @@ Section::Section(tinyxml2::XMLElement *root, YAML::Node &section)
 	updateNameToIndexMap();
 }
 
-void Section::addVariable(tinyxml2::XMLElement *elem, YAML::Node &section)
+Variable *Section::createVariable(tinyxml2::XMLElement *elem, YAML::Node &section)
 {
 	const std::string name = elem->Attribute("name");
+	const std::string typeName = elem->Attribute("type");
 
-	// INitialization function for each type
-	const std::unordered_map<std::string, std::function<Variable *()>> creator = {
-		{"float", [&name, &section, &elem](){
-			return new Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
-		}},
-		{"int", [&name, &section, &elem](){
-			return new Variable(name, Variable::Type::FLOAT, section, elem->IntText());
-		}},
-		{"string", [&name, &section, &elem](){
-			return new Variable(name, Variable::Type::FLOAT, section, elem->GetText());
-		}},
-	};
+	if (typeName == "float") {
+		return new Variable(name, Variable::Type::FLOAT, section, elem->FloatText());
+	}
+	else if (typeName == "int") {
+		return new Variable(name, Variable::Type::INT, section, elem->IntText());
+	}
+	else if (typeName == "string") {
+		return new Variable(name, Variable::Type::STRING, section, elem->GetText());
+	}
 
-	const char *typeName = elem->Attribute("type");
-	m_children.emplace_back(creator.at(typeName)());
+	return nullptr;
+}
+
+void Section::addVariable(tinyxml2::XMLElement *elem, YAML::Node &section)
+{
+	Variable *var = createVariable(elem, section);
+	m_children.emplace_back(var);
 }
 
 }

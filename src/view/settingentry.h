@@ -40,7 +40,7 @@ public:
 		ISettingEntry(variable)
 	{
 		setDecimals(4);
-		setValue((double)m_variable);
+		setValue((float)m_variable);
 	}
 
 	void save() const override

@@ -16,6 +16,7 @@ namespace Config
 class Section : public NodeList
 {
 private:
+	Variable *createVariable(tinyxml2::XMLElement *elem, YAML::Node &section);
 	void addVariable(tinyxml2::XMLElement *elem, YAML::Node &section);
 
 public:
@@ -31,6 +32,14 @@ public:
 	const Variable &var(const Index &id) const
 	{
 		return at<Variable>(id);
+	}
+
+	template <class Visitor>
+	void visitVariables(Visitor &&visitor)
+	{
+		for (Child &child : m_children) {
+			visitor(*static_cast<Variable *>(child.get()));
+		}
 	}
 };
 

@@ -35,8 +35,8 @@ static std::string configFilePath()
 
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Section &defaultPath = m_importConfig.section("default_path");
-	return PathSettings(defaultPath.var("feed_rate"), defaultPath.var("intensity"), defaultPath.var("passes"));
+	const Config::Section &defaultPath = m_importConfig.section("default-path");
+	return PathSettings(defaultPath.var("feed-rate"), defaultPath.var("intensity"), defaultPath.var("passes"));
 }
 
 void Application::cutterCompensation(float scale)
@@ -46,8 +46,8 @@ void Application::cutterCompensation(float scale)
 	const float radius = m_toolConfig->section("general").var("radius");
 	const float scaledRadius = radius * scale;
 
-	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.var("minimum_polyline_length"),
-		minimumArcLength=(float)dxf.var("minimum_arc_length")](Model::Path *path){
+	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.var("minimum-polyline-length"),
+		minimumArcLength=(float)dxf.var("minimum-arc-length")](Model::Path *path){
 			path->offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
@@ -123,7 +123,7 @@ bool Application::loadDxf(const QString &fileName)
 	Geometry::Polyline::List polylines;
 	try {
 		// Import data
-		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.var("spline_to_arc_precision"), dxf.var("minimum_spline_length"));
+		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.var("spline-to-arc-precision"), dxf.var("minimum-spline-length"));
 		polylines = imp.polylines();
 	}
 	catch (const Common::FileException &e) {
@@ -131,9 +131,9 @@ bool Application::loadDxf(const QString &fileName)
 	}
 
 	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), dxf.var("assemble_tolerance"));
+	Geometry::Assembler assembler(std::move(polylines), dxf.var("assemble-tolerance"));
 	// Remove small bulges
-	Geometry::Cleaner cleaner(assembler.polylines(), dxf.var("minimum_polyline_length"), dxf.var("minimum_arc_length"));
+	Geometry::Cleaner cleaner(assembler.polylines(), dxf.var("minimum-polyline-length"), dxf.var("minimum-arc-length"));
 
 	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
 	m_task = new Task(this, m_paths);

@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSplitter>
+#include <QComboBox>
 #include <QDebug>
 
 namespace View
@@ -43,6 +44,24 @@ QWidget *MainWindow::setupCenterPanel()
 	return container;
 }
 
+void MainWindow::setupToolBar()
+{
+	// Tool selector
+	QComboBox *toolsBox = new QComboBox();
+
+	const Config::Config &config = m_app.config();
+	const Config::Group &tools = config.root().group("tools");
+
+	tools.visitChildren([&toolsBox](const Config::Node &tool){
+		const QString name = QString::fromStdString(tool.name());
+		toolsBox->addItem(name, name);
+	});
+
+	connect(toolsBox, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
+
+	toolBar->addWidget(toolsBox);
+}
+
 void MainWindow::setupUi()
 {
 	Ui::MainWindow::setupUi(this);
@@ -54,9 +73,11 @@ void MainWindow::setupUi()
 	horiSplitter->setStretchFactor(1, 1);
 
 	horizontalLayout->addWidget(horiSplitter);
+
+	setupToolBar();
 }
 
-void MainWindow::setupActions()
+void MainWindow::setupMenuActions()
 {
 	// File actions
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
@@ -76,7 +97,7 @@ MainWindow::MainWindow(Model::Application &app)
 
 	showMaximized();
 
-	setupActions();
+	setupMenuActions();
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 }

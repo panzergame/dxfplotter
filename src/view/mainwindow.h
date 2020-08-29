@@ -19,8 +19,9 @@ private:
 
 	QWidget *setupLeftPanel();
 	QWidget *setupCenterPanel();
+	void setupToolBar();
 	void setupUi();
-	void setupActions();
+	void setupMenuActions();
 
 public:
 	explicit MainWindow(Model::Application &app);

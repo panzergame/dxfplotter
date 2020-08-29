@@ -83,6 +83,14 @@ public:
 			visitor(*child.get());
 		}
 	}
+
+	template <class Visitor>
+	void visitChildren(Visitor &&visitor) const
+	{
+		for (const Child &child : m_children) {
+			visitor(*child.get());
+		}
+	}
 };
 
 }

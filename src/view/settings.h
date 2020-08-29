@@ -26,9 +26,13 @@ private:
 	/// Save all entries to configuration
 	void save();
 
+	ISettingEntry *createEntry(Config::Variable &variable, QWidget *parent) const;
+
 public:
 	explicit Settings(Config::Config &config);
 
+protected Q_SLOTS:
+	void clicked(const QModelIndex &index);
 };
 
 }
