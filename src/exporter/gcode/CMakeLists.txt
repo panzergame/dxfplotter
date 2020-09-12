@@ -11,3 +11,4 @@ set(SRC
 )
 
 add_library(gcode ${SRC})
+add_dependencies(gcode generate_config)

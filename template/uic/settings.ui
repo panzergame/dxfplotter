@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="center" native="true">
+       <widget class="QGroupBox" name="center">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>0</horstretch>

@@ -1,5 +1,0 @@
-namespace Config
-{
-	extern const char *CONFIG_RAW_XML_STRING;
-	const char *CONFIG_RAW_XML_STRING = R"(${CONFIG_RAW_XML})";
-}

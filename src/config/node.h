@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <yaml-cpp/yaml.h>
+
 namespace Config
 {
 
@@ -12,10 +14,8 @@ protected:
 	std::string m_description;
 
 public:
-	explicit Node() = default;
-	explicit Node(const std::string &name);
-
-	virtual ~Node() = default;
+	explicit Node(const std::string &name, const std::string &description);
+	Node() = default;
 
 	const std::string &name() const;
 	const std::string &description() const;

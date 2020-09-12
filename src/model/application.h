@@ -16,9 +16,9 @@ private:
 	/// Global configuration
 	Config::Config m_config;
 	/// Importing configuration (e.g dxf, default path values)
-	const Config::Group &m_importConfig;
+	const Config::Import &m_importConfig;
 	/// Selected tool configuration
-	const Config::Group *m_toolConfig;
+	const Config::Tools::Tool *m_toolConfig;
 
 	Path::ListPtr m_paths; // TODO parent destruct
 	Task *m_task;

@@ -5,37 +5,46 @@
 namespace View
 {
 
+class SettingTreeModel::ConstructorVisitor
+{
+private:
+	Node *m_parent;
+	int m_row;
+
+public:
+	explicit ConstructorVisitor(Node *parent)
+		:m_parent(parent),
+		m_row(0)
+	{
+	}
+
+	template <class ConfigNode>
+	void operator()(ConfigNode &node)
+	{
+		// Create node linked to config node
+		Node *n = new Node{m_row++, &node, m_parent, {}};
+		m_parent->children.emplace_back(n);
+
+		// First create all children
+		ConstructorVisitor visitor(n);
+		node.visitChildren(visitor);
+	}
+
+	template <class ValueType>
+	void operator()(Config::Property<ValueType> &)
+	{
+	}
+};
+
 void SettingTreeModel::constructNodes()
 {
+	// Construct root node
 	m_root = {0, &m_configRoot, nullptr, {}};
-
-	constructChildren(m_root);
+	ConstructorVisitor visitor(&m_root);
+	m_configRoot.visitChildren(visitor);
 }
 
-void SettingTreeModel::constructChildren(Node &parent)
-{
-	// Row counter
-	int row = 0;
-
-	// First create all children
-	parent.configNode->visitChildren([&parent, &row](Config::Node &node){
-		// Create node linked to config node
-		Node child = {row, static_cast<Config::NodeList *>(&node), &parent, {}};
-
-		parent.children.push_back(child);
-	});
-
-	// Second go recursively
-	// Test if node is a group
-	Config::Group *parentGroup = dynamic_cast<Config::Group *>(parent.configNode);
-	if (parentGroup) {
-		for (Node &node : parent.children) {
-			constructChildren(node);
-		}
-	}
-}
-
-SettingTreeModel::SettingTreeModel(Config::Group &root, QObject *parent)
+SettingTreeModel::SettingTreeModel(Config::Root &root, QObject *parent)
 	:QAbstractItemModel(parent),
 	m_configRoot(root)
 {
@@ -47,7 +56,10 @@ QVariant SettingTreeModel::data(const QModelIndex &index, int role) const
 	if (role == Qt::DisplayRole && index.isValid()) {
 		Node *node = static_cast<Node *>(index.internalPointer());
 
-		return QString::fromStdString(node->configNode->description());
+		const std::string &name = std::visit([](const auto& node){return node->name();},
+				node->configNode);
+
+		return QString::fromStdString(name);
 	}
 
 	return QVariant();
@@ -68,15 +80,10 @@ QModelIndex SettingTreeModel::index(int row, int column, const QModelIndex &pare
 		return QModelIndex();
 	}
 
-	Node *parentNode = !parent.isValid() ? const_cast<Node *>(&m_root) : static_cast<Node *>(parent.internalPointer());
+	const Node *parentNode = !parent.isValid() ? &m_root : static_cast<const Node *>(parent.internalPointer());
 
 	// Test if node is a group
-	Config::Group *parentGroup = dynamic_cast<Config::Group *>(parentNode->configNode);
-	if (parentGroup) {
-		return createIndex(row, column, &parentNode->children[row]);
-	}
-
-	return QModelIndex();
+	return createIndex(row, column, parentNode->children[row].get());
 }
 
 QModelIndex SettingTreeModel::parent(const QModelIndex &index) const
@@ -102,26 +109,15 @@ int SettingTreeModel::rowCount(const QModelIndex& parent) const
 	if (parent.isValid()) {
 		Node *node = static_cast<Node *>(parent.internalPointer());
 
-		return node->configNode->size();
+		return node->children.size();
 	}
 
-	return m_root.configNode->size();
+	return m_root.children.size();
 }
 
-int SettingTreeModel::columnCount(const QModelIndex& parent) const
+int SettingTreeModel::columnCount(const QModelIndex &) const
 {
 	return 1;
 }
-
-Config::Section *SettingTreeModel::section(const QModelIndex &index) const
-{
-	Node *node = static_cast<Node *>(index.internalPointer());
-
-	// Test if node is a section
-	Config::Section *section = dynamic_cast<Config::Section *>(node->configNode);
-
-	return section;
-}
-
 
 }

@@ -3,7 +3,7 @@
 #include <QDoubleSpinBox>
 #include <QLineEdit>
 
-#include <config/variable.h>
+#include <config/property.h>
 #include <common/aggregable.h>
 
 namespace View
@@ -13,20 +13,12 @@ namespace View
  */
 class ISettingEntry : public Common::Aggregable<ISettingEntry>
 {
-protected:
-	Config::Variable &m_variable;
-
 public:
-	explicit ISettingEntry(Config::Variable &variable)
-		:m_variable(variable)
-	{
-	}
-
-	/// Save entry value to config variable
+	/// Save entry value to config property
 	virtual void save() const = 0;
 };
 
-template <class VariableType>
+template <class PropertyType>
 class SettingEntry : public ISettingEntry
 {
 };
@@ -34,52 +26,61 @@ class SettingEntry : public ISettingEntry
 template <>
 class SettingEntry<float> : public QDoubleSpinBox, public ISettingEntry
 {
+private:
+	Config::Property<float> &m_property;
+
 public:
-	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
+	explicit SettingEntry(Config::Property<float> &property, QWidget *parent)
 		:QDoubleSpinBox(parent),
-		ISettingEntry(variable)
+		m_property(property)
 	{
 		setDecimals(4);
-		setValue((float)m_variable);
+		setValue((float)m_property);
 	}
 
 	void save() const override
 	{
-		m_variable = (float)value();
+		m_property = (float)value();
 	}
 };
 
 template <>
 class SettingEntry<int> : public QSpinBox, public ISettingEntry
 {
+private:
+	Config::Property<int> &m_property;
+
 public:
-	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
+	explicit SettingEntry(Config::Property<int> &property, QWidget *parent)
 		:QSpinBox(parent),
-		ISettingEntry(variable)
+		m_property(property)
 	{
-		setValue(m_variable);
+		setValue(m_property);
 	}
 
 	void save() const override
 	{
-		m_variable = value();
+		m_property = value();
 	}
 };
 
 template <>
 class SettingEntry<std::string> : public QLineEdit, public ISettingEntry
 {
+private:
+	Config::Property<std::string> &m_property;
+
 public:
-	explicit SettingEntry(Config::Variable &variable, QWidget *parent)
+	explicit SettingEntry(Config::Property<std::string> &property, QWidget *parent)
 		:QLineEdit(parent),
-		ISettingEntry(variable)
+		m_property(property)
 	{
-		setText(QString::fromStdString(m_variable));
+		setText(QString::fromStdString(m_property));
 	}
 
 	void save() const override
 	{
-		m_variable = text().toStdString();
+		m_property = text().toStdString();
 	}
 };
 

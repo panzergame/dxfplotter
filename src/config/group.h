@@ -1,47 +1,38 @@
 #pragma once
 
-#include <variant>
-#include <vector>
-#include <map>
+#include <tuple>
 
-#include <tinyxml2.h>
-
-#include <config/section.h>
+#include <config/node.h>
 
 namespace Config
 {
 
 /** @brief A configuration group.
- * Group contains either sections or groups.
  */
-class Group : public NodeList
+template <class ... ChildTypes>
+class Group : public Node
 {
+protected:
+	std::tuple<ChildTypes ...> m_children;
+
 public:
-	explicit Group() = default;
-	explicit Group(tinyxml2::XMLElement *root, YAML::Node &section);
-
-	template <class Index>
-	Section &section(const Index &id)
+	explicit Group(const std::string& name, const std::string &description)
+		:Node(name, description)
 	{
-		return at<Section>(id);
 	}
 
-	template <class Index>
-	const Section &section(const Index &id) const
+	Group() = default;
+
+	template <class Visitor>
+	void visitChildren(Visitor &&visitor)
 	{
-		return at<Section>(id);
+		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_children);
 	}
 
-	template <class Index>
-	Group &group(const Index &id)
+	template <class Visitor>
+	void visitChildren(Visitor &&visitor) const
 	{
-		return at<Group>(id);
-	}
-
-	template <class Index>
-	const Group &group(const Index &id) const
-	{
-		return at<Group>(id);
+		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_children);
 	}
 };
 

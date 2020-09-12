@@ -12,24 +12,24 @@ class SettingTreeModel : public QAbstractItemModel
 	Q_OBJECT
 
 private:
-	Config::Group &m_configRoot;
+	class ConstructorVisitor;
 
 	// ItemModel requests each item to know its parent and also its row in parent
 	struct Node
 	{
 		int row;
-		Config::NodeList *configNode;
+		Config::NodePtrVariant configNode;
 		Node *parent;
-		std::vector<Node> children;
+		std::vector<std::unique_ptr<Node>> children;
 	};
 
+	Config::Root &m_configRoot;
 	Node m_root;
 
 	void constructNodes();
-	void constructChildren(Node &parent);
 
 public:
-	explicit SettingTreeModel(Config::Group &root, QObject *parent = nullptr);
+	explicit SettingTreeModel(Config::Root &root, QObject *parent = nullptr);
 
 	QVariant data(const QModelIndex &index, int role) const override;
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -38,8 +38,16 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-	//// Return section of the index, otherwise nullptr
-	Config::Section *section(const QModelIndex &index) const;
+	//// Visit configuration node at index
+	template <class Visitor>
+	void visit(const QModelIndex &index, Visitor &&visitor) const
+	{
+		Node *node = static_cast<Node *>(index.internalPointer());
+
+		std::visit([&visitor](auto &node){
+			visitor(*node);
+		}, node->configNode);
+	}
 };
 
 }

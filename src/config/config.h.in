@@ -1,0 +1,112 @@
+#pragma once
+
+#include <variant>
+
+#include <config/group.h>
+#include <config/list.h>
+#include <config/property.h>
+
+namespace Config
+{
+
+namespace Internal
+{
+
+{% for node in nodes %}{% if node.__class__ == Group %}
+class {{ node.unique_class_name }} : public Group<{{ node.tuple_name }}>
+{
+public:
+	using Group::Group;
+
+	{% for child in node.children %}{% if child.__class__ != Property %} using {{ child.class_name }} = {{ child.unique_class_name }};
+	{% endif %}{% endfor %}
+
+	explicit {{ node.unique_class_name }}(YAML::Node yamlNode)
+		:{{ node.unique_class_name }}("{{ node.name }}", yamlNode)
+	{
+	}
+
+	explicit {{ node.unique_class_name }}(const std::string &name, YAML::Node yamlNode)
+		:Group(name, "{{ node.description }}")
+	{
+		m_children = {
+		{% for child in node.children %}
+			{{ child.class_name }}({% if child.__class__ == Property %}"{{ child.name }}", "{{ child.description }}", {{ child.default_value }}, {% endif %}yamlNode["{{ child.name }}"]){{ ", " if not loop.last }}
+		{% endfor %}
+		};
+	}
+
+	{{ node.unique_class_name }}() = default;
+
+	{% for child in node.children %}
+	{{ child.class_name }} &{{ child.var_name }}()
+	{
+		return std::get<{{loop.index - 1}}>(m_children);
+	}
+	{% endfor %}
+
+	{% for child in node.children %}
+	const {{ child.class_name }} &{{ child.var_name }}() const
+	{
+		return std::get<{{loop.index - 1}}>(m_children);
+	}
+	{% endfor %}
+
+};
+
+{% endif %}{% if node.__class__ == List %}
+class {{ node.unique_class_name }} : public List<{{ node.item.unique_class_name }}>
+{
+public:
+	using {{ node.item.class_name }} = {{ node.item.unique_class_name }};
+
+	explicit {{ node.unique_class_name }}(YAML::Node yamlNode)
+		:{{ node.unique_class_name }}("{{ node.name }}", yamlNode)
+	{
+	}
+
+	explicit {{ node.unique_class_name }}(const std::string &name, YAML::Node yamlNode)
+		:List(name, "{{ node.description }}", yamlNode)
+	{
+	}
+
+	{{ node.unique_class_name }}() = default;
+};
+{% endif %}{% endfor %}
+
+}
+
+{% for child in root.children %}
+using {{ child.class_name }} = Internal::{{ child.unique_class_name }};
+{% endfor %}
+
+using Root = Internal::{{ root.unique_class_name }};
+
+using NodeVariant = std::variant<
+{% for node in nodes %}{% if node.__class__ != Property %}
+Internal::{{ node.unique_class_name }}{{ ", " if not loop.last }}{% endif %}{% endfor %}
+>;
+
+using NodePtrVariant = std::variant<
+{% for node in nodes %}{% if node.__class__ != Property %}
+Internal::{{ node.unique_class_name }}*{{ ", " if not loop.last }}{% endif %}{% endfor %}
+>;
+
+class Config
+{
+private:
+	std::string m_filePath;
+	YAML::Node m_yamlRoot;
+	Root m_root;
+
+public:
+	explicit Config(const std::string &filePath);
+	~Config();
+
+	Root& root();
+	const Root& root() const;
+
+	void save();
+};
+
+}

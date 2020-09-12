@@ -3,13 +3,13 @@
 namespace Exporter::GCode
 {
 
-Format::Format(const Config::Section &formatConfig)
-	:toolOn(formatConfig.var("tool_on")),
-	toolOff(formatConfig.var("tool_off")),
-	linearMove(formatConfig.var("linear_move")),
-	fastMove(formatConfig.var("fast_move")),
-	cwArc(formatConfig.var("cw_arc")),
-	ccwArc(formatConfig.var("ccw_arc"))
+Format::Format(const Config::Tools::Tool::Gcode &formatConfig)
+	:toolOn(formatConfig.toolOn()),
+	toolOff(formatConfig.toolOff()),
+	linearMove(formatConfig.linearMove()),
+	fastMove(formatConfig.fastMove()),
+	cwArc(formatConfig.cwArc()),
+	ccwArc(formatConfig.ccwArc())
 {
 }
 

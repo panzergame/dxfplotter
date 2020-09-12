@@ -1,7 +1,5 @@
 #include <config.h>
 
-#include <tinyxml2.h>
-
 #include <QDebug>
 
 #include <fstream>
@@ -21,14 +19,8 @@ Config::Config(const std::string &filePath)
 		qInfo() << "Initializing configuration from defaults";
 	}
 
-	// Load XML content
-	tinyxml2::XMLDocument doc;
-	const tinyxml2::XMLError parseStatus = doc.Parse(CONFIG_RAW_XML_STRING);
-
-	assert(parseStatus == tinyxml2::XML_SUCCESS);
-
 	// Instantiation of root group
-	m_root = Group(doc.FirstChildElement(), m_yamlRoot);
+	m_root = Root(m_yamlRoot);
 }
 
 Config::~Config()
@@ -36,12 +28,12 @@ Config::~Config()
 	save();
 }
 
-Group &Config::root()
+Root &Config::root()
 {
 	return m_root;
 }
 
-const Group &Config::root() const
+const Root &Config::root() const
 {
 	return m_root;
 }

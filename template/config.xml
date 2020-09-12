@@ -1,30 +1,31 @@
-<group name="import">
-	<group name="dxf">
-		<property name="spline-to-arc-precision" type="float">
-		<property name="assemble-tolerance" type="float">
-		<property name="minimum-polyline-length" type="float">
-		<property name="minimum-spline-length" type="float">
-		<property name="minimum-arc-length" type="float">
-	</group>
-	<group name="default-path">
-		<property name="feed-rate" type="float">
-		<property name="intensity" type="float">
-		<property name="passes" type="int">
-	</group>
+<group name="root">
+	<group name="import">
+		<group name="dxf">
+			<property name="spline to arc precision" type="float" default="0.001"/>
+			<property name="assemble tolerance" type="float" default="0.001"/>
+			<property name="minimum polyline length" type="float" default="0.01"/>
+			<property name="minimum spline length" type="float" default="0.01"/>
+			<property name="minimum arc length" type="float" default="0.01"/>
+		</group>
+		<group name="default path">
+			<property name="feed rate" type="float" default="40"/>
+			<property name="intensity" type="float" default="50"/>
+			<property name="passes" type="int" default="1"/>
+		</group>
+	</group>s
+	<list name="tools">
+		<group name="tool">
+			<group name="general">
+				<property name="radius" type="float" default="0.5"/>
+			</group>
+			<group name="gcode">
+				<property name="tool on" type="std::string" default="M4 S {S:.3f}"/>
+				<property name="tool off" type="std::string" default="M5"/>
+				<property name="linear move" type="std::string" default="G1 X {X:.3f} Y {Y:.3f} F {F:.3f}"/>
+				<property name="fast move" type="std::string" default="G0 X {X:.3f} Y {Y:.3f}"/>
+				<property name="cw arc" type="std::string" default="G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
+				<property name="ccw arc" type="std::string" default="G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
+			</group>
+		</group>
+	</list>
 </group>
-<list name="tools">
-	<group name="tool">
-		<group name="general">
-			<property name="radius" type="float">
-		</group>
-		<group name="gcode">
-			<property name="tool-on" type="string">
-			<property name="tool-off" type="string">
-			<property name="linear-move" type="string">
-			<property name="fast-move" type="string">
-			<property name="cw-arc" type="string">
-			<property name="ccw-arc" type="string">
-		</group>
-	</group>
-</list>
-

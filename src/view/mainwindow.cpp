@@ -50,9 +50,9 @@ void MainWindow::setupToolBar()
 	QComboBox *toolsBox = new QComboBox();
 
 	const Config::Config &config = m_app.config();
-	const Config::Group &tools = config.root().group("tools");
+	const Config::Tools &tools = config.root().tools();
 
-	tools.visitChildren([&toolsBox](const Config::Node &tool){
+	tools.visitChildren([&toolsBox](const auto &tool){
 		const QString name = QString::fromStdString(tool.name());
 		toolsBox->addItem(name, name);
 	});

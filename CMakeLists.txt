@@ -41,6 +41,7 @@ set(INCLUDE_DIRS
 	thirdparty/nanoflann/include
 	thirdparty/tomlplusplus/include
 	template
+	${CMAKE_BINARY_DIR}/src
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
 	${TinyXML2_INCLUDE_DIRS}
