@@ -23,6 +23,13 @@ Config::Config(const std::string &filePath)
 	m_root = Root(m_yamlRoot);
 }
 
+Config::Config(const Config &other)
+	:m_filePath(other.m_filePath),
+	m_yamlRoot(Clone(other.m_yamlRoot)),
+	m_root(m_yamlRoot)
+{
+}
+
 Config::~Config()
 {
 	save();

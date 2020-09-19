@@ -56,13 +56,19 @@ Application::Application()
 	:m_config(Config::Config(configFilePath())),
 	m_importConfig(m_config.root().import()),
 	// Default select first tool
-	m_toolConfig(&m_config.root().tools()[0])
+	m_toolConfig(&m_config.root().tools().first())
 {
 }
 
 Config::Config &Application::config()
 {
 	return m_config;
+}
+
+void Application::setConfig(Config::Config &&config)
+{
+	m_config = std::move(config);
+	emit configChanged(m_config);
 }
 
 bool Application::selectTool(const QString &toolName)

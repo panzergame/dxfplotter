@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ui_path.h>
+#include <uic/ui_path.h>
 
 #include <model/pathgroupsettings.h>
 #include <model/task.h>

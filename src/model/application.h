@@ -31,6 +31,7 @@ public:
 	explicit Application();
 
 	Config::Config &config();
+	void setConfig(Config::Config &&config);
 
 	/// Select tool used as configuration for further operations
 	bool selectTool(const QString &toolName);
@@ -50,6 +51,7 @@ public:
 Q_SIGNALS:
 	void taskChanged(Task *newTask);
 	void titleChanged(QString title);
+	void configChanged(Config::Config &config);
 };
 
 }

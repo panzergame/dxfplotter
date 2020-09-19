@@ -2,7 +2,7 @@
 
 #include <model/application.h>
 
-#include <ui_mainwindow.h>
+#include <uic/ui_mainwindow.h>
 
 #include <QMainWindow>
 

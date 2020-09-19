@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 
 #include <config/node.h>
 
@@ -15,78 +15,76 @@ template <class Child>
 class List : public Node
 {
 private:
-	std::vector<Child> m_children;
-	std::unordered_map<std::string, int> m_nameToIndex;
-
-	/// Associate each ame to an item index for name lookup
-	void updateNameToIndex()
-	{
-		for (int i = 0, size = m_children.size(); i < size; ++i) {
-			const Child &child = m_children[i];
-
-			m_nameToIndex[child.name()] = i;
-		}
-	}
+	std::map<std::string, Child> m_children;
+	YAML::Node m_yamlNode;
 
 public:
 	explicit List(const std::string& name, const std::string &description, YAML::Node yamlNode)
-		:Node(name, description)
+		:Node(name, description),
+		m_yamlNode(yamlNode)
 	{
 		// Creating by default one item
-		if (!yamlNode.IsDefined()) {
-			m_children.emplace_back("default", yamlNode["default"]);
+		if (!m_yamlNode.IsDefined()) {
+			m_children.emplace("default", Child("default", m_yamlNode["default"]));
 		}
 		else {
 			// Create items from yaml node
-			for (std::pair<YAML::Node, YAML::Node> pair : yamlNode) {
-				m_children.emplace_back(pair.first.as<std::string>(), pair.second);
+			for (std::pair<YAML::Node, YAML::Node> pair : m_yamlNode) {
+				const std::string &name = pair.first.as<std::string>();
+				m_children.emplace(name, Child(name, pair.second));
 			}
 		}
-
-		updateNameToIndex();
 	}
 
 	List() = default;
 
 	bool has(const std::string &name) const
 	{
-		return m_nameToIndex.find(name) != m_nameToIndex.end();
+		return m_children.find(name) != m_children.end();
 	}
 
 	Child &operator[](const std::string &name)
 	{
-		return m_children[m_nameToIndex.at(name)];
+		return m_children.find(name)->second;
 	}
 
 	const Child &operator[](const std::string &name) const
 	{
-		return m_children[m_nameToIndex.at(name)];
+		return m_children.find(name)->second;
 	}
 
-	Child &operator[](int index)
+	Child &first()
 	{
-		return m_children[index];
+		return m_children.begin()->second;
 	}
 
-	const Child &operator[](int index) const
+	const Child &first() const
 	{
-		return m_children[index];
+		return m_children.begin()->second;
 	}
 
 	template <class Visitor>
 	void visitChildren(Visitor &&visitor)
 	{
-		for (Child &child : m_children) {
-			visitor(child);
+		for (auto &pair : m_children) {
+			visitor(pair.second);
 		}
 	}
 
 		template <class Visitor>
 	void visitChildren(Visitor &&visitor) const
 	{
-		for (const Child &child : m_children) {
-			visitor(child);
+		for (auto &pair : m_children) {
+			visitor(pair.second);
 		}
+	}
+
+	/// Create a new named children
+	Child &createChild(const std::string &name)
+	{
+		const auto &pair = m_children.emplace(name, Child(name, m_yamlNode[name]));
+
+		return pair.first->second;
 	}
 };
 

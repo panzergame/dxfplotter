@@ -4,23 +4,42 @@
 
 #include <config/config.h>
 
-namespace View
+namespace View::Settings
 {
 
-class SettingTreeModel : public QAbstractItemModel
+class TreeModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 private:
-	class ConstructorVisitor;
+	struct ConstructorVisitor;
+	struct AddItemVisitor;
 
 	// ItemModel requests each item to know its parent and also its row in parent
 	struct Node
 	{
 		int row;
+		enum class Type
+		{
+			Group,
+			List
+		} type;
+
 		Config::NodePtrVariant configNode;
 		Node *parent;
 		std::vector<std::unique_ptr<Node>> children;
+	};
+
+	template <class ... Child>
+	static constexpr Node::Type nodeType(Config::Group<Child...> &)
+	{
+		return Node::Type::Group;
+	}
+
+	template <class Child>
+	static constexpr Node::Type nodeType(Config::List<Child> &)
+	{
+		return Node::Type::List;
 	};
 
 	Config::Root &m_configRoot;
@@ -29,7 +48,7 @@ private:
 	void constructNodes();
 
 public:
-	explicit SettingTreeModel(Config::Root &root, QObject *parent = nullptr);
+	explicit TreeModel(Config::Root &root, QObject *parent = nullptr);
 
 	QVariant data(const QModelIndex &index, int role) const override;
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -48,6 +67,12 @@ public:
 			visitor(*node);
 		}, node->configNode);
 	}
+
+	bool isList(const QModelIndex &index) const;
+	bool isItem(const QModelIndex &index) const;
+
+	void addItem(const QModelIndex &parent, const QString &name);
+	void removeItem(const QModelIndex &index);
 };
 
 }

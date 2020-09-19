@@ -4,13 +4,10 @@ project(dxfplotter)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
-
-set(CMAKE_AUTOUIC_SEARCH_PATHS ${TEMPLATE_DIR}/uic)
 
 # Append custom package finder modules (e.g tinyxml2)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
@@ -42,6 +39,7 @@ set(INCLUDE_DIRS
 	thirdparty/tomlplusplus/include
 	template
 	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
 	${TinyXML2_INCLUDE_DIRS}
@@ -50,6 +48,7 @@ set(INCLUDE_DIRS
 
 set(LINK_LIBRARIES
 	view
+	view-settings
 	model
 	config
 	dxf

@@ -1,3 +1,5 @@
+add_subdirectory(settings)
+
 set(SRC
 	bulgepainter.cpp
 	info.cpp
@@ -6,8 +8,6 @@ set(SRC
 	path.cpp
 	pathitem.cpp
 	rubberband.cpp
-	settings.cpp
-	settingtreemodel.cpp
 	task.cpp
 	tasklistmodel.cpp
 	viewport.cpp
@@ -19,13 +19,11 @@ set(SRC
 	path.h
 	pathitem.h
 	rubberband.h
-	settings.h
-	settingentry.h
-	settingtreemodel.h
 	task.h
 	tasklistmodel.h
 	viewport.h
 )
 
 add_library(view ${SRC})
-add_dependencies(view generate_config)
+add_dependencies(view generate_config uic)
+

@@ -101,6 +101,7 @@ private:
 
 public:
 	explicit Config(const std::string &filePath);
+	Config(const Config &other);
 	~Config();
 
 	Root& root();

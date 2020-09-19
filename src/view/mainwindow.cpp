@@ -3,7 +3,7 @@
 #include <path.h>
 #include <task.h>
 #include <viewport.h>
-#include <settings.h>
+#include <settings/settings.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -100,6 +100,8 @@ MainWindow::MainWindow(Model::Application &app)
 	setupMenuActions();
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
+	
+	openSettings(); // TODO
 }
 
 void MainWindow::openFile()
@@ -127,7 +129,7 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	Settings *settings = new Settings(m_app.config());
+	Settings::Settings *settings = new Settings::Settings(m_app);
 	settings->exec();
 }
 

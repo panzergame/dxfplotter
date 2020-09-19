@@ -1,4 +1,3 @@
-#include <ui_mainwindow.h>
 #include <view/mainwindow.h>
 #include <model/application.h>
 
