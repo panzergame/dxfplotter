@@ -84,14 +84,19 @@ void MainWindow::setupMenuActions()
 
 void MainWindow::updateToolSelector(const Config::Config &config)
 {
-	const Config::Tools &tools = config.root().tools();
+	// Keep current tool selected.
+	const QString &currentToolName = m_toolSelector->currentText();
 
 	m_toolSelector->clear();
 
+	const Config::Tools &tools = config.root().tools();
 	tools.visitChildren([this](const auto &tool){
 		const QString name = QString::fromStdString(tool.name());
 		m_toolSelector->addItem(name, name);
 	});
+
+	// Try to restore selected tool name
+	m_toolSelector->setCurrentText(currentToolName);
 }
 
 MainWindow::MainWindow(Model::Application &app)
