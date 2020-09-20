@@ -47,19 +47,11 @@ QWidget *MainWindow::setupCenterPanel()
 void MainWindow::setupToolBar()
 {
 	// Tool selector
-	QComboBox *toolsBox = new QComboBox();
+	m_toolSelector = new QComboBox();
 
-	const Config::Config &config = m_app.config();
-	const Config::Tools &tools = config.root().tools();
+	connect(m_toolSelector, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
 
-	tools.visitChildren([&toolsBox](const auto &tool){
-		const QString name = QString::fromStdString(tool.name());
-		toolsBox->addItem(name, name);
-	});
-
-	connect(toolsBox, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
-
-	toolBar->addWidget(toolsBox);
+	toolBar->addWidget(m_toolSelector);
 }
 
 void MainWindow::setupUi()
@@ -90,18 +82,28 @@ void MainWindow::setupMenuActions()
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
 }
 
+void MainWindow::updateToolSelector(const Config::Config &config)
+{
+	const Config::Tools &tools = config.root().tools();
+
+	m_toolSelector->clear();
+
+	tools.visitChildren([this](const auto &tool){
+		const QString name = QString::fromStdString(tool.name());
+		m_toolSelector->addItem(name, name);
+	});
+}
+
 MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
 	setupUi();
-
-	showMaximized();
-
 	setupMenuActions();
+	showMaximized();
+	updateToolSelector(m_app.config());
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	
-	openSettings(); // TODO
+	connect(&m_app, &Model::Application::configChanged, this, &MainWindow::configChanged);
 }
 
 void MainWindow::openFile()
@@ -132,5 +134,11 @@ void MainWindow::openSettings()
 	Settings::Settings *settings = new Settings::Settings(m_app);
 	settings->exec();
 }
+
+void MainWindow::configChanged(const Config::Config &config)
+{
+	updateToolSelector(config);
+}
+
 
 }
