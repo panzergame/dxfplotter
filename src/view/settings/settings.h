@@ -35,7 +35,7 @@ public:
 	void accept() override;
 
 protected Q_SLOTS:
-	void clicked(const QModelIndex &index);
+	void currentChanged(const QModelIndex &index, const QModelIndex &previous);
 	void addItem(const QModelIndex &index);
 	void removeItem(const QModelIndex &index);
 };

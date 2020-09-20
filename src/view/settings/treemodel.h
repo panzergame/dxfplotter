@@ -3,6 +3,7 @@
 #include <QAbstractItemModel>
 
 #include <config/config.h>
+#include <common/aggregable.h>
 
 namespace View::Settings
 {
@@ -12,11 +13,12 @@ class TreeModel : public QAbstractItemModel
 	Q_OBJECT
 
 private:
-	struct ConstructorVisitor;
+	struct ConstructorItemVisitor;
 	struct AddItemVisitor;
+	struct RemoveItemVisitor;
 
 	// ItemModel requests each item to know its parent and also its row in parent
-	struct Node
+	struct Node : Common::Aggregable<Node>
 	{
 		int row;
 		enum class Type
@@ -27,19 +29,30 @@ private:
 
 		Config::NodePtrVariant configNode;
 		Node *parent;
-		std::vector<std::unique_ptr<Node>> children;
-	};
+		ListUPtr children;
 
-	template <class ... Child>
-	static constexpr Node::Type nodeType(Config::Group<Child...> &)
-	{
-		return Node::Type::Group;
-	}
+		template <class ... Child>
+		static constexpr Node::Type nodeType(const Config::Group<Child...> &)
+		{
+			return Node::Type::Group;
+		}
 
-	template <class Child>
-	static constexpr Node::Type nodeType(Config::List<Child> &)
-	{
-		return Node::Type::List;
+		template <class Child>
+		static constexpr Node::Type nodeType(const Config::List<Child> &)
+		{
+			return Node::Type::List;
+		};
+
+		Node() = default;
+
+		template <class ConfigNode>
+		explicit Node(int _row, ConfigNode &_node, Node *_parent)
+			:row(_row),
+			type(nodeType(_node)),
+			configNode(&_node),
+			parent(_parent)
+		{
+		}
 	};
 
 	Config::Root &m_configRoot;
@@ -68,7 +81,9 @@ public:
 		}, node->configNode);
 	}
 
+	/// Check if index contains a config list
 	bool isList(const QModelIndex &index) const;
+	/// Check if index contains a config item (parent is a list)
 	bool isItem(const QModelIndex &index) const;
 
 	void addItem(const QModelIndex &parent, const QString &name);

@@ -5,9 +5,10 @@
 namespace View::Settings
 {
 
-struct TreeModel::ConstructorVisitor
+struct TreeModel::ConstructorItemVisitor
 {
 	Node *parent;
+	// Row of next generated child node
 	int row = 0;
 
 	template <class ValueType>
@@ -19,11 +20,11 @@ struct TreeModel::ConstructorVisitor
 	void operator()(ConfigNode &node)
 	{
 		// Create node linked to config node
-		Node *n = new Node{row++, nodeType(node), &node, parent, {}};
+		Node *n = new Node(row++, node, parent);
 		parent->children.emplace_back(n);
 
-		// First create all children
-		ConstructorVisitor visitor{n};
+		// Create all children
+		ConstructorItemVisitor visitor{n};
 		node.visitChildren(visitor);
 	}
 };
@@ -31,15 +32,37 @@ struct TreeModel::ConstructorVisitor
 struct TreeModel::AddItemVisitor
 {
 	const QString &name;
-	const int row;
 	Node *parent;
 
 	template <class Child>
 	void operator()(Config::List<Child> *list)
 	{
-		qInfo() << "add";
+		const int row = parent->children.size();
+
 		Child &child = list->createChild(name.toStdString());
-		Node *n = new Node{row, nodeType(child), &child, parent, {}};
+
+		Node *n = new Node(row, child, parent);
+		parent->children.emplace_back(n);
+
+		// Create all children
+		ConstructorItemVisitor visitor{n};
+		child.visitChildren(visitor);
+	}
+
+	template <class ... Child>
+	void operator()(Config::Group<Child ...> *)
+	{
+	}
+};
+
+struct TreeModel::RemoveItemVisitor
+{
+	const Config::Node &configNode;
+
+	template <class Child>
+	void operator()(Config::List<Child> *list)
+	{
+		list->removeChild(static_cast<const Child &>(configNode));
 	}
 
 	template <class ... Child>
@@ -51,8 +74,8 @@ struct TreeModel::AddItemVisitor
 void TreeModel::constructNodes()
 {
 	// Construct root node
-	m_root = {0, Node::Type::Group, &m_configRoot, nullptr, {}};
-	ConstructorVisitor visitor{&m_root};
+	m_root = Node(0, m_configRoot, nullptr);
+	ConstructorItemVisitor visitor{&m_root};
 	m_configRoot.visitChildren(visitor);
 }
 
@@ -152,14 +175,37 @@ void TreeModel::addItem(const QModelIndex &parent, const QString &name)
 
 	Node *node = static_cast<Node *>(parent.internalPointer());
 
-	std::visit(AddItemVisitor{name, row, node}, node->configNode);
+	std::visit(AddItemVisitor{name, node}, node->configNode);
 
 	endInsertRows();
 }
 
 void TreeModel::removeItem(const QModelIndex &index)
 {
-	
+	assert(isItem(index));
+
+	const QModelIndex &parent = index.parent();
+	const int row = index.row();
+
+	Node *parentNode = static_cast<Node *>(parent.internalPointer());
+	Node *node = static_cast<Node *>(index.internalPointer());
+
+	beginRemoveRows(parent, row, row);
+
+	// Remove item in config list
+	std::visit([parentNode](auto *node){
+		std::visit(RemoveItemVisitor{*node}, parentNode->configNode);
+	}, node->configNode);
+
+	// Remove child and retrieve position after.
+	auto it = parentNode->children.erase(parentNode->children.begin() + row);
+
+	// Remap row indices (-1)
+	for (const auto &end = parentNode->children.end(); it != end; ++it) {
+		--(*it)->row;
+	}
+
+	endRemoveRows();
 }
 
 }

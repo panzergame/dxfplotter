@@ -82,9 +82,18 @@ public:
 	/// Create a new named children
 	Child &createChild(const std::string &name)
 	{
+		// TODO ensure name is unique
 		const auto &pair = m_children.emplace(name, Child(name, m_yamlNode[name]));
 
 		return pair.first->second;
+	}
+
+	void removeChild(const Child &child)
+	{
+		const std::string &name = child.name();
+
+		m_yamlNode.remove(name);
+		m_children.erase(name);
 	}
 };
 

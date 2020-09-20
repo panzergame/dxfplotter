@@ -47,11 +47,11 @@ void Settings::setupUi()
 Settings::Settings(Model::Application &app)
 	:m_app(app),
 	m_config(app.config()),
-	m_model(new TreeModel(app.config().root(), this))
+	m_model(new TreeModel(m_config.root(), this))
 {
 	setupUi();
 
-	connect(treeView, &QTreeView::clicked, this, &Settings::clicked);
+	connect(treeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Settings::currentChanged);
 }
 
 void Settings::accept()
@@ -62,11 +62,11 @@ void Settings::accept()
 	QDialog::accept();
 }
 
-void Settings::clicked(const QModelIndex &index)
+void Settings::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
 	// Create new widget to be displayed at center
 	NodeVisitor visitor;
-	m_model->visit(index, visitor);
+	m_model->visit(current, visitor);
 
 	// Replace old center widget
 	QWidget *newWidget = visitor.newWidget();
@@ -76,24 +76,21 @@ void Settings::clicked(const QModelIndex &index)
 	// Delete old center widget
 	delete item->widget();
 
-	const bool isList = m_model->isList(index);
-	if (isList) {
-		connect(addButton, &QPushButton::pressed, this, [index, this](){ addItem(index); });
-	}
-	else {
-		disconnect(addButton);
-	}
-
+	const bool isList = m_model->isList(current);
+	addButton->disconnect();
 	addButton->setEnabled(isList);
 
-	const bool isItem = m_model->isItem(index);
-	if (isItem) {
-		connect(removeButton, &QPushButton::pressed, this, [index, this](){ removeItem(index); });
+	if (isList) {
+		connect(addButton, &QPushButton::pressed, this, [current, this](){ addItem(current); });
 	}
-	else {
-		disconnect(removeButton);
-	}
+
+	const bool isItem = m_model->isItem(current);
+	removeButton->disconnect();
 	removeButton->setEnabled(isItem);
+
+	if (isItem) {
+		connect(removeButton, &QPushButton::pressed, this, [current, this](){ removeItem(current); });
+	}
 }
 
 void Settings::addItem(const QModelIndex &index)
