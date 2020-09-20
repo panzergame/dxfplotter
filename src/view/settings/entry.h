@@ -9,13 +9,13 @@
 namespace View::Settings
 {
 
-/** @brief Interface for setting entry, expose saving to configuration method
+/** @brief Interface for setting entry, expose saving to configuration destructor
  */
-class IEntry : public Common::Aggregable<IEntry>
+class IEntry
 {
 public:
 	/// Save entry value to config property
-	virtual void save() const = 0;
+	virtual ~IEntry() = default;
 };
 
 template <class PropertyType>
@@ -38,7 +38,7 @@ public:
 		setValue((float)m_property);
 	}
 
-	void save() const override
+	~Entry()
 	{
 		m_property = (float)value();
 	}
@@ -58,7 +58,7 @@ public:
 		setValue(m_property);
 	}
 
-	void save() const override
+	~Entry()
 	{
 		m_property = value();
 	}
@@ -78,7 +78,7 @@ public:
 		setText(QString::fromStdString(m_property));
 	}
 
-	void save() const override
+	~Entry()
 	{
 		m_property = text().toStdString();
 	}

@@ -30,7 +30,6 @@ private:
 			Entry<ValueType> *entry = new Entry<ValueType>(property, &m_parent);
 
 			m_parent.formLayout->addRow(QString::fromStdString(property.name()), entry);
-			m_parent.m_entries.push_back(entry);
 		}
 
 		template <class Node>
@@ -38,8 +37,6 @@ private:
 		{
 		}
 	};
-
-	IEntry::ListPtr m_entries;
 
 public:
 	template <class Node>
@@ -50,13 +47,6 @@ public:
 		setTitle(QString::fromStdString(node.name()));
 		// Populate properties
 		node.visitChildren(PropertyVisitor(*this));
-	}
-
-	~Group()
-	{
-		for (IEntry *entry : m_entries) {
-			entry->save();
-		}
 	}
 };
 
