@@ -25,14 +25,14 @@ private:
 
 	Model::Application &m_app;
 	// Modified config
-	Config::Config m_config;
+	Config::Config m_newConfig;
 	std::unique_ptr<TreeModel> m_model;
-
 
 public:
 	explicit Settings(Model::Application &app);
+	~Settings();
 
-	void accept() override;
+	Config::Config &&newConfig();
 
 protected Q_SLOTS:
 	void currentChanged(const QModelIndex &index, const QModelIndex &previous);

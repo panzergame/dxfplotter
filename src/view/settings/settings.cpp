@@ -46,23 +46,22 @@ void Settings::setupUi()
 
 Settings::Settings(Model::Application &app)
 	:m_app(app),
-	m_config(app.config()),
-	m_model(new TreeModel(m_config.root(), this))
+	m_newConfig(app.config()),
+	m_model(new TreeModel(m_newConfig.root(), this))
 {
 	setupUi();
 
 	connect(treeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Settings::currentChanged);
 }
 
-void Settings::accept()
-{
-	// Set modified config back
-	m_app.setConfig(std::move(m_config));
+Settings::~Settings() = default;
 
-	QDialog::accept();
+Config::Config &&Settings::newConfig()
+{
+	return std::move(m_newConfig);
 }
 
-void Settings::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 {
 	// Create new widget to be displayed at center
 	NodeVisitor visitor;
