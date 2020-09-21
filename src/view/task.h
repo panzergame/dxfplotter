@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ui_task.h>
+#include <uic/ui_task.h>
 
 #include <model/task.h>
 

@@ -3,11 +3,12 @@
 #include <path.h>
 #include <task.h>
 #include <viewport.h>
-#include <settings.h>
+#include <settings/settings.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSplitter>
+#include <QComboBox>
 #include <QDebug>
 
 namespace View
@@ -43,6 +44,16 @@ QWidget *MainWindow::setupCenterPanel()
 	return container;
 }
 
+void MainWindow::setupToolBar()
+{
+	// Tool selector
+	m_toolSelector = new QComboBox();
+
+	connect(m_toolSelector, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
+
+	toolBar->addWidget(m_toolSelector);
+}
+
 void MainWindow::setupUi()
 {
 	Ui::MainWindow::setupUi(this);
@@ -54,9 +65,11 @@ void MainWindow::setupUi()
 	horiSplitter->setStretchFactor(1, 1);
 
 	horizontalLayout->addWidget(horiSplitter);
+
+	setupToolBar();
 }
 
-void MainWindow::setupActions()
+void MainWindow::setupMenuActions()
 {
 	// File actions
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
@@ -69,16 +82,33 @@ void MainWindow::setupActions()
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
 }
 
+void MainWindow::updateToolSelector(const Config::Config &config)
+{
+	// Keep current tool selected.
+	const QString &currentToolName = m_toolSelector->currentText();
+
+	m_toolSelector->clear();
+
+	const Config::Tools &tools = config.root().tools();
+	tools.visitChildren([this](const auto &tool){
+		const QString name = QString::fromStdString(tool.name());
+		m_toolSelector->addItem(name, name);
+	});
+
+	// Try to restore selected tool name
+	m_toolSelector->setCurrentText(currentToolName);
+}
+
 MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
 	setupUi();
-
+	setupMenuActions();
 	showMaximized();
-
-	setupActions();
+	updateToolSelector(m_app.config());
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
+	connect(&m_app, &Model::Application::configChanged, this, &MainWindow::configChanged);
 }
 
 void MainWindow::openFile()
@@ -106,8 +136,18 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	Settings *settings = new Settings(m_app.config());
-	settings->exec();
+	Settings::Settings *settings = new Settings::Settings(m_app);
+	if (settings->exec() == QDialog::Accepted) {
+		m_app.setConfig(settings->newConfig());
+	}
+
+	delete settings;
 }
+
+void MainWindow::configChanged(const Config::Config &config)
+{
+	updateToolSelector(config);
+}
+
 
 }

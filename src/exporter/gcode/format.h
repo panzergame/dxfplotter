@@ -8,7 +8,7 @@ namespace Exporter::GCode
 class Format
 {
 public:
-	explicit Format(const Config::Config::Gcode &format);
+	explicit Format(const Config::Tools::Tool::Gcode &formatConfig);
 
 	std::string toolOn;
 	std::string toolOff;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <ui_info.h>
+#include <uic/ui_info.h>
 
 #include <QWidget>
 
