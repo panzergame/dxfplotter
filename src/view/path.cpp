@@ -13,7 +13,7 @@ void Path::setupModel()
 
 	connectOnFieldChanged<double>(feedRate, [this](double value) { m_groupSettings->setFeedRate(value); });
 	connectOnFieldChanged<double>(intensity, [this](double value) { m_groupSettings->setIntensity(value); });
-	connectOnFieldChanged<int>(passes, [this](int value) { m_groupSettings->setPasses(value); });
+	connectOnFieldChanged<double>(Ui::Path::depth, [this](double value) { m_groupSettings->setDepth(value); });
 }
 
 void Path::taskChanged()
@@ -34,7 +34,7 @@ void Path::selectionChanged(int size)
 
 		updateFieldValue(feedRate, m_groupSettings->feedRate());
 		updateFieldValue(intensity, m_groupSettings->intensity());
-		updateFieldValue(passes, m_groupSettings->passes());
+		updateFieldValue(Ui::Path::depth, m_groupSettings->depth());
 	}
 	else {
 		hide();

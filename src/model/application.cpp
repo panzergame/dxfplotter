@@ -36,7 +36,7 @@ static std::string configFilePath()
 PathSettings Application::defaultPathSettings() const
 {
 	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.passes());
+	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
 void Application::cutterCompensation(float scale)
@@ -156,12 +156,8 @@ void Application::loadPlot(const QString &fileName)
 
 bool Application::exportToGcode(const QString &fileName)
 {
-	const Config::Tools::Tool::Gcode& gcode = m_toolConfig->gcode();
-	// Copy gcode format from config file
-	Exporter::GCode::Format format(gcode);
-
 	try {
-		Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
+		Exporter::GCode::Exporter exporter(m_task, *m_toolConfig, fileName.toStdString());
 	}
 	catch (const Common::FileException &e) {
 		return false;

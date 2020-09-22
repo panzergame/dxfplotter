@@ -60,8 +60,8 @@ public:
 	std::optional<float> intensity() const;
 	void setIntensity(float intensity);
 
-	std::optional<int> passes() const;
-	void setPasses(int passes);
+	std::optional<float> depth() const;
+	void setDepth(float depth);
 };
 
 }

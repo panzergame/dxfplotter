@@ -3,10 +3,10 @@
 namespace Model
 {
 
-PathSettings::PathSettings(float feedRate, float intensity, int passes)
+PathSettings::PathSettings(float feedRate, float intensity, float depth)
 	:m_feedRate(feedRate),
 	m_intensity(intensity),
-	m_passes(passes)
+	m_depth(depth)
 {
 }
 
@@ -30,14 +30,14 @@ void PathSettings::setIntensity(float intensity)
 	m_intensity = intensity;
 }
 
-int PathSettings::passes() const
+float PathSettings::depth() const
 {
-	return m_passes;
+	return m_depth;
 }
 
-void PathSettings::setPasses(int passes)
+void PathSettings::setDepth(float depth)
 {
-	m_passes = passes;
+	m_depth = depth;
 }
 
 }

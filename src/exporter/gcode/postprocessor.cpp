@@ -3,20 +3,26 @@
 namespace Exporter::GCode
 {
 
-PostProcessor::PostProcessor(const Format &format, std::ostream &stream)
+PostProcessor::PostProcessor(const Config::Tools::Tool& tool, std::ostream &stream)
 	:m_stream(stream),
-	m_format(format)
+	m_tool(tool),
+	m_gcode(m_tool.gcode())
 {
 }
 
-void PostProcessor::toolOff()
+void PostProcessor::postCut()
 {
-	print(m_format.toolOff);
+	print(m_gcode.postCut());
 }
 
-void PostProcessor::fastMove(const QVector2D &to)
+void PostProcessor::fastPlaneMove(const QVector2D &to)
 {
-	print(m_format.fastMove, "X"_a=to.x(), "Y"_a=to.y());
+	print(m_gcode.planeFastMove(), "X"_a=to.x(), "Y"_a=to.y());
+}
+
+void PostProcessor::retractDepth()
+{
+	print(m_gcode.depthFastMove(), "Z"_a=m_tool.general().retractDepth());
 }
 
 }

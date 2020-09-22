@@ -17,7 +17,8 @@ private:
 	std::ostream &m_stream;
 
 protected:
-	const Format &m_format;
+	const Config::Tools::Tool& m_tool;
+	const Config::Tools::Tool::Gcode& m_gcode;
 
 	// TODO manage exception
 	/** Print a command to stream with a format and a list of named arguments
@@ -31,10 +32,11 @@ protected:
 	}
 
 public:
-	explicit PostProcessor(const Format &format, std::ostream &stream);
+	explicit PostProcessor(const Config::Tools::Tool& tool, std::ostream &stream);
 
-	void toolOff();
-	void fastMove(const QVector2D &to);
+	void postCut();
+	void fastPlaneMove(const QVector2D &to);
+	void retractDepth();
 };
 
 }

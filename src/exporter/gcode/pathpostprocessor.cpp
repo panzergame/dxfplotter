@@ -3,31 +3,36 @@
 namespace Exporter::GCode
 {
 
-PathPostProcessor::PathPostProcessor(const Model::PathSettings &settings, const Format &format, std::ostream &stream)
-	:PostProcessor(format, stream),
+PathPostProcessor::PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, std::ostream &stream)
+	:PostProcessor(tool, stream),
 	m_settings(settings)
 {
 }
 
-void PathPostProcessor::toolOn()
+void PathPostProcessor::preCut()
 {
-	printWithSettings(m_format.toolOn);
+	printWithSettings(m_gcode.preCut());
 }
 
-void PathPostProcessor::linearMove(const QVector2D &to)
+void PathPostProcessor::planeLinearMove(const QVector2D &to)
 {
-	printWithSettings(m_format.linearMove, "X"_a=to.x(), "Y"_a=to.y());
+	printWithSettings(m_gcode.planeLinearMove(), "X"_a=to.x(), "Y"_a=to.y());
 }
 
-void PathPostProcessor::cwArc(const QVector2D &relativeCenter, const QVector2D &to)
+void PathPostProcessor::depthLinearMove(float depth)
 {
-	printWithSettings(m_format.cwArc, "X"_a=to.x(), "Y"_a=to.y(),
+	printWithSettings(m_gcode.depthLinearMove(), "Z"_a=depth);
+}
+
+void PathPostProcessor::cwArcMove(const QVector2D &relativeCenter, const QVector2D &to)
+{
+	printWithSettings(m_gcode.cwArcMove(), "X"_a=to.x(), "Y"_a=to.y(),
 		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y());
 }
 
-void PathPostProcessor::ccwArc(const QVector2D &relativeCenter, const QVector2D &to)
+void PathPostProcessor::ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to)
 {
-	printWithSettings(m_format.ccwArc, "X"_a=to.x(), "Y"_a=to.y(),
+	printWithSettings(m_gcode.ccwArcMove(), "X"_a=to.x(), "Y"_a=to.y(),
 		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y());
 }
 
