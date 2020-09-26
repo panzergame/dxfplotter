@@ -12,6 +12,7 @@ matrix:
         - g++-8
         - cmake
         - qtbase5-dev
+        - libyaml-cpp-dev
     env:
     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     script:

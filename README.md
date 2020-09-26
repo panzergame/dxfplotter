@@ -34,10 +34,10 @@ chmod +x dxfplotter-x86_64.AppImage
 
 ### Manual installation from source
 
-This project depends on Qt5, for debian like distribution installing `qtbase5-dev` is sufficient:
+This project depends on Qt5 and yaml-cpp, for debian like distribution installing `qtbase5-dev` and `libyaml-cpp-dev` is sufficient:
 
 ```sh
-sudo apt-get install qtbase5-dev
+sudo apt-get install qtbase5-dev libyaml-cpp-dev
 ```
 
 ```sh
