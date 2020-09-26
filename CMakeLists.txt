@@ -9,15 +9,11 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
-# Append custom package finder modules (e.g tinyxml2)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)
-
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui
 )
 
-find_package(TinyXML2 REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # Compilation flag with all warning and error as much as possible on warning.
@@ -42,7 +38,6 @@ set(INCLUDE_DIRS
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	${TinyXML2_INCLUDE_DIRS}
 	${YAML_CPP_INCLUDE_DIRS}
 )
 
@@ -57,7 +52,6 @@ set(LINK_LIBRARIES
 	libdxfrw
 	fmt
 	Qt5::Widgets
-	${TinyXML2_LIBRARIES}
 	${YAML_CPP_LIBRARIES}
 )
 
