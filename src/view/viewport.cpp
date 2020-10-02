@@ -311,6 +311,9 @@ void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 Viewport::Viewport(Model::Application &app)
 	:TaskModelObserver(app)
 {
+	// Setup default empty scene
+	setScene(new QGraphicsScene());
+
 	// Invert Y axis
 	scale(1.0f, -1.0f);
 

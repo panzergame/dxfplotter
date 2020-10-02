@@ -22,16 +22,22 @@ Polyline::Polyline(Bulge::List &&bulges)
 
 const QVector2D &Polyline::start() const
 {
+	assert(!m_bulges.empty());
+
 	return m_bulges.front().start();
 }
 
 const QVector2D &Polyline::end() const
 {
+	assert(!m_bulges.empty());
+
 	return m_bulges.back().end();
 }
 
 bool Polyline::isClosed() const
 {
+	assert(!m_bulges.empty());
+
 	return (start() == end());
 }
 
@@ -44,6 +50,12 @@ Polyline &Polyline::invert()
 	std::reverse(m_bulges.begin(), m_bulges.end());
 
 	return *this;
+}
+
+Polyline Polyline::inverse() const
+{
+	Polyline inversed = *this;
+	return inversed.invert();
 }
 
 Polyline& Polyline::operator+=(const Polyline &other)
@@ -71,8 +83,10 @@ Polyline::List Polyline::offsetted(float offset) const
 
 	ccPolyline.isClosed() = closed;
 
+	// Offset CAVC polyline
 	std::vector<cavc::Polyline<double> > offsetedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
 
+	// Convert back to polylines
 	Polyline::List offsetedPolylines(offsetedCcPolylines.size());
 	std::transform(offsetedCcPolylines.begin(), offsetedCcPolylines.end(), offsetedPolylines.begin(),
 		[](const cavc::Polyline<double> &polyline) {

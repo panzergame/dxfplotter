@@ -8,11 +8,11 @@ class PathSettings
 private:
 	float m_feedRate;
 	float m_intensity;
-	int m_passes;
+	float m_depth;
 
 public:
 	explicit PathSettings() = default;
-	explicit PathSettings(float feedRate, float intensity, int passes);
+	explicit PathSettings(float feedRate, float intensity, float depth);
 
 	float feedRate() const;
 	void setFeedRate(float feedRate);
@@ -20,8 +20,8 @@ public:
 	float intensity() const;
 	void setIntensity(float intensity);
 
-	int passes() const;
-	void setPasses(int passes);
+	float depth() const;
+	void setDepth(float depth);
 };
 
 }

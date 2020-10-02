@@ -28,6 +28,7 @@ public:
 	bool isClosed() const;
 
 	Polyline &invert();
+	Polyline inverse() const;
 
 	Polyline& operator+=(const Polyline &other);
 

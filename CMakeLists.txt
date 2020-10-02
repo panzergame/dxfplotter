@@ -4,19 +4,19 @@ project(dxfplotter)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
-
-set(CMAKE_AUTOUIC_SEARCH_PATHS ${TEMPLATE_DIR}/uic)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui
 )
 
+find_package(yaml-cpp REQUIRED)
+
+# Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
@@ -32,14 +32,18 @@ set(INCLUDE_DIRS
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
+	thirdparty/tomlplusplus/include
 	template
+	${CMAKE_BINARY_DIR}/src
+	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	${CMAKE_BINARY_DIR}/src
+	${YAML_CPP_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
 	view
+	view-settings
 	model
 	config
 	dxf
@@ -48,14 +52,15 @@ set(LINK_LIBRARIES
 	libdxfrw
 	fmt
 	Qt5::Widgets
+	${YAML_CPP_LIBRARIES}
 )
+
 include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
 add_subdirectory(thirdparty)
 add_subdirectory(src)
 add_subdirectory(test) # TODO seulement en cas de test
-
 
 add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})

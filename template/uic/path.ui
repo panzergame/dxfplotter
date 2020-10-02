@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>183</width>
-    <height>120</height>
+    <height>134</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -56,17 +56,17 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Passes</string>
+        <string>Depth</string>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QSpinBox" name="passes">
-       <property name="minimum">
-        <number>1</number>
-       </property>
+      <widget class="QDoubleSpinBox" name="depth">
        <property name="maximum">
-        <number>99</number>
+        <double>9999.989999999999782</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
        </property>
       </widget>
      </item>

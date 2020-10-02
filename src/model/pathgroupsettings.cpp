@@ -30,14 +30,14 @@ void PathGroupSettings::setIntensity(float intensity)
 	setValue(&PathSettings::setIntensity, intensity);
 }
 
-std::optional<int> PathGroupSettings::passes() const
+std::optional<float> PathGroupSettings::depth() const
 {
-	return valueIfAllEqual(&PathSettings::passes);
+	return valueIfAllEqual(&PathSettings::depth);
 }
 
-void PathGroupSettings::setPasses(int passes)
+void PathGroupSettings::setDepth(float depth)
 {
-	setValue(&PathSettings::setPasses, passes);
+	setValue(&PathSettings::setDepth, depth);
 }
 
 }

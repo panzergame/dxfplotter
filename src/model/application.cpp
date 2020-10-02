@@ -16,7 +16,7 @@
 namespace Model
 {
 
-static const QString configFileName = "config.ini";
+static const QString configFileName = "config.yml";
 
 /** Retrieves application config file path
  * @return config file path
@@ -35,24 +35,28 @@ static std::string configFilePath()
 
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Config::DefaultPath &defaultPath = m_config.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.passes());
+	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
+	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
 void Application::cutterCompensation(float scale)
 {
-	const Config::Config::Tool &tool = m_config.tool();
-	const Config::Config::Dxf &dxf = m_config.dxf();
+	const Config::Import::Dxf &dxf = m_importConfig.dxf();
 
-	const float radius = tool.radius() * scale;
-	m_task->forEachSelectedPath([radius, minimumPolylineLength=dxf.minimumPolylineLength(),
-		minimumArcLength=dxf.minimumArcLength()](Model::Path *path){
-			path->offset(radius, minimumPolylineLength, minimumArcLength);
+	const float radius = m_toolConfig->general().radius();
+	const float scaledRadius = radius * scale;
+
+	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
+		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path *path){
+			path->offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
 
 Application::Application()
-	:m_config(configFilePath())
+	:m_config(Config::Config(configFilePath())),
+	m_importConfig(m_config.root().import()),
+	// Default select first tool
+	m_toolConfig(&m_config.root().tools().first())
 {
 }
 
@@ -61,11 +65,37 @@ Config::Config &Application::config()
 	return m_config;
 }
 
+void Application::setConfig(Config::Config &&config)
+{
+	m_config = std::move(config);
+	emit configChanged(m_config);
+}
+
+bool Application::selectTool(const QString &toolName)
+{
+	const Config::Tools &tools = m_config.root().tools();
+	const std::string name = toolName.toStdString();
+	const bool exists = tools.has(name);
+
+	if (exists) {
+		m_toolConfig = &tools[name];
+	}
+
+	return exists;
+}
+
+void Application::selectToolFromCmd(const QString &toolName)
+{
+	if (!selectTool(toolName)) {
+		qCritical() << "Invalid tool name " << toolName;
+	}
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
 		if (!loadFile(fileName)) {
-			qCritical() << "Invalid file type " + fileName;
+			qCritical() << "Invalid file type " << fileName;
 		}
 	}
 }
@@ -94,7 +124,7 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadDxf(const QString &fileName)
 {
-	const Config::Config::Dxf &dxf = m_config.dxf();
+	const Config::Import::Dxf &dxf = m_importConfig.dxf();
 
 	Geometry::Polyline::List polylines;
 	try {
@@ -126,11 +156,8 @@ void Application::loadPlot(const QString &fileName)
 
 bool Application::exportToGcode(const QString &fileName)
 {
-	// Copy gcode format from config file
-	Exporter::GCode::Format format(m_config.gcode());
-
 	try {
-		Exporter::GCode::Exporter exporter(m_task, format, fileName.toStdString());
+		Exporter::GCode::Exporter exporter(m_task, *m_toolConfig, fileName.toStdString());
 	}
 	catch (const Common::FileException &e) {
 		return false;

@@ -1,26 +1,35 @@
-<config>
-	<section name="gcode">
-		<property name="tool on" type="std::string">"M4 S {S:.3f}"</property>
-		<property name="tool off" type="std::string">"M5"</property>
-		<property name="linear move" type="std::string">"G1 X {X:.3f} Y {Y:.3f} F {F:.3f}"</property>
-		<property name="fast move" type="std::string">"G0 X {X:.3f} Y {Y:.3f}"</property>
-		<property name="cw arc" type="std::string">"G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"</property>
-		<property name="ccw arc" type="std::string">"G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"</property>
-	</section>
-	<section name="dxf">
-		<property name="spline to arc precision" type="float">0.001</property>
-		<property name="assemble tolerance" type="float">0.001</property>
-		<property name="minimum polyline length" type="float">0.01</property>
-		<property name="minimum spline length" type="float">0.01</property>
-		<property name="minimum arc length" type="float">0.01</property>
-	</section>
-	<section name="default path">
-		<property name="feed rate" type="float">40</property>
-		<property name="intensity" type="float">50</property>
-		<property name="passes" type="int">1</property>
-	</section>
-	<section name="tool">
-		<property name="radius" type="float">0.1</property>
-	</section>
-</config>
-
+<group name="root">
+	<group name="import">
+		<group name="dxf">
+			<property name="spline to arc precision" type="float" default="0.001"/>
+			<property name="assemble tolerance" type="float" default="0.001"/>
+			<property name="minimum polyline length" type="float" default="0.01"/>
+			<property name="minimum spline length" type="float" default="0.01"/>
+			<property name="minimum arc length" type="float" default="0.01"/>
+		</group>
+		<group name="default path">
+			<property name="feed rate" type="float" default="40"/>
+			<property name="intensity" type="float" default="50"/>
+			<property name="depth" type="float" default="1"/>
+		</group>
+	</group>
+	<list name="tools">
+		<group name="tool">
+			<group name="general">
+				<property name="radius" type="float" default="0.5"/>
+				<property name="cut depth" type="float" default="1"/>
+				<property name="retract depth" type="float" default="1"/>
+			</group>
+			<group name="gcode">
+				<property name="pre cut" type="std::string" default="M4 S {S:.3f}"/>
+				<property name="post cut" type="std::string" default="M5"/>
+				<property name="plane linear move" type="std::string" default="G1 X {X:.3f} Y {Y:.3f} F {F:.3f}"/>
+				<property name="plane fast move" type="std::string" default="G0 X {X:.3f} Y {Y:.3f}"/>
+				<property name="depth linear move" type="std::string" default="G1 Z {Z:.3f} F {F:.3f}"/>
+				<property name="depth fast move" type="std::string" default="G0 Z {Z:.3f}"/>
+				<property name="cw arc move" type="std::string" default="G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
+				<property name="ccw arc move" type="std::string" default="G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
+			</group>
+		</group>
+	</list>
+</group>

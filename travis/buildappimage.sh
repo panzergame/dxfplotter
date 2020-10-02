@@ -49,5 +49,4 @@ chmod +x linuxdeploy*.AppImage
 QT_SELECT=qt5 ./linuxdeploy-x86_64.AppImage --appdir AppDir -e dxfplotter -d ${REPO_ROOT}/meta/dxfplotter.desktop -i ${REPO_ROOT}/meta/dxfplotter.png --plugin qt -l /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 --output appimage
 
 # move built AppImage back into original CWD
-mkdir ${OLD_CWD}/out
-mv dxfplotter*.AppImage "$OLD_CWD"/out
+mv dxfplotter*.AppImage "$OLD_CWD"

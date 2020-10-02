@@ -1,95 +1,113 @@
 #pragma once
 
-#include <config/variable.h>
-#include <config/section.h>
+#include <variant>
+
+#include <config/group.h>
+#include <config/list.h>
+#include <config/property.h>
 
 namespace Config
 {
 
-class Config
+namespace Internal
+{
+
+{% for node in nodes %}{% if node.__class__ == Group %}
+class {{ node.unique_class_name }} : public Group<{{ node.tuple_name }}>
 {
 public:
-{% for section in sections %}
-	class {{ section.class_name }} : public Section
+	using Group::Group;
+
+	{% for child in node.children %}{% if child.__class__ != Property %} using {{ child.class_name }} = {{ child.unique_class_name }};
+	{% endif %}{% endfor %}
+
+	explicit {{ node.unique_class_name }}(YAML::Node yamlNode)
+		:{{ node.unique_class_name }}("{{ node.name }}", yamlNode)
 	{
-	private:
-		INI::Section *m_section;
-		std::tuple<{% for prop in section.properties %}Variable<{{ prop.base_type }}>{{ ", " if not loop.last }}{% endfor%}> m_variables;
+	}
 
-	public:
-		explicit {{ section.class_name }}(INI::File &file)
-			:Section("{{ section.ini_name }}", "{{ section.description }}"),
-			m_section(file.GetSection(m_name)),
-			m_variables({
-	{% for prop in section.properties %}
-				Variable<{{ prop.base_type }}>("{{ prop.ini_name }}", "{{ prop.description }}", {{ prop.default_value }}, m_section){{ ", " if not loop.last }}
-	{% endfor %}
-			})
-		{
-		}
+	explicit {{ node.unique_class_name }}(const std::string &name, YAML::Node yamlNode)
+		:Group(name, "{{ node.description }}")
+	{
+		m_children = {
+		{% for child in node.children %}
+			{{ child.class_name }}({% if child.__class__ == Property %}"{{ child.name }}", "{{ child.description }}", {{ child.default_value }}, {% endif %}yamlNode["{{ child.name }}"]){{ ", " if not loop.last }}
+		{% endfor %}
+		};
+	}
 
-	{% for prop in section.properties %}
-		Variable<{{ prop.base_type }}> &{{ prop.cpp_name }}()
-		{
-			return std::get<{{loop.index - 1}}>(m_variables);
-		}
+	{{ node.unique_class_name }}() = default;
 
-		const Variable<{{ prop.base_type }}> &{{ prop.cpp_name }}() const
-		{
-			return std::get<{{loop.index - 1}}>(m_variables);
-		}
+	{% for child in node.children %}
+	{{ child.class_name }} &{{ child.var_name }}()
+	{
+		return std::get<{{loop.index - 1}}>(m_children);
+	}
 	{% endfor %}
 
-	template <class Visitor>
-	void visitVariables(Visitor &&visitor)
+	{% for child in node.children %}
+	const {{ child.class_name }} &{{ child.var_name }}() const
 	{
-		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_variables);
+		return std::get<{{loop.index - 1}}>(m_children);
 	}
+	{% endfor %}
 
-	};
-{% endfor %}
-
-private:
-	std::string m_filePath;
-	INI::File m_file;
-	std::tuple<{% for section in sections %}{{section.class_name}}{{ ", " if not loop.last }}{% endfor %}> m_sections;
-
-public:
-	explicit Config(const std::string &filePath)
-		:m_filePath(filePath),
-		m_file(m_filePath),
-		m_sections({
-{% for section in sections %}
-				{{ section.class_name }}(m_file){{ ", " if not loop.last }}
-{% endfor %}
-		})
-	{
-	}
-
-	~Config();
-
-	void save();
-
-{% for section in sections %}
-	{{ section.class_name }} &{{ section.cpp_name }}()
-	{
-		return std::get<{{loop.index - 1}}>(m_sections);
-	}
-{% endfor %}
-
-{% for section in sections %}
-	const {{ section.class_name }} &{{ section.cpp_name }}() const
-	{
-		return std::get<{{loop.index - 1}}>(m_sections);
-	}
-{% endfor %}
-
-	template <class Visitor>
-	void visitSections(Visitor &&visitor)
-	{
-		std::apply([&visitor](auto&&... arg) {((visitor(arg)), ...);}, m_sections);
-	}
 };
+
+{% endif %}{% if node.__class__ == List %}
+class {{ node.unique_class_name }} : public List<{{ node.item.unique_class_name }}>
+{
+public:
+	using {{ node.item.class_name }} = {{ node.item.unique_class_name }};
+
+	explicit {{ node.unique_class_name }}(YAML::Node yamlNode)
+		:{{ node.unique_class_name }}("{{ node.name }}", yamlNode)
+	{
+	}
+
+	explicit {{ node.unique_class_name }}(const std::string &name, YAML::Node yamlNode)
+		:List(name, "{{ node.description }}", yamlNode)
+	{
+	}
+
+	{{ node.unique_class_name }}() = default;
+};
+{% endif %}{% endfor %}
 
 }
 
+{% for child in root.children %}
+using {{ child.class_name }} = Internal::{{ child.unique_class_name }};
+{% endfor %}
+
+using Root = Internal::{{ root.unique_class_name }};
+
+using NodeVariant = std::variant<
+{% for node in nodes %}{% if node.__class__ != Property %}
+Internal::{{ node.unique_class_name }}{{ ", " if not loop.last }}{% endif %}{% endfor %}
+>;
+
+using NodePtrVariant = std::variant<
+{% for node in nodes %}{% if node.__class__ != Property %}
+Internal::{{ node.unique_class_name }}*{{ ", " if not loop.last }}{% endif %}{% endfor %}
+>;
+
+class Config
+{
+private:
+	std::string m_filePath;
+	YAML::Node m_yamlRoot;
+	Root m_root;
+
+public:
+	explicit Config(const std::string &filePath);
+	Config(const Config &other);
+	~Config();
+
+	Root& root();
+	const Root& root() const;
+
+	void save();
+};
+
+}

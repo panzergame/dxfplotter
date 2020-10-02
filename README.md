@@ -7,7 +7,7 @@
 
 ![](doc/screen.png)
 
-This application helps linux user converting DXF to GCode with minimal settings, fully configurable GCode command format and fast spline to arc conversion. 
+This application helps users converting DXF to GCode with minimal settings, fully configurable GCode command format and fast spline to arc conversion. 
 
 It targets only laser CNC following every lines and arcs from DXF file.
 
@@ -20,6 +20,25 @@ It targets only laser CNC following every lines and arcs from DXF file.
 * Path offseting (Tool Compensation)
 
 ## Installation
+
+Currently only linux distributions are supported, windows will come in futur.
+
+### Installation from AppImage
+
+Download latest ![AppImage](https://github.com/panzergame/dxfplotter/releases) and run:
+
+```sh
+chmod +x dxfplotter-x86_64.AppImage
+./dxfplotter-x86_64.AppImage
+```
+
+### Manual installation from source
+
+This project depends on Qt5 and yaml-cpp, for debian like distribution installing `qtbase5-dev` and `libyaml-cpp-dev` is sufficient:
+
+```sh
+sudo apt-get install qtbase5-dev libyaml-cpp-dev
+```
 
 ```sh
 git submodule init
@@ -65,7 +84,7 @@ Simple set of GCode command is used:
 
 They can be customized from Settings panel `Configuration->Settings` or from dxfplotter/config.ini file in your applications configuration folder.
 
-Commands introduce variables with {#:nf} where # is one fo the supported variables and n the precision: 
+Commands use variables with {#:nf} where # is one of the supported variables and n the float precision: 
 
 | Name | Description |
 | - | - |
@@ -76,7 +95,7 @@ Commands introduce variables with {#:nf} where # is one fo the supported variabl
 | I | Relative arc center absciss |
 | J | Relative arc center ordinate |
 
-The two first properties are exposed in path settings in the UI.
+Properties `S` and `F` are exposed in path settings in UI.
 
 ## Meta
 

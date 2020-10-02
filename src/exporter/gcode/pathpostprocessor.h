@@ -21,12 +21,13 @@ private:
 	}
 
 public:
-	explicit PathPostProcessor(const Model::PathSettings &settings, const Format &format, std::ostream &stream);
+	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, std::ostream &stream);
 
-	void toolOn();
-	void linearMove(const QVector2D &to);
-	void cwArc(const QVector2D &relativeCenter, const QVector2D &to);
-	void ccwArc(const QVector2D &relativeCenter, const QVector2D &to);
+	void preCut();
+	void planeLinearMove(const QVector2D &to);
+	void depthLinearMove(float depth);
+	void cwArcMove(const QVector2D &relativeCenter, const QVector2D &to);
+	void ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to);
 };
 
 }
