@@ -5,7 +5,10 @@
 #include <config/config.h>
 #include <common/aggregable.h>
 
-namespace View::Settings
+namespace View
+{
+
+namespace Settings
 {
 
 class TreeModel : public QAbstractItemModel
@@ -89,5 +92,7 @@ public:
 	void addItem(const QModelIndex &parent, const QString &name);
 	void removeItem(const QModelIndex &index);
 };
+
+}
 
 }
