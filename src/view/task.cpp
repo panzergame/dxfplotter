@@ -21,11 +21,15 @@ void Task::setupModel()
 
 	// Configure selection model
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
+	selectionModel->
 	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
 
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelected, this, &Task::pathSelected);
 	connect(m_task, &Model::Task::pathDeselected, this, &Task::pathDeselected);
+
+	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
+	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
 }
 
 void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
@@ -71,5 +75,11 @@ void Task::pathDeselected(Model::Path *path)
 	changeItemSelection(path, QItemSelectionModel::Deselect);
 }
 
+void Task::moveCurrentPath(Model::Task::MoveDirection direction)
+{
+	QItemSelectionModel *selectionModel = treeView->selectionModel();
+	const QModelIndex selectedIndex = m_model->movePath(selectionModel->currentIndex(), direction);
+	selectionModel->setCurrentIndex(selectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+}
 
 }

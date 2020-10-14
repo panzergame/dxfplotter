@@ -15,11 +15,19 @@ private:
 	Path::ListPtr m_selectedPaths;
 
 public:
+	enum class MoveDirection
+	{
+		UP = -1,
+		DOWN = 1
+	};
+
 	explicit Task(QObject *parent, const Path::ListPtr &paths);
 
 	int count() const;
 	Path *pathAt(int index) const;
 	int indexFor(Path *path) const;
+
+	void movePath(int index, MoveDirection direction);
 
 	const Path::ListPtr& selectedPaths() const; // TODO avoid
 
@@ -44,6 +52,12 @@ Q_SIGNALS:
 	void pathDeselected(Path *path);
 	void selectionChanged(int size);
 };
+
+template <typename T>
+inline T operator+(const T &a, const Task::MoveDirection& direction)
+{
+	return a + static_cast<int>(direction);
+}
 
 }
 

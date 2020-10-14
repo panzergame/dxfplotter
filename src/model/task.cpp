@@ -48,6 +48,17 @@ int Task::indexFor(Path *path) const
 	return std::distance(m_stack.cbegin(), it);
 }
 
+void Task::movePath(int index, MoveDirection direction)
+{
+	assert(0 <= index && index < count());
+
+	const int newIndex = index + direction;
+
+	if (0 <= newIndex && newIndex < count()) {
+		std::swap(m_stack[index], m_stack[newIndex]);
+	}
+}
+
 const Path::ListPtr &Task::selectedPaths() const
 {
 	return m_selectedPaths;

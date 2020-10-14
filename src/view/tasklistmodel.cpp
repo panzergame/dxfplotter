@@ -5,7 +5,7 @@
 namespace View
 {
 
-TaskListModel::TaskListModel(const Model::Task *task, QObject *parent)
+TaskListModel::TaskListModel(Model::Task *task, QObject *parent)
 	:QAbstractListModel(parent),
 	m_task(task)
 {
@@ -33,6 +33,28 @@ QVariant TaskListModel::headerData(int section, Qt::Orientation orientation, int
 int TaskListModel::rowCount(const QModelIndex& parent) const
 {
 	return m_task->count();
+}
+
+QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveDirection direction)
+{
+	const int row = index.row();
+	const int newRow = row + direction;
+
+	if (index.isValid() && 0 <= newRow && newRow < rowCount(index)) {
+		// Mistic qt move indexing
+		const int newQtRow = (newRow > row) ? newRow + 1 : newRow;
+
+		if (beginMoveRows(index, row, row, index, newQtRow)) {
+
+			m_task->movePath(row, direction);
+
+			endMoveRows();
+
+			return this->index(newRow);
+		}
+	}
+
+	return index;
 }
 
 }

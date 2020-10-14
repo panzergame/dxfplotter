@@ -80,7 +80,6 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Poly
 {
 	// Depth per cut
 	const float cutDepth = m_tool.general().cutDepth();
-	const float startDepth = -cutDepth;
 
 	PassesIterator iterator(polyline);
 	for (float depth = cutDepth; depth < maxDepth + cutDepth; depth += cutDepth, ++iterator) {
