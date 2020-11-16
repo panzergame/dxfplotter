@@ -23,7 +23,9 @@ public:
 	explicit Polyline(Bulge::List &&bulges);
 
 	const QVector2D &start() const;
+	QVector2D &start();
 	const QVector2D &end() const;
+	QVector2D &end();
 
 	bool isClosed() const;
 

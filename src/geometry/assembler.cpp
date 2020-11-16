@@ -34,6 +34,14 @@ Assembler::Tip::List Assembler::constructTips()
 	return tips;
 }
 
+/// Merge point at p1 end and p2 start and assign middle point to both
+static void mergePolylineStartEnd(Polyline &first, Polyline &second)
+{
+	const QVector2D middlePoint = (first.end() + second.start()) / 2.0f;
+	first.end() = middlePoint;
+	second.start() = middlePoint;
+}
+
 Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 {
 	std::set<PolylineIndex> unconnectedPolylines;
@@ -54,20 +62,29 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 		Chain chain{{index, Item::NORMAL}};
 
 		// Expand chain before polyline
-		expandChain(tips, unconnectedPolylines, tree, std::front_inserter(chain), index, Tip::START);
+		bool closed = expandChain(tips, unconnectedPolylines, tree, std::front_inserter(chain), index, Tip::START);
 		// Expand chain after polyline
-		expandChain(tips, unconnectedPolylines, tree, std::back_inserter(chain), index, Tip::END);
+		if (!closed) {
+			closed = expandChain(tips, unconnectedPolylines, tree, std::back_inserter(chain), index, Tip::END);
+		}
 
-		Polyline mergedPolyline;
-		// Build a single merged polyline.
-		for (const Item &item : chain) {
-			Polyline &polyline = m_polylines[item.polylineIndex];
-			if (item.dir == Item::INVERT) {
+		// Initialise with first chain polyline
+		Polyline mergedPolyline = m_polylines[chain.front().polylineIndex];
+		// Merge remaining polylines
+		for (Chain::const_iterator it = ++chain.begin(), end = chain.end(); it != end; ++it) {
+			Polyline &polyline = m_polylines[it->polylineIndex];
+			if (it->dir == Item::INVERT) {
 				polyline.invert();
 			}
 
+			mergePolylineStartEnd(mergedPolyline, polyline);
 			mergedPolyline += polyline;
 		}
+
+		if (closed) {
+			mergePolylineStartEnd(mergedPolyline, mergedPolyline);
+		}
+
 		mergedPolylines.push_back(mergedPolyline);
 	}
 

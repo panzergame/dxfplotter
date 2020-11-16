@@ -19,6 +19,7 @@ private:
 	struct Tip : Common::Aggregable<Tip>
 	{
 		PolylineIndex polylineIndex;
+		// Original point from polyline.
 		QVector2D point;
 
 		enum Type {
@@ -67,7 +68,7 @@ private:
 	Tip::List constructTips();
 
 	template <class Inserter>
-	void expandChain(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, Inserter inserter, PolylineIndex index, Tip::Type side)
+	bool expandChain(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, Inserter inserter, PolylineIndex index, Tip::Type side)
 	{
 		// Direction of polyline, at first normal direction.
 		Item::Direction direction = Item::NORMAL;
@@ -102,7 +103,8 @@ private:
 					* one side can already connect all polylines) we discard.
 					*/
 					if (unconnectedPolylines.find(neighbourIndex) == unconnectedPolylines.end()) {
-						index = -1;
+						// The chain might be closed
+						return true;
 					}
 					else {
 						// If end matchs start then polylines are in same direction, otherwise they are opposed.
@@ -133,6 +135,9 @@ private:
 				index = -1;
 			}
 		}
+
+		// The chain is fully expanded on one side without closing
+		return false;
 	}
 
 	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree);

@@ -29,7 +29,17 @@ const QVector2D &Bulge::start() const
 	return m_start;
 }
 
+QVector2D &Bulge::start()
+{
+	return m_start;
+}
+
 const QVector2D &Bulge::end() const
+{
+	return m_end;
+}
+
+QVector2D &Bulge::end()
 {
 	return m_end;
 }
