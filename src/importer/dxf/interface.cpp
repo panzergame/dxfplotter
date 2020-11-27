@@ -69,6 +69,7 @@ void Interface::endBlock()
 void Interface::addPoint(const DRW_Point& data)
 {
 	PRINT_FUNC;
+  m_importer.convertToPolylines(data);
 }
 
 void Interface::addLine(const DRW_Line& data)

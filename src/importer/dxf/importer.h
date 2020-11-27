@@ -27,6 +27,7 @@ public:
 
 	Geometry::Polyline::List &&polylines();
 
+	void convertToPolylines(const DRW_Point &point);
 	void convertToPolylines(const DRW_Line &line);
 	void convertToPolylines(const DRW_Spline &spline);
 	void convertToPolylines(const DRW_LWPolyline &lwpolyline);

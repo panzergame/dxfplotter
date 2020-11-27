@@ -121,17 +121,13 @@ public:
 
 		initBulgesToMerge();
 
-		while (!m_itemsToMerge.empty()) {
+		// Merge all bulges but avoid emptying the polyline, for instance polylines representing a point
+		while (!m_itemsToMerge.empty() && m_bulges.size() > 1) {
 			Item item = m_itemsToMerge.back();
 			m_itemsToMerge.pop_back();
 
 			mergeItem(item);
 		}
-	}
-
-	bool empty() const
-	{
-		return m_bulges.empty();
 	}
 
 	Polyline polyline() const
@@ -168,12 +164,10 @@ Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float 
 		// Prune small polyline length
 		PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
 
-		if (!lengthCleaner.empty()) {
-			// Convert small arcs to lines
-			ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+		// Convert small arcs to lines
+		ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
 
-			m_polylines.push_back(arcCleaner.polyline());
-		}
+		m_polylines.push_back(arcCleaner.polyline());
 	}
 }
 

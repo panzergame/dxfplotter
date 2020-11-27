@@ -74,6 +74,14 @@ Geometry::Polyline::List &&Importer::polylines()
 	return std::move(m_polylines);
 }
 
+void Importer::convertToPolylines(const DRW_Point &point)
+{
+  const QVector2D pos(toVector2D(point.basePoint));
+	const Geometry::Bulge bulge(pos, pos, 0.0f);
+
+	addPolyline(Geometry::Polyline({bulge}));
+}
+
 void Importer::convertToPolylines(const DRW_Line &line)
 {
 	const Geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);

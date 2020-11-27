@@ -116,8 +116,21 @@ Variables provided in formatting are available with {#:nf} where # is one of the
 
 Properties `S` and `F` are exposed in path settings in UI.
 
-## Meta
+## Author
 
-Tristan Porteries
+👤 **Tristan Porteries**
 
-Distributed under the MIT license. See LICENSE.txt for more information.
+* Github: [@panzergame](https://github.com/panzergame)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/panzergame/dxfplotter/issues). 
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2020 [Tristan Porteries](https://github.com/panzergame).<br />
+This project is [MIT License](https://github.com/panzergame/dxfplotter/blob/master/LICENSE.md) licensed.
