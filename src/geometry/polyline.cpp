@@ -1,8 +1,6 @@
 #include <polyline.h>
 #include <utils.h>
 
-#include "QDebug"
-
 namespace Geometry
 {
 
@@ -98,12 +96,9 @@ Polyline::List Polyline::offsetted(float offset) const
 		ccPolyline.addVertex(endV.x(), endV.y(), 0.0f);
 	}
 
-	qInfo() << ccPolyline.size();
-
 	ccPolyline.isClosed() = closed;
 	// Offset CAVC polyline
 	std::vector<cavc::Polyline<double> > offsetedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
-  qInfo() << offsetedCcPolylines.size();
 
 	// Convert back to polylines
 	Polyline::List offsetedPolylines(offsetedCcPolylines.size());
