@@ -5,6 +5,63 @@
 namespace Geometry
 {
 
+Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance)
+	:m_chain{{index, Item::NORMAL}},
+	m_closed(false),
+	m_tips(tips),
+	m_unconnectedPolylines(unconnectedPolylines),
+	m_tree(tree),
+	m_startIndex(index),
+	m_closeTolerance(closeTolerance)
+{
+	// Expand chain before polyline
+	m_closed = expandSide(std::front_inserter(m_chain), Tip::START);
+	// Expand chain after polyline
+	if (!m_closed) {
+		m_closed = expandSide(std::back_inserter(m_chain), Tip::END);
+	}
+}
+
+Assembler::TipIndex Assembler::ChainBuilder::tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
+{
+	return index * 2 + side;
+}
+
+/// Average point at p1 end and p2 start and assign middle point to both
+static void averageStartEndPolyline(Polyline &first, Polyline &second)
+{
+	const QVector2D middlePoint = (first.end() + second.start()) / 2.0f;
+	first.end() = middlePoint;
+	second.start() = middlePoint;
+}
+
+Polyline Assembler::ChainBuilder::mergedPolyline(const Polyline::List& polylines) const
+{
+	// Initialise with first polyline
+	const Item &firstItem = m_chain.front();
+	Polyline mergedPolyline = polylines[firstItem.polylineIndex];
+	if (firstItem.dir == Item::INVERT) {
+		mergedPolyline.invert();
+	}
+
+	// Merge remaining polylines
+	for (List::const_iterator it = ++m_chain.begin(), end = m_chain.end(); it != end; ++it) {
+		Polyline polyline = polylines[it->polylineIndex];
+		if (it->dir == Item::INVERT) {
+			polyline.invert();
+		}
+
+		averageStartEndPolyline(mergedPolyline, polyline);
+		mergedPolyline += polyline;
+	}
+
+	if (m_closed) {
+		averageStartEndPolyline(mergedPolyline, mergedPolyline);
+	}
+
+	return mergedPolyline;
+}
+
 Assembler::TipAdaptor::TipAdaptor(const Tip::List &tips)
 	:m_tips(tips)
 {
@@ -20,7 +77,6 @@ float Assembler::TipAdaptor::kdtree_get_pt(const size_t idx, const size_t dim) c
 	return m_tips[idx].point[dim];
 }
 
-
 Assembler::Tip::List Assembler::constructTips()
 {
 	Tip::List tips; // TODO reserve and std::transform
@@ -34,58 +90,21 @@ Assembler::Tip::List Assembler::constructTips()
 	return tips;
 }
 
-/// Merge point at p1 end and p2 start and assign middle point to both
-static void mergePolylineStartEnd(Polyline &first, Polyline &second)
-{
-	const QVector2D middlePoint = (first.end() + second.start()) / 2.0f;
-	first.end() = middlePoint;
-	second.start() = middlePoint;
-}
-
 Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 {
-	std::set<PolylineIndex> unconnectedPolylines;
-
 	// Generate all unconnected polyline index.
-	for (int i = 0, size = m_polylines.size(); i < size; ++i) {
-		unconnectedPolylines.insert(i);
-	}
+	std::set<PolylineIndex> unconnectedPolylines;
+	std::iota(unconnectedPolylines.begin(), unconnectedPolylines.end(), 0);
 
 	Polyline::List mergedPolylines;
 
 	while (!unconnectedPolylines.empty()) {
-		// Retrieve a polyline.
-		PolylineIndex index = *unconnectedPolylines.begin();
+		// Pick a polyline index.
+		const PolylineIndex index = *unconnectedPolylines.begin();
 		unconnectedPolylines.erase(unconnectedPolylines.begin());
 
-		// Initialise a single polyline chain.
-		Chain chain{{index, Item::NORMAL}};
-
-		// Expand chain before polyline
-		bool closed = expandChain(tips, unconnectedPolylines, tree, std::front_inserter(chain), index, Tip::START);
-		// Expand chain after polyline
-		if (!closed) {
-			closed = expandChain(tips, unconnectedPolylines, tree, std::back_inserter(chain), index, Tip::END);
-		}
-
-		// Initialise with first chain polyline
-		Polyline mergedPolyline = m_polylines[chain.front().polylineIndex];
-		// Merge remaining polylines
-		for (Chain::const_iterator it = ++chain.begin(), end = chain.end(); it != end; ++it) {
-			Polyline &polyline = m_polylines[it->polylineIndex];
-			if (it->dir == Item::INVERT) {
-				polyline.invert();
-			}
-
-			mergePolylineStartEnd(mergedPolyline, polyline);
-			mergedPolyline += polyline;
-		}
-
-		if (closed) {
-			mergePolylineStartEnd(mergedPolyline, mergedPolyline);
-		}
-
-		mergedPolylines.push_back(mergedPolyline);
+		ChainBuilder builder(tips, unconnectedPolylines, tree, index, m_closeTolerance);
+		mergedPolylines.push_back(builder.mergedPolyline(m_polylines));
 	}
 
 	return mergedPolylines;
@@ -95,7 +114,7 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	:m_polylines(polylines),
 	m_closeTolerance(closeTolerance)
 {
-	const Tip::List tips = constructTips(); // TODO move all in member variable and no arguments
+	const Tip::List tips = constructTips();
 
 	TipAdaptor adaptor(tips);
 	KDTree tree(2, adaptor);
