@@ -94,7 +94,9 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 {
 	// Generate all unconnected polyline index.
 	std::set<PolylineIndex> unconnectedPolylines;
-	std::iota(unconnectedPolylines.begin(), unconnectedPolylines.end(), 0);
+	for (PolylineIndex index = 0, size = m_polylines.size(); index < size; ++index) {
+		unconnectedPolylines.insert(index);
+	}
 
 	Polyline::List mergedPolylines;
 
