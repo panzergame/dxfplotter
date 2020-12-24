@@ -6,7 +6,7 @@
 
 #include <QGraphicsPathItem>
 
-namespace View
+namespace View::View2d
 {
 
 class PathItem : public QObject, public QGraphicsPathItem

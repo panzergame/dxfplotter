@@ -3,7 +3,7 @@
 
 #include <QDebug> // TODO
 
-namespace View
+namespace View::View2d
 {
 
 constexpr int rubberBandTolerance = 2;

@@ -2,7 +2,7 @@
 
 #include <QGraphicsItem>
 
-namespace View
+namespace View::View2d
 {
 
 class RubberBand : public QGraphicsItem

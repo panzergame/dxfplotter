@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QDebug>
 
-namespace View
+namespace View::View2d
 {
 
 static const QBrush borderBrush(QColor(0, 0, 255, 255));

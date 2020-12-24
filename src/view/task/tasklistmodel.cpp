@@ -2,7 +2,7 @@
 
 #include <QDebug> // TODO
 
-namespace View
+namespace View::Task
 {
 
 TaskListModel::TaskListModel(Model::Task *task, QObject *parent)

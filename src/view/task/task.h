@@ -8,7 +8,7 @@
 #include <QItemSelectionModel>
 #include <model/taskmodelobserver.h>
 
-namespace View
+namespace View::Task
 {
 
 class TaskListModel;

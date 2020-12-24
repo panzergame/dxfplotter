@@ -10,7 +10,7 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 
-namespace View
+namespace View::View2d
 {
 
 class Viewport : public Model::TaskModelObserver<QGraphicsView>

@@ -5,7 +5,7 @@
 #include <QLabel>
 #include <QDebug>
 
-namespace View
+namespace View::Task
 {
 
 Task::Task(Model::Application &app)

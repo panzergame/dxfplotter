@@ -4,7 +4,7 @@
 
 #include <QPainter>
 
-namespace View
+namespace View::View2d
 {
 
 class BulgePainter

@@ -6,7 +6,7 @@
 #include <QStyleOptionGraphicsItem>
 #include <QDebug>
 
-namespace View
+namespace View::View2d
 {
 
 static const QBrush normalBrush(Qt::magenta);

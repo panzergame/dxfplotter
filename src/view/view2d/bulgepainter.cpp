@@ -1,7 +1,7 @@
 #include <bulgepainter.h>
 #include <geometry/arc.h>
 
-namespace View
+namespace View::View2d
 {
 
 void BulgePainter::lineToArcPoint(const QVector2D &center, float radius, float angle)

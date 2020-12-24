@@ -1,6 +1,6 @@
 #include <path.h>
 
-namespace View
+namespace View::Task
 {
 
 void Path::setupModel()

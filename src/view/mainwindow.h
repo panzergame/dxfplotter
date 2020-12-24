@@ -11,8 +11,13 @@ class QComboBox;
 namespace View
 {
 
+namespace Task
+{
+
 class Task;
 class Viewport;
+
+}
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {

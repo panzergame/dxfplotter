@@ -4,7 +4,7 @@
 
 #include <QGraphicsPathItem>
 
-namespace View
+namespace View::View2d
 {
 
 class OffsetedPathItem : public QObject, public QGraphicsPathItem

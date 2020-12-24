@@ -16,8 +16,8 @@ namespace View
 
 QWidget *MainWindow::setupLeftPanel()
 {
-	Task *task = new Task(m_app);
-	Path *path = new Path(m_app);
+	Task::Task *task = new Task::Task(m_app);
+	Task::Path *path = new Task::Path(m_app);
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
 	vertSplitter->addWidget(task);
@@ -30,7 +30,7 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	Viewport *viewport = new Viewport(m_app);
+	View2d::Viewport *viewport = new View2d::Viewport(m_app);
 	Info *info = new Info(viewport);
 
 	QWidget *container = new QWidget(this);

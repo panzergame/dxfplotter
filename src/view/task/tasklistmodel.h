@@ -6,7 +6,7 @@
 
 #include <QAbstractItemModel>
 
-namespace View
+namespace View::Task
 {
 
 class TaskListModel : public QAbstractListModel

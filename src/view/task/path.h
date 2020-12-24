@@ -8,7 +8,7 @@
 
 #include <QWidget>
 
-namespace View
+namespace View::Task
 {
 
 class Path : public Model::TaskModelObserver<QWidget>, private Ui::Path
