@@ -9,7 +9,8 @@ Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const Pat
 	:m_basePolyline(basePolyline),
 	m_name(name),
 	m_settings(settings),
-	m_selected(false)
+	m_selected(false),
+	m_visible(true)
 {
 }
 

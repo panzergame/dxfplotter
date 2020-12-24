@@ -14,8 +14,10 @@ TaskListModel::TaskListModel(Model::Task *task, QObject *parent)
 QVariant TaskListModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DisplayRole && index.isValid()) {
-		Model::Path *path = m_task->pathAt(index.row());
-		return QString::fromStdString(path->name());
+		if (index.column() == 0) {
+			Model::Path *path = m_task->pathAt(index.row());
+			return QString::fromStdString(path->name());
+		}
 	}
 
 	return QVariant();
@@ -33,6 +35,11 @@ QVariant TaskListModel::headerData(int section, Qt::Orientation orientation, int
 int TaskListModel::rowCount(const QModelIndex& parent) const
 {
 	return m_task->count();
+}
+
+int TaskListModel::columnCount(const QModelIndex& parent) const
+{
+	return 2;
 }
 
 QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveDirection direction)

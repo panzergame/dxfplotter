@@ -20,6 +20,8 @@ private:
 	bool m_outsideSelectionBlocked;
 
 	void setupModel();
+	void setupController();
+	void setupPathEditor();
 
 	void changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag);
 

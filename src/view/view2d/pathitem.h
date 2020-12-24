@@ -2,7 +2,7 @@
 
 #include <model/path.h>
 
-#include <view/offsetedpathitem.h>
+#include <view/view2d/offsetedpathitem.h>
 
 #include <QGraphicsPathItem>
 

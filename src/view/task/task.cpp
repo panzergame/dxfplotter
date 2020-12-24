@@ -2,6 +2,7 @@
 
 #include <tasklistmodel.h>
 
+#include <QLabel>
 #include <QDebug>
 
 namespace View
@@ -18,11 +19,15 @@ void Task::setupModel()
 {
 	m_model.reset(new TaskListModel(m_task, this)),
 	treeView->setModel(m_model.get());
+}
 
-	// Configure selection model
+void Task::setupController()
+{
+	// Synchronize selection in 2D view
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
-	selectionModel->
 	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
+
+	connect(m_model.get(), &QAbstractItemModel::rowsMoved, [](){ qInfo() << "layout changed"; });
 
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelected, this, &Task::pathSelected);
@@ -30,6 +35,14 @@ void Task::setupModel()
 
 	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
+}
+
+void Task::setupPathEditor()
+{
+	/*for (int row = 0, count = m_model->rowCount(); row < count; ++row) {
+		QWidget *cell = new QLabel(QString::number(row));
+		treeView->setIndexWidget(m_model->index(row, 1), cell);
+	}*/
 }
 
 void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
@@ -45,6 +58,8 @@ void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::Selection
 void Task::taskChanged()
 {
 	setupModel();
+	setupController();
+	setupPathEditor();
 }
 
 void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
@@ -78,8 +93,9 @@ void Task::pathDeselected(Model::Path *path)
 void Task::moveCurrentPath(Model::Task::MoveDirection direction)
 {
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
-	const QModelIndex selectedIndex = m_model->movePath(selectionModel->currentIndex(), direction);
-	selectionModel->setCurrentIndex(selectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
+	const QModelIndex newSelectedIndex = m_model->movePath(currentSelectedIndex, direction);
+	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
 }
 
 }

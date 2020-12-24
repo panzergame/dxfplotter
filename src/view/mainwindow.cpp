@@ -1,8 +1,8 @@
 #include <mainwindow.h>
 #include <info.h>
-#include <path.h>
-#include <task.h>
-#include <viewport.h>
+#include <task/path.h>
+#include <task/task.h>
+#include <view2d/viewport.h>
 #include <settings/settings.h>
 
 #include <QFileDialog>

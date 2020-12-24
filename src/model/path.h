@@ -22,7 +22,11 @@ private:
 	Geometry::Polyline::List m_offsetedPolylines;
 	std::string m_name;
 	PathSettings m_settings;
-	bool m_selected;
+
+	struct {
+		bool m_selected : 1;
+		bool m_visible : 1;
+	};
 
 public:
 	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
@@ -42,6 +46,9 @@ public:
 	void select();
 	void deselect();
 	void toggleSelect();
+
+	void show();
+	void hide();
 
 Q_SIGNALS:
 	void selected();

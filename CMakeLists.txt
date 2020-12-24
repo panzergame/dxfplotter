@@ -44,6 +44,8 @@ set(INCLUDE_DIRS
 set(LINK_LIBRARIES
 	view
 	view-settings
+	view-task
+	view-view2d
 	model
 	config
 	dxf

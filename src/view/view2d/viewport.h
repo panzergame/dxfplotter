@@ -3,7 +3,7 @@
 #include <model/task.h>
 #include <model/taskmodelobserver.h>
 
-#include <view/rubberband.h>
+#include <view/view2d/rubberband.h>
 
 #include <QGraphicsView>
 #include <QGraphicsScene>
