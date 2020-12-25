@@ -33,8 +33,7 @@ protected:
 
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-	void pathSelected(Model::Path *path);
-	void pathDeselected(Model::Path *path);
+	void pathSelectedChanged(Model::Path *path, bool selected);
 	void moveCurrentPath(Model::Task::MoveDirection direction);
 };
 

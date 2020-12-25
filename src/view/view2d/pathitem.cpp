@@ -38,6 +38,13 @@ QPainterPath PathItem::shapePath() const
 	return stroker.createStroke(m_paintPath);
 }
 
+void PathItem::setSelected(bool selected)
+{
+	QGraphicsItem::setSelected(selected);
+
+	m_offsetedPath.setSelected(selected);
+}
+
 PathItem::PathItem(Model::Path *path)
 	:QGraphicsPathItem(QPainterPath()),
 	m_path(path),
@@ -53,8 +60,7 @@ PathItem::PathItem(Model::Path *path)
 	// Link our offsetted path item for drawing
 	m_offsetedPath.setParentItem(this); // TODO use QGraphicsItemGroup
 
-	connect(m_path, &Model::Path::selected, this, &PathItem::selected);
-	connect(m_path, &Model::Path::deselected, this, &PathItem::deselected);
+	connect(m_path, &Model::Path::selectedChanged, this, &PathItem::selectedChanged);
 }
 
 void PathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -86,35 +92,18 @@ QVariant PathItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
 	if (change & ItemSelectedChange) {
 		m_outsideSelectionBlocked = true;
-		if (isSelected()) {
-			m_path->select();
-		}
-		else {
-			m_path->deselect();
-		}
+		m_path->setSelected(isSelected());
 		m_outsideSelectionBlocked = false;
 	}
 
 	return QGraphicsItem::itemChange(change, value);
 }
 
-void PathItem::selected()
+void PathItem::selectedChanged(bool selected)
 {
 	if (!m_outsideSelectionBlocked) {
-		setSelected(true);
+		setSelected(selected);
 	}
-
-	m_offsetedPath.selected();
 }
-
-void PathItem::deselected()
-{
-	if (!m_outsideSelectionBlocked) {
-		setSelected(false);
-	}
-
-	m_offsetedPath.deselected();
-}
-
 
 }

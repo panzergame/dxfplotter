@@ -77,32 +77,18 @@ void Path::resetOffset()
 	emit offseted();
 }
 
-void Path::select()
+void Path::setSelected(bool selected)
 {
-	if (!m_selected) {
-		m_selected = true;
+	if (m_selected == selected) {
+		m_selected = selected;
 
-		emit selected();
-	}
-}
-
-void Path::deselect()
-{
-	if (m_selected) {
-		m_selected = false;
-
-		emit deselected();
+		emit selectedChanged(m_selected);
 	}
 }
 
 void Path::toggleSelect()
 {
-	if (m_selected) {
-		deselect();
-	}
-	else {
-		select();
-	}
+	setSelected(!m_selected);
 }
 
 }

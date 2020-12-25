@@ -43,16 +43,14 @@ public:
 	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
-	void select();
+	void setSelected(bool selected);
 	void deselect();
 	void toggleSelect();
 
-	void show();
-	void hide();
+	void setVisible(bool visible);
 
 Q_SIGNALS:
-	void selected();
-	void deselected();
+	void selectedChanged(bool selected);
 	void offseted();
 };
 

@@ -26,6 +26,9 @@ private:
 	QPainterPath paintPath() const;
 	QPainterPath shapePath() const;
 
+	// Change selected state and propagate to sub paths (e.g offseted path).
+	void setSelected(bool selected);
+
 public:
 	explicit PathItem(Model::Path *path);
 
@@ -36,8 +39,7 @@ public:
 
 protected Q_SLOTS:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-	void selected();
-	void deselected();
+	void selectedChanged(bool selected);
 };
 
 }

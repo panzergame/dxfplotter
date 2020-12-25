@@ -11,18 +11,17 @@ Task::Task(QObject *parent, const Path::ListPtr &paths)
 {
 	// Register selection/deselection on all paths.
 	forEachPath([this](Path *path) {
-		connect(path, &Path::selected, this, [this, path](){
-			m_selectedPaths.push_back(path);
-			emit pathSelected(path);
-			emit selectionChanged(m_selectedPaths.size());
-		});
+		connect(path, &Path::selectedChanged, this, [this, path](bool selected){
+			if (selected) {
+				m_selectedPaths.push_back(path);
+			}
+			else {
+				Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
+				assert(it != m_selectedPaths.cend());
+				m_selectedPaths.erase(it);
+			}
 
-		connect(path, &Path::deselected, this, [this, path](){
-			Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
-			assert(it != m_selectedPaths.cend());
-			m_selectedPaths.erase(it);
-
-			emit pathDeselected(path);
+			emit pathSelectedChanged(path, selected);
 			emit selectionChanged(m_selectedPaths.size());
 		});
 	});

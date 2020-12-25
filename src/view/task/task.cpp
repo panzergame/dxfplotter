@@ -30,8 +30,7 @@ void Task::setupController()
 	connect(m_model.get(), &QAbstractItemModel::rowsMoved, [](){ qInfo() << "layout changed"; });
 
 	// Track outside path selection, e.g from graphics view.
-	connect(m_task, &Model::Task::pathSelected, this, &Task::pathSelected);
-	connect(m_task, &Model::Task::pathDeselected, this, &Task::pathDeselected);
+	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
 	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
@@ -69,25 +68,21 @@ void Task::selectionChanged(const QItemSelection &selected, const QItemSelection
 
 	for (const QModelIndex &index : selected.indexes()) {
 		Model::Path *path = m_task->pathAt(index.row());
-		path->select();
+		path->setSelected(true);
 	}
 
 	for (const QModelIndex &index : deselected.indexes()) {
 		Model::Path *path = m_task->pathAt(index.row());
-		path->deselect();
+		path->setSelected(false);
 	}
 
 	m_outsideSelectionBlocked = false;
 }
 
-void Task::pathSelected(Model::Path *path)
+void Task::pathSelectedChanged(Model::Path *path, bool selected)
 {
-	changeItemSelection(path, QItemSelectionModel::Select);
-}
-
-void Task::pathDeselected(Model::Path *path)
-{
-	changeItemSelection(path, QItemSelectionModel::Deselect);
+	changeItemSelection(path,
+			selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
 }
 
 void Task::moveCurrentPath(Model::Task::MoveDirection direction)

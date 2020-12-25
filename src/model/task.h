@@ -48,8 +48,7 @@ public:
 	}
 
 Q_SIGNALS:
-	void pathSelected(Path *path);
-	void pathDeselected(Path *path);
+	void pathSelectedChanged(Path *path, bool selected);
 	void selectionChanged(int size);
 };
 
