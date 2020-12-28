@@ -79,7 +79,7 @@ void Path::resetOffset()
 
 void Path::setSelected(bool selected)
 {
-	if (m_selected == selected) {
+	if (m_selected != selected) {
 		m_selected = selected;
 
 		emit selectedChanged(m_selected);

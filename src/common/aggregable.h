@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <array>
+#include <set>
 #include <memory>
 
 namespace Common
@@ -21,6 +22,8 @@ public:
 	using Array = std::array<Item, Size>;
 	template <size_t Size>
 	using ArrayPtr = std::array<Item *, Size>;
+
+	using SetPtr = std::set<Item *>;
 
 	using Pair = Array<2>;
 	using PairPtr = ArrayPtr<2>;

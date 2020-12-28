@@ -12,7 +12,7 @@ class Task : public QObject
 private:
 	Path::ListPtr m_stack;
 
-	Path::ListPtr m_selectedPaths;
+	Path::SetPtr m_selectedPaths;
 
 public:
 	enum class MoveDirection
@@ -28,8 +28,6 @@ public:
 	int indexFor(Path *path) const;
 
 	void movePath(int index, MoveDirection direction);
-
-	const Path::ListPtr& selectedPaths() const; // TODO avoid
 
 	template <class Functor>
 	void forEachPath(Functor &&functor) const

@@ -13,12 +13,10 @@ Task::Task(QObject *parent, const Path::ListPtr &paths)
 	forEachPath([this](Path *path) {
 		connect(path, &Path::selectedChanged, this, [this, path](bool selected){
 			if (selected) {
-				m_selectedPaths.push_back(path);
+				m_selectedPaths.insert(path);
 			}
 			else {
-				Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
-				assert(it != m_selectedPaths.cend());
-				m_selectedPaths.erase(it);
+				m_selectedPaths.erase(path);
 			}
 
 			emit pathSelectedChanged(path, selected);
@@ -56,11 +54,6 @@ void Task::movePath(int index, MoveDirection direction)
 	if (0 <= newIndex && newIndex < count()) {
 		std::swap(m_stack[index], m_stack[newIndex]);
 	}
-}
-
-const Path::ListPtr &Task::selectedPaths() const
-{
-	return m_selectedPaths;
 }
 
 }
