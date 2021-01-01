@@ -21,7 +21,8 @@ private:
 
 	void setupModel();
 	void setupController();
-	void setupPathEditor();
+	void setupAllPathEditor();
+	void setupPathEditor(const QModelIndex &index);
 
 	void changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag);
 

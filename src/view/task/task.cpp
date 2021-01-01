@@ -27,7 +27,11 @@ void Task::setupController()
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
 	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
 
-	connect(m_model.get(), &QAbstractItemModel::rowsMoved, [](){ qInfo() << "layout changed"; });
+	connect(m_model.get(), &QAbstractItemModel::rowsMoved,
+		[](const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
+	{
+		
+	});
 
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
@@ -36,12 +40,17 @@ void Task::setupController()
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
 }
 
-void Task::setupPathEditor()
+void Task::setupAllPathEditor()
 {
-	/*for (int row = 0, count = m_model->rowCount(); row < count; ++row) {
-		QWidget *cell = new QLabel(QString::number(row));
-		treeView->setIndexWidget(m_model->index(row, 1), cell);
-	}*/
+	for (int row = 0, count = m_model->rowCount(); row < count; ++row) {
+		setupPathEditor(m_model->index(row, 1));
+	}
+}
+
+void Task::setupPathEditor(const QModelIndex &index)
+{
+	QWidget *cell = new QLabel(QString::number(index.row()));
+	treeView->setIndexWidget(index, cell);
 }
 
 void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
@@ -58,7 +67,7 @@ void Task::taskChanged()
 {
 	setupModel();
 	setupController();
-	setupPathEditor();
+// 	setupAllPathEditor();
 }
 
 void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)

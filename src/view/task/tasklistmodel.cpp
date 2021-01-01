@@ -1,5 +1,7 @@
 #include <tasklistmodel.h>
 
+#include <QIcon>
+
 #include <QDebug> // TODO
 
 namespace View::Task
@@ -13,10 +15,27 @@ TaskListModel::TaskListModel(Model::Task *task, QObject *parent)
 
 QVariant TaskListModel::data(const QModelIndex &index, int role) const
 {
-	if (role == Qt::DisplayRole && index.isValid()) {
-		if (index.column() == 0) {
-			Model::Path *path = m_task->pathAt(index.row());
-			return QString::fromStdString(path->name());
+	if (!index.isValid()) {
+		return QVariant();
+	}
+
+	switch (role) {
+		case Qt::DisplayRole:
+		{
+			switch (index.column()) {
+				case 0:
+				{
+					Model::Path *path = m_task->pathAt(index.row());
+					return QString::fromStdString(path->name());
+					break;
+				}
+			}
+			break;
+		}
+		case Qt::DecorationRole:
+		{
+			return QIcon::fromTheme(QString::fromUtf8("go-up"));
+			break;
 		}
 	}
 
