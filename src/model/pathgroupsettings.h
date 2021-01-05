@@ -29,13 +29,15 @@ private:
 	{
 		// Reference value of last path to compare with.
 		Return lastValue;
+		bool firstValue = true;
 		bool allEqual = true;
 
-		m_task->forEachSelectedPath([&lastValue, &allEqual, &getter](Model::Path *path){
+		m_task->forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](Model::Path *path){
 			const Return &value = (path->settings().*getter)();
-			if (lastValue != value) {
+			if (!firstValue && lastValue != value) {
 				allEqual = false;
 			}
+			firstValue = false;
 			lastValue = value;
 		});
 
