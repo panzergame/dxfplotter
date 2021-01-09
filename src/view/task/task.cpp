@@ -33,24 +33,13 @@ void Task::setupController()
 		
 	});
 
+	connect(treeView, &QTreeView::clicked, m_model.get(), &TaskListModel::itemClicked);
+
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
 	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
-}
-
-void Task::setupAllPathEditor()
-{
-	for (int row = 0, count = m_model->rowCount(); row < count; ++row) {
-		setupPathEditor(m_model->index(row, 1));
-	}
-}
-
-void Task::setupPathEditor(const QModelIndex &index)
-{
-	QWidget *cell = new QLabel(QString::number(index.row()));
-	treeView->setIndexWidget(index, cell);
 }
 
 void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
@@ -67,7 +56,6 @@ void Task::taskChanged()
 {
 	setupModel();
 	setupController();
-// 	setupAllPathEditor();
 }
 
 void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)

@@ -19,22 +19,34 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 
-	switch (role) {
-		case Qt::DisplayRole:
+	Model::Path *path = m_task->pathAt(index.row());
+
+	switch (index.column()) {
+		case 0:
 		{
-			switch (index.column()) {
-				case 0:
+			switch (role) {
+				case Qt::DisplayRole:
 				{
-					Model::Path *path = m_task->pathAt(index.row());
 					return QString::fromStdString(path->name());
 					break;
 				}
 			}
 			break;
 		}
-		case Qt::DecorationRole:
+		case 1:
 		{
-			return QIcon::fromTheme(QString::fromUtf8("go-up"));
+			switch (role) {
+				case Qt::DecorationRole:
+				{
+					if (path->visible()) {
+						return QIcon::fromTheme(QString::fromUtf8("go-up"));
+					}
+					else {
+						return QIcon::fromTheme(QString::fromUtf8("go-down"));
+					}
+					break;
+				}
+			}
 			break;
 		}
 	}
@@ -82,5 +94,20 @@ QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveD
 
 	return index;
 }
+
+void TaskListModel::itemClicked(const QModelIndex& index)
+{
+
+	switch (index.column()) {
+		case 1:
+		{
+			Model::Path *path = m_task->pathAt(index.row());
+			path->toggleVisible();
+			
+			emit dataChanged(index, index);
+		}
+	}
+}
+
 
 }

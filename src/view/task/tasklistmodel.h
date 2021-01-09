@@ -25,6 +25,7 @@ public:
 	int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
 	QModelIndex movePath(const QModelIndex &index, Model::Task::MoveDirection direction);
+	void itemClicked(const QModelIndex &index);
 };
 
 }
