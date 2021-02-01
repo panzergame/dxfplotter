@@ -19,6 +19,10 @@ void Task::setupModel()
 {
 	m_model.reset(new TaskListModel(m_task, this)),
 	treeView->setModel(m_model.get());
+
+	QHeaderView *header = treeView->header();
+	header->setStretchLastSection(false);
+	header->setSectionResizeMode(0, QHeaderView::Stretch);
 }
 
 void Task::setupController()
@@ -26,12 +30,6 @@ void Task::setupController()
 	// Synchronize selection in 2D view
 	QItemSelectionModel *selectionModel = treeView->selectionModel();
 	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
-
-	connect(m_model.get(), &QAbstractItemModel::rowsMoved,
-		[](const QModelIndex &parent, int start, int end, const QModelIndex &destination, int row)
-	{
-		
-	});
 
 	connect(treeView, &QTreeView::clicked, m_model.get(), &TaskListModel::itemClicked);
 
