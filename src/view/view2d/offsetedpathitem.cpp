@@ -4,6 +4,7 @@
 #include <geometry/arc.h>
 
 #include <QStyleOptionGraphicsItem>
+#include <QPen>
 #include <QDebug>
 
 namespace View::View2d

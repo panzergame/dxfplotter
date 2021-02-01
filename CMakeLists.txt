@@ -53,6 +53,7 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt
+	font-resource
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
 )
@@ -61,6 +62,7 @@ include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
 add_subdirectory(thirdparty)
+add_subdirectory(resource)
 add_subdirectory(src)
 add_subdirectory(test) # TODO seulement en cas de test
 

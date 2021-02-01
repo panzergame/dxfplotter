@@ -224,7 +224,7 @@ void Viewport::wheelEvent(QWheelEvent *event)
 {
 	constexpr float SCALE_STEP = 0.2f;
 
-	const float factor = 1.0f + ((event->delta() > 0) ? SCALE_STEP : -SCALE_STEP);
+	const float factor = 1.0f + ((event->angleDelta().x() > 0) ? SCALE_STEP : -SCALE_STEP);
 
 	scale(factor, factor);
 
@@ -236,7 +236,7 @@ void Viewport::mousePressEvent(QMouseEvent *event)
 	const QPoint &mousePos = event->pos();
 
 	switch (event->button()) {
-		case Qt::MidButton:
+		case Qt::MiddleButton:
 		{
 			startMovement(mousePos);
 			break;

@@ -2,7 +2,7 @@
 
 #include <model/path.h>
 
-#include <QPainter>
+#include <QPainterPath>
 
 namespace View::View2d
 {
