@@ -1,8 +1,6 @@
 #include <tasklistmodel.h>
 
-#include <QIcon>
-
-#include <QDebug> // TODO
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
 
 namespace View::Task
 {
@@ -21,28 +19,22 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 
 	Model::Path *path = m_task->pathAt(index.row());
 
-	switch (index.column()) {
-		case 0:
+	switch (role) {
+		case Qt::DisplayRole:
 		{
-			switch (role) {
-				case Qt::DisplayRole:
+			switch (index.column()) {
+				case 0:
 				{
 					return QString::fromStdString(path->name());
 					break;
 				}
-			}
-			break;
-		}
-		case 1:
-		{
-			switch (role) {
-				case Qt::DecorationRole:
+				case 1:
 				{
 					if (path->visible()) {
-						return QIcon::fromTheme(QString::fromUtf8("go-up"));
+						return ICON_FA_EYE;
 					}
 					else {
-						return QIcon::fromTheme(QString::fromUtf8("go-down"));
+						return ICON_FA_EYE_SLASH;
 					}
 					break;
 				}
