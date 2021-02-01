@@ -3,12 +3,23 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
+#include <QFontDatabase>
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");
 	qapp.setApplicationDisplayName("dxfplotter");
+
+	// Install font awesome
+	Q_INIT_RESOURCE(font);
+	const int fontId = QFontDatabase::addApplicationFont(":/FontAwesome.otf");
+	assert(fontId != -1);
+	// Setup font awesome for all the application
+	QFont font;
+	font.setFamily("FontAwesome");
+	qapp.setFont(font);
 
 	QCommandLineParser parser;
 	parser.addHelpOption();

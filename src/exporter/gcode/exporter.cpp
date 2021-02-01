@@ -13,7 +13,11 @@ void Exporter::convertToGCode(const Model::Task *task)
 	// Retract tool before work piece
 	processor.retractDepth();
 
-	task->forEachPath([this](Model::Path *path){ convertToGCode(path); });
+	task->forEachPath([this](Model::Path *path){
+		if (path->visible()) {
+			convertToGCode(path);
+		}
+	});
 
 	// Back to home
 	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));

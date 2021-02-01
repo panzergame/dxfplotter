@@ -34,20 +34,25 @@ public:
 	static ListPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings);
 
 	const Geometry::Polyline &basePolyline() const;
-	const Geometry::Polyline::List &offsetedPolylines() const;
 	Geometry::Polyline::List finalPolylines() const;
+
+	const Geometry::Polyline::List &offsetedPolylines() const;
+	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
+	void resetOffset();
+
+
 	const std::string &name() const;
+
 	const PathSettings &settings() const;
 	PathSettings &settings();
 
-	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
-	void resetOffset();
+	bool visible() const;
+	void setVisible(bool visible);
+	void toggleVisible();
 
 	void setSelected(bool selected);
 	void deselect();
 	void toggleSelect();
-
-	void setVisible(bool visible);
 
 Q_SIGNALS:
 	void selectedChanged(bool selected);

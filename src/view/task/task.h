@@ -21,7 +21,6 @@ private:
 
 	void setupModel();
 	void setupController();
-	void setupPathEditor();
 
 	void changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag);
 

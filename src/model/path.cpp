@@ -31,11 +31,6 @@ const Geometry::Polyline &Path::basePolyline() const
 	return m_basePolyline;
 }
 
-const Geometry::Polyline::List &Path::offsetedPolylines() const
-{
-	return m_offsetedPolylines;
-}
-
 Geometry::Polyline::List Path::finalPolylines() const
 {
 	if (m_offsetedPolylines.empty()) {
@@ -44,19 +39,9 @@ Geometry::Polyline::List Path::finalPolylines() const
 	return m_offsetedPolylines;
 }
 
-const std::string &Path::name() const
+const Geometry::Polyline::List &Path::offsetedPolylines() const
 {
-	return m_name;
-}
-
-const Model::PathSettings &Path::settings() const
-{
-	return m_settings;
-}
-
-Model::PathSettings &Path::settings()
-{
-	return m_settings;
+	return m_offsetedPolylines;
 }
 
 void Path::offset(float offset, float minimumPolylineLength, float minimumArcLength)
@@ -75,6 +60,36 @@ void Path::resetOffset()
 	m_offsetedPolylines.clear();
 
 	emit offseted();
+}
+
+const std::string &Path::name() const
+{
+	return m_name;
+}
+
+const Model::PathSettings &Path::settings() const
+{
+	return m_settings;
+}
+
+Model::PathSettings &Path::settings()
+{
+	return m_settings;
+}
+
+bool Path::visible() const
+{
+	return m_visible;
+}
+
+void Path::setVisible(bool visible)
+{
+	m_visible = visible;
+}
+
+void Path::toggleVisible()
+{
+	setVisible(!m_visible);
 }
 
 void Path::setSelected(bool selected)

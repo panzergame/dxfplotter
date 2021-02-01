@@ -34,6 +34,18 @@
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
+     <property name="headerHidden">
+      <bool>true</bool>
+     </property>
+     <attribute name="headerVisible">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="headerCascadingSectionResizes">
+      <bool>false</bool>
+     </attribute>
+     <attribute name="headerDefaultSectionSize">
+      <number>55</number>
+     </attribute>
     </widget>
    </item>
    <item>
@@ -45,7 +57,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="go-up"/>
+         <iconset theme="go-up">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
@@ -55,7 +68,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="go-down"/>
+         <iconset theme="go-down">
+          <normaloff>.</normaloff>.</iconset>
         </property>
        </widget>
       </item>
