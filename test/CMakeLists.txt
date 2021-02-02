@@ -1,8 +1,8 @@
-add_executable(testbezier testbezier.cpp) # TODO add_test
-target_link_libraries(testbezier ${LINK_LIBRARIES})
 
-add_executable(testarc testarc.cpp) # TODO add_test
-target_link_libraries(testarc ${LINK_LIBRARIES})
+set(SRC
 
-add_executable(testexport testexport.cpp) # TODO add_test
-target_link_libraries(testexport ${LINK_LIBRARIES})
+)
+
+add_executable(test ${SRC} main.cpp)
+target_include_directories(test PRIVATE ${GTEST_INCLUDE_DIRS})
+target_link_libraries(test ${GTEST_LIBRARIES} pthread)
