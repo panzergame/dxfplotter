@@ -20,6 +20,9 @@ private:
 	/// Selected tool configuration
 	const Config::Tools::Tool *m_toolConfig;
 
+	// Absolute file basename of current loaded file
+	QString m_currentFileBaseName;
+
 	Path::ListPtr m_paths; // TODO parent destruct
 	Task *m_task;
 
@@ -37,6 +40,7 @@ public:
 	bool selectTool(const QString &toolName);
 	void selectToolFromCmd(const QString &toolName);
 
+	QString currentFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadDxf(const QString &fileName);

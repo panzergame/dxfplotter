@@ -91,6 +91,11 @@ void Application::selectToolFromCmd(const QString &toolName)
 	}
 }
 
+QString Application::currentFileBaseName() const
+{
+	return m_currentFileBaseName;
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
@@ -116,8 +121,11 @@ bool Application::loadFile(const QString &fileName)
 	}
 
 	// Update window title based on file name.
-	const QString title = QFileInfo(fileName).fileName();
+	const QFileInfo fileInfo(fileName);
+	const QString title = fileInfo.fileName();
 	emit titleChanged(title);
+
+	m_currentFileBaseName = fileInfo.absoluteDir().filePath(fileInfo.baseName());
 
 	return true;
 }

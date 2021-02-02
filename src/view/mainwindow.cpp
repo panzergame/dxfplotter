@@ -124,7 +124,8 @@ void MainWindow::openFile()
 
 void MainWindow::exportFile()
 {
-	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", "", "Text files (*.ngc *.txt)");
+	const QString defaultPath = m_app.currentFileBaseName() + ".ngc";
+	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty()) {
 		if (!m_app.exportToGcode(fileName)) {
