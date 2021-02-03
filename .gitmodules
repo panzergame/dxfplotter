@@ -9,4 +9,4 @@
 	url = https://github.com/jbuckmccready/CavalierContours.git
 [submodule "thirdparty/IconFontCppHeaders"]
 	path = thirdparty/IconFontCppHeaders
-	url = git@github.com:juliettef/IconFontCppHeaders.git
+	url = https://github.com/juliettef/IconFontCppHeaders.git
