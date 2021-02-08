@@ -2,6 +2,7 @@
 
 #include <QStyleOptionGraphicsItem>
 #include <QPen>
+#include <QPainter>
 
 namespace View::View2d
 {
@@ -33,7 +34,7 @@ void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 		setPen(normalPen);
 	}
 
-	QAbstractGraphicsShapeItem::paint(painter, &fixedOption, widget);
+	painter->setPen(pen());
 }
 
 Model::Path *BasicPathItem::path() const

@@ -49,9 +49,9 @@ PolylinePathItem::PolylinePathItem(Model::Path *path)
 
 void PolylinePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
-	painter->drawPath(m_paintPath);
-
     BasicPathItem::paint(painter, option, widget);
+
+	painter->drawPath(m_paintPath);
 }
 
 QPainterPath PolylinePathItem::shape() const
