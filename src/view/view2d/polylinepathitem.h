@@ -1,15 +1,14 @@
 #pragma once
 
-#include <model/path.h>
-
-#include <view/view2d/offsetedpathitem.h>
-
-#include <QGraphicsPathItem>
+#include <view/view2d/basicpathitem.h>
+#include <view/view2d/offsetedpolylinepathitem.h>
 
 namespace View::View2d
 {
 
-class PathItem : public QObject, public QGraphicsPathItem
+/** @brief Graphics path item meant to display polylines with length.
+ */
+class PolylinePathItem : public BasicPathItem
 {
 	Q_OBJECT;
 
@@ -21,25 +20,21 @@ private:
 	QPainterPath m_shapePath;
 
 	// Item of offseted polylines of the same path.
-	OffsetedPathItem m_offsetedPath;
+	OffsetedPolylinePathItem m_offsetedPath;
 
 	QPainterPath paintPath() const;
 	QPainterPath shapePath() const;
 
 	// Change selected state and propagate to sub paths (e.g offseted path).
-	void setSelected(bool selected);
+	void setSelected(bool selected) override;
 
 public:
-	explicit PathItem(Model::Path *path);
+	explicit PolylinePathItem(Model::Path *path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-	Model::Path *path() const;
 	QPainterPath shape() const override;
-
-protected Q_SLOTS:
-	QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-	void selectedChanged(bool selected);
+	QRectF boundingRect() const override;
 };
 
 }

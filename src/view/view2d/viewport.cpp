@@ -1,5 +1,5 @@
 #include <viewport.h>
-#include <pathitem.h>
+#include <polylinepathitem.h>
 
 #include <QDebug> // TODO
 
@@ -14,7 +14,7 @@ void Viewport::setupPathItems()
 {
 	m_task->forEachPath(
 		[scene = scene()](Model::Path *path) {
-			PathItem *item = new PathItem(path);
+			BasicPathItem *item = new PolylinePathItem(path);
 			scene->addItem(item);
 		}
 	);

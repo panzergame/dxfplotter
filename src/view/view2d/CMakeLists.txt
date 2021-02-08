@@ -1,13 +1,15 @@
 set(SRC
+	basicpathitem.cpp
 	bulgepainter.cpp
-	offsetedpathitem.cpp
-	pathitem.cpp
+	offsetedpolylinepathitem.cpp
+	polylinepathitem.cpp
 	rubberband.cpp
 	viewport.cpp
 
+	basicpathitem.h
 	bulgepainter.h
-	offsetedpathitem.h
-	pathitem.h
+	offsetedpolylinepathitem.h
+	polylinepathitem.h
 	rubberband.h
 	viewport.h
 )
