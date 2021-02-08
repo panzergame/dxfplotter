@@ -28,12 +28,12 @@ public:
 	QVector2D &end();
 
 	bool isClosed() const;
+	bool isPoint() const;
 
 	Polyline &invert();
 	Polyline inverse() const;
 
 	Polyline& operator+=(const Polyline &other);
-
 
 	template <class Functor>
 	void forEachBulge(Functor &&functor) const

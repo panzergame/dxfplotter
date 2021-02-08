@@ -62,6 +62,11 @@ void Path::resetOffset()
 	emit offseted();
 }
 
+bool Path::isPoint() const
+{
+	return m_basePolyline.isPoint();
+}
+
 const std::string &Path::name() const
 {
 	return m_name;

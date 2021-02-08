@@ -48,12 +48,18 @@ QVector2D &Polyline::end()
 	return m_bulges.back().end();
 }
 
-
 bool Polyline::isClosed() const
 {
 	assert(!m_bulges.empty());
 
 	return (start() == end());
+}
+
+bool Polyline::isPoint() const
+{
+	assert(!m_bulges.empty());
+
+	return isClosed() && (m_bulges.size() == 1);
 }
 
 Polyline &Polyline::invert()

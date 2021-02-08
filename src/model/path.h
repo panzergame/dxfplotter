@@ -40,6 +40,7 @@ public:
 	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
+	bool isPoint() const;
 
 	const std::string &name() const;
 
