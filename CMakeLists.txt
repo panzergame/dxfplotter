@@ -21,6 +21,7 @@ option(WITH_GTEST "Build tests" OFF)
 
 if (${WITH_GTEST})
 	find_package(GTest REQUIRED)
+	enable_testing()
 endif()
 
 find_package(Qt5 COMPONENTS REQUIRED 

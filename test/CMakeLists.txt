@@ -1,8 +1,9 @@
-
 set(SRC
-
+	verticalspeed.cpp
 )
 
-add_executable(test ${SRC} main.cpp)
-target_include_directories(test PRIVATE ${GTEST_INCLUDE_DIRS})
-target_link_libraries(test ${GTEST_LIBRARIES} pthread)
+add_executable(gtest ${SRC} main.cpp)
+target_include_directories(gtest PRIVATE ${GTEST_INCLUDE_DIRS})
+target_link_libraries(gtest ${GTEST_LIBRARIES} ${LINK_LIBRARIES} pthread)
+
+add_test(gtest gtest)
