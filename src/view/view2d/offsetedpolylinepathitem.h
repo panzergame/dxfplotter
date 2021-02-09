@@ -7,7 +7,7 @@
 namespace View::View2d
 {
 
-class OffsetedPathItem : public QObject, public QGraphicsPathItem
+class OffsetedPolylinePathItem : public QObject, public QGraphicsPathItem
 {
 	Q_OBJECT;
 
@@ -21,7 +21,7 @@ private:
 	QPainterPath shape() const override;
 
 public:
-	explicit OffsetedPathItem(Model::Path *path);
+	explicit OffsetedPolylinePathItem(Model::Path *path);
 
 	void selected();
 	void deselected();

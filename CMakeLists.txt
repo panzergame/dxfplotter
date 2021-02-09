@@ -17,9 +17,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
-option(WITH_GTEST "Build tests" OFF)
 
-if (${WITH_GTEST})
+include(CTest)
+
+if (BUILD_TESTING)
 	find_package(GTest REQUIRED)
 	enable_testing()
 endif()
@@ -70,7 +71,7 @@ add_subdirectory(thirdparty)
 add_subdirectory(resource)
 add_subdirectory(src)
 
-if (${WITH_GTEST})
+if (BUILD_TESTING)
 	add_subdirectory(test)
 endif()
 

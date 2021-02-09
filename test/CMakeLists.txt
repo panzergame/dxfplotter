@@ -1,4 +1,5 @@
 set(SRC
+	polyline.cpp
 	verticalspeed.cpp
 )
 

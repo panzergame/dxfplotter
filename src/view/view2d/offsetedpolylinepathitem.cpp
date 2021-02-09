@@ -1,4 +1,4 @@
-#include <offsetedpathitem.h>
+#include <offsetedpolylinepathitem.h>
 #include <bulgepainter.h>
 
 #include <geometry/arc.h>
@@ -15,7 +15,7 @@ static const QBrush selectBrush(Qt::red);
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
 
-QPainterPath OffsetedPathItem::paintPath() const
+QPainterPath OffsetedPolylinePathItem::paintPath() const
 {
 	const Geometry::Polyline::List polylines = m_path->offsetedPolylines();
 
@@ -33,12 +33,12 @@ QPainterPath OffsetedPathItem::paintPath() const
 	return rootPainter;
 }
 
-QPainterPath OffsetedPathItem::shape() const
+QPainterPath OffsetedPolylinePathItem::shape() const
 {
 	return QPainterPath();
 }
 
-OffsetedPathItem::OffsetedPathItem(Model::Path *path)
+OffsetedPolylinePathItem::OffsetedPolylinePathItem(Model::Path *path)
 	:QGraphicsPathItem(QPainterPath()),
 	m_path(path),
 	m_paintPath(paintPath())
@@ -46,20 +46,20 @@ OffsetedPathItem::OffsetedPathItem(Model::Path *path)
 	setPen(normalPen);
 	setPath(m_paintPath);
 
-	connect(path, &Model::Path::offseted, this, &OffsetedPathItem::pathChanged);
+	connect(path, &Model::Path::offseted, this, &OffsetedPolylinePathItem::pathChanged);
 }
 
-void OffsetedPathItem::selected()
+void OffsetedPolylinePathItem::selected()
 {
 	setPen(selectPen);
 }
 
-void OffsetedPathItem::deselected()
+void OffsetedPolylinePathItem::deselected()
 {
 	setPen(normalPen);
 }
 
-void OffsetedPathItem::pathChanged()
+void OffsetedPolylinePathItem::pathChanged()
 {
 	m_paintPath = paintPath();
 	setPath(m_paintPath);
