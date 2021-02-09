@@ -32,7 +32,8 @@ public:
 	template <class Functor>
 	void forEachPath(Functor &&functor) const
 	{
-		for (Path *path : m_stack) {
+		Path::ListPtr stack(m_stack);
+		for (Path *path : stack) {
 			functor(path);
 		}
 	}
@@ -40,7 +41,8 @@ public:
 	template <class Functor>
 	void forEachSelectedPath(Functor &&functor) const
 	{
-		for (Path *path : m_selectedPaths) {
+		Path::SetPtr selectedPaths(m_selectedPaths);
+		for (Path *path : selectedPaths) {
 			functor(path);
 		}
 	}

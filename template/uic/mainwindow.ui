@@ -50,6 +50,9 @@
     <addaction name="actionLeftCutterCompensation"/>
     <addaction name="actionRightCutterCompensation"/>
     <addaction name="actionResetCutterCompensation"/>
+    <addaction name="separator"/>
+    <addaction name="actionHideSelection"/>
+    <addaction name="actionShowHidden"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -118,6 +121,25 @@
    </property>
    <property name="shortcut">
     <string>C</string>
+   </property>
+  </action>
+  <action name="actionHideSelection">
+   <property name="text">
+    <string>Hide Selection</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
+   </property>
+  </action>
+  <action name="actionShowHidden">
+   <property name="text">
+    <string>Show Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Hidden</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+H</string>
    </property>
   </action>
  </widget>

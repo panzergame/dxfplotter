@@ -189,4 +189,21 @@ void Application::resetCutterCompensation()
 	m_task->forEachSelectedPath([](Model::Path *path){ path->resetOffset(); });
 }
 
+void Application::hideSelection()
+{
+	m_task->forEachSelectedPath([](Model::Path *path){
+		path->setVisible(false);
+	});
+}
+
+void Application::showHidden()
+{
+	m_task->forEachPath([](Model::Path *path){
+		if (!path->visible()) {
+			path->setVisible(true);
+			path->setSelected(true);
+		}
+	});
+}
+
 }

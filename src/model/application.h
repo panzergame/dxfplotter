@@ -52,6 +52,9 @@ public:
 	void rightCutterCompensation();
 	void resetCutterCompensation();
 
+	void hideSelection();
+	void showHidden();
+
 Q_SIGNALS:
 	void taskChanged(Task *newTask);
 	void titleChanged(QString title);

@@ -80,6 +80,8 @@ void MainWindow::setupMenuActions()
 	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &Model::Application::leftCutterCompensation);
 	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &Model::Application::rightCutterCompensation);
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
+	connect(actionHideSelection, &QAction::triggered, &m_app, &Model::Application::hideSelection);
+	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
 }
 
 void MainWindow::updateToolSelector(const Config::Config &config)
