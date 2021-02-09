@@ -89,7 +89,11 @@ bool Path::visible() const
 
 void Path::setVisible(bool visible)
 {
-	m_visible = visible;
+	if (m_visible != visible) {
+		m_visible = visible;
+
+		emit visibilityChanged(m_visible);
+	}
 }
 
 void Path::toggleVisible()

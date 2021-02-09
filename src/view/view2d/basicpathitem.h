@@ -26,6 +26,7 @@ public:
 protected Q_SLOTS:
 	QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
 	void selectedChanged(bool selected);
+	void visibilityChanged(bool visible);
 };
 
 }

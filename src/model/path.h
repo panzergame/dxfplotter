@@ -57,6 +57,7 @@ public:
 
 Q_SIGNALS:
 	void selectedChanged(bool selected);
+	void visibilityChanged(bool visible);
 	void offseted();
 };
 
