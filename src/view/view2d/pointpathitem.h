@@ -13,7 +13,7 @@ class PointPathItem : public BasicPathItem
 	Q_OBJECT;
 
 private:
-	QVector2D m_point;
+	QPointF m_point;
 	QPainterPath m_shapePath;
 
 	QPainterPath shapePath() const;

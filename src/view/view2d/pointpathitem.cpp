@@ -1,7 +1,7 @@
 #include <pointpathitem.h>
 
 #include <QPainter>
-#include <QDebug>
+#include <QStyleOptionGraphicsItem>
 
 namespace View::View2d
 {
@@ -10,23 +10,26 @@ QPainterPath PointPathItem::shapePath() const
 {
 	QPainterPath path;
 	constexpr float width = 0.05f; // TODO const or config
-	path.addEllipse(m_point.toPointF(), width, width);
+	path.addEllipse(0.0f, 0.0f, width, width);
 
 	return path;
 }
 
 PointPathItem::PointPathItem(Model::Path *path)
 	:BasicPathItem(path),
-	m_point(m_path->basePolyline().start()),
+	m_point(m_path->basePolyline().start().toPointF()),
 	m_shapePath(shapePath())
 {
+	setFlag(QGraphicsItem::ItemIgnoresTransformations);
+	setPos(m_point);
 }
 
 void PointPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
 	BasicPathItem::paint(painter, option, widget);
 
-	painter->drawPoint(m_point.toPointF());
+	painter->drawLine(-1.0f, 0.0f, 1.0f, 0.0f);
+	painter->drawLine(0.0f, -1.0f, 0.0f, 1.0f);
 }
 
 QPainterPath PointPathItem::shape() const
