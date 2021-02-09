@@ -11,7 +11,7 @@ class BasicPathItem : public QObject, public QAbstractGraphicsShapeItem
 {
 	Q_OBJECT;
 
-private:
+protected:
 	Model::Path *m_path;
 	bool m_outsideSelectionBlocked;
 

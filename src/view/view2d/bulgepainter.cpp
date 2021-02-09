@@ -21,13 +21,7 @@ void BulgePainter::operator()(const Geometry::Bulge &bulge)
 	if (bulge.isLine()) {
 		const QVector2D &start = bulge.start();
 		const QVector2D &end = bulge.end();
-		// Check if the bulge is a point
-		if (start == end) {
-// 			m_painter.point
-		}
-		else {
-			m_painter.lineTo(end.toPointF());
-		}
+		m_painter.lineTo(end.toPointF());
 	}
 	else {
 		const Geometry::Arc arc = bulge.toArc();

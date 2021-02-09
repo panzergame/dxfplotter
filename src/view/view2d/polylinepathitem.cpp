@@ -37,8 +37,6 @@ void PolylinePathItem::setSelected(bool selected)
 
 PolylinePathItem::PolylinePathItem(Model::Path *path)
 	:BasicPathItem(path),
-	m_path(path),
-	m_outsideSelectionBlocked(false),
 	m_paintPath(paintPath()),
 	m_shapePath(shapePath()),
 	m_offsetedPath(path)
