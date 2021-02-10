@@ -28,6 +28,7 @@ void Interface::addLType(const DRW_LType& data)
 
 void Interface::addLayer(const DRW_Layer& data)
 {
+	m_importer.processEntity(data);
 	PRINT_FUNC;
 }
 
@@ -69,13 +70,13 @@ void Interface::endBlock()
 void Interface::addPoint(const DRW_Point& data)
 {
 	PRINT_FUNC;
-  m_importer.convertToPolylines(data);
+	m_importer.processEntity(data);
 }
 
 void Interface::addLine(const DRW_Line& data)
 {
 	PRINT_FUNC;
-	m_importer.convertToPolylines(data);
+	m_importer.processEntity(data);
 }
 
 void Interface::addRay(const DRW_Ray& data)
@@ -91,14 +92,13 @@ void Interface::addXline(const DRW_Xline& data)
 void Interface::addArc(const DRW_Arc& data)
 {
 	PRINT_FUNC;
-	m_importer.convertToPolylines(data);
-
+	m_importer.processEntity(data);
 }
 
 void Interface::addCircle(const DRW_Circle& data)
 {
 	PRINT_FUNC;
-	m_importer.convertToPolylines(data);
+	m_importer.processEntity(data);
 }
 
 void Interface::addEllipse(const DRW_Ellipse& data)
@@ -109,7 +109,7 @@ void Interface::addEllipse(const DRW_Ellipse& data)
 void Interface::addLWPolyline(const DRW_LWPolyline& data)
 {
 	PRINT_FUNC;
-	m_importer.convertToPolylines(data);
+	m_importer.processEntity(data);
 }
 
 void Interface::addPolyline(const DRW_Polyline& data)
@@ -120,7 +120,7 @@ void Interface::addPolyline(const DRW_Polyline& data)
 void Interface::addSpline(const DRW_Spline* data)
 {
 	PRINT_FUNC;
-	m_importer.convertToPolylines(*data);
+	m_importer.processEntity(*data);
 }
 
 void Interface::addKnot(const DRW_Entity& data)

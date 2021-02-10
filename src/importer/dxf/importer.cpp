@@ -57,26 +57,9 @@ Geometry::Polyline Importer::bezierToPolyline(const Geometry::Bezier &rootBezier
 	return polyline;
 }
 
-Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength)
-	:m_splineToArcPrecision(splineToArcPrecision),
-	m_minimumSplineLength(minimumSplineLength)
-{
-	Interface interface(*this);
-
-	dxfRW rw(filename.c_str());
-	if (!rw.read(&interface, false)) {
-		throw Common::FileException();
-	}
-}
-
-Geometry::Polyline::List &&Importer::polylines()
-{
-	return std::move(m_polylines);
-}
-
 void Importer::convertToPolylines(const DRW_Point &point)
 {
-  const QVector2D pos(toVector2D(point.basePoint));
+	const QVector2D pos(toVector2D(point.basePoint));
 	const Geometry::Bulge bulge(pos, pos, 0.0f);
 
 	addPolyline(Geometry::Polyline({bulge}));
@@ -217,6 +200,35 @@ void Importer::convertToPolylines(const DRW_Arc &arc)
 
 		addPolyline(Geometry::Polyline({bulge}));
 	}
+}
+
+void Importer::addLayer(const DRW_Layer &layer)
+{
+	const std::string &name = layer.name;
+	m_nameToLayers.emplace(name, Layer(layer.plotF));
+}
+
+Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength)
+	:m_splineToArcPrecision(splineToArcPrecision),
+	m_minimumSplineLength(minimumSplineLength)
+{
+	Interface interface(*this);
+
+	dxfRW rw(filename.c_str());
+	if (!rw.read(&interface, false)) {
+		throw Common::FileException();
+	}
+}
+
+Geometry::Polyline::List &&Importer::polylines()
+{
+	return std::move(m_polylines);
+}
+
+template <>
+void Importer::processEntity(const DRW_Layer &layer)
+{
+	addLayer(layer);
 }
 
 }
