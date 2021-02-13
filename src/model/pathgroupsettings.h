@@ -58,8 +58,11 @@ private:
 public:
 	explicit PathGroupSettings(const Task *task);
 
-	std::optional<float> feedRate() const;
-	void setFeedRate(float feedRate);
+	std::optional<float> planeFeedRate() const;
+	void setPlaneFeedRate(float planeFeedRate);
+
+	std::optional<float> depthFeedRate() const;
+	void setDepthFeedRate(float depthFeedRate);
 
 	std::optional<float> intensity() const;
 	void setIntensity(float intensity);

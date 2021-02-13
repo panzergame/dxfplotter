@@ -16,7 +16,6 @@ private:
 	void printWithSettings(const std::string &format, Args&& ...args)
 	{
 		print(format, std::forward<Args>(args)...,
-			  "F"_a=m_settings.feedRate(),
 			  "S"_a=m_settings.intensity());
 	}
 

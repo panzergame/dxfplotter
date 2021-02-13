@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>183</width>
-    <height>134</height>
+    <width>230</width>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,45 +28,59 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Feed Rate</string>
+        <string>Plane Feed Rate</string>
        </property>
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QDoubleSpinBox" name="feedRate">
-       <property name="maximum">
-        <double>9999.989999999999782</double>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Intensity</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDoubleSpinBox" name="intensity">
+      <widget class="QDoubleSpinBox" name="planeFeedRate">
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>
       </widget>
      </item>
      <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Intensity</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="intensity">
+       <property name="maximum">
+        <double>9999.989999999999782</double>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Depth</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="3" column="1">
       <widget class="QDoubleSpinBox" name="depth">
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>
        <property name="singleStep">
         <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Depth Feed Rate</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QDoubleSpinBox" name="depthFeedRate">
+       <property name="maximum">
+        <double>9999.989999999999782</double>
        </property>
       </widget>
      </item>

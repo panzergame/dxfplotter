@@ -10,14 +10,24 @@ PathGroupSettings::PathGroupSettings(const Task *task)
 {
 }
 
-std::optional<float> PathGroupSettings::feedRate() const
+std::optional<float> PathGroupSettings::planeFeedRate() const
 {
-	return valueIfAllEqual(&PathSettings::feedRate);
+	return valueIfAllEqual(&PathSettings::planeFeedRate);
 }
 
-void PathGroupSettings::setFeedRate(float feedRate)
+void PathGroupSettings::setPlaneFeedRate(float planeFeedRate)
 {
-	setValue(&PathSettings::setFeedRate, feedRate);
+	setValue(&PathSettings::setPlaneFeedRate, planeFeedRate);
+}
+
+std::optional<float> PathGroupSettings::depthFeedRate() const
+{
+	return valueIfAllEqual(&PathSettings::depthFeedRate);
+}
+
+void PathGroupSettings::setDepthFeedRate(float depthFeedRate)
+{
+	setValue(&PathSettings::setDepthFeedRate, depthFeedRate);
 }
 
 std::optional<float> PathGroupSettings::intensity() const

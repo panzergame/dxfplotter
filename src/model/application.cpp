@@ -36,7 +36,7 @@ static std::string configFilePath()
 PathSettings Application::defaultPathSettings() const
 {
 	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.depth());
+	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
 void Application::cutterCompensation(float scale)
