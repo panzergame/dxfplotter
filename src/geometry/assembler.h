@@ -154,7 +154,7 @@ private:
 		Polyline mergedPolyline(const Polyline::List &polylines) const;
 	};
 
-	Polyline::List m_polylines;
+	Polyline::List m_unmergedPolylines;
 	const float m_closeTolerance;
 
 	Polyline::List m_mergedPolylines;

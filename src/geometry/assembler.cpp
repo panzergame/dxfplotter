@@ -81,8 +81,8 @@ Assembler::Tip::List Assembler::constructTips()
 {
 	Tip::List tips; // TODO reserve and std::transform
 
-	for (int i = 0, size = m_polylines.size(); i < size; ++i) {
-		const Polyline &polyline = m_polylines[i];
+	for (int i = 0, size = m_unmergedPolylines.size(); i < size; ++i) {
+		const Polyline &polyline = m_unmergedPolylines[i];
 		tips.push_back({{}, i, polyline.start(), Tip::START});
 		tips.push_back({{}, i, polyline.end(), Tip::END});
 	}
@@ -94,7 +94,7 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 {
 	// Generate all unconnected polyline index.
 	std::set<PolylineIndex> unconnectedPolylines;
-	for (PolylineIndex index = 0, size = m_polylines.size(); index < size; ++index) {
+	for (PolylineIndex index = 0, size = m_unmergedPolylines.size(); index < size; ++index) {
 		unconnectedPolylines.insert(index);
 	}
 
@@ -106,23 +106,38 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 		unconnectedPolylines.erase(unconnectedPolylines.begin());
 
 		ChainBuilder builder(tips, unconnectedPolylines, tree, index, m_closeTolerance);
-		mergedPolylines.push_back(builder.mergedPolyline(m_polylines));
+		mergedPolylines.push_back(builder.mergedPolyline(m_unmergedPolylines));
 	}
 
 	return mergedPolylines;
 }
 
 Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
-	:m_polylines(polylines),
-	m_closeTolerance(closeTolerance)
+	:m_closeTolerance(closeTolerance)
 {
+	// Dispatch polylines to already merged or not merged.
+	for (const Polyline& polyline : polylines) {
+		// Point polylines cannot be merged to others and so are ignored.
+		if (polyline.isPoint()) {
+			m_mergedPolylines.emplace_back(std::move(polyline));
+		}
+		else {
+			m_unmergedPolylines.emplace_back(std::move(polyline));
+		}
+	}
+
+	// Build tips based on unmerged polylines.
 	const Tip::List tips = constructTips();
 
+	// Build kdtree of tips for faster query.
 	TipAdaptor adaptor(tips);
 	KDTree tree(2, adaptor);
 	tree.buildIndex();
 
-	m_mergedPolylines = connectTips(tips, tree);
+	// Merge all unmerged polylines.
+	const Polyline::List mergedPolylines = connectTips(tips, tree);
+	// Concat all merged polylines.
+    m_mergedPolylines.insert(m_mergedPolylines.end(), std::move_iterator(mergedPolylines.begin()), std::move_iterator(mergedPolylines.end()));
 }
 
 Polyline::List &&Assembler::polylines()
