@@ -40,6 +40,8 @@ ctest -VV
 
 # Generate gcov report
 make gcov
+make lcov
 
 # Publish report on codecov
-bash <(curl -s https://codecov.io/bash)
+bash <(curl -s https://codecov.io/bash) -X gcov || echo "Codecov did not collect coverage reports"
+
