@@ -38,7 +38,7 @@ make -j$(nproc)
 # Test project
 ctest -VV
 
-# Generate gcov report
+# Generate coverage report
 make gcov
 make lcov
 
