@@ -4,6 +4,7 @@
 
 
 [![Build Status](https://travis-ci.com/panzergame/dxfplotter.svg?branch=develop)](https://travis-ci.com/panzergame/dxfplotter)
+[![codecov](https://codecov.io/gh/panzergame/dxfplotter/branch/develop/graph/badge.svg?token=WX16YH71C7)](https://codecov.io/gh/panzergame/dxfplotter)
 
 ![](doc/screen.png)
 

@@ -24,7 +24,7 @@ before_install:
 - eval "${MATRIX_EVAL}"
 
 script:
-- if [ "$TRAVIS_BRANCH" != "master" ]; then bash travis/build.sh; fi
+- if [ "$TRAVIS_BRANCH" != "master" ]; then bash travis/buildtestcoverage.sh; fi
 - if [ "$TRAVIS_BRANCH" == "master" ]; then bash travis/buildappimage.sh; fi
 
 deploy:
