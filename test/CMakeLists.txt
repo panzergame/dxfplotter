@@ -6,7 +6,15 @@ FetchContent_Declare(
   	GIT_TAG release-1.10.0
 )
 
-FetchContent_MakeAvailable(googletest)
+if (${CMAKE_VERSION} VERSION_LESS "3.14")
+	FetchContent_GetProperties(googletest)
+	if(NOT googletest_POPULATED)
+	  FetchContent_Populate(googletest)
+	  add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+	endif()
+else()
+	FetchContent_MakeAvailable(googletest)
+endif()
 
 set(SRC
 	polyline.cpp
