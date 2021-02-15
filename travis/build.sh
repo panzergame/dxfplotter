@@ -34,3 +34,6 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 
 # build project and install files into AppDir
 make -j$(nproc)
+
+# Test project
+ctest -VV
