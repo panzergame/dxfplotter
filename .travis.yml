@@ -13,6 +13,7 @@ matrix:
         - cmake
         - qtbase5-dev
         - libyaml-cpp-dev
+        - lcov
     env:
     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
