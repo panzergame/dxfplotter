@@ -1,10 +1,20 @@
+include(FetchContent)
+
+FetchContent_Declare(
+  	googletest
+  	GIT_REPOSITORY https://github.com/google/googletest.git
+  	GIT_TAG release-1.10.0
+)
+
+FetchContent_MakeAvailable(googletest)
+
 set(SRC
 	polyline.cpp
 	verticalspeed.cpp
 )
 
-add_executable(gtest ${SRC} main.cpp)
-target_include_directories(gtest PRIVATE ${GTEST_INCLUDE_DIRS})
-target_link_libraries(gtest ${GTEST_LIBRARIES} ${LINK_LIBRARIES} pthread)
+add_executable(dxfplotter-test ${SRC} main.cpp)
+target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} gtest_main)
 
-add_test(gtest gtest)
+enable_testing()
+add_test(dxfplotter-test dxfplotter-test)

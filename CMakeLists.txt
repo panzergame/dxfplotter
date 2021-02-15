@@ -20,11 +20,6 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 include(CTest)
 
-if (BUILD_TESTING)
-	find_package(GTest REQUIRED)
-	enable_testing()
-endif()
-
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui

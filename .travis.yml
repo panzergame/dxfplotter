@@ -13,7 +13,6 @@ matrix:
         - cmake
         - qtbase5-dev
         - libyaml-cpp-dev
-        - libgtest-dev
     env:
     - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
     script:
