@@ -23,6 +23,7 @@ set(SRC
 
 add_executable(dxfplotter-test ${SRC} main.cpp)
 target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} gtest_main)
+add_coverage(dxfplotter-test)
 
 enable_testing()
 add_test(dxfplotter-test dxfplotter-test)

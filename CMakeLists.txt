@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.11)
 
 project(dxfplotter)
 
+include(CTest)
+
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -18,7 +22,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
-include(CTest)
+find_package(codecov)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
@@ -72,5 +76,8 @@ endif()
 
 add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
+add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)
+
+coverage_evaluate()
