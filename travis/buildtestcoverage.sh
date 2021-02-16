@@ -38,8 +38,10 @@ make -j$(nproc)
 # Test project
 ctest -VV
 
-# Generate gcov report
+# Generate coverage report
 make gcov
+make lcov
 
 # Publish report on codecov
-bash <(curl -s https://codecov.io/bash)
+bash <(curl -s https://codecov.io/bash) -f lcov/data/capture/all_targets.info -R "$REPO_ROOT" || echo "Codecov did not collect coverage reports"
+
