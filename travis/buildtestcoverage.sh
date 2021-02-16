@@ -43,5 +43,5 @@ make gcov
 make lcov
 
 # Publish report on codecov
-bash <(curl -s https://codecov.io/bash) -f lcov/data/capture/geometry.info || echo "Codecov did not collect coverage reports"
+bash <(curl -s https://codecov.io/bash) -f lcov/data/capture/geometry.info -R "$REPO_ROOT" || echo "Codecov did not collect coverage reports"
 
