@@ -145,7 +145,7 @@ public:
 	explicit ArcLengthCleaner(Polyline &&polyline, float minimumArcLength)
 		:m_polyline(polyline)
 	{
-		m_polyline.transformEachBulge([minimumArcLength](Bulge &bulge){
+		m_polyline.transformBulge([minimumArcLength](Bulge &bulge){
 			if (bulge.isArc() && bulge.length() < minimumArcLength) {
 				bulge.linify();
 			}

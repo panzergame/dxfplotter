@@ -44,7 +44,7 @@ public:
 	}
 
 	template <class Functor>
-	void transformEachBulge(Functor &&functor)
+	void transformBulge(Functor &&functor)
 	{
 		for (Bulge &bulge : m_bulges) {
 			functor(bulge);
