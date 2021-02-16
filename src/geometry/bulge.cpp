@@ -51,8 +51,14 @@ float Bulge::tangent() const
 
 float Bulge::length() const
 {
-	// Radius is line length p 1 + t^2 / (4 * |t|)
-	return (m_start - m_end).length() * (1.0f + m_tangent * m_tangent);
+	if (isLine()) {
+		return m_start.distanceToPoint(m_end);
+	}
+
+	// Radius is half line length * 1 + t^2 / (4 * |t|)
+	const float radius = m_start.distanceToPoint(m_end) * (1.0f + m_tangent * m_tangent) / m_tangent;
+	const float angle = std::atan(m_tangent);
+	return radius * angle;
 }
 
 void Bulge::invert()

@@ -17,6 +17,8 @@ else()
 endif()
 
 set(SRC
+	arc.cpp
+	bulge.cpp
 	polyline.cpp
 	verticalspeed.cpp
 )

@@ -13,7 +13,7 @@ static const Geometry::Bulge bulge1invert(point2, point1, 0.0f);
 static const Geometry::Bulge bulge2(point3, point4, 0.0f);
 
 
-TEST(PolylineTest, TestPolylineWithEndAndStartEqualsAndOneBulgeIsPoint)
+TEST(PolylineTest, WithEndAndStartEqualsAndOneBulgeIsPoint)
 {
 	const Geometry::Polyline polyline1({pointbulge});
 	EXPECT_TRUE(polyline1.isPoint());
@@ -23,7 +23,7 @@ TEST(PolylineTest, TestPolylineWithEndAndStartEqualsAndOneBulgeIsPoint)
 }
 
 
-TEST(PolylineTest, TestPolylineWithBulgeAndInvertBulgeIsClosed)
+TEST(PolylineTest, WithBulgeAndInvertBulgeIsClosed)
 {
 	const Geometry::Polyline polyline1({bulge1, bulge1invert});
 	EXPECT_TRUE(polyline1.isClosed());
@@ -38,20 +38,20 @@ TEST(PolylineTest, TestPolylineWithBulgeAndInvertBulgeIsClosed)
 	EXPECT_FALSE(polyline4.isClosed());
 }
 
-TEST(PolylineTest, TestClosedPolylineHasStartEqualsToEnd)
+TEST(PolylineTest, ClosedPolylineHasStartEqualsToEnd)
 {
 	const Geometry::Polyline polyline1({bulge1, bulge1invert});
 	EXPECT_EQ(polyline1.start(), polyline1.end());
 }
 
-TEST(PolylineTest, TestPolylineStartEndMatchBulgeStartEnd)
+TEST(PolylineTest, StartEndMatchBulgeStartEnd)
 {
 	const Geometry::Polyline polyline({bulge1, bulge2});
 	EXPECT_EQ(polyline.start(), bulge1.start());
 	EXPECT_EQ(polyline.end(), bulge2.end());
 }
 
-TEST(PolylineTest, TestPolylineInversePolyline)
+TEST(PolylineTest, InversePolyline)
 {
 	const Geometry::Polyline polyline({bulge1, bulge2});
 	const Geometry::Polyline polylineInverse(polyline.inverse());
@@ -60,7 +60,7 @@ TEST(PolylineTest, TestPolylineInversePolyline)
 	EXPECT_EQ(polyline.end(), polylineInverse.start());
 }
 
-TEST(PolylineTest, TestConcatTwoSingleBulgePolylineEqualsTwoBulgePolyline)
+TEST(PolylineTest, ConcatTwoSingleBulgePolylineEqualsTwoBulgePolyline)
 {
 	const Geometry::Polyline polyline1({bulge1});
 	const Geometry::Polyline polyline2({bulge1next});
@@ -73,7 +73,7 @@ TEST(PolylineTest, TestConcatTwoSingleBulgePolylineEqualsTwoBulgePolyline)
 	EXPECT_EQ(polyline3.end(), polyline4.end());
 }
 
-TEST(PolylineTest, TestPolylineIterateBulge)
+TEST(PolylineTest, IterateBulge)
 {
 	const Geometry::Bulge::List bulges{bulge1, bulge1next};
 	Geometry::Bulge::List bulges2(bulges);
@@ -87,7 +87,7 @@ TEST(PolylineTest, TestPolylineIterateBulge)
 	});
 }
 
-TEST(PolylineTest, TestPolylineScaleTransformIterateBulgeScaled)
+TEST(PolylineTest, ScaleTransformIterateBulgeScaled)
 {
 	const Geometry::Bulge::List bulges{bulge1, bulge1next};
 	Geometry::Bulge::List bulges2(bulges);
