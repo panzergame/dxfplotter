@@ -161,44 +161,47 @@ void Importer::convertToPolylines(const DRW_Circle &circle)
 
 void Importer::convertToPolylines(const DRW_Arc &arc)
 {
-	const float startAngle = arc.staangle;
-	const float endAngle = arc.endangle;
 	const float radius = arc.radious;
-	const QVector2D center(toVector2D(arc.basePoint));
 
-	const QVector2D relativeStart = QVector2D(std::cos(startAngle), std::sin(startAngle)) * radius;
-	const QVector2D relativeEnd = QVector2D(std::cos(endAngle), std::sin(endAngle)) * radius;
+	if (radius > 0.0f) {
+		const float startAngle = arc.staangle;
+		const float endAngle = arc.endangle;
+		const QVector2D center(toVector2D(arc.basePoint));
 
-	const QVector2D start = relativeStart + center;
-	const QVector2D end = relativeEnd + center;
+		const QVector2D relativeStart = QVector2D(std::cos(startAngle), std::sin(startAngle)) * radius;
+		const QVector2D relativeEnd = QVector2D(std::cos(endAngle), std::sin(endAngle)) * radius;
 
-	const float theta = Geometry::DeltaAngle(startAngle, endAngle);
+		const QVector2D start = relativeStart + center;
+		const QVector2D end = relativeEnd + center;
 
-	// Dxf arcs are CCW
-	assert(theta > 0.0f);
+		const float theta = Geometry::DeltaAngle(startAngle, endAngle);
+	    
+		// Dxf arcs are CCW
+		assert(theta > 0.0f);
 
-	// Split arc in two to avoid |tangent| > 1
-	if (theta > M_PI) {
-		const float newtheta = theta / 2.0f;
-		const float theta4 = newtheta / 4.0f;
-		const float tangent = std::tan(theta4);
+		// Split arc in two to avoid |tangent| > 1
+		if (theta > M_PI) {
+			const float newtheta = theta / 2.0f;
+			const float theta4 = newtheta / 4.0f;
+			const float tangent = std::tan(theta4);
 
-		const float middleAngle = startAngle + newtheta;
-		const QVector2D relativeMiddle = QVector2D(std::cos(middleAngle), std::sin(middleAngle)) * radius;
-		const QVector2D middle = relativeMiddle + center;
+			const float middleAngle = startAngle + newtheta;
+			const QVector2D relativeMiddle = QVector2D(std::cos(middleAngle), std::sin(middleAngle)) * radius;
+			const QVector2D middle = relativeMiddle + center;
 
-		const Geometry::Bulge bulge1(start, middle, tangent);
-		const Geometry::Bulge bulge2(middle, end, tangent);
+			const Geometry::Bulge bulge1(start, middle, tangent);
+			const Geometry::Bulge bulge2(middle, end, tangent);
 
-		addPolyline(Geometry::Polyline({bulge1, bulge2}));
-	}
-	else {
-		const float theta4 = theta / 4.0f;
-		const float tangent = std::tan(theta4);
+			addPolyline(Geometry::Polyline({bulge1, bulge2}));
+		}
+		else {
+			const float theta4 = theta / 4.0f;
+			const float tangent = std::tan(theta4);
 
-		const Geometry::Bulge bulge(start, end, tangent);
+			const Geometry::Bulge bulge(start, end, tangent);
 
-		addPolyline(Geometry::Polyline({bulge}));
+			addPolyline(Geometry::Polyline({bulge}));
+		}
 	}
 }
 
