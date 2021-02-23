@@ -7,20 +7,9 @@
 			<property name="minimum spline length" type="float" default="0.01"/>
 			<property name="minimum arc length" type="float" default="0.01"/>
 		</group>
-		<group name="default path">
-			<property name="plane feed rate" type="float" default="40"/>
-			<property name="depth feed rate" type="float" default="20"/>
-			<property name="intensity" type="float" default="50"/>
-			<property name="depth" type="float" default="1"/>
-		</group>
 	</group>
-	<list name="tools">
+	<list name="profiles">
 		<group name="tool">
-			<group name="general">
-				<property name="radius" type="float" default="0.5"/>
-				<property name="cut depth" type="float" default="1"/>
-				<property name="retract depth" type="float" default="1"/>
-			</group>
 			<group name="gcode">
 				<property name="pre cut" type="std::string" default="M4 S {S:.3f}"/>
 				<property name="post cut" type="std::string" default="M5"/>
@@ -30,6 +19,21 @@
 				<property name="depth fast move" type="std::string" default="G0 Z {Z:.3f}"/>
 				<property name="cw arc move" type="std::string" default="G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
 				<property name="ccw arc move" type="std::string" default="G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
+			</group>
+			<group name="default path">
+				<property name="plane feed rate" type="float" default="40"/>
+				<property name="depth feed rate" type="float" default="20"/>
+				<property name="intensity" type="float" default="50"/>
+				<property name="depth" type="float" default="1"/>
+			</group>
+		</group>
+	</list>
+	<list name="tools">
+		<group name="tool">
+			<group name="general">
+				<property name="radius" type="float" default="0.5"/>
+				<property name="cut depth" type="float" default="1"/>
+				<property name="retract depth" type="float" default="1"/>
 			</group>
 		</group>
 	</list>
