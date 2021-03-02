@@ -102,9 +102,20 @@ void Viewport::setupModel()
 	setupPathItems();
 
 	// Expand scene rect by margin allowing moving out of bound
-	static const float rectMargin = 200.0f;
-	const QRectF rect = sceneRect() + QMarginsF(rectMargin, rectMargin, rectMargin, rectMargin);
-	setSceneRect(rect);
+	const QRectF originalRect = scene()->itemsBoundingRect();
+	const QRectF expandedRect = originalRect.adjusted(-2000.0f, -2000.0f, 2000.0f, 2000.0f);
+	setSceneRect(expandedRect);
+}
+
+void Viewport::fitItemsInView()
+{
+	setTransformationAnchor(NoAnchor);
+
+	const QRectF boundingRect = scene()->itemsBoundingRect();
+	centerOn(boundingRect.center());
+	fitInView(boundingRect, Qt::KeepAspectRatio);
+
+	setTransformationAnchor(AnchorUnderMouse);
 }
 
 /** @brief Painter for grid and axis into background
@@ -225,6 +236,7 @@ public:
 void Viewport::taskChanged()
 {
 	setupModel();
+	fitItemsInView();
 }
 
 void Viewport::wheelEvent(QWheelEvent *event)
@@ -328,7 +340,7 @@ Viewport::Viewport(Model::Application &app)
 	setDragMode(NoDrag);
 
 	// Anchor under mouse for zooming
-	setResizeAnchor(NoAnchor);
+	setResizeAnchor(AnchorUnderMouse);
 	setTransformationAnchor(AnchorUnderMouse);
 
 	setRenderHints(QPainter::Antialiasing);

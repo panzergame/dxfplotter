@@ -34,6 +34,8 @@ private:
 
 	void setupModel();
 
+	void fitItemsInView();
+
 protected:
 	void taskChanged() override;
 
