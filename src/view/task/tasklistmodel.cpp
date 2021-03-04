@@ -1,5 +1,7 @@
 #include <tasklistmodel.h>
 
+#include <QIcon>
+
 namespace View::Task
 {
 
@@ -24,6 +26,22 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 				case 0:
 				{
 					return QString::fromStdString(path->name());
+					break;
+				}
+			}
+			break;
+		}
+		case Qt::DecorationRole:
+		{
+			switch (index.column()) {
+				case 1:
+				{
+					if (path->visible()) {
+						return QIcon::fromTheme("object-visible");
+					}
+					else {
+						return QIcon::fromTheme("object-hidden");
+					}
 					break;
 				}
 			}

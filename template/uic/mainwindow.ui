@@ -71,6 +71,9 @@
    </attribute>
   </widget>
   <action name="actionOpenFile">
+   <property name="icon">
+    <iconset theme="document-open"/>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
@@ -79,6 +82,9 @@
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="application-exit"/>
+   </property>
    <property name="text">
     <string>Quit</string>
    </property>
@@ -87,6 +93,9 @@
    </property>
   </action>
   <action name="actionExportFile">
+   <property name="icon">
+    <iconset theme="document-export"/>
+   </property>
    <property name="text">
     <string>Export</string>
    </property>
@@ -95,11 +104,17 @@
    </property>
   </action>
   <action name="actionOpenSettings">
+   <property name="icon">
+    <iconset theme="settings-configure"/>
+   </property>
    <property name="text">
     <string>Settings</string>
    </property>
   </action>
   <action name="actionLeftCutterCompensation">
+   <property name="icon">
+    <iconset theme="path-outset"/>
+   </property>
    <property name="text">
     <string>Left Cutter Compensation</string>
    </property>
@@ -108,6 +123,9 @@
    </property>
   </action>
   <action name="actionRightCutterCompensation">
+   <property name="icon">
+    <iconset theme="path-outset"/>
+   </property>
    <property name="text">
     <string>Right Cutter Compensation</string>
    </property>
@@ -116,6 +134,9 @@
    </property>
   </action>
   <action name="actionResetCutterCompensation">
+   <property name="icon">
+    <iconset theme="show-path-outline"/>
+   </property>
    <property name="text">
     <string>Reset Cutter Compensation</string>
    </property>
@@ -124,6 +145,9 @@
    </property>
   </action>
   <action name="actionHideSelection">
+   <property name="icon">
+    <iconset theme="object-hidden"/>
+   </property>
    <property name="text">
     <string>Hide Selection</string>
    </property>
@@ -132,8 +156,11 @@
    </property>
   </action>
   <action name="actionShowHidden">
+   <property name="icon">
+    <iconset theme="object-visible"/>
+   </property>
    <property name="text">
-    <string>Show Selection</string>
+    <string>Show hidden</string>
    </property>
    <property name="toolTip">
     <string>Show Hidden</string>
