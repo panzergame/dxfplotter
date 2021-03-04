@@ -1,7 +1,5 @@
 #include <tasklistmodel.h>
 
-#include <IconFontCppHeaders/IconsFontAwesome5.h>
-
 namespace View::Task
 {
 
@@ -26,16 +24,6 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 				case 0:
 				{
 					return QString::fromStdString(path->name());
-					break;
-				}
-				case 1:
-				{
-					if (path->visible()) {
-						return ICON_FA_EYE;
-					}
-					else {
-						return ICON_FA_EYE_SLASH;
-					}
 					break;
 				}
 			}

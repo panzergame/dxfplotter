@@ -58,7 +58,6 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt
-	font-resource
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
 )
