@@ -69,6 +69,18 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionOpenFile"/>
+   <addaction name="actionExportFile"/>
+   <addaction name="separator"/>
+   <addaction name="actionLeftCutterCompensation"/>
+   <addaction name="actionRightCutterCompensation"/>
+   <addaction name="actionResetCutterCompensation"/>
+   <addaction name="separator"/>
+   <addaction name="actionHideSelection"/>
+   <addaction name="actionShowHidden"/>
+   <addaction name="separator"/>
+   <addaction name="actionOpenSettings"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionOpenFile">
    <property name="icon">
