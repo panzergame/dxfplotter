@@ -4,6 +4,7 @@ qt5_wrap_ui(UIC_HEADERS
 	info.ui
 	mainwindow.ui
 	path.ui
+	profile.ui
 	task.ui
 )
 

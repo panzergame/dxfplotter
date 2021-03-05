@@ -1,5 +1,6 @@
 #include <mainwindow.h>
 #include <info.h>
+#include <profile.h>
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
@@ -46,12 +47,8 @@ QWidget *MainWindow::setupCenterPanel()
 
 void MainWindow::setupToolBar()
 {
-	// Tool selector
-	m_toolSelector = new QComboBox();
-
-	connect(m_toolSelector, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
-
-	toolBar->addWidget(m_toolSelector);
+	Profile *profileBar = new Profile(m_app);
+	toolBar->addWidget(profileBar);
 }
 
 void MainWindow::setupUi()
@@ -84,33 +81,14 @@ void MainWindow::setupMenuActions()
 	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
 }
 
-void MainWindow::updateToolSelector(const Config::Config &config)
-{
-	// Keep current tool selected.
-	const QString &currentToolName = m_toolSelector->currentText();
-
-	m_toolSelector->clear();
-
-	const Config::Tools &tools = config.root().tools();
-	tools.visitChildren([this](const auto &tool){
-		const QString name = QString::fromStdString(tool.name());
-		m_toolSelector->addItem(name, name);
-	});
-
-	// Try to restore selected tool name
-	m_toolSelector->setCurrentText(currentToolName);
-}
-
 MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
 	setupUi();
 	setupMenuActions();
 	showMaximized();
-	updateToolSelector(m_app.config());
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &Model::Application::configChanged, this, &MainWindow::configChanged);
 }
 
 void MainWindow::openFile()
@@ -146,11 +124,5 @@ void MainWindow::openSettings()
 
 	delete settings;
 }
-
-void MainWindow::configChanged(const Config::Config &config)
-{
-	updateToolSelector(config);
-}
-
 
 }
