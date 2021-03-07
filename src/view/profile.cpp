@@ -6,24 +6,25 @@ namespace View
 {
 
 Profile::Profile(Model::Application& app)
+	:m_app(app)
 {
 	setupUi(this);
 
-	updateToolSelector(app.config());
+	updateTools(m_app.config().root().tools());
 
 	connect(&app, &Model::Application::configChanged, this, &Profile::configChanged);
-	connect(toolComboBox, &QComboBox::currentTextChanged, &app, &Model::Application::selectTool);
+	connect(toolComboBox, &QComboBox::currentTextChanged, this, &Profile::currentToolTextChanged);
+	connect(&app, &Model::Application::selectedToolConfigChanged, this, &Profile::selectedToolConfigChanged);
 }
 
 
-void Profile::updateToolSelector(const Config::Config &config)
+void Profile::updateTools(const Config::Tools &tools)
 {
 	// Keep current tool selected.
 	const QString &currentToolName = toolComboBox->currentText();
 
 	toolComboBox->clear();
 
-	const Config::Tools &tools = config.root().tools();
 	tools.visitChildren([this](const auto &tool){
 		const QString name = QString::fromStdString(tool.name());
 		toolComboBox->addItem(name, name);
@@ -35,8 +36,23 @@ void Profile::updateToolSelector(const Config::Config &config)
 
 void Profile::configChanged(const Config::Config &config)
 {
-	updateToolSelector(config);
+	updateTools(config.root().tools());
 }
 
+void Profile::selectedToolConfigChanged(const Config::Tools::Tool& tool)
+{
+	if (!m_outsideToolChangeBlocked) {
+		toolComboBox->setCurrentText(QString::fromStdString(tool.name()));
+	}
+}
+
+void Profile::currentToolTextChanged(const QString& toolName)
+{
+	m_outsideToolChangeBlocked = true;
+
+	m_app.selectTool(toolName);
+
+	m_outsideToolChangeBlocked = false;
+}
 
 }

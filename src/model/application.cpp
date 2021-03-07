@@ -33,6 +33,12 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
+void Application::selectToolConfig(const Config::Tools::Tool &tool)
+{
+	m_selectedToolConfig = &tool;
+	emit selectedToolConfigChanged(tool);
+}
+
 PathSettings Application::defaultPathSettings() const
 {
 	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
@@ -43,7 +49,7 @@ void Application::cutterCompensation(float scale)
 {
 	const Config::Import::Dxf &dxf = m_importConfig.dxf();
 
-	const float radius = m_toolConfig->general().radius();
+	const float radius = m_selectedToolConfig->general().radius();
 	const float scaledRadius = radius * scale;
 
 	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
@@ -54,10 +60,10 @@ void Application::cutterCompensation(float scale)
 
 Application::Application()
 	:m_config(Config::Config(configFilePath())),
-	m_importConfig(m_config.root().import()),
-	// Default select first tool
-	m_toolConfig(&m_config.root().tools().first())
+	m_importConfig(m_config.root().import())
 {
+	// Default select first tool
+	selectToolConfig(m_config.root().tools().first());
 }
 
 Config::Config &Application::config()
@@ -78,7 +84,7 @@ bool Application::selectTool(const QString &toolName)
 	const bool exists = tools.has(name);
 
 	if (exists) {
-		m_toolConfig = &tools[name];
+		selectToolConfig(tools[name]);
 	}
 
 	return exists;
@@ -165,7 +171,7 @@ void Application::loadPlot(const QString &fileName)
 bool Application::exportToGcode(const QString &fileName)
 {
 	try {
-		Exporter::GCode::Exporter exporter(m_task, *m_toolConfig, fileName.toStdString());
+		Exporter::GCode::Exporter exporter(m_task, *m_selectedToolConfig, fileName.toStdString());
 	}
 	catch (const Common::FileException &e) {
 		return false;

@@ -18,7 +18,7 @@ private:
 	/// Importing configuration (e.g dxf, default path values)
 	const Config::Import &m_importConfig;
 	/// Selected tool configuration
-	const Config::Tools::Tool *m_toolConfig;
+	const Config::Tools::Tool *m_selectedToolConfig;
 
 	// Absolute file basename of current loaded file
 	QString m_currentFileBaseName;
@@ -27,6 +27,8 @@ private:
 	Task *m_task;
 
 	PathSettings defaultPathSettings() const;
+
+	void selectToolConfig(const Config::Tools::Tool &tool);
 
 	void cutterCompensation(float scale);
 
@@ -58,6 +60,7 @@ public:
 Q_SIGNALS:
 	void taskChanged(Task *newTask);
 	void titleChanged(QString title);
+	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
 	void configChanged(Config::Config &config);
 };
 
