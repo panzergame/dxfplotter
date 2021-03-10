@@ -15,9 +15,15 @@ int main(int argc, char *argv[])
 	QCommandLineParser parser;
 	parser.addHelpOption();
 	parser.addPositionalArgument("file", "input file");
+
 	QCommandLineOption toolOption("t", QCoreApplication::translate("main", "Select tool"),
 		QCoreApplication::translate("main", "tool"));
 	parser.addOption(toolOption);
+
+	QCommandLineOption profileOption("p", QCoreApplication::translate("main", "Select profile"),
+		QCoreApplication::translate("main", "profile"));
+	parser.addOption(profileOption);
+
 	parser.process(qapp);
 
 	Model::Application app;
@@ -26,6 +32,11 @@ int main(int argc, char *argv[])
 	if (parser.isSet(toolOption)) {
 		const QString toolName = parser.value(toolOption);
 		app.selectToolFromCmd(toolName);
+	}
+
+	if (parser.isSet(profileOption)) {
+		const QString profileName = parser.value(profileOption);
+		app.selectProfileFromCmd(profileName);
 	}
 
 	// File loading from command line.
