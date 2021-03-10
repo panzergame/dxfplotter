@@ -17,6 +17,7 @@ private:
 	std::ofstream m_file;
   
 	const Config::Tools::Tool &m_tool;
+	const Config::Profiles::Profile::Gcode &m_gcode;
 
 	void convertToGCode(const Model::Task *task);
 	void convertToGCode(const Model::Path *path);
@@ -25,7 +26,7 @@ private:
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge);
 
 public:
-	explicit Exporter(const Model::Task *task, const Config::Tools::Tool& tool, const std::string &filename);
+	explicit Exporter(const Model::Task *task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, const std::string &filename);
 	~Exporter() = default;
 };
 

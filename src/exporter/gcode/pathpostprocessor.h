@@ -20,7 +20,7 @@ private:
 	}
 
 public:
-	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, std::ostream &stream);
+	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void preCut();
 	void planeLinearMove(const QVector2D &to);

@@ -8,7 +8,7 @@ namespace Exporter::GCode
 
 void Exporter::convertToGCode(const Model::Task *task)
 {
-	PostProcessor processor(m_tool, m_file);
+	PostProcessor processor(m_tool, m_gcode, m_file);
 
 	// Retract tool before work piece
 	processor.retractDepth();
@@ -26,7 +26,7 @@ void Exporter::convertToGCode(const Model::Task *task)
 void Exporter::convertToGCode(const Model::Path *path)
 {
 	const Model::PathSettings &settings = path->settings();
-	PathPostProcessor processor(settings, m_tool, m_file);
+	PathPostProcessor processor(settings, m_tool, m_gcode, m_file);
 
 	const Geometry::Polyline::List polylines = path->finalPolylines();
 
@@ -123,9 +123,10 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 	}
 }
 
-Exporter::Exporter(const Model::Task *task, const Config::Tools::Tool& tool, const std::string &filename)
+Exporter::Exporter(const Model::Task *task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, const std::string &filename)
 	:m_file(filename),
-	m_tool(tool)
+	m_tool(tool),
+	m_gcode(gcode)
 {
 	if (!m_file) {
 		throw Common::FileException();

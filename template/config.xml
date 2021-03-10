@@ -9,7 +9,7 @@
 		</group>
 	</group>
 	<list name="profiles">
-		<group name="tool">
+		<group name="profile">
 			<group name="gcode">
 				<property name="pre cut" type="std::string" default="M4 S {S:.3f}"/>
 				<property name="post cut" type="std::string" default="M5"/>
