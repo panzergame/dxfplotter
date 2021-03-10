@@ -69,8 +69,8 @@ private:
 		const Tip::List &m_tips;
 		std::set<PolylineIndex> &m_unconnectedPolylines;
 		const KDTree &m_tree;
-		PolylineIndex m_startIndex;
-		bool m_closeTolerance;
+		const PolylineIndex m_startIndex;
+		const float m_closeTolerance;
 
 		TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side);
 
