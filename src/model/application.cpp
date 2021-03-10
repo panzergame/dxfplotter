@@ -39,15 +39,21 @@ void Application::selectToolConfig(const Config::Tools::Tool &tool)
 	emit selectedToolConfigChanged(tool);
 }
 
+void Application::selectProfileConfig(const Config::Profiles::Profile &profile)
+{
+	m_selectedProfileConfig = &profile;
+	emit selectedProfileConfigChanged(profile);
+}
+
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
+	const Config::Profiles::Profile::DefaultPath &defaultPath = m_selectedProfileConfig->defaultPath();
 	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
 void Application::cutterCompensation(float scale)
 {
-	const Config::Import::Dxf &dxf = m_importConfig.dxf();
+	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	const float radius = m_selectedToolConfig->general().radius();
 	const float scaledRadius = radius * scale;
@@ -59,11 +65,13 @@ void Application::cutterCompensation(float scale)
 }
 
 Application::Application()
-	:m_config(Config::Config(configFilePath())),
-	m_importConfig(m_config.root().import())
+	:m_config(Config::Config(configFilePath()))
 {
 	// Default select first tool
 	selectToolConfig(m_config.root().tools().first());
+
+	// Default select first profile
+	selectProfileConfig(m_config.root().profiles().first());
 }
 
 Config::Config &Application::config()
@@ -94,6 +102,26 @@ void Application::selectToolFromCmd(const QString &toolName)
 {
 	if (!selectTool(toolName)) {
 		qCritical() << "Invalid tool name " << toolName;
+	}
+}
+
+bool Application::selectProfile(const QString &profileName)
+{
+	const Config::Profiles &profiles = m_config.root().profiles();
+	const std::string name = profileName.toStdString();
+	const bool exists = profiles.has(name);
+
+	if (exists) {
+		selectProfileConfig(profiles[name]);
+	}
+
+	return exists;
+}
+
+void Application::selectProfileFromCmd(const QString &profileName)
+{
+	if (!selectProfile(profileName)) {
+		qCritical() << "Invalid profile name " << profileName;
 	}
 }
 
@@ -138,7 +166,7 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadDxf(const QString &fileName)
 {
-	const Config::Import::Dxf &dxf = m_importConfig.dxf();
+	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	Geometry::Polyline::List polylines;
 	try {
@@ -171,7 +199,7 @@ void Application::loadPlot(const QString &fileName)
 bool Application::exportToGcode(const QString &fileName)
 {
 	try {
-		Exporter::GCode::Exporter exporter(m_task, *m_selectedToolConfig, fileName.toStdString());
+		Exporter::GCode::Exporter exporter(m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), fileName.toStdString());
 	}
 	catch (const Common::FileException &e) {
 		return false;

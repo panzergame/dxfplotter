@@ -15,10 +15,10 @@ class Application : public QObject
 private:
 	/// Global configuration
 	Config::Config m_config;
-	/// Importing configuration (e.g dxf, default path values)
-	const Config::Import &m_importConfig;
 	/// Selected tool configuration
 	const Config::Tools::Tool *m_selectedToolConfig;
+	/// Selected profile configuration
+	const Config::Profiles::Profile *m_selectedProfileConfig;
 
 	// Absolute file basename of current loaded file
 	QString m_currentFileBaseName;
@@ -29,6 +29,7 @@ private:
 	PathSettings defaultPathSettings() const;
 
 	void selectToolConfig(const Config::Tools::Tool &tool);
+	void selectProfileConfig(const Config::Profiles::Profile &profile);
 
 	void cutterCompensation(float scale);
 
@@ -41,6 +42,10 @@ public:
 	/// Select tool used as configuration for further operations
 	bool selectTool(const QString &toolName);
 	void selectToolFromCmd(const QString &toolName);
+
+	/// Select profile used as configuration for further operations
+	bool selectProfile(const QString &profileName);
+	void selectProfileFromCmd(const QString &profileName);
 
 	QString currentFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
@@ -61,6 +66,7 @@ Q_SIGNALS:
 	void taskChanged(Task *newTask);
 	void titleChanged(QString title);
 	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
+	void selectedProfileConfigChanged(const Config::Profiles::Profile &profile);
 	void configChanged(Config::Config &config);
 };
 

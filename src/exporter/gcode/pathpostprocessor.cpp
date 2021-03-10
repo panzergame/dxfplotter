@@ -3,8 +3,8 @@
 namespace Exporter::GCode
 {
 
-PathPostProcessor::PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, std::ostream &stream)
-	:PostProcessor(tool, stream),
+PathPostProcessor::PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
+	:PostProcessor(tool, gcode, stream),
 	m_settings(settings)
 {
 }
