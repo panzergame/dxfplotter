@@ -5,38 +5,31 @@
 namespace View
 {
 
+void Profile::updateAllComboBoxesItems()
+{
+	updateComboBoxItems(m_app.config().root().tools(), toolComboBox);
+	updateComboBoxItems(m_app.config().root().profiles(), profileComboBox);
+}
+
 Profile::Profile(Model::Application& app)
-	:m_app(app)
+	:m_app(app),
+	m_outsideToolChangeBlocked(false),
+	m_outsideProfileChangeBlocked(false)
 {
 	setupUi(this);
 
-	updateTools(m_app.config().root().tools());
+	updateAllComboBoxesItems();
 
 	connect(&app, &Model::Application::configChanged, this, &Profile::configChanged);
 	connect(toolComboBox, &QComboBox::currentTextChanged, this, &Profile::currentToolTextChanged);
 	connect(&app, &Model::Application::selectedToolConfigChanged, this, &Profile::selectedToolConfigChanged);
-}
-
-
-void Profile::updateTools(const Config::Tools &tools)
-{
-	// Keep current tool selected.
-	const QString &currentToolName = toolComboBox->currentText();
-
-	toolComboBox->clear();
-
-	tools.visitChildren([this](const auto &tool){
-		const QString name = QString::fromStdString(tool.name());
-		toolComboBox->addItem(name, name);
-	});
-
-	// Try to restore selected tool name
-	toolComboBox->setCurrentText(currentToolName);
+	connect(profileComboBox, &QComboBox::currentTextChanged, this, &Profile::currentProfileTextChanged);
+	connect(&app, &Model::Application::selectedProfileConfigChanged, this, &Profile::selectedProfileConfigChanged);
 }
 
 void Profile::configChanged(const Config::Config &config)
 {
-	updateTools(config.root().tools());
+	updateAllComboBoxesItems();
 }
 
 void Profile::selectedToolConfigChanged(const Config::Tools::Tool& tool)
@@ -53,6 +46,22 @@ void Profile::currentToolTextChanged(const QString& toolName)
 	m_app.selectTool(toolName);
 
 	m_outsideToolChangeBlocked = false;
+}
+
+void Profile::selectedProfileConfigChanged(const Config::Profiles::Profile& profile)
+{
+	if (!m_outsideProfileChangeBlocked) {
+		profileComboBox->setCurrentText(QString::fromStdString(profile.name()));
+	}
+}
+
+void Profile::currentProfileTextChanged(const QString& profileName)
+{
+	m_outsideProfileChangeBlocked = true;
+
+	m_app.selectProfile(profileName);
+
+	m_outsideProfileChangeBlocked = false;
 }
 
 }
