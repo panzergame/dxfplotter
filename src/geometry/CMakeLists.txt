@@ -7,6 +7,7 @@ set(SRC
 	cleaner.cpp
 	circle.cpp
 	cubicspline.cpp
+	layer.cpp
 	polyline.cpp
 # 	quadraticspline.cpp
 	spline.cpp
@@ -19,6 +20,7 @@ set(SRC
 	cleaner.h
 	circle.h
 	cubicspline.h
+	layer.h
 	polyline.h
 	quadraticspline.h
 	spline.h

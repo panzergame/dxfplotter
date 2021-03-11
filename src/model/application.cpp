@@ -168,22 +168,28 @@ bool Application::loadDxf(const QString &fileName)
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	Geometry::Polyline::List polylines;
+	Geometry::Layer::List layers;
 	try {
-		// Import data
+		// Import data by layers
 		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
-		polylines = imp.polylines();
+		layers = imp.layers();
 	}
 	catch (const Common::FileException &e) {
 		return false;
 	}
 
-	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
-	// Remove small bulges
-	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+	for (Geometry::Layer &layer : layers) {
+		// Merge polylines to create longest contours
+		Geometry::Assembler assembler(layer.polylines(), dxf.assembleTolerance());
+		// Remove small bulges
+		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
+		// Create paths from merged and cleaned polylines of one layer
+		const Path::ListPtr paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
+
+		m_paths.insert(m_paths.end(), paths.begin(), paths.end());
+	}
+
 	m_task = new Task(this, m_paths);
 
 	emit taskChanged(m_task);

@@ -1,11 +1,11 @@
 set(SRC
+	entityimporter.cpp
 	importer.cpp
 	interface.cpp
-	layer.cpp
 
+	entityimporter.h
 	importer.h
 	interface.h
-	layer.h
 	utils.h
 )
 
