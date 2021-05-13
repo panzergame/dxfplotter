@@ -62,13 +62,13 @@ void Task::selectionChanged(const QItemSelection &selected, const QItemSelection
 	m_outsideSelectionBlocked = true;
 
 	for (const QModelIndex &index : selected.indexes()) {
-		Model::Path *path = m_task->pathAt(index.row());
-		path->setSelected(true);
+		Model::Path &path = m_task->pathAt(index.row());
+		path.setSelected(true);
 	}
 
 	for (const QModelIndex &index : deselected.indexes()) {
-		Model::Path *path = m_task->pathAt(index.row());
-		path->setSelected(false);
+		Model::Path &path = m_task->pathAt(index.row());
+		path.setSelected(false);
 	}
 
 	m_outsideSelectionBlocked = false;

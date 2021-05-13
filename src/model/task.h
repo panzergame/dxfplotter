@@ -26,8 +26,9 @@ public:
 
 	explicit Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers);
 
-	int count() const;
-	Path *pathAt(int index) const;
+	int pathCount() const;
+	const Path &pathAt(int index) const;
+	Path &pathAt(int index);
 	int indexFor(const Path &path) const;
 
 	void movePath(int index, MoveDirection direction);

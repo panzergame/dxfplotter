@@ -17,7 +17,7 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 
-	Model::Path *path = m_task->pathAt(index.row());
+	const Model::Path &path = m_task->pathAt(index.row());
 
 	switch (role) {
 		case Qt::DisplayRole:
@@ -25,7 +25,7 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 			switch (index.column()) {
 				case 0:
 				{
-					return QString::fromStdString(path->name());
+					return QString::fromStdString(path.name());
 					break;
 				}
 			}
@@ -36,7 +36,7 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 			switch (index.column()) {
 				case 1:
 				{
-					if (path->visible()) {
+					if (path.visible()) {
 						return QIcon::fromTheme("object-visible");
 					}
 					else {
@@ -54,7 +54,7 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 
 int TaskListModel::rowCount(const QModelIndex& parent) const
 {
-	return m_task->count();
+	return m_task->pathCount();
 }
 
 int TaskListModel::columnCount(const QModelIndex& parent) const
@@ -90,8 +90,8 @@ void TaskListModel::itemClicked(const QModelIndex& index)
 	switch (index.column()) {
 		case 1:
 		{
-			Model::Path *path = m_task->pathAt(index.row());
-			path->toggleVisible();
+			Model::Path &path = m_task->pathAt(index.row());
+			path.toggleVisible();
 			
 			emit dataChanged(index, index);
 		}

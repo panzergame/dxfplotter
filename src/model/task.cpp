@@ -29,15 +29,21 @@ Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
 	});
 }
 
-int Task::count() const
+int Task::pathCount() const
 {
 	return m_stack.size();
 }
 
-Path *Task::pathAt(int index) const
+const Path &Task::pathAt(int index) const
 {
-	assert(0 <= index && index < count());
-	return m_stack[index];
+	assert(0 <= index && index < pathCount());
+	return *m_stack[index];
+}
+
+Path &Task::pathAt(int index)
+{
+	assert(0 <= index && index < pathCount());
+	return *m_stack[index];
 }
 
 int Task::indexFor(const Path &path) const
@@ -51,11 +57,11 @@ int Task::indexFor(const Path &path) const
 
 void Task::movePath(int index, MoveDirection direction)
 {
-	assert(0 <= index && index < count());
+	assert(0 <= index && index < pathCount());
 
 	const int newIndex = index + direction;
 
-	if (0 <= newIndex && newIndex < count()) {
+	if (0 <= newIndex && newIndex < pathCount()) {
 		std::swap(m_stack[index], m_stack[newIndex]);
 	}
 }
