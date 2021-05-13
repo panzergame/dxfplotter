@@ -1,23 +1,23 @@
-#include <tasklistmodel.h>
+#include <pathlistmodel.h>
 
 #include <QIcon>
 
 namespace View::Task
 {
 
-TaskListModel::TaskListModel(Model::Task *task, QObject *parent)
+PathListModel::PathListModel(Model::Task &task, QObject *parent)
 	:QAbstractListModel(parent),
 	m_task(task)
 {
 }
 
-QVariant TaskListModel::data(const QModelIndex &index, int role) const
+QVariant PathListModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid()) {
 		return QVariant();
 	}
 
-	const Model::Path &path = m_task->pathAt(index.row());
+	const Model::Path &path = m_task.pathAt(index.row());
 
 	switch (role) {
 		case Qt::DisplayRole:
@@ -52,17 +52,17 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-int TaskListModel::rowCount(const QModelIndex& parent) const
+int PathListModel::rowCount(const QModelIndex& parent) const
 {
-	return m_task->pathCount();
+	return m_task.pathCount();
 }
 
-int TaskListModel::columnCount(const QModelIndex& parent) const
+int PathListModel::columnCount(const QModelIndex& parent) const
 {
 	return 2;
 }
 
-QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveDirection direction)
+QModelIndex PathListModel::movePath(const QModelIndex &index, Model::Task::MoveDirection direction)
 {
 	const int row = index.row();
 	const int newRow = row + direction;
@@ -73,7 +73,7 @@ QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveD
 
 		if (beginMoveRows(index, row, row, index, newQtRow)) {
 
-			m_task->movePath(row, direction);
+			m_task.movePath(row, direction);
 
 			endMoveRows();
 
@@ -84,13 +84,13 @@ QModelIndex TaskListModel::movePath(const QModelIndex &index, Model::Task::MoveD
 	return index;
 }
 
-void TaskListModel::itemClicked(const QModelIndex& index)
+void PathListModel::itemClicked(const QModelIndex& index)
 {
 
 	switch (index.column()) {
 		case 1:
 		{
-			Model::Path &path = m_task->pathAt(index.row());
+			Model::Path &path = m_task.pathAt(index.row());
 			path.toggleVisible();
 			
 			emit dataChanged(index, index);
@@ -98,5 +98,10 @@ void TaskListModel::itemClicked(const QModelIndex& index)
 	}
 }
 
+void PathListModel::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
+{
+	const int row = m_task.indexFor(path);
+	selectionModel->select(index(row, 0), flag);
+}
 
 }

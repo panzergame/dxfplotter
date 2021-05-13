@@ -1,11 +1,13 @@
 set(SRC
 	path.cpp
 	task.cpp
-	tasklistmodel.cpp
+	pathlistmodel.cpp
+	layertreemodel.cpp
 
 	path.h
 	task.h
-	tasklistmodel.h
+	pathlistmodel.h
+	layertreemodel.h
 )
 
 add_library(view-task ${SRC})
