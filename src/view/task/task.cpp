@@ -19,6 +19,8 @@ void Task::setupModel()
 {
 	m_pathListModel.reset(setupTreeViewModel<PathListModel>(pathsTreeView));
 	m_layerTreeModel.reset(setupTreeViewModel<LayerTreeModel>(layersTreeView));
+
+	layersTreeView->expandAll();
 }
 
 void Task::setupController()
@@ -43,19 +45,6 @@ void Task::taskChanged()
 {
 	setupModel();
 	setupController();
-}
-
-void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
-{
-	for (const QModelIndex &index : selected.indexes()) {
-		Model::Path &path = m_task->pathAt(index.row());
-		path.setSelected(true);
-	}
-
-	for (const QModelIndex &index : deselected.indexes()) {
-		Model::Path &path = m_task->pathAt(index.row());
-		path.setSelected(false);
-	}
 }
 
 void Task::pathSelectedChanged(Model::Path &path, bool selected)

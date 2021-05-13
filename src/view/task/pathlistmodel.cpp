@@ -100,8 +100,21 @@ void PathListModel::itemClicked(const QModelIndex& index)
 
 void PathListModel::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
 {
-	const int row = m_task.indexFor(path);
+	const int row = m_task.pathIndexFor(path);
 	selectionModel->select(index(row, 0), flag);
+}
+
+void PathListModel::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+{
+	for (const QModelIndex &index : selected.indexes()) {
+		Model::Path &path = m_task.pathAt(index.row());
+		path.setSelected(true);
+	}
+
+	for (const QModelIndex &index : deselected.indexes()) {
+		Model::Path &path = m_task.pathAt(index.row());
+		path.setSelected(false);
+	}
 }
 
 }

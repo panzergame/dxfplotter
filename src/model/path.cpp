@@ -1,4 +1,5 @@
 #include <path.h>
+#include <layer.h>
 #include <fmt/format.h>
 
 #include <geometry/cleaner.h>
@@ -6,25 +7,36 @@
 namespace Model
 {
 
-Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
+Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings, Layer &layer)
 	:Renderable(name),
 	m_basePolyline(basePolyline),
-	m_settings(settings)
+	m_settings(settings),
+	m_layer(layer)
 {
 }
 
-Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const std::string& prefixName, const PathSettings &settings)
+Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer)
 {
 	const int size = polylines.size();
 	Path::ListUPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
 		static const char *pathNameFormat = "({}) {}";
-		const std::string pathName = fmt::format(pathNameFormat, prefixName, i);
-		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings));
+		const std::string pathName = fmt::format(pathNameFormat, layer.name(), i);
+		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings, layer));
 	}
 
 	return paths;
+}
+
+Layer &Path::layer()
+{
+	return m_layer;
+}
+
+const Layer &Path::layer() const
+{
+	return m_layer;
 }
 
 const Geometry::Polyline &Path::basePolyline() const

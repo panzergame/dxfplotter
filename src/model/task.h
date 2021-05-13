@@ -29,7 +29,7 @@ public:
 	int pathCount() const;
 	const Path &pathAt(int index) const;
 	Path &pathAt(int index);
-	int indexFor(const Path &path) const;
+	int pathIndexFor(const Path &path) const;
 
 	void movePath(int index, MoveDirection direction);
 
@@ -57,6 +57,11 @@ public:
 			functor(*path);
 		}
 	}
+
+	int layerCount() const;
+	const Layer &layerAt(int index) const;
+	Layer &layerAt(int index);
+	int layerIndexFor(const Layer &layer) const;
 
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);

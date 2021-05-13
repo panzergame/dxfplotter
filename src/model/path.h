@@ -12,6 +12,8 @@
 namespace Model
 {
 
+class Layer;
+
 class Path : public Renderable, public Common::Aggregable<Path>
 {
 	Q_OBJECT;
@@ -20,11 +22,15 @@ private:
 	Geometry::Polyline m_basePolyline;
 	Geometry::Polyline::List m_offsetedPolylines;
 	PathSettings m_settings;
+	Layer &m_layer;
 
 public:
-	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
+	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings, Layer &layer);
 
-	static ListUPtr FromPolylines(Geometry::Polyline::List &&polylines, const std::string& prefixName, const PathSettings &settings);
+	static ListUPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer);
+
+	Layer &layer();
+	const Layer &layer() const;
 
 	const Geometry::Polyline &basePolyline() const;
 	Geometry::Polyline::List finalPolylines() const;

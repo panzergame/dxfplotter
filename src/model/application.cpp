@@ -188,11 +188,12 @@ bool Application::loadDxf(const QString &fileName)
 
 		const std::string &layerName = importerLayer.name();
 
-		// Create paths from merged and cleaned polylines of one layer
-		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), layerName, defaultPathSettings());
-
-		Layer *layer = new Layer(layerName, children);
+		Layer *layer = new Layer(layerName);
 		layers.emplace_back(layer);
+
+		// Create paths from merged and cleaned polylines of one layer
+		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
+		layer->setChildren(children);
 
 		paths.insert(paths.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
 	}

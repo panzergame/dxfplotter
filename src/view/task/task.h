@@ -38,7 +38,7 @@ private:
 	{
 		// Synchronize selection in 2D view
 		QItemSelectionModel *selectionModel = treeView->selectionModel();
-		connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
+		connect(selectionModel, &QItemSelectionModel::selectionChanged, model.get(), &Model::selectionChanged);
 
 		connect(treeView, &QTreeView::clicked, model.get(), &Model::itemClicked);
 	}

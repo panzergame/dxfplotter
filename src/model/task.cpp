@@ -31,7 +31,7 @@ Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
 
 int Task::pathCount() const
 {
-	return m_stack.size();
+	return m_paths.size();
 }
 
 const Path &Task::pathAt(int index) const
@@ -46,7 +46,7 @@ Path &Task::pathAt(int index)
 	return *m_stack[index];
 }
 
-int Task::indexFor(const Path &path) const
+int Task::pathIndexFor(const Path &path) const
 {
 	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), &path);
 
@@ -64,6 +64,33 @@ void Task::movePath(int index, MoveDirection direction)
 	if (0 <= newIndex && newIndex < pathCount()) {
 		std::swap(m_stack[index], m_stack[newIndex]);
 	}
+}
+
+int Task::layerCount() const
+{
+	return m_layers.size();
+}
+
+const Layer &Task::layerAt(int index) const
+{
+	assert(0 <= index && index < layerCount());
+	return *m_layers[index];
+}
+
+Layer &Task::layerAt(int index)
+{
+	assert(0 <= index && index < layerCount());
+	return *m_layers[index];
+}
+
+int Task::layerIndexFor(const Layer &layer) const
+{
+	Layer::ListUPtr::const_iterator it = std::find_if(m_layers.cbegin(), m_layers.cend(),
+			[&layer](const Layer::UPtr &ptr) { return ptr.get() == &layer; });
+
+	assert(it != m_layers.cend());
+
+	return std::distance(m_layers.cbegin(), it);
 }
 
 }

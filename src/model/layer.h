@@ -13,7 +13,12 @@ private:
 	Path::ListPtr m_children;
 
 public:
-	explicit Layer(const std::string &name, const Path::ListUPtr& children);
+	explicit Layer(const std::string &name);
+
+	int childrenCount() const;
+	Path& childrenAt(int index);
+	const Path& childrenAt(int index) const;
+	void setChildren(const Path::ListUPtr& children);
 };
 
 }
