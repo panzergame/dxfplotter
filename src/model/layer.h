@@ -18,6 +18,8 @@ public:
 	int childrenCount() const;
 	Path& childrenAt(int index);
 	const Path& childrenAt(int index) const;
+	int childIndexFor(const Path& child) const;
+
 	void setChildren(const Path::ListUPtr& children);
 };
 

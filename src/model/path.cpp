@@ -7,12 +7,25 @@
 namespace Model
 {
 
+void Path::updateGlobalVisibility()
+{
+	const bool newGloballyVisible = visible() && m_layer.visible();
+	if (m_globallyVisible != newGloballyVisible) {
+		m_globallyVisible = newGloballyVisible;
+
+		emit globalVisibilityChanged(m_globallyVisible);
+	}
+}
+
 Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings, Layer &layer)
 	:Renderable(name),
 	m_basePolyline(basePolyline),
 	m_settings(settings),
-	m_layer(layer)
+	m_layer(layer),
+	m_globallyVisible(true)
 {
+	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
+	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
 Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer)
@@ -88,6 +101,11 @@ const Model::PathSettings &Path::settings() const
 Model::PathSettings &Path::settings()
 {
 	return m_settings;
+}
+
+bool Path::globallyVisible() const
+{
+	return m_globallyVisible;
 }
 
 }

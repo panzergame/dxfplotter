@@ -36,7 +36,7 @@ QVariant PathListModel::data(const QModelIndex &index, int role) const
 			switch (index.column()) {
 				case 1:
 				{
-					if (path.visible()) {
+					if (path.globallyVisible()) {
 						return QIcon::fromTheme("object-visible");
 					}
 					else {
@@ -60,6 +60,16 @@ int PathListModel::rowCount(const QModelIndex& parent) const
 int PathListModel::columnCount(const QModelIndex& parent) const
 {
 	return 2;
+}
+
+Qt::ItemFlags PathListModel::flags(const QModelIndex &index) const
+{
+	if (index.column() == 0) {
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+	}
+
+	const Model::Path &path = m_task.pathAt(index.row());
+	return (path.layer().visible()) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
 }
 
 QModelIndex PathListModel::movePath(const QModelIndex &index, Model::Task::MoveDirection direction)
@@ -86,6 +96,9 @@ QModelIndex PathListModel::movePath(const QModelIndex &index, Model::Task::MoveD
 
 void PathListModel::itemClicked(const QModelIndex& index)
 {
+	if ((index.flags() & Qt::ItemIsEnabled) == 0) {
+		return;
+	}
 
 	switch (index.column()) {
 		case 1:

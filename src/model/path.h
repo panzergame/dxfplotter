@@ -23,6 +23,9 @@ private:
 	Geometry::Polyline::List m_offsetedPolylines;
 	PathSettings m_settings;
 	Layer &m_layer;
+	bool m_globallyVisible;
+
+	void updateGlobalVisibility();
 
 public:
 	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings, Layer &layer);
@@ -44,7 +47,10 @@ public:
 	const PathSettings &settings() const;
 	PathSettings &settings();
 
+	bool globallyVisible() const;
+
 Q_SIGNALS:
+	void globalVisibilityChanged(bool globallyVisible);
 	void offseted();
 };
 

@@ -62,6 +62,7 @@ public:
 	const Layer &layerAt(int index) const;
 	Layer &layerAt(int index);
 	int layerIndexFor(const Layer &layer) const;
+	std::pair<int, int> layerAndPathIndexFor(const Path &path) const;
 
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);

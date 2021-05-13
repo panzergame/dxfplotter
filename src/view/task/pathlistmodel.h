@@ -23,6 +23,7 @@ public:
 	QVariant data(const QModelIndex &index, int role) const override;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 	int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+	Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 	QModelIndex movePath(const QModelIndex &index, Model::Task::MoveDirection direction);
 	void itemClicked(const QModelIndex &index);

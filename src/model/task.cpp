@@ -48,7 +48,7 @@ Path &Task::pathAt(int index)
 
 int Task::pathIndexFor(const Path &path) const
 {
-	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), &path);
+	const Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), &path);
 
 	assert(it != m_stack.cend());
 
@@ -85,12 +85,27 @@ Layer &Task::layerAt(int index)
 
 int Task::layerIndexFor(const Layer &layer) const
 {
-	Layer::ListUPtr::const_iterator it = std::find_if(m_layers.cbegin(), m_layers.cend(),
+	const Layer::ListUPtr::const_iterator it = std::find_if(m_layers.cbegin(), m_layers.cend(),
 			[&layer](const Layer::UPtr &ptr) { return ptr.get() == &layer; });
 
 	assert(it != m_layers.cend());
 
 	return std::distance(m_layers.cbegin(), it);
+}
+
+std::pair<int, int> Task::layerAndPathIndexFor(const Path &path) const
+{
+	for (int layerIndex = 0, size = m_layers.size(); layerIndex < size; ++layerIndex) {
+		const Layer &layer = *m_layers[layerIndex];
+		const int childIndex = layer.childIndexFor(path);
+		if (childIndex != -1) {
+			return std::make_pair(layerIndex, childIndex);
+		}
+	}
+
+	assert(false && "layer not found");
+
+	return std::make_pair(-1, -1);
 }
 
 }

@@ -20,7 +20,7 @@ BasicPathItem::BasicPathItem(Model::Path &path)
 	setFlag(ItemIsSelectable);
 
 	connect(&m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
-	connect(&m_path, &Model::Path::visibilityChanged, this, &BasicPathItem::visibilityChanged);
+	connect(&m_path, &Model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
 }
 
 void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

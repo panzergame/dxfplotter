@@ -100,37 +100,46 @@ int LayerTreeModel::columnCount(const QModelIndex& parent) const
 	return 2;
 }
 
+Qt::ItemFlags LayerTreeModel::flags(const QModelIndex &index) const
+{
+	if (index.column() == 0) {
+		return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsAutoTristate;
+	}
+	return Qt::ItemIsEnabled;
+}
+
 void LayerTreeModel::itemClicked(const QModelIndex& index)
 {
-
-	/*switch (index.column()) {
+	switch (index.column()) {
 		case 1:
 		{
-			Model::Path &path = m_task.pathAt(index.row());
-			path.toggleVisible();
-			
+			Model::Renderable *item = static_cast<Model::Renderable *>(index.internalPointer());
+			item->toggleVisible();
+
 			emit dataChanged(index, index);
 		}
-	}*/
+	}
 }
 
 void LayerTreeModel::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
 {
-// 	const int row = m_task.indexFor(path);
-// 	selectionModel->select(index(row, 0), flag);
+	const std::pair<int, int> indices = m_task.layerAndPathIndexFor(path);
+	const QModelIndex parentIndex = index(indices.first, 0);
+	const QModelIndex childIndex = index(indices.second, 0, parentIndex);
+	selectionModel->select(childIndex, flag);
 }
 
 void LayerTreeModel::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
-	/*for (const QModelIndex &index : selected.indexes()) {
-		Model::Path &path = m_task.pathAt(index.row());
-		path.setSelected(true);
+	for (const QModelIndex &index : selected.indexes()) {
+		Model::Renderable &renderable = *static_cast<Model::Renderable *>(index.internalPointer());
+		renderable.setSelected(true);
 	}
 
 	for (const QModelIndex &index : deselected.indexes()) {
-		Model::Path &path = m_task.pathAt(index.row());
-		path.setSelected(false);
-	}*/
+		Model::Renderable &renderable = *static_cast<Model::Renderable *>(index.internalPointer());
+		renderable.setSelected(false);
+	}
 }
 
 }
