@@ -15,9 +15,9 @@ QPainterPath PointPathItem::shapePath() const
 	return path;
 }
 
-PointPathItem::PointPathItem(Model::Path *path)
+PointPathItem::PointPathItem(Model::Path& path)
 	:BasicPathItem(path),
-	m_point(m_path->basePolyline().start().toPointF()),
+	m_point(m_path.basePolyline().start().toPointF()),
 	m_shapePath(shapePath())
 {
 	setFlag(QGraphicsItem::ItemIgnoresTransformations);

@@ -22,7 +22,7 @@ private:
 	void setupModel();
 	void setupController();
 
-	void changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag);
+	void changeItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag);
 
 public:
 	explicit Task(Model::Application &app);
@@ -32,7 +32,7 @@ protected:
 
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-	void pathSelectedChanged(Model::Path *path, bool selected);
+	void pathSelectedChanged(Model::Path &path, bool selected);
 	void moveCurrentPath(Model::Task::MoveDirection direction);
 };
 

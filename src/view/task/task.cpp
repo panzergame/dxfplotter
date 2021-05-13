@@ -40,7 +40,7 @@ void Task::setupController()
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
 }
 
-void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
+void Task::changeItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag)
 {
 	// Break signal loop
 	if (!m_outsideSelectionBlocked) {
@@ -74,7 +74,7 @@ void Task::selectionChanged(const QItemSelection &selected, const QItemSelection
 	m_outsideSelectionBlocked = false;
 }
 
-void Task::pathSelectedChanged(Model::Path *path, bool selected)
+void Task::pathSelectedChanged(Model::Path &path, bool selected)
 {
 	changeItemSelection(path,
 			selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);

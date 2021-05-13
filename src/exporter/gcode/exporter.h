@@ -19,14 +19,14 @@ private:
 	const Config::Tools::Tool &m_tool;
 	const Config::Profiles::Profile::Gcode &m_gcode;
 
-	void convertToGCode(const Model::Task *task);
-	void convertToGCode(const Model::Path *path);
+	void convertToGCode(const Model::Task &task);
+	void convertToGCode(const Model::Path &path);
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline);
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth);
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge);
 
 public:
-	explicit Exporter(const Model::Task *task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, const std::string &filename);
+	explicit Exporter(const Model::Task &task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, const std::string &filename);
 	~Exporter() = default;
 };
 

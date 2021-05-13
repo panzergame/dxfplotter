@@ -32,8 +32,8 @@ private:
 		bool firstValue = true;
 		bool allEqual = true;
 
-		m_task->forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](Model::Path *path){
-			const Return &value = (path->settings().*getter)();
+		m_task->forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const Model::Path &path){
+			const Return &value = (path.settings().*getter)();
 			if (!firstValue && lastValue != value) {
 				allEqual = false;
 			}
@@ -50,8 +50,8 @@ private:
 	template <typename Setter, typename T>
 	void setValue(Setter &&setter, T value)
 	{
-		m_task->forEachSelectedPath([value, &setter](Model::Path *path){
-			(path->settings().*setter)(value);
+		m_task->forEachSelectedPath([value, &setter](Model::Path &path){
+			(path.settings().*setter)(value);
 		});
 	}
 

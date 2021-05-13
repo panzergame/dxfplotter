@@ -12,15 +12,15 @@ static const QBrush selectBrush(QColor(80, 0, 255));
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
 
-BasicPathItem::BasicPathItem(Model::Path *path)
+BasicPathItem::BasicPathItem(Model::Path &path)
 	:m_path(path),
 	m_outsideSelectionBlocked(false)
 {
 	setPen(normalPen);
 	setFlag(ItemIsSelectable);
 
-	connect(m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
-	connect(m_path, &Model::Path::visibilityChanged, this, &BasicPathItem::visibilityChanged);
+	connect(&m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
+	connect(&m_path, &Model::Path::visibilityChanged, this, &BasicPathItem::visibilityChanged);
 }
 
 void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -38,7 +38,7 @@ void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 	painter->setPen(pen());
 }
 
-Model::Path *BasicPathItem::path() const
+const Model::Path& BasicPathItem::path() const
 {
 	return m_path;
 }
@@ -52,7 +52,7 @@ QVariant BasicPathItem::itemChange(GraphicsItemChange change, const QVariant &va
 {
 	if (change & ItemSelectedChange) {
 		m_outsideSelectionBlocked = true;
-		m_path->setSelected(isSelected());
+		m_path.setSelected(isSelected());
 		m_outsideSelectionBlocked = false;
 	}
 

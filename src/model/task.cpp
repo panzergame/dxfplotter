@@ -5,18 +5,22 @@
 namespace Model
 {
 
-Task::Task(QObject *parent, const Path::ListPtr &paths)
-	:QObject(parent),
-	m_stack(paths)
+Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
+	:m_paths(std::move(paths)),
+	m_layers(std::move(layers)),
+	m_stack(m_paths.size())
 {
+	std::transform(m_paths.begin(), m_paths.end(), m_stack.begin(),
+		[](const Path::UPtr& ptr){ return ptr.get(); });
+
 	// Register selection/deselection on all paths.
-	forEachPath([this](Path *path) {
-		connect(path, &Path::selectedChanged, this, [this, path](bool selected){
+	forEachPath([this](Path &path) {
+		connect(&path, &Path::selectedChanged, this, [this, &path](bool selected){
 			if (selected) {
-				m_selectedPaths.insert(path);
+				m_selectedPaths.insert(&path);
 			}
 			else {
-				m_selectedPaths.erase(path);
+				m_selectedPaths.erase(&path);
 			}
 
 			emit pathSelectedChanged(path, selected);
@@ -36,9 +40,9 @@ Path *Task::pathAt(int index) const
 	return m_stack[index];
 }
 
-int Task::indexFor(Path *path) const
+int Task::indexFor(const Path &path) const
 {
-	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), path);
+	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), &path);
 
 	assert(it != m_stack.cend());
 

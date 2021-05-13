@@ -26,7 +26,7 @@ private:
 	void setSelected(bool selected) override;
 
 public:
-	explicit PolylinePathItem(Model::Path *path);
+	explicit PolylinePathItem(Model::Path &path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 

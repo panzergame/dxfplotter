@@ -12,7 +12,7 @@ class OffsetedPolylinePathItem : public QObject, public QGraphicsPathItem
 	Q_OBJECT;
 
 private:
-	Model::Path *m_path;
+	const Model::Path &m_path;
 
 	QPainterPath m_paintPath;
 
@@ -21,7 +21,7 @@ private:
 	QPainterPath shape() const override;
 
 public:
-	explicit OffsetedPolylinePathItem(Model::Path *path);
+	explicit OffsetedPolylinePathItem(const Model::Path &path);
 
 	void selected();
 	void deselected();

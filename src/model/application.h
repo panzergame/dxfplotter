@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/task.h>
+#include <model/layer.h>
 #include <config/config.h>
 
 #include <QObject>
@@ -23,8 +24,7 @@ private:
 	// Absolute file basename of current loaded file
 	QString m_currentFileBaseName;
 
-	Path::ListPtr m_paths; // TODO parent destruct
-	Task *m_task;
+	Task::UPtr m_task;
 
 	PathSettings defaultPathSettings() const;
 
