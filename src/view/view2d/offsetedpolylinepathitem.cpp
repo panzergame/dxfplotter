@@ -17,7 +17,7 @@ static const QPen selectPen(selectBrush, 0.0f);
 
 QPainterPath OffsetedPolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline::List polylines = m_path->offsetedPolylines();
+	const Geometry::Polyline::List polylines = m_path.offsetedPolylines();
 
 	QPainterPath rootPainter;
 
@@ -38,7 +38,7 @@ QPainterPath OffsetedPolylinePathItem::shape() const
 	return QPainterPath();
 }
 
-OffsetedPolylinePathItem::OffsetedPolylinePathItem(Model::Path *path)
+OffsetedPolylinePathItem::OffsetedPolylinePathItem(const Model::Path &path)
 	:QGraphicsPathItem(QPainterPath()),
 	m_path(path),
 	m_paintPath(paintPath())
@@ -46,7 +46,7 @@ OffsetedPolylinePathItem::OffsetedPolylinePathItem(Model::Path *path)
 	setPen(normalPen);
 	setPath(m_paintPath);
 
-	connect(path, &Model::Path::offseted, this, &OffsetedPolylinePathItem::pathChanged);
+	connect(&path, &Model::Path::offseted, this, &OffsetedPolylinePathItem::pathChanged);
 }
 
 void OffsetedPolylinePathItem::selected()

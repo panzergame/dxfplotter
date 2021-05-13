@@ -2,7 +2,7 @@
 
 #include <importer/dxf/utils.h>
 
-#include <geometry/layer.h>
+#include <importer/dxf/layer.h>
 #include <geometry/cubicspline.h>
 
 #include <libdxfrw/drw_entities.h>
@@ -20,13 +20,13 @@ public:
 	};
 
 protected:
-	Geometry::Layer &m_layer;
+	Layer &m_layer;
 	const Settings &m_settings;
 
 	void addPolyline(const Geometry::Polyline &polyline);
 
 public:
-	explicit BaseEntityImporter(Geometry::Layer &layer, const Settings &settings);
+	explicit BaseEntityImporter(Layer &layer, const Settings &settings);
 };
 
 template <typename Entity>

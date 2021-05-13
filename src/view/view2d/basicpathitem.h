@@ -12,15 +12,15 @@ class BasicPathItem : public QObject, public QAbstractGraphicsShapeItem
 	Q_OBJECT;
 
 protected:
-	Model::Path *m_path;
+	Model::Path &m_path;
 	bool m_outsideSelectionBlocked;
 
 public:
-	explicit BasicPathItem(Model::Path *path);
+	explicit BasicPathItem(Model::Path &path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
-	Model::Path *path() const;
+	const Model::Path &path() const;
 	virtual void setSelected(bool selected);
 
 protected Q_SLOTS:

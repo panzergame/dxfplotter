@@ -3,7 +3,7 @@
 namespace Importer::Dxf
 {
 
-BaseEntityImporter::BaseEntityImporter(Geometry::Layer& layer, const Settings& settings)
+BaseEntityImporter::BaseEntityImporter(Layer& layer, const Settings& settings)
 	:m_layer(layer),
 	m_settings(settings)
 {

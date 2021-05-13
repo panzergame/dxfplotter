@@ -19,7 +19,7 @@ private:
 	QPainterPath shapePath() const;
 
 public:
-	explicit PointPathItem(Model::Path *path);
+	explicit PointPathItem(Model::Path &path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 

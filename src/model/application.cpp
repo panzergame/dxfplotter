@@ -59,8 +59,8 @@ void Application::cutterCompensation(float scale)
 	const float scaledRadius = radius * scale;
 
 	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
-		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path *path){
-			path->offset(scaledRadius, minimumPolylineLength, minimumArcLength);
+		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path &path){
+			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
 
@@ -168,31 +168,39 @@ bool Application::loadDxf(const QString &fileName)
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	Geometry::Layer::List layers;
+	Importer::Dxf::Layer::List importerLayers;
 	try {
 		// Import data by layers
 		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
-		layers = imp.layers();
+		importerLayers = imp.layers();
 	}
 	catch (const Common::FileException &e) {
 		return false;
 	}
 
-	for (Geometry::Layer &layer : layers) {
+	Path::ListUPtr paths;
+	Layer::ListUPtr layers;
+	for (Importer::Dxf::Layer &importerLayer : importerLayers) {
 		// Merge polylines to create longest contours
-		Geometry::Assembler assembler(layer.polylines(), dxf.assembleTolerance());
+		Geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
 		// Remove small bulges
 		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-		// Create paths from merged and cleaned polylines of one layer
-		const Path::ListPtr paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
+		const std::string &layerName = importerLayer.name();
 
-		m_paths.insert(m_paths.end(), paths.begin(), paths.end());
+		Layer *layer = new Layer(layerName);
+		layers.emplace_back(layer);
+
+		// Create paths from merged and cleaned polylines of one layer
+		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
+		layer->setChildren(children);
+
+		paths.insert(paths.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
 	}
 
-	m_task = new Task(this, m_paths);
+	m_task.reset(new Task(std::move(paths), std::move(layers)));
 
-	emit taskChanged(m_task);
+	emit taskChanged(m_task.get());
 
 	return true;
 }
@@ -205,7 +213,7 @@ void Application::loadPlot(const QString &fileName)
 bool Application::exportToGcode(const QString &fileName)
 {
 	try {
-		Exporter::GCode::Exporter exporter(m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), fileName.toStdString());
+		Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), fileName.toStdString());
 	}
 	catch (const Common::FileException &e) {
 		return false;
@@ -226,22 +234,22 @@ void Application::rightCutterCompensation()
 
 void Application::resetCutterCompensation()
 {
-	m_task->forEachSelectedPath([](Model::Path *path){ path->resetOffset(); });
+	m_task->forEachSelectedPath([](Model::Path &path){ path.resetOffset(); });
 }
 
 void Application::hideSelection()
 {
-	m_task->forEachSelectedPath([](Model::Path *path){
-		path->setVisible(false);
+	m_task->forEachSelectedPath([](Model::Path &path){
+		path.setVisible(false);
 	});
 }
 
 void Application::showHidden()
 {
-	m_task->forEachPath([](Model::Path *path){
-		if (!path->visible()) {
-			path->setVisible(true);
-			path->setSelected(true);
+	m_task->forEachPath([](Model::Path &path){
+		if (!path.visible()) {
+			path.setVisible(true);
+			path.setSelected(true);
 		}
 	});
 }

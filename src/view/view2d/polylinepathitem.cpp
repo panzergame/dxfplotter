@@ -8,7 +8,7 @@ namespace View::View2d
 
 QPainterPath PolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline &polyline = m_path->basePolyline();
+	const Geometry::Polyline &polyline = m_path.basePolyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 
@@ -35,7 +35,7 @@ void PolylinePathItem::setSelected(bool selected)
 	m_offsetedPath.setSelected(selected);
 }
 
-PolylinePathItem::PolylinePathItem(Model::Path *path)
+PolylinePathItem::PolylinePathItem(Model::Path &path)
 	:BasicPathItem(path),
 	m_paintPath(paintPath()),
 	m_shapePath(shapePath()),

@@ -1,17 +1,20 @@
 #pragma once
 
 #include <model/path.h>
+#include <model/layer.h>
 
 namespace Model
 {
 
-class Task : public QObject
+class Task : public QObject, public Common::Aggregable<Task>
 {
 	Q_OBJECT;
 
 private:
-	Path::ListPtr m_stack;
+	Path::ListUPtr m_paths;
+	Layer::ListUPtr m_layers;
 
+	Path::ListPtr m_stack;
 	Path::SetPtr m_selectedPaths;
 
 public:
@@ -21,20 +24,28 @@ public:
 		DOWN = 1
 	};
 
-	explicit Task(QObject *parent, const Path::ListPtr &paths);
+	explicit Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers);
 
-	int count() const;
-	Path *pathAt(int index) const;
-	int indexFor(Path *path) const;
+	int pathCount() const;
+	const Path &pathAt(int index) const;
+	Path &pathAt(int index);
+	int pathIndexFor(const Path &path) const;
 
 	void movePath(int index, MoveDirection direction);
 
 	template <class Functor>
 	void forEachPath(Functor &&functor) const
 	{
-		Path::ListPtr stack(m_stack);
-		for (Path *path : stack) {
-			functor(path);
+		for (const Path::UPtr &path : m_paths) {
+			functor(*path);
+		}
+	}
+	
+	template <class Functor>
+	void forEachPath(Functor &&functor)
+	{
+		for (Path::UPtr &path : m_paths) {
+			functor(*path);
 		}
 	}
 
@@ -43,12 +54,18 @@ public:
 	{
 		Path::SetPtr selectedPaths(m_selectedPaths);
 		for (Path *path : selectedPaths) {
-			functor(path);
+			functor(*path);
 		}
 	}
 
+	int layerCount() const;
+	const Layer &layerAt(int index) const;
+	Layer &layerAt(int index);
+	int layerIndexFor(const Layer &layer) const;
+	std::pair<int, int> layerAndPathIndexFor(const Path &path) const;
+
 Q_SIGNALS:
-	void pathSelectedChanged(Path *path, bool selected);
+	void pathSelectedChanged(Path &path, bool selected);
 	void selectionChanged(int size);
 };
 

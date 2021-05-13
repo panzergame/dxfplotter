@@ -14,7 +14,7 @@ void Importer::addLayer(const DRW_Layer &layer)
 {
 	if (layer.plotF) {
 		const std::string &name = layer.name;
-		m_nameToLayers.emplace(name, Geometry::Layer());
+		m_nameToLayers.emplace(name, Layer(name));
 	}
 }
 
@@ -29,9 +29,9 @@ Importer::Importer(const std::string& filename, float splineToArcPrecision, floa
 	}
 }
 
-Geometry::Layer::List Importer::layers()
+Layer::List Importer::layers()
 {
-	Geometry::Layer::List layers(m_nameToLayers.size());
+	Layer::List layers(m_nameToLayers.size());
 	std::transform(m_nameToLayers.begin(), m_nameToLayers.end(), layers.begin(),
 		[](const auto& pair){ return pair.second; });
 

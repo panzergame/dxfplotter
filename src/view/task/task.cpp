@@ -1,6 +1,7 @@
 #include <task.h>
 
-#include <tasklistmodel.h>
+#include <pathlistmodel.h>
+#include <layertreemodel.h>
 
 #include <QLabel>
 #include <QDebug>
@@ -9,45 +10,35 @@ namespace View::Task
 {
 
 Task::Task(Model::Application &app)
-	:TaskModelObserver(app),
-	m_outsideSelectionBlocked(false)
+	:TaskModelObserver(app)
 {
 	setupUi(this);
 }
 
 void Task::setupModel()
 {
-	m_model.reset(new TaskListModel(m_task, this)),
-	treeView->setModel(m_model.get());
+	m_pathListModel.reset(setupTreeViewModel<PathListModel>(pathsTreeView));
+	m_layerTreeModel.reset(setupTreeViewModel<LayerTreeModel>(layersTreeView));
 
-	QHeaderView *header = treeView->header();
-	header->setStretchLastSection(false);
-	header->setSectionResizeMode(0, QHeaderView::Stretch);
+	layersTreeView->expandAll();
 }
 
 void Task::setupController()
 {
-	// Synchronize selection in 2D view
-	QItemSelectionModel *selectionModel = treeView->selectionModel();
-	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
-
-	connect(treeView, &QTreeView::clicked, m_model.get(), &TaskListModel::itemClicked);
-
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
+
+	setupTreeViewController(m_pathListModel, pathsTreeView);
+	setupTreeViewController(m_layerTreeModel, layersTreeView);
 
 	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
 }
 
-void Task::changeItemSelection(Model::Path *path, QItemSelectionModel::SelectionFlag flag)
+void Task::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag)
 {
-	// Break signal loop
-	if (!m_outsideSelectionBlocked) {
-		QItemSelectionModel *selectionModel = treeView->selectionModel();
-		const int index = m_task->indexFor(path);
-		selectionModel->select(m_model->index(index, 0), flag);
-	}
+	m_pathListModel->updateItemSelection(path, flag, pathsTreeView->selectionModel());
+	m_layerTreeModel->updateItemSelection(path, flag, layersTreeView->selectionModel());
 }
 
 void Task::taskChanged()
@@ -56,35 +47,17 @@ void Task::taskChanged()
 	setupController();
 }
 
-void Task::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
+void Task::pathSelectedChanged(Model::Path &path, bool selected)
 {
-	// Disallows feedback from path selection
-	m_outsideSelectionBlocked = true;
-
-	for (const QModelIndex &index : selected.indexes()) {
-		Model::Path *path = m_task->pathAt(index.row());
-		path->setSelected(true);
-	}
-
-	for (const QModelIndex &index : deselected.indexes()) {
-		Model::Path *path = m_task->pathAt(index.row());
-		path->setSelected(false);
-	}
-
-	m_outsideSelectionBlocked = false;
-}
-
-void Task::pathSelectedChanged(Model::Path *path, bool selected)
-{
-	changeItemSelection(path,
+	updateItemSelection(path,
 			selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
 }
 
 void Task::moveCurrentPath(Model::Task::MoveDirection direction)
 {
-	QItemSelectionModel *selectionModel = treeView->selectionModel();
+	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
-	const QModelIndex newSelectedIndex = m_model->movePath(currentSelectedIndex, direction);
+	const QModelIndex newSelectedIndex = m_pathListModel->movePath(currentSelectedIndex, direction);
 	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
 }
 
