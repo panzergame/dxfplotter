@@ -18,9 +18,9 @@ Task::Task(Model::Application &app)
 void Task::setupModel()
 {
 	m_model.reset(new TaskListModel(m_task, this)),
-	treeView->setModel(m_model.get());
+	pathsTreeView->setModel(m_model.get());
 
-	QHeaderView *header = treeView->header();
+	QHeaderView *header = pathsTreeView->header();
 	header->setStretchLastSection(false);
 	header->setSectionResizeMode(0, QHeaderView::Stretch);
 }
@@ -28,10 +28,10 @@ void Task::setupModel()
 void Task::setupController()
 {
 	// Synchronize selection in 2D view
-	QItemSelectionModel *selectionModel = treeView->selectionModel();
+	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 	connect(selectionModel, &QItemSelectionModel::selectionChanged, this, &Task::selectionChanged);
 
-	connect(treeView, &QTreeView::clicked, m_model.get(), &TaskListModel::itemClicked);
+	connect(pathsTreeView, &QTreeView::clicked, m_model.get(), &TaskListModel::itemClicked);
 
 	// Track outside path selection, e.g from graphics view.
 	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
@@ -44,7 +44,7 @@ void Task::changeItemSelection(const Model::Path &path, QItemSelectionModel::Sel
 {
 	// Break signal loop
 	if (!m_outsideSelectionBlocked) {
-		QItemSelectionModel *selectionModel = treeView->selectionModel();
+		QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 		const int index = m_task->indexFor(path);
 		selectionModel->select(m_model->index(index, 0), flag);
 	}
@@ -82,7 +82,7 @@ void Task::pathSelectedChanged(Model::Path &path, bool selected)
 
 void Task::moveCurrentPath(Model::Task::MoveDirection direction)
 {
-	QItemSelectionModel *selectionModel = treeView->selectionModel();
+	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
 	const QModelIndex newSelectedIndex = m_model->movePath(currentSelectedIndex, direction);
 	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);

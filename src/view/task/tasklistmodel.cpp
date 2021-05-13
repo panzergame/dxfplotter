@@ -52,15 +52,6 @@ QVariant TaskListModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-QVariant TaskListModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-		return QString("Name");
-	}
-
-	return QVariant();
-}
-
 int TaskListModel::rowCount(const QModelIndex& parent) const
 {
 	return m_task->count();
