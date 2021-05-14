@@ -12,6 +12,9 @@ addons:
     - qtbase5-dev
     - libyaml-cpp-dev
     - lcov
+  sonarcloud:
+    organization: "panzergame" # the key of the org you chose at step #3
+    token: "$SONARCLOUD_TOKEN"
 
 env:
   jobs:
@@ -31,6 +34,8 @@ jobs:
   include:
   - stage: test
     script: bash travis/buildtestcoverage.sh
+  - stage: sonarcloud
+    script: sonar-scanner
   - stage: deploy
     script: bash travis/buildappimage.sh
     deploy:
