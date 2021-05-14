@@ -13,7 +13,7 @@ addons:
     - libyaml-cpp-dev
     - lcov
   sonarcloud:
-    organization: "panzergame" # the key of the org you chose at step #3
+    organization: "panzergame"
     token: "$SONARCLOUD_TOKEN"
 
 env:
