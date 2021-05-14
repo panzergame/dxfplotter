@@ -84,7 +84,8 @@
   </widget>
   <action name="actionOpenFile">
    <property name="icon">
-    <iconset theme="document-open"/>
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -95,7 +96,8 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -106,7 +108,8 @@
   </action>
   <action name="actionExportFile">
    <property name="icon">
-    <iconset theme="document-export"/>
+    <iconset theme="document-export">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Export</string>
@@ -117,7 +120,8 @@
   </action>
   <action name="actionOpenSettings">
    <property name="icon">
-    <iconset theme="settings-configure"/>
+    <iconset theme="settings-configure">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Settings</string>
@@ -125,7 +129,8 @@
   </action>
   <action name="actionLeftCutterCompensation">
    <property name="icon">
-    <iconset theme="path-outset"/>
+    <iconset theme="path-outset">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Left Cutter Compensation</string>
@@ -136,7 +141,8 @@
   </action>
   <action name="actionRightCutterCompensation">
    <property name="icon">
-    <iconset theme="path-outset"/>
+    <iconset theme="path-inset">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Right Cutter Compensation</string>
@@ -147,7 +153,8 @@
   </action>
   <action name="actionResetCutterCompensation">
    <property name="icon">
-    <iconset theme="show-path-outline"/>
+    <iconset theme="show-path-outline">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Reset Cutter Compensation</string>
@@ -158,7 +165,8 @@
   </action>
   <action name="actionHideSelection">
    <property name="icon">
-    <iconset theme="object-hidden"/>
+    <iconset theme="object-hidden">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Hide Selection</string>
@@ -169,7 +177,8 @@
   </action>
   <action name="actionShowHidden">
    <property name="icon">
-    <iconset theme="object-visible"/>
+    <iconset theme="object-visible">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>Show hidden</string>
