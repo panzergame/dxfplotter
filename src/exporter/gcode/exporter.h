@@ -14,7 +14,7 @@ class PathPostProcessor;
 class Exporter
 {
 private:
-	std::ofstream m_file;
+	std::ostream &m_output;
   
 	const Config::Tools::Tool &m_tool;
 	const Config::Profiles::Profile::Gcode &m_gcode;
@@ -26,7 +26,7 @@ private:
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge);
 
 public:
-	explicit Exporter(const Model::Task &task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, const std::string &filename);
+	explicit Exporter(const Model::Task &task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &output);
 	~Exporter() = default;
 };
 

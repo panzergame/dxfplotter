@@ -16,7 +16,7 @@ public:
 		:Node(name, description),
 		m_yamlNode(yamlNode)
 	{
-		// Assigne default value if node isn't defined
+		// Assign default value if node isn't defined
 		if (!m_yamlNode.IsDefined()) {
 			m_yamlNode = defaultValue;
 		}

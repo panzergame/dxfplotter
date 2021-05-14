@@ -5,8 +5,6 @@
 
 #include <libdxfrw/libdxfrw.h>
 
-#include <QDebug> // TODO
-
 namespace Importer::Dxf
 {
 
@@ -25,7 +23,7 @@ Importer::Importer(const std::string& filename, float splineToArcPrecision, floa
 
 	dxfRW rw(filename.c_str());
 	if (!rw.read(&interface, false)) {
-		throw Common::FileException();
+		throw Common::FileCouldNotOpenException();
 	}
 }
 

@@ -19,6 +19,7 @@ endif()
 set(SRC
 	arc.cpp
 	bulge.cpp
+	exporter.cpp
 	polyline.cpp
 	verticalspeed.cpp
 )

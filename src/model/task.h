@@ -34,9 +34,9 @@ public:
 	void movePath(int index, MoveDirection direction);
 
 	template <class Functor>
-	void forEachPath(Functor &&functor) const
+	void forEachPathInStack(Functor &&functor) const
 	{
-		for (const Path::UPtr &path : m_paths) {
+		for (const Path *path : m_stack) {
 			functor(*path);
 		}
 	}

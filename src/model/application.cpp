@@ -174,7 +174,7 @@ bool Application::loadDxf(const QString &fileName)
 		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
 		importerLayers = imp.layers();
 	}
-	catch (const Common::FileException &e) {
+	catch (const Common::FileCouldNotOpenException &e) {
 		return false;
 	}
 
@@ -212,14 +212,13 @@ void Application::loadPlot(const QString &fileName)
 
 bool Application::exportToGcode(const QString &fileName)
 {
-	try {
-		Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), fileName.toStdString());
-	}
-	catch (const Common::FileException &e) {
-		return false;
+	std::ofstream file(fileName.toStdString());
+	if (file) {
+		Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), file);
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 void Application::leftCutterCompensation()
