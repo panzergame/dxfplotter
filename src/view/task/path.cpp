@@ -5,11 +5,11 @@ namespace View::Task
 
 void Path::setupModel()
 {
-	m_groupSettings.reset(new Model::PathGroupSettings(m_task));
+	m_groupSettings.reset(new Model::PathGroupSettings(task()));
 
 	hide();
 
-	connect(m_task, &Model::Task::selectionChanged, this, &Path::selectionChanged);
+	connect(task(), &Model::Task::selectionChanged, this, &Path::selectionChanged);
 
 	connectOnFieldChanged<double>(planeFeedRate, [this](double value) { m_groupSettings->setPlaneFeedRate(value); });
 	connectOnFieldChanged<double>(depthFeedRate, [this](double value) { m_groupSettings->setDepthFeedRate(value); });

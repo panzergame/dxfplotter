@@ -116,6 +116,8 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 				processor.ccwArcMove(relativeCenter, bulge.end());
 				break;
 			}
+			default:
+				break;
 		}
 	}
 }

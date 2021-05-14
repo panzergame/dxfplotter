@@ -29,11 +29,11 @@ public:
 	explicit {{ node.unique_class_name }}(const std::string &name, YAML::Node yamlNode)
 		:Group(name, "{{ node.description }}")
 	{
-		m_children = {
+		setChildren({
 		{% for child in node.children %}
 			{{ child.class_name }}({% if child.__class__ == Property %}"{{ child.name }}", "{{ child.description }}", {{ child.default_value }}, {% endif %}yamlNode["{{ child.name }}"]){{ ", " if not loop.last }}
 		{% endfor %}
-		};
+		});
 	}
 
 	{{ node.unique_class_name }}() = default;
@@ -41,14 +41,14 @@ public:
 	{% for child in node.children %}
 	{{ child.class_name }} &{{ child.var_name }}()
 	{
-		return std::get<{{loop.index - 1}}>(m_children);
+		return std::get<{{loop.index - 1}}>(children());
 	}
 	{% endfor %}
 
 	{% for child in node.children %}
 	const {{ child.class_name }} &{{ child.var_name }}() const
 	{
-		return std::get<{{loop.index - 1}}>(m_children);
+		return std::get<{{loop.index - 1}}>(children());
 	}
 	{% endfor %}
 

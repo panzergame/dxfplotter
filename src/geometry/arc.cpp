@@ -12,7 +12,7 @@ Arc::Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
 	m_startAngle(starAngle),
 	m_endAngle(endAngle)
 {
-	if (m_orientation == Orientation::CCW) {
+	if (orientation() == Orientation::CCW) {
 		m_endAngle = EnsureEndGreater(m_startAngle, m_endAngle);
 		assert(m_startAngle <= m_endAngle);
 	}

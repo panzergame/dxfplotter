@@ -7,7 +7,7 @@ namespace View::Settings
 
 struct TreeModel::ConstructorItemVisitor
 {
-	Node *parent;
+	Node &parent;
 	// Row of next generated child node
 	int row = 0;
 
@@ -20,33 +20,35 @@ struct TreeModel::ConstructorItemVisitor
 	void operator()(ConfigNode &node)
 	{
 		// Create node linked to config node
-		Node *n = new Node(row++, node, parent);
-		parent->children.emplace_back(n);
+		Node::UPtr n = std::make_unique<Node>(row++, node, &parent);
 
 		// Create all children
-		ConstructorItemVisitor visitor{n};
+		ConstructorItemVisitor visitor{*n};
 		node.visitChildren(visitor);
+
+		parent.children.push_back(std::move(n));
 	}
 };
 
 struct TreeModel::AddItemVisitor
 {
 	const QString &name;
-	Node *parent;
+	Node &parent;
 
 	template <class Child>
 	void operator()(Config::List<Child> *list)
 	{
-		const int row = parent->children.size();
+		const int nextRow = parent.children.size();
 
 		Child &child = list->createChild(name.toStdString());
 
-		Node *n = new Node(row, child, parent);
-		parent->children.emplace_back(n);
+		Node::UPtr n = std::make_unique<Node>(nextRow, child, &parent);
 
 		// Create all children
-		ConstructorItemVisitor visitor{n};
+		ConstructorItemVisitor visitor{*n};
 		child.visitChildren(visitor);
+
+		parent.children.push_back(std::move(n));
 	}
 
 	template <class ... Child>
@@ -75,7 +77,7 @@ void TreeModel::constructNodes()
 {
 	// Construct root node
 	m_root = Node(0, m_configRoot, nullptr);
-	ConstructorItemVisitor visitor{&m_root};
+	ConstructorItemVisitor visitor{m_root};
 	m_configRoot.visitChildren(visitor);
 }
 
@@ -173,9 +175,9 @@ void TreeModel::addItem(const QModelIndex &parent, const QString &name)
 	const int row = rowCount(parent);
 	beginInsertRows(parent, row, row);
 
-	Node *node = static_cast<Node *>(parent.internalPointer());
+	Node &node = *static_cast<Node *>(parent.internalPointer());
 
-	std::visit(AddItemVisitor{name, node}, node->configNode);
+	std::visit(AddItemVisitor{name, node}, node.configNode);
 
 	endInsertRows();
 }

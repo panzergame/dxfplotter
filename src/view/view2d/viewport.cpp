@@ -13,7 +13,7 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 
 void Viewport::setupPathItems()
 {
-	m_task->forEachPath(
+	task()->forEachPath(
 		[scene = scene()](Model::Path &path) {
 			BasicPathItem *item;
 			if (path.isPoint()) {

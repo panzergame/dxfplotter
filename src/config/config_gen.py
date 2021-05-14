@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 from jinja2 import Environment, FileSystemLoader
 from sys import argv
 
+
 class Node:
 	count = 0
 
@@ -25,6 +26,7 @@ class Node:
 	def __repr__(self):
 		return self.unique_class_name
 
+
 class Group(Node):
 	def __init__(self, name, children):
 		super().__init__(name)
@@ -33,11 +35,13 @@ class Group(Node):
 
 		self.tuple_name = ", ".join(map(lambda p: p.unique_class_name, children))
 
+
 class List(Node):
 	def __init__(self, name, item):
 		super().__init__(name)
 
 		self.item = item
+
 
 class Property(Node):
 	def __init__(self, name, base_type, default_value):
@@ -53,6 +57,7 @@ class Property(Node):
 
 		self.class_name = "Property<{}>".format(self.base_type)
 		self.unique_class_name = self.class_name
+
 
 def load_from_node(xml_node, nodes):
 	tag = xml_node.tag
@@ -77,6 +82,7 @@ def load_from_node(xml_node, nodes):
 
 	return node
 
+
 def load_from_xml(file_name):
 	tree = ET.parse(file_name)
 
@@ -84,6 +90,7 @@ def load_from_xml(file_name):
 	root = load_from_node(tree.getroot(), nodes)
 
 	return root, nodes
+
 
 propertie_file_name = argv[1]
 template_dir_name = argv[2]

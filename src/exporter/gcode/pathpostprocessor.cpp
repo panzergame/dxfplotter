@@ -1,5 +1,7 @@
 #include <pathpostprocessor.h>
 
+using namespace fmt::literals;
+
 namespace Exporter::GCode
 {
 

@@ -17,8 +17,8 @@ Task::Task(Model::Application &app)
 
 void Task::setupModel()
 {
-	m_pathListModel.reset(setupTreeViewModel<PathListModel>(pathsTreeView));
-	m_layerTreeModel.reset(setupTreeViewModel<LayerTreeModel>(layersTreeView));
+	m_pathListModel = setupTreeViewModel<PathListModel>(pathsTreeView);
+	m_layerTreeModel = setupTreeViewModel<LayerTreeModel>(layersTreeView);
 
 	layersTreeView->expandAll();
 }
@@ -26,7 +26,7 @@ void Task::setupModel()
 void Task::setupController()
 {
 	// Track outside path selection, e.g from graphics view.
-	connect(m_task, &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
+	connect(task(), &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
 	setupTreeViewController(m_pathListModel, pathsTreeView);
 	setupTreeViewController(m_layerTreeModel, layersTreeView);

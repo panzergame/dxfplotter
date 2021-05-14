@@ -51,7 +51,7 @@ private:
 	void setValue(Setter &&setter, T value)
 	{
 		m_task->forEachSelectedPath([value, &setter](Model::Path &path){
-			(path.settings().*setter)(value);
+			(path.settings().*(std::forward<Setter>(setter)))(value);
 		});
 	}
 

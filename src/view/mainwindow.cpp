@@ -117,12 +117,10 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	Settings::Settings *settings = new Settings::Settings(m_app);
-	if (settings->exec() == QDialog::Accepted) {
-		m_app.setConfig(settings->newConfig());
+	Settings::Settings settings(m_app);
+	if (settings.exec() == QDialog::Accepted) {
+		m_app.setConfig(settings.newConfig());
 	}
-
-	delete settings;
 }
 
 }

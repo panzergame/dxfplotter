@@ -3,7 +3,7 @@
 namespace Geometry
 {
 
-Bezier::List Spline::toBeziers(const Point2DList &bezierPoints) const
+Bezier::List Spline::pointsToBeziers(const Point2DList &bezierPoints) const
 {
 	const int size = bezierPoints.size();
 	Bezier::List beziers(size / 3);
@@ -15,8 +15,18 @@ Bezier::List Spline::toBeziers(const Point2DList &bezierPoints) const
 	return beziers;
 }
 
+const Point2DList& Spline::controlPoints() const
+{
+	return m_controlPoints;
+}
+
+bool Spline::closed() const
+{
+	return m_closed;
+}
+
 Spline::Spline(Point2DList &&points, bool closed)
-	:m_points(points),
+	:m_controlPoints(points),
 	m_closed(closed)
 {
 }

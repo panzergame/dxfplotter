@@ -7,8 +7,6 @@
 namespace Config
 {
 
-extern const char *CONFIG_RAW_XML_STRING;
-
 Config::Config(const std::string &filePath)
 	:m_filePath(filePath)
 {

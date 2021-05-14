@@ -21,10 +21,10 @@ private:
 	std::unique_ptr<LayerTreeModel> m_layerTreeModel;
 
 	template <class Model>
-	Model *setupTreeViewModel(QTreeView *treeView)
+	std::unique_ptr<Model> setupTreeViewModel(QTreeView *treeView)
 	{
-		Model *model = new Model(*m_task, this);
-		treeView->setModel(model);
+		std::unique_ptr<Model> model = std::make_unique<Model>(*task(), this);
+		treeView->setModel(model.get());
 
 		QHeaderView *header = treeView->header();
 		header->setStretchLastSection(false);

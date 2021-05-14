@@ -7,7 +7,7 @@ namespace Geometry
 
 class Circle
 {
-protected:
+private:
 	QVector2D m_center;
 	float m_radius;
 	Orientation m_orientation;

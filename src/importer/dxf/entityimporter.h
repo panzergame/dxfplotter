@@ -212,6 +212,8 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 			beziers = spline.toBeziers();
 			break;
 		}
+		default:
+			break;
 	}
 
 	Geometry::Bezier::List convexBeziers;

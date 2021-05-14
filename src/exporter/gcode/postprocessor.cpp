@@ -1,5 +1,7 @@
 #include <postprocessor.h>
 
+using namespace fmt::literals;
+
 namespace Exporter::GCode
 {
 

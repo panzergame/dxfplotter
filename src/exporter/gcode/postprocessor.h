@@ -9,8 +9,6 @@
 namespace Exporter::GCode
 {
 
-using namespace fmt::literals;
-
 class PostProcessor
 {
 private:
