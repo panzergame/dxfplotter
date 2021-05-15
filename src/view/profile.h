@@ -38,7 +38,7 @@ public:
 	explicit Profile(Model::Application &app);
 
 protected:
-	void documentChanged();
+	void documentChanged() override;
 
 public Q_SLOTS:
 	void configChanged(const Config::Config &config);
