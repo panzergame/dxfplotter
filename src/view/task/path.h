@@ -4,14 +4,14 @@
 
 #include <model/pathgroupsettings.h>
 #include <model/task.h>
-#include <model/taskmodelobserver.h>
+#include <model/documentmodelobserver.h>
 
 #include <QWidget>
 
 namespace View::Task
 {
 
-class Path : public Model::TaskModelObserver<QWidget>, private Ui::Path
+class Path : public Model::DocumentModelObserver<QWidget>, private Ui::Path
 {
 private:
 	std::unique_ptr<Model::PathGroupSettings> m_groupSettings;
@@ -38,7 +38,7 @@ private:
 	void setupModel();
 
 protected:
-	void taskChanged() override;
+	void documentChanged() override;
 
 public:
 	explicit Path(Model::Application &app);

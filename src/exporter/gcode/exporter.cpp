@@ -4,16 +4,16 @@
 namespace Exporter::GCode
 {
 
-void Exporter::convertToGCode(const Model::Task &task)
+void Exporter::convertToGCode(const Model::Task &task, std::ostream &output)
 {
-	PostProcessor processor(m_tool, m_gcode, m_output);
+	PostProcessor processor(m_tool, m_gcode, output);
 
 	// Retract tool before work piece
 	processor.retractDepth();
 
-	task.forEachPathInStack([this](const Model::Path &path){
+	task.forEachPathInStack([this, &output](const Model::Path &path){
 		if (path.globallyVisible()) {
-			convertToGCode(path);
+			convertToGCode(path, output);
 		}
 	});
 
@@ -21,10 +21,10 @@ void Exporter::convertToGCode(const Model::Task &task)
 	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));
 }
 
-void Exporter::convertToGCode(const Model::Path &path)
+void Exporter::convertToGCode(const Model::Path &path, std::ostream &output)
 {
 	const Model::PathSettings &settings = path.settings();
-	PathPostProcessor processor(settings, m_tool, m_gcode, m_output);
+	PathPostProcessor processor(settings, m_tool, m_gcode, output);
 
 	const Geometry::Polyline::List polylines = path.finalPolylines();
 
@@ -122,13 +122,17 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 	}
 }
 
-Exporter::Exporter(const Model::Task &task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &output)
-	:m_output(output),
-	m_tool(tool),
+Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode)
+	:m_tool(tool),
 	m_gcode(gcode)
 {
-	convertToGCode(task);
 }
+
+void Exporter::operator()(const Model::Document &document, std::ostream &output)
+{
+	convertToGCode(document.task(), output);
+}
+
 
 }
 

@@ -11,4 +11,4 @@ set(SRC
 	layer.h
 )
 
-add_library(dxf ${SRC})
+add_library(importer-dxf ${SRC})
