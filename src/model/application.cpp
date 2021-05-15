@@ -2,7 +2,6 @@
 #include <geometry/assembler.h>
 #include <geometry/cleaner.h>
 
-#include <importer/dxf/importer.h>
 #include <exporter/gcode/exporter.h>
 
 #include <common/exception.h>
@@ -62,6 +61,30 @@ void Application::cutterCompensation(float scale)
 		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path &path){
 			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
+}
+
+Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer& importer)
+{
+	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
+
+	Path::ListUPtr paths;
+	Layer::ListUPtr layers;
+	for (Importer::Dxf::Layer &importerLayer : importer.layers()) {
+		// Merge polylines to create longest contours
+		Geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
+		// Remove small bulges
+		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+
+		const std::string &layerName = importerLayer.name();
+		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName));
+
+		// Create paths from merged and cleaned polylines of one layer
+		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
+
+		std::move(children.begin(), children.end(), std::back_inserter(paths));
+	}
+
+	return std::make_unique<Task>(std::move(paths), std::move(layers));
 }
 
 Application::Application()
@@ -169,35 +192,16 @@ bool Application::loadDxf(const QString &fileName)
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	Importer::Dxf::Layer::List importerLayers;
 	try {
 		// Import data by layers
-		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
-		importerLayers = imp.layers();
+		Importer::Dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
+ 
+		m_task = createTaskFromDxfImporter(importer);
 	}
-	catch (const Common::FileCouldNotOpenException &e) {
+	catch (Common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
-
-	Path::ListUPtr paths;
-	Layer::ListUPtr layers;
-	for (Importer::Dxf::Layer &importerLayer : importerLayers) {
-		// Merge polylines to create longest contours
-		Geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
-		// Remove small bulges
-		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
-
-		const std::string &layerName = importerLayer.name();
-		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName));
-
-		// Create paths from merged and cleaned polylines of one layer
-		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
-
-		std::move(children.begin(), children.end(), std::back_inserter(paths));
-	}
-
-	m_task = std::make_unique<Task>(std::move(paths), std::move(layers));
 
 	emit taskChanged(m_task.get());
 

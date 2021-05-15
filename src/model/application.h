@@ -4,6 +4,8 @@
 #include <model/layer.h>
 #include <config/config.h>
 
+#include <importer/dxf/importer.h>
+
 #include <QObject>
 
 namespace Model
@@ -32,6 +34,8 @@ private:
 	void selectProfileConfig(const Config::Profiles::Profile &profile);
 
 	void cutterCompensation(float scale);
+
+	Task::UPtr createTaskFromDxfImporter(const Importer::Dxf::Importer& importer);
 
 public:
 	explicit Application();

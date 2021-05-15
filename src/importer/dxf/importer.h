@@ -26,7 +26,7 @@ private:
 public:
 	explicit Importer(const std::string &filename, float splineToArcPrecision, float minimumSplineLength);
 
-	Layer::List layers();
+	Layer::List layers() const;
 
 	template <class Entity>
 	void processEntity(const Entity &entity)
