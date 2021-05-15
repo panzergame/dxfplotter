@@ -2,7 +2,7 @@
 
 #include <exporter/gcode/exporter.h>
 #include <config/config.h>
-#include <model/task.h>
+#include <model/document.h>
 
 #include <sstream>
 
@@ -11,8 +11,10 @@ class ExporterTest : public ::testing::Test
 protected:
 	const Config::Tools::Tool m_tool{"tool", YAML::Node()};
 	const Config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
+	const Config::Profiles::Profile m_profile{"profile", YAML::Node()};
 	const Model::PathSettings m_settings{10, 10, 10, 0.1};
 	Model::Task::UPtr m_task;
+	Model::Document::UPtr m_document;
 	std::ostringstream m_output;
 
 	void createTaskFromPolyline(Geometry::Polyline &&polyline)
@@ -26,6 +28,7 @@ protected:
 		Model::Layer::ListUPtr layers;
 		layers.push_back(std::move(layer));
 		m_task = std::make_unique<Model::Task>(std::move(paths), std::move(layers));
+		m_document = std::make_unique<Model::Document>(std::move(m_task), m_tool, m_profile);
 	}
 };
 
@@ -35,7 +38,8 @@ TEST_F(ExporterTest, shouldRenderAllPathsWhenAllVisible)
 	Geometry::Polyline polyline({bulge});
 
 	createTaskFromPolyline(std::move(polyline));
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.000 Y 0.000
@@ -65,7 +69,8 @@ TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBuCutBackward)
 		path.offset(-0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.483 Y 0.200
@@ -99,7 +104,8 @@ TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBuCutForward)
 		path.offset(0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X -0.141 Y 0.141

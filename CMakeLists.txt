@@ -55,8 +55,9 @@ set(LINK_LIBRARIES
 	view-view2d
 	model
 	config
-	dxf
-	gcode
+	importer-dxf
+	exporter-gcode
+	exporter-dxfplot
 	geometry
 	libdxfrw
 	fmt::fmt

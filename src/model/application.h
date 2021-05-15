@@ -1,12 +1,16 @@
 #pragma once
 
-#include <model/task.h>
-#include <model/layer.h>
+#include <model/document.h>
 #include <config/config.h>
 
-#include <importer/dxf/importer.h>
-
 #include <QObject>
+
+#include <fstream>
+
+namespace Importer::Dxf
+{
+	class Importer;
+}
 
 namespace Model
 {
@@ -18,24 +22,35 @@ class Application : public QObject
 private:
 	/// Global configuration
 	Config::Config m_config;
-	/// Selected tool configuration
-	const Config::Tools::Tool *m_selectedToolConfig;
-	/// Selected profile configuration
-	const Config::Profiles::Profile *m_selectedProfileConfig;
+
+	const Config::Tools::Tool *m_defaultToolConfig;
+	const Config::Profiles::Profile *m_defaultProfileConfig;
 
 	// Absolute file basename of current loaded file
 	QString m_currentFileBaseName;
 
-	Task::UPtr m_task;
+	Document::UPtr m_openedDocument;
 
 	PathSettings defaultPathSettings() const;
 
-	void selectToolConfig(const Config::Tools::Tool &tool);
-	void selectProfileConfig(const Config::Profiles::Profile &profile);
+	std::optional<const Config::Tools::Tool *> findTool(const std::string &name) const;
+	std::optional<const Config::Profiles::Profile *> findProfile(const std::string &name) const;
 
 	void cutterCompensation(float scale);
 
 	Task::UPtr createTaskFromDxfImporter(const Importer::Dxf::Importer& importer);
+
+	template <class Exporter>
+	bool saveToFile(Exporter &exporter, const QString &fileName)
+	{
+		std::ofstream output(fileName.toStdString());
+		if (output) {
+			exporter(*m_openedDocument, output);
+			return true;
+		}
+
+		return false;
+	}
 
 public:
 	explicit Application();
@@ -45,19 +60,20 @@ public:
 
 	/// Select tool used as configuration for further operations
 	bool selectTool(const QString &toolName);
-	void selectToolFromCmd(const QString &toolName);
+	void defaultToolFromCmd(const QString &toolName);
 
 	/// Select profile used as configuration for further operations
 	bool selectProfile(const QString &profileName);
-	void selectProfileFromCmd(const QString &profileName);
+	void defaultProfileFromCmd(const QString &profileName);
 
 	QString currentFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
-	bool loadDxf(const QString &fileName);
-	void loadPlot(const QString &fileName);
+	bool loadFromDxf(const QString &fileName);
+	bool loadFromDxfplot(const QString &fileName);
 
-	bool exportToGcode(const QString &fileName);
+	bool saveToGcode(const QString &fileName);
+	bool saveToDxfplot(const QString &fileName);
 
 	void leftCutterCompensation();
 	void rightCutterCompensation();
@@ -67,10 +83,8 @@ public:
 	void showHidden();
 
 Q_SIGNALS:
-	void taskChanged(Task *newTask);
+	void documentChanged(Document *newDocument);
 	void titleChanged(QString title);
-	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
-	void selectedProfileConfigChanged(const Config::Profiles::Profile &profile);
 	void configChanged(Config::Config &config);
 	void errorRaised(const QString& message);
 };

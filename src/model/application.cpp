@@ -2,7 +2,11 @@
 #include <geometry/assembler.h>
 #include <geometry/cleaner.h>
 
+#include <importer/dxf/importer.h>
+// #include <importer/dxfplot/importer.h>
+
 #include <exporter/gcode/exporter.h>
+#include <exporter/dxfplot/exporter.h>
 
 #include <common/exception.h>
 
@@ -32,32 +36,40 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
-void Application::selectToolConfig(const Config::Tools::Tool &tool)
-{
-	m_selectedToolConfig = &tool;
-	emit selectedToolConfigChanged(tool);
-}
-
-void Application::selectProfileConfig(const Config::Profiles::Profile &profile)
-{
-	m_selectedProfileConfig = &profile;
-	emit selectedProfileConfigChanged(profile);
-}
-
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Profiles::Profile::DefaultPath &defaultPath = m_selectedProfileConfig->defaultPath();
+	const Config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
 	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
+}
+
+std::optional<const Config::Tools::Tool *> Application::findTool(const std::string &name) const
+{
+	const Config::Tools &tools = m_config.root().tools();
+	if (tools.has(name)) {
+		return std::make_optional(&tools[name]);
+	}
+
+	return std::nullopt;
+}
+
+std::optional<const Config::Profiles::Profile *> Application::findProfile(const std::string &name) const
+{
+	const Config::Profiles &profiles = m_config.root().profiles();
+	if (profiles.has(name)) {
+		return std::make_optional(&profiles[name]);
+	}
+
+	return std::nullopt;
 }
 
 void Application::cutterCompensation(float scale)
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	const float radius = m_selectedToolConfig->general().radius();
+	const float radius = m_openedDocument->toolConfig().general().radius();
 	const float scaledRadius = radius * scale;
 
-	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
+	m_openedDocument->task().forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
 		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path &path){
 			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
@@ -88,13 +100,12 @@ Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer&
 }
 
 Application::Application()
-	:m_config(Config::Config(configFilePath()))
-{
+	:m_config(Config::Config(configFilePath())),
 	// Default select first tool
-	selectToolConfig(m_config.root().tools().first());
-
+	m_defaultToolConfig(&m_config.root().tools().first()),
 	// Default select first profile
-	selectProfileConfig(m_config.root().profiles().first());
+	m_defaultProfileConfig(&m_config.root().profiles().first())
+{
 }
 
 Config::Config &Application::config()
@@ -110,18 +121,22 @@ void Application::setConfig(Config::Config &&config)
 
 bool Application::selectTool(const QString &toolName)
 {
-	const Config::Tools &tools = m_config.root().tools();
 	const std::string name = toolName.toStdString();
-	const bool exists = tools.has(name);
+	const std::optional<const Config::Tools::Tool *> tool = findTool(name);
 
-	if (exists) {
-		selectToolConfig(tools[name]);
+	if (tool) {
+		if (m_openedDocument) {
+			m_openedDocument->setToolConfig(**tool);
+		}
+		m_defaultToolConfig = *tool;
+
+		return true;
 	}
 
-	return exists;
+	return false;
 }
 
-void Application::selectToolFromCmd(const QString &toolName)
+void Application::defaultToolFromCmd(const QString &toolName)
 {
 	if (!selectTool(toolName)) {
 		qCritical() << "Invalid tool name " << toolName;
@@ -130,18 +145,22 @@ void Application::selectToolFromCmd(const QString &toolName)
 
 bool Application::selectProfile(const QString &profileName)
 {
-	const Config::Profiles &profiles = m_config.root().profiles();
 	const std::string name = profileName.toStdString();
-	const bool exists = profiles.has(name);
+	const std::optional<const Config::Profiles::Profile *> profile = findProfile(name);
 
-	if (exists) {
-		selectProfileConfig(profiles[name]);
+	if (profile) {
+		if (m_openedDocument) {
+			m_openedDocument->setProfileConfig(**profile);
+		}
+		m_defaultProfileConfig = *profile;
+
+		return true;
 	}
 
-	return exists;
+	return false;
 }
 
-void Application::selectProfileFromCmd(const QString &profileName)
+void Application::defaultProfileFromCmd(const QString &profileName)
 {
 	if (!selectProfile(profileName)) {
 		qCritical() << "Invalid profile name " << profileName;
@@ -165,13 +184,15 @@ bool Application::loadFile(const QString &fileName)
 	const QMimeDatabase db;
 	const QMimeType mime = db.mimeTypeForFile(fileName);
 
+	qInfo() << "Opening " << fileName;
+
 	if (mime.name() == "image/vnd.dxf") {
-		if (!loadDxf(fileName)) {
+		if (!loadFromDxf(fileName)) {
 			return false;
 		}
 	}
 	else if (mime.name() == "text/plain") {
-		loadPlot(fileName);
+		loadFromDxfplot(fileName);
 	}
 	else {
 		qCritical() << "Invalid file type: " << fileName;
@@ -188,38 +209,48 @@ bool Application::loadFile(const QString &fileName)
 	return true;
 }
 
-bool Application::loadDxf(const QString &fileName)
+bool Application::loadFromDxf(const QString &fileName)
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	try {
-		// Import data by layers
 		Importer::Dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
  
-		m_task = createTaskFromDxfImporter(importer);
+		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 	}
 	catch (const Common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
 
-	emit taskChanged(m_task.get());
+	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
 
-void Application::loadPlot(const QString &fileName)
+bool Application::loadFromDxfplot(const QString &fileName)
 {
-	
+	try {
+// 		Importer::Dxfplot::Importer importer(fileName.toStdString());
+ 
+// 		m_task = std::move(importer.task());
+	}
+	catch (const Common::FileCouldNotOpenException&) {
+		return false;
+	}
+
+	emit documentChanged(m_openedDocument.get());
+
+	return true;
 }
 
-bool Application::exportToGcode(const QString &fileName)
+bool Application::saveToGcode(const QString &fileName)
 {
 	std::ofstream file(fileName.toStdString());
 	if (file) {
 		try {
-			Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), file);
-			return true;
+			Exporter::GCode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode());
+			return saveToFile(exporter, fileName);
 		}
 		catch (const std::exception &exception) {
 			emit errorRaised(exception.what());
@@ -227,6 +258,13 @@ bool Application::exportToGcode(const QString &fileName)
 	}
 
 	return false;
+}
+
+bool Application::saveToDxfplot(const QString &fileName)
+{
+	Exporter::Dxfplot::Exporter exporter;
+
+	return saveToFile(exporter, fileName);
 }
 
 void Application::leftCutterCompensation()
@@ -241,19 +279,22 @@ void Application::rightCutterCompensation()
 
 void Application::resetCutterCompensation()
 {
-	m_task->forEachSelectedPath([](Model::Path &path){ path.resetOffset(); });
+	Task &task = m_openedDocument->task();
+	task.forEachSelectedPath([](Model::Path &path){ path.resetOffset(); });
 }
 
 void Application::hideSelection()
 {
-	m_task->forEachSelectedPath([](Model::Path &path){
+	Task &task = m_openedDocument->task();
+	task.forEachSelectedPath([](Model::Path &path){
 		path.setVisible(false);
 	});
 }
 
 void Application::showHidden()
 {
-	m_task->forEachPath([](Model::Path &path){
+	Task &task = m_openedDocument->task();
+	task.forEachPath([](Model::Path &path){
 		if (!path.visible()) {
 			path.setVisible(true);
 			path.setSelected(true);

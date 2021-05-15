@@ -2,12 +2,12 @@
 
 #include <uic/ui_profile.h>
 
-#include <model/application.h>
+#include <model/documentmodelobserver.h>
 
 namespace View
 {
 
-class Profile : public QWidget, public Ui::Profile
+class Profile : public Model::DocumentModelObserver<QWidget>, public Ui::Profile
 {
 private:
 	Model::Application &m_app;
@@ -37,11 +37,14 @@ private:
 public:
 	explicit Profile(Model::Application &app);
 
+protected:
+	void documentChanged();
+
 public Q_SLOTS:
 	void configChanged(const Config::Config &config);
-	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
+	void toolConfigChanged(const Config::Tools::Tool &tool);
 	void currentToolTextChanged(const QString &toolName);
-	void selectedProfileConfigChanged(const Config::Profiles::Profile &profile);
+	void profileConfigChanged(const Config::Profiles::Profile &profile);
 	void currentProfileTextChanged(const QString &profileName);
 };
 

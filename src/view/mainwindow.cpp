@@ -102,7 +102,7 @@ MainWindow::MainWindow(Model::Application &app)
 	setTaskToolsEnabled(false);
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &Model::Application::taskChanged, this, &MainWindow::taskChanged);
+	connect(&m_app, &Model::Application::documentChanged, this, &MainWindow::documentChanged);
 	connect(&m_app, &Model::Application::errorRaised, this, &MainWindow::displayError);
 }
 
@@ -123,7 +123,7 @@ void MainWindow::exportFile()
 	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty()) {
-		if (!m_app.exportToGcode(fileName)) {
+		if (!m_app.saveToGcode(fileName)) {
 			QMessageBox messageBox;
 			messageBox.critical(this, "Error", "Couldn't save " + fileName);
 		}
@@ -138,9 +138,9 @@ void MainWindow::openSettings()
 	}
 }
 
-void MainWindow::taskChanged(Model::Task *newTask)
+void MainWindow::documentChanged(Model::Document *newDocument)
 {
-	setTaskToolsEnabled(true);
+	setTaskToolsEnabled((newDocument != nullptr));
 }
 
 void MainWindow::displayError(const QString &message)
