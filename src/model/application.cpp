@@ -189,15 +189,12 @@ bool Application::loadDxf(const QString &fileName)
 		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 		const std::string &layerName = importerLayer.name();
-		Layer::UPtr layer = std::make_unique<Layer>(layerName);
+		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName));
 
 		// Create paths from merged and cleaned polylines of one layer
 		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
-		layer->setChildren(children);
 
-		// Track layer and paths to construct task
-		layers.push_back(std::move(layer));
-		paths.insert(paths.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
+		std::move(children.begin(), children.end(), std::back_inserter(paths));
 	}
 
 	m_task = std::make_unique<Task>(std::move(paths), std::move(layers));

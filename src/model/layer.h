@@ -20,7 +20,7 @@ public:
 	const Path& childrenAt(int index) const;
 	int childIndexFor(const Path& child) const;
 
-	void setChildren(const Path::ListUPtr& children);
+	void addChildren(Path& child);
 };
 
 }
