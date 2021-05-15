@@ -38,11 +38,9 @@ int Layer::childIndexFor(const Path& child) const
 	return std::distance(m_children.cbegin(), it);
 }
 
-void Layer::setChildren(const Path::ListUPtr& children)
+void Layer::addChildren(Path& child)
 {
-	m_children.resize(children.size());
-	std::transform(children.cbegin(), children.cend(), m_children.begin(),
-		[](const Path::UPtr &ptr){ return ptr.get(); });
+	m_children.push_back(&child);
 }
 
 }
