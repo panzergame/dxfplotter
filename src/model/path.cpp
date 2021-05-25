@@ -24,8 +24,6 @@ Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const Pat
 	m_layer(layer),
 	m_globallyVisible(true)
 {
-	m_layer.addChildren(*this);
-
 	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }

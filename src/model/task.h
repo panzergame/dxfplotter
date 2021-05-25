@@ -3,6 +3,8 @@
 #include <model/path.h>
 #include <model/layer.h>
 
+#include <exporter/dxfplot/access.h>
+
 namespace Model
 {
 
@@ -10,8 +12,10 @@ class Task : public QObject, public Common::Aggregable<Task>
 {
 	Q_OBJECT;
 
+	friend Exporter::Dxfplot::Access<Task>;
+
 private:
-	Path::ListUPtr m_paths;
+	Path::ListPtr m_paths;
 	Layer::ListUPtr m_layers;
 
 	Path::ListPtr m_stack;
@@ -24,7 +28,7 @@ public:
 		DOWN = 1
 	};
 
-	explicit Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers);
+	explicit Task(Layer::ListUPtr &&layers);
 
 	int pathCount() const;
 	const Path &pathAt(int index) const;
@@ -44,8 +48,16 @@ public:
 	template <class Functor>
 	void forEachPath(Functor &&functor)
 	{
-		for (Path::UPtr &path : m_paths) {
+		for (Path *path : m_paths) {
 			functor(*path);
+		}
+	}
+
+	template <class Functor>
+	void forEachPath(Functor &&functor) const
+	{
+		for (const Path *path : m_paths) {
+			functor(static_cast<const Path &>(*path));
 		}
 	}
 

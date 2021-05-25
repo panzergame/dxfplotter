@@ -4,15 +4,17 @@
 
 #include <geometry/bulge.h>
 
-#include "cavc/polylineoffset.hpp"
+#include <cavc/polylineoffset.hpp>
 
-#include <vector>
+#include <exporter/dxfplot/access.h>
 
 namespace Geometry
 {
 
 class Polyline : public Common::Aggregable<Polyline>
 {
+	friend Exporter::Dxfplot::Access<Polyline>;
+
 private:
 	Bulge::List m_bulges;
 

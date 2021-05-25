@@ -27,7 +27,7 @@ protected:
 
 		Model::Layer::ListUPtr layers;
 		layers.push_back(std::move(layer));
-		m_task = std::make_unique<Model::Task>(std::move(paths), std::move(layers));
+		m_task = std::make_unique<Model::Task>(std::move(layers));
 		m_document = std::make_unique<Model::Document>(std::move(m_task), m_tool, m_profile);
 	}
 };

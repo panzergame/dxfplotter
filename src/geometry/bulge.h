@@ -6,15 +6,19 @@
 #include <geometry/circle.h>
 #include <geometry/utils.h>
 
-#include <QVector2D>
-
 #include <cavc/plinesegment.hpp>
+
+#include <exporter/dxfplot/access.h>
+
+#include <QVector2D>
 
 namespace Geometry
 {
 
-class Bulge : public Common::Aggregable<Bulge> // TODO rename segment and tangent bulge ?
+class Bulge : public Common::Aggregable<Bulge>
 {
+	friend Exporter::Dxfplot::Access<Bulge>;
+
 private:
 	QVector2D m_start;
 	QVector2D m_end;
