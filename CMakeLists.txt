@@ -31,6 +31,8 @@ find_package(Qt5 COMPONENTS REQUIRED
 
 find_package(yaml-cpp REQUIRED)
 
+find_package(cereal REQUIRED)
+
 set(INCLUDE_DIRS
 	src
 	thirdparty
@@ -61,6 +63,7 @@ set(LINK_LIBRARIES
 	fmt
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
+	cereal
 )
 
 include_directories(${INCLUDE_DIRS})

@@ -79,7 +79,6 @@ Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer&
 {
 	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	Path::ListUPtr paths;
 	Layer::ListUPtr layers;
 	for (Importer::Dxf::Layer &importerLayer : importer.layers()) {
 		// Merge polylines to create longest contours
@@ -88,15 +87,14 @@ Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer&
 		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 		const std::string &layerName = importerLayer.name();
-		const Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName));
+		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName));
 
 		// Create paths from merged and cleaned polylines of one layer
 		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
-
-		std::move(children.begin(), children.end(), std::back_inserter(paths));
+		layer->setChildren(std::move(children));
 	}
 
-	return std::make_unique<Task>(std::move(paths), std::move(layers));
+	return std::make_unique<Task>(std::move(layers));
 }
 
 Application::Application()

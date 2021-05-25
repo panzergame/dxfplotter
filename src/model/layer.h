@@ -2,6 +2,8 @@
 
 #include <model/path.h>
 
+#include <exporter/dxfplot/access.h>
+
 namespace Model
 {
 
@@ -9,8 +11,10 @@ class Layer : public Renderable, public Common::Aggregable<Layer>
 {
 	Q_OBJECT;
 
+	friend Exporter::Dxfplot::Access<Layer>;
+
 private:
-	Path::ListPtr m_children;
+	Path::ListUPtr m_children;
 
 public:
 	explicit Layer(const std::string &name);
@@ -20,7 +24,15 @@ public:
 	const Path& childrenAt(int index) const;
 	int childIndexFor(const Path& child) const;
 
-	void addChildren(Path& child);
+	template <class Functor>
+	void forEachChild(Functor &&functor)
+	{
+		for (Path::UPtr &child : m_children) {
+			functor(*child);
+		}
+	}
+
+	void setChildren(Path::ListUPtr &&children);
 };
 
 }

@@ -6,7 +6,7 @@
 
 #include <sstream>
 
-TEST(ExporterTest, shouldRenderAllPathsWhenAllVisible)
+TEST(GcodeExporterTest, shouldRenderAllPathsWhenAllVisible)
 {
 	std::ostringstream output;
 	const Config::Tools::Tool tool("tool", YAML::Node());
@@ -21,10 +21,11 @@ TEST(ExporterTest, shouldRenderAllPathsWhenAllVisible)
 
 	Model::Path::ListUPtr paths;
 	paths.emplace_back(path);
+	layer->setChildren(std::move(paths));
 
 	Model::Layer::ListUPtr layers;
 	layers.emplace_back(layer);
-	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(paths), std::move(layers));
+	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
 	Model::Document document(std::move(task), tool, profile);
 
 	{
