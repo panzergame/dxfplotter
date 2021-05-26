@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exporter/dxfplot/access.h>
+#include <exporter/dxfplot/qvector2d.h>
 
 #include <cereal/cereal.hpp>
 
@@ -15,7 +16,9 @@ struct Access<Geometry::Bulge>
 	template <class Archive>
 	void operator()(Archive &archive, const Geometry::Bulge &bulge)
 	{
-		archive(42);
+		archive(cereal::make_nvp("start", bulge.start()));
+		archive(cereal::make_nvp("end", bulge.end()));
+		archive(cereal::make_nvp("tangent", bulge.tangent()));
 	}
 };
 

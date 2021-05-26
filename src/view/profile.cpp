@@ -30,6 +30,9 @@ void Profile::documentChanged()
 {
 	connect(document(), &Model::Document::toolConfigChanged, this, &Profile::toolConfigChanged);
 	connect(document(), &Model::Document::profileConfigChanged, this, &Profile::profileConfigChanged);
+
+	toolComboBox->setCurrentText(QString::fromStdString(document()->toolConfig().name()));
+	profileComboBox->setCurrentText(QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
 }
 
 void Profile::configChanged(const Config::Config &config)
