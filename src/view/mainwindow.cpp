@@ -71,6 +71,8 @@ void MainWindow::setupMenuActions()
 {
 	// File actions
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
+	connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
@@ -111,8 +113,23 @@ void MainWindow::openFile()
 	const QString fileName = QFileDialog::getOpenFileName(this);
 	if (!fileName.isEmpty()) {
 		if (!m_app.loadFile(fileName)) {
-			QMessageBox messageBox;
-			messageBox.critical(this, "Error", "Invalid file type " + fileName);
+			QMessageBox::critical(this, "Error", "Invalid file type " + fileName);
+		}
+	}
+}
+
+void MainWindow::saveFile()
+{
+}
+
+void MainWindow::saveAsFile()
+{
+	const QString defaultPath = m_app.currentFileBaseName() + ".dxfplot";
+	const QString fileName = QFileDialog::getSaveFileName(this, "Save As File", defaultPath, "Text files (*.dxfplot)");
+
+	if (!fileName.isEmpty()) {
+		if (!m_app.saveToDxfplot(fileName)) {
+			QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 		}
 	}
 }
@@ -124,8 +141,7 @@ void MainWindow::exportFile()
 
 	if (!fileName.isEmpty()) {
 		if (!m_app.saveToGcode(fileName)) {
-			QMessageBox messageBox;
-			messageBox.critical(this, "Error", "Couldn't save " + fileName);
+			QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 		}
 	}
 }
