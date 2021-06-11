@@ -35,6 +35,8 @@ public:
 
 protected Q_SLOTS:
 	void openFile();
+	void saveFile();
+	void saveAsFile();
 	void exportFile();
 	void openSettings();
 };
