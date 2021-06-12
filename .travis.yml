@@ -39,16 +39,6 @@ branches:
 
 jobs:
   include:
-  - stage: test
-    script: bash travis/buildtestcoverage.sh
-  - stage: sonarcloud
-    script: bash travis/analysesonarcloud.sh
-  - stage: deploy
-    script: bash travis/buildappimage.sh
-    deploy:
-      provider: releases
-      token: "$GITHUB_TOKEN"
-      file: 'dxfplotter-x86_64.AppImage'
-      cleanup: false
-      on:
-        branch: master
+  - stage: debug
+    script: ls /usr/share/cmake
+
