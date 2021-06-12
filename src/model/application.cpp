@@ -165,9 +165,14 @@ void Application::defaultProfileFromCmd(const QString &profileName)
 	}
 }
 
-QString Application::currentFileBaseName() const
+const QString &Application::currentImportedFileBaseName() const
 {
-	return m_currentFileBaseName;
+	return m_currentImportedFileBaseName;
+}
+
+const QString &Application::currentDxfplotFileName() const
+{
+	return m_currentDxfplotFileName;
 }
 
 void Application::loadFileFromCmd(const QString &fileName)
@@ -179,17 +184,21 @@ void Application::loadFileFromCmd(const QString &fileName)
 
 bool Application::loadFile(const QString &fileName)
 {
-	const QMimeDatabase db;
-	const QMimeType mime = db.mimeTypeForFile(fileName);
-
 	qInfo() << "Opening " << fileName;
 
-	if (mime.name() == "image/vnd.dxf") {
+	m_currentDxfplotFileName = "";
+	m_currentImportedFileBaseName = "";
+
+	const QMimeDatabase db;
+	const QMimeType mime = db.mimeTypeForFile(fileName);
+	const QString mineName = mime.name();
+
+	if (mineName == "image/vnd.dxf") {
 		if (!loadFromDxf(fileName)) {
 			return false;
 		}
 	}
-	else if (mime.name() == "text/plain") {
+	else if (mineName == "text/plain") {
 		loadFromDxfplot(fileName);
 	}
 	else {
@@ -201,8 +210,6 @@ bool Application::loadFile(const QString &fileName)
 	const QFileInfo fileInfo(fileName);
 	const QString title = fileInfo.fileName();
 	emit titleChanged(title);
-
-	m_currentFileBaseName = fileInfo.absoluteDir().filePath(fileInfo.baseName());
 
 	return true;
 }
@@ -221,6 +228,9 @@ bool Application::loadFromDxf(const QString &fileName)
 		return false;
 	}
 
+	const QFileInfo fileInfo(fileName);
+	m_currentImportedFileBaseName = fileInfo.absoluteDir().filePath(fileInfo.baseName());
+
 	emit documentChanged(m_openedDocument.get());
 
 	return true;
@@ -236,6 +246,8 @@ bool Application::loadFromDxfplot(const QString &fileName)
 	catch (const Common::FileCouldNotOpenException&) {
 		return false;
 	}
+
+	m_currentDxfplotFileName = fileName;
 
 	emit documentChanged(m_openedDocument.get());
 
@@ -261,8 +273,13 @@ bool Application::saveToGcode(const QString &fileName)
 bool Application::saveToDxfplot(const QString &fileName)
 {
 	Exporter::Dxfplot::Exporter exporter;
+	
+	const bool succeedSaving = saveToFile(exporter, fileName);
+	if (succeedSaving) {
+		m_currentDxfplotFileName = fileName;
+	}
 
-	return saveToFile(exporter, fileName);
+	return succeedSaving;
 }
 
 void Application::leftCutterCompensation()

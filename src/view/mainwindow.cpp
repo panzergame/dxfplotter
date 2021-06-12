@@ -120,11 +120,20 @@ void MainWindow::openFile()
 
 void MainWindow::saveFile()
 {
+	const QString fileName = m_app.currentDxfplotFileName();
+	if (fileName.isEmpty()) {
+		saveAsFile();
+	}
+	else {
+		if (!m_app.saveToDxfplot(fileName)) {
+			QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
+		}
+	}
 }
 
 void MainWindow::saveAsFile()
 {
-	const QString defaultPath = m_app.currentFileBaseName() + ".dxfplot";
+	const QString defaultPath = m_app.currentImportedFileBaseName() + ".dxfplot";
 	const QString fileName = QFileDialog::getSaveFileName(this, "Save As File", defaultPath, "Text files (*.dxfplot)");
 
 	if (!fileName.isEmpty()) {
@@ -136,7 +145,7 @@ void MainWindow::saveAsFile()
 
 void MainWindow::exportFile()
 {
-	const QString defaultPath = m_app.currentFileBaseName() + ".ngc";
+	const QString defaultPath = m_app.currentImportedFileBaseName() + ".ngc";
 	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty()) {

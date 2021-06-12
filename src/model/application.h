@@ -26,8 +26,9 @@ private:
 	const Config::Tools::Tool *m_defaultToolConfig;
 	const Config::Profiles::Profile *m_defaultProfileConfig;
 
-	// Absolute file basename of current loaded file
-	QString m_currentFileBaseName;
+	// Absolute file basename of current imported file
+	QString m_currentImportedFileBaseName;
+	QString m_currentDxfplotFileName;
 
 	Document::UPtr m_openedDocument;
 
@@ -66,7 +67,8 @@ public:
 	bool selectProfile(const QString &profileName);
 	void defaultProfileFromCmd(const QString &profileName);
 
-	QString currentFileBaseName() const;
+	const QString &currentImportedFileBaseName() const;
+	const QString &currentDxfplotFileName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadFromDxf(const QString &fileName);
