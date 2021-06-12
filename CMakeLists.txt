@@ -10,6 +10,9 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+# Avoid building cereal tests
+set(JUST_INSTALL_CEREAL ON)
+
 # Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
@@ -32,11 +35,10 @@ find_package(Qt5 COMPONENTS REQUIRED
 find_package(yaml-cpp REQUIRED)
 find_package(fmt REQUIRED)
 
-find_package(cereal REQUIRED)
-
 set(INCLUDE_DIRS
 	src
 	thirdparty
+	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
