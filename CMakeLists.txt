@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.11)
 
+cmake_policy(SET CMP0077 NEW)
+
 project(dxfplotter)
 
 include(CTest)
@@ -9,6 +11,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(BUILD_TESTS OFF)
 
 # Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
@@ -23,6 +27,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
+find_package(cereal)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
