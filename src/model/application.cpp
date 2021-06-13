@@ -98,7 +98,7 @@ Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer&
 }
 
 Application::Application()
-	:m_config(Config::Config(configFilePath())),
+	:m_config(configFilePath()),
 	// Default select first tool
 	m_defaultToolConfig(&m_config.root().tools().first()),
 	// Default select first profile
@@ -254,7 +254,7 @@ bool Application::loadFromDxfplot(const QString &fileName)
 	return true;
 }
 
-bool Application::saveToGcode(const QString &fileName)
+bool Application::saveToGcode(const QString &fileName) const
 {
 	std::ofstream file(fileName.toStdString());
 	if (file) {

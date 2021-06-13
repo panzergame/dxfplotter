@@ -74,7 +74,7 @@ public:
 	bool loadFromDxf(const QString &fileName);
 	bool loadFromDxfplot(const QString &fileName);
 
-	bool saveToGcode(const QString &fileName);
+	bool saveToGcode(const QString &fileName) const;
 	bool saveToDxfplot(const QString &fileName);
 
 	void leftCutterCompensation();
@@ -88,7 +88,7 @@ Q_SIGNALS:
 	void documentChanged(Document *newDocument);
 	void titleChanged(QString title);
 	void configChanged(Config::Config &config);
-	void errorRaised(const QString& message);
+	void errorRaised(const QString& message) const;
 };
 
 }
