@@ -14,7 +14,7 @@ template<>
 struct Access<Model::Layer>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const Model::Layer &layer)
+	void operator()(Archive &archive, const Model::Layer &layer) const
 	{
 		archive(cereal::make_nvp("children", layer.m_children));
 	}

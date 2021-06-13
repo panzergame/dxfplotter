@@ -14,7 +14,7 @@ template<>
 struct Access<Model::Document>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const Model::Document &document)
+	void operator()(Archive &archive, const Model::Document &document) const
 	{
 		archive(cereal::make_nvp("task", document.task()));
 	}

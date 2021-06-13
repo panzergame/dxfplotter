@@ -74,7 +74,7 @@ public:
 	bool loadFromDxf(const QString &fileName);
 	bool loadFromDxfplot(const QString &fileName);
 
-	bool saveToGcode(const QString &fileName);
+	bool saveToGcode(const QString &fileName) const;
 	bool saveToDxfplot(const QString &fileName);
 
 	void leftCutterCompensation();

@@ -13,7 +13,7 @@ template<>
 struct Access<QVector2D>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const QVector2D &point)
+	void operator()(Archive &archive, const QVector2D &point) const
 	{
 		archive(cereal::make_nvp("x", point.x()));
 		archive(cereal::make_nvp("y", point.y()));

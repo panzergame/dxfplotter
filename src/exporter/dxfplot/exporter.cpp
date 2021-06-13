@@ -8,7 +8,7 @@
 namespace Exporter::Dxfplot
 {
 
-void Exporter::operator()(const Model::Document& document, std::ostream &output)
+void Exporter::operator()(const Model::Document& document, std::ostream &output)  const
 {
 	cereal::JSONOutputArchive archive(output);
 	archive(CEREAL_NVP(document));

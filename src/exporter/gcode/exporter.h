@@ -17,17 +17,17 @@ private:
 	const Config::Tools::Tool &m_tool;
 	const Config::Profiles::Profile::Gcode &m_gcode;
 
-	void convertToGCode(const Model::Task &task, std::ostream &output);
-	void convertToGCode(const Model::Path &path, std::ostream &output);
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline);
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth);
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge);
+	void convertToGCode(const Model::Task &task, std::ostream &output) const;
+	void convertToGCode(const Model::Path &path, std::ostream &output) const;
+	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline) const;
+	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth) const;
+	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const;
 
 public:
 	explicit Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode);
 	~Exporter() = default;
 
-	void operator()(const Model::Document& document, std::ostream &output);
+	void operator()(const Model::Document& document, std::ostream &output)  const;
 };
 
 }

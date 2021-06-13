@@ -4,7 +4,7 @@
 namespace Exporter::GCode
 {
 
-void Exporter::convertToGCode(const Model::Task &task, std::ostream &output)
+void Exporter::convertToGCode(const Model::Task &task, std::ostream &output) const
 {
 	PostProcessor processor(m_tool, m_gcode, output);
 
@@ -21,7 +21,7 @@ void Exporter::convertToGCode(const Model::Task &task, std::ostream &output)
 	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));
 }
 
-void Exporter::convertToGCode(const Model::Path &path, std::ostream &output)
+void Exporter::convertToGCode(const Model::Path &path, std::ostream &output) const
 {
 	const Model::PathSettings &settings = path.settings();
 	PathPostProcessor processor(settings, m_tool, m_gcode, output);
@@ -78,7 +78,7 @@ public:
 	}
 };
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth) const
 {
 	const float depthPerCut = m_tool.general().depthPerCut();
 
@@ -91,12 +91,12 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Poly
 	}
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline) const
 {
 	polyline.forEachBulge([this, &processor](const Geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const
 {
 	if (bulge.isLine()) {
 		processor.planeLinearMove(bulge.end());
@@ -128,7 +128,7 @@ Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Prof
 {
 }
 
-void Exporter::operator()(const Model::Document &document, std::ostream &output)
+void Exporter::operator()(const Model::Document &document, std::ostream &output) const
 {
 	convertToGCode(document.task(), output);
 }
