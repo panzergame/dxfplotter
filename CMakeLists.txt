@@ -67,7 +67,6 @@ set(LINK_LIBRARIES
 	fmt
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
-	cereal
 )
 
 include_directories(${INCLUDE_DIRS})
