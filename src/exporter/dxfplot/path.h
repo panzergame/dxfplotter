@@ -2,6 +2,7 @@
 
 #include <exporter/dxfplot/access.h>
 #include <exporter/dxfplot/offsettedpath.h>
+#include <exporter/dxfplot/pathsettings.h>
 
 #include <cereal/cereal.hpp>
 
@@ -18,6 +19,8 @@ struct Access<Model::Path>
 	{
 		archive(cereal::make_nvp("base_polyline", path.m_basePolyline));
 		archive(cereal::make_nvp("offseted_path", path.m_offsettedPath));
+		archive(cereal::make_nvp("settings", path.settings()));
+		archive(cereal::make_nvp("visible", path.visible()));
 	}
 };
 
