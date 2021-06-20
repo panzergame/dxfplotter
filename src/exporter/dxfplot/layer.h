@@ -17,6 +17,7 @@ struct Access<Model::Layer>
 	void operator()(Archive &archive, const Model::Layer &layer) const
 	{
 		archive(cereal::make_nvp("children", layer.m_children));
+		archive(cereal::make_nvp("visible", layer.visible()));
 	}
 };
 
