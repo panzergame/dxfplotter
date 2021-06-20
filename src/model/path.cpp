@@ -59,33 +59,31 @@ const Geometry::Polyline &Path::basePolyline() const
 
 Geometry::Polyline::List Path::finalPolylines() const
 {
-	if (m_offsetedPolylines.empty()) {
-		return {m_basePolyline};
-	}
-	return m_offsetedPolylines;
+	return m_offsettedPath ? m_offsettedPath->offsettedPolylines() : Geometry::Polyline::List{m_basePolyline};
 }
 
-const Geometry::Polyline::List &Path::offsetedPolylines() const
+Model::OffsettedPath *Path::offsettedPath() const
 {
-	return m_offsetedPolylines;
+	return m_offsettedPath.get();
 }
 
 void Path::offset(float offset, float minimumPolylineLength, float minimumArcLength)
 {
-	Geometry::Polyline::List offsetedPolylines = m_basePolyline.offsetted(offset);
+	Geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(offset);
 
-	Geometry::Cleaner cleaner(std::move(offsetedPolylines), minimumPolylineLength, minimumArcLength);
+	Geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
+	cleaner.polylines();
 
-	m_offsetedPolylines = cleaner.polylines();
+	m_offsettedPath = std::make_unique<OffsettedPath>(std::move(offsettedPolylines), OffsettedPath::Direction::LEFT);
 
-	emit offseted();
+	emit offsettedPathChanged();
 }
 
 void Path::resetOffset()
 {
-	m_offsetedPolylines.clear();
+	m_offsettedPath.reset();
 
-	emit offseted();
+	emit offsettedPathChanged();
 }
 
 bool Path::isPoint() const

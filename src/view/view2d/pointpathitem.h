@@ -1,7 +1,7 @@
 #pragma once
 
 #include <view/view2d/basicpathitem.h>
-#include <view/view2d/offsetedpolylinepathitem.h>
+#include <view/view2d/offsettedpolylinepathitem.h>
 
 namespace View::View2d
 {

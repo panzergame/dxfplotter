@@ -1,7 +1,7 @@
 #pragma once
 
 #include <view/view2d/basicpathitem.h>
-#include <view/view2d/offsetedpolylinepathitem.h>
+#include <view/view2d/offsettedpolylinepathitem.h>
 
 namespace View::View2d
 {
@@ -16,13 +16,15 @@ private:
 	QPainterPath m_paintPath;
 	QPainterPath m_shapePath;
 
-	// Item of offseted polylines of the same path.
-	OffsetedPolylinePathItem m_offsetedPath;
+	// Item of offsetted polylines of the same path.
+	std::unique_ptr<OffsettedPolylinePathItem> m_offsettedPath;
 
 	QPainterPath paintPath() const;
 	QPainterPath shapePath() const;
 
-	// Change selected state and propagate to sub paths (e.g offseted path).
+	void updateOffsetedPath();
+
+	// Change selected state and propagate to sub paths (e.g offsetted path).
 	void setSelected(bool selected) override;
 
 public:

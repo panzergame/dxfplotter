@@ -1,7 +1,7 @@
 set(SRC
 	basicpathitem.cpp
 	bulgepainter.cpp
-	offsetedpolylinepathitem.cpp
+	offsettedpolylinepathitem.cpp
 	pointpathitem.cpp
 	polylinepathitem.cpp
 	rubberband.cpp
@@ -9,7 +9,7 @@ set(SRC
 
 	basicpathitem.h
 	bulgepainter.h
-	offsetedpolylinepathitem.h
+	offsettedpolylinepathitem.h
 	pointpathitem.h
 	polylinepathitem.h
 	rubberband.h

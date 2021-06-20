@@ -6,6 +6,7 @@
 
 #include <model/renderable.h>
 #include <model/pathsettings.h>
+#include <model/offsettedpath.h>
 
 #include <string>
 
@@ -20,7 +21,7 @@ class Path : public Renderable, public Common::Aggregable<Path>
 
 private:
 	Geometry::Polyline m_basePolyline;
-	Geometry::Polyline::List m_offsetedPolylines;
+	std::unique_ptr<Model::OffsettedPath> m_offsettedPath;
 	PathSettings m_settings;
 	Layer &m_layer;
 	bool m_globallyVisible;
@@ -38,7 +39,7 @@ public:
 	const Geometry::Polyline &basePolyline() const;
 	Geometry::Polyline::List finalPolylines() const;
 
-	const Geometry::Polyline::List &offsetedPolylines() const;
+	Model::OffsettedPath *offsettedPath() const;
 	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
@@ -51,7 +52,7 @@ public:
 
 Q_SIGNALS:
 	void globalVisibilityChanged(bool globallyVisible);
-	void offseted();
+	void offsettedPathChanged();
 };
 
 }

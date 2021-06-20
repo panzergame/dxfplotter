@@ -28,21 +28,34 @@ QPainterPath PolylinePathItem::shapePath() const
 	return stroker.createStroke(m_paintPath);
 }
 
+void PolylinePathItem::updateOffsetedPath()
+{
+	Model::OffsettedPath *offsettedPath = m_path.offsettedPath();
+	if (offsettedPath) {
+		m_offsettedPath = std::make_unique<OffsettedPolylinePathItem>(*offsettedPath);
+		// Link our offsetted path item for drawing
+		m_offsettedPath->setParentItem(this); // TODO use QGraphicsItemGroup
+	}
+	else {
+		m_offsettedPath.reset();
+	}
+}
+
 void PolylinePathItem::setSelected(bool selected)
 {
 	BasicPathItem::setSelected(selected);
 
-	m_offsetedPath.setSelected(selected);
+	if (m_offsettedPath) {
+		m_offsettedPath->setSelected(selected);
+	}
 }
 
 PolylinePathItem::PolylinePathItem(Model::Path &path)
 	:BasicPathItem(path),
 	m_paintPath(paintPath()),
-	m_shapePath(shapePath()),
-	m_offsetedPath(path)
+	m_shapePath(shapePath())
 {
-	// Link our offsetted path item for drawing
-	m_offsetedPath.setParentItem(this); // TODO use QGraphicsItemGroup
+	connect(&path, &Model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
 }
 
 void PolylinePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

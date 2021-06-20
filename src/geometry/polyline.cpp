@@ -104,16 +104,16 @@ Polyline::List Polyline::offsetted(float offset) const
 
 	ccPolyline.isClosed() = closed;
 	// Offset CAVC polyline
-	std::vector<cavc::Polyline<double> > offsetedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
+	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
 
 	// Convert back to polylines
-	Polyline::List offsetedPolylines(offsetedCcPolylines.size());
-	std::transform(offsetedCcPolylines.begin(), offsetedCcPolylines.end(), offsetedPolylines.begin(),
+	Polyline::List offsettedPolylines(offsettedCcPolylines.size());
+	std::transform(offsettedCcPolylines.begin(), offsettedCcPolylines.end(), offsettedPolylines.begin(),
 		[](const cavc::Polyline<double> &polyline) {
 			return Polyline(polyline);
 		});
 
-	return offsetedPolylines;
+	return offsettedPolylines;
 }
 
 }
