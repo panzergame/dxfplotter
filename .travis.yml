@@ -12,6 +12,7 @@ addons:
     - qtbase5-dev
     - libyaml-cpp-dev
     - lcov
+    - libcereal-dev
   sonarcloud:
     organization: "panzergame"
     token: "$SONARCLOUD_TOKEN"

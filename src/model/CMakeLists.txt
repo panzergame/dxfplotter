@@ -1,5 +1,6 @@
 set(SRC
 	application.cpp
+	document.cpp
 	layer.cpp
 	path.cpp
 	pathsettings.cpp
@@ -8,13 +9,14 @@ set(SRC
 	task.cpp
 
 	application.h
+	document.h
 	layer.h
 	path.h
 	pathsettings.h
 	pathgroupsettings.h
 	renderable.h
 	task.h
-	taskmodelobserver.h
+	documentmodelobserver.h
 )
 
 add_library(model ${SRC})

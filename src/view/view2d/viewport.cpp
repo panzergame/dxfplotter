@@ -13,7 +13,7 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 
 void Viewport::setupPathItems()
 {
-	task()->forEachPath(
+	task().forEachPath(
 		[scene = scene()](Model::Path &path) {
 			BasicPathItem *item;
 			if (path.isPoint()) {
@@ -233,7 +233,7 @@ public:
 	}
 };
 
-void Viewport::taskChanged()
+void Viewport::documentChanged()
 {
 	setupModel();
 	fitItemsInView();
@@ -328,7 +328,7 @@ void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 }
 
 Viewport::Viewport(Model::Application &app)
-	:TaskModelObserver(app)
+	:DocumentModelObserver(app)
 {
 	// Setup default empty scene
 	setScene(new QGraphicsScene());

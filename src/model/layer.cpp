@@ -29,7 +29,7 @@ const Path& Layer::childrenAt(int index) const
 
 int Layer::childIndexFor(const Path& child) const
 {
-	const Path::ListPtr::const_iterator it = std::find(m_children.cbegin(), m_children.cend(), &child);
+	const Path::ListUPtr::const_iterator it = std::find_if(m_children.cbegin(), m_children.cend(), [&child](const Path::UPtr &ptr){ return ptr.get() == &child; });
 
 	if (it == m_children.cend()) {
 		return -1;
@@ -38,11 +38,9 @@ int Layer::childIndexFor(const Path& child) const
 	return std::distance(m_children.cbegin(), it);
 }
 
-void Layer::setChildren(const Path::ListUPtr& children)
+void Layer::setChildren(Path::ListUPtr &&children)
 {
-	m_children.resize(children.size());
-	std::transform(children.cbegin(), children.cend(), m_children.begin(),
-		[](const Path::UPtr &ptr){ return ptr.get(); });
+	m_children = std::move(children);
 }
 
 }

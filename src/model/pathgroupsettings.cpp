@@ -5,7 +5,7 @@
 namespace Model
 {
 
-PathGroupSettings::PathGroupSettings(const Task *task)
+PathGroupSettings::PathGroupSettings(const Task &task)
 	:m_task(task)
 {
 }

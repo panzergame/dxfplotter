@@ -2,14 +2,15 @@
 
 #include <exporter/gcode/exporter.h>
 #include <config/config.h>
-#include <model/task.h>
+#include <model/document.h>
 
 #include <sstream>
 
-TEST(ExporterTest, shouldRenderAllPathsWhenAllVisible)
+TEST(GcodeExporterTest, shouldRenderAllPathsWhenAllVisible)
 {
 	std::ostringstream output;
 	const Config::Tools::Tool tool("tool", YAML::Node());
+	const Config::Profiles::Profile profile("profile", YAML::Node());
 	const Config::Profiles::Profile::Gcode gcode("gcode", YAML::Node());
 
 	Model::Layer *layer = new Model::Layer("");
@@ -20,12 +21,17 @@ TEST(ExporterTest, shouldRenderAllPathsWhenAllVisible)
 
 	Model::Path::ListUPtr paths;
 	paths.emplace_back(path);
+	layer->setChildren(std::move(paths));
 
 	Model::Layer::ListUPtr layers;
 	layers.emplace_back(layer);
-	Model::Task task(std::move(paths), std::move(layers));
+	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
+	Model::Document document(std::move(task), tool, profile);
 
-	const Exporter::GCode::Exporter exporter(task, tool, gcode, output);
+	{
+		Exporter::GCode::Exporter exporter(tool, gcode);
+		exporter(document, output);
+	}
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.000 Y 0.000
