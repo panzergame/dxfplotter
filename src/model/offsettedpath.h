@@ -19,7 +19,7 @@ class OffsettedPath
 public:
 	enum class Direction
 	{
-		LEFT,
+		LEFT = 0,
 		RIGHT
 	};
 
@@ -31,7 +31,7 @@ public:
 	explicit OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction);
 
 	const Geometry::Polyline::List &offsettedPolylines() const;
-	Direction direction() const;
+	Geometry::CuttingDirection cuttingDirection() const;
 };
 
 }

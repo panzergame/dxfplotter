@@ -86,7 +86,7 @@ Polyline& Polyline::operator+=(const Polyline &other)
 	return *this;
 }
 
-Polyline::List Polyline::offsetted(float offset) const
+Polyline::List Polyline::offsetted(float margin) const
 {
 	cavc::Polyline<double> ccPolyline;
 
@@ -104,7 +104,7 @@ Polyline::List Polyline::offsetted(float offset) const
 
 	ccPolyline.isClosed() = closed;
 	// Offset CAVC polyline
-	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
+	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(ccPolyline, (double)margin);
 
 	// Convert back to polylines
 	Polyline::List offsettedPolylines(offsettedCcPolylines.size());

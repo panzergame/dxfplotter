@@ -67,14 +67,15 @@ Model::OffsettedPath *Path::offsettedPath() const
 	return m_offsettedPath.get();
 }
 
-void Path::offset(float offset, float minimumPolylineLength, float minimumArcLength)
+void Path::offset(float margin, float minimumPolylineLength, float minimumArcLength)
 {
-	Geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(offset);
-
+	Geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
 	Geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
-	cleaner.polylines();
 
-	m_offsettedPath = std::make_unique<OffsettedPath>(std::move(offsettedPolylines), OffsettedPath::Direction::LEFT);
+	const OffsettedPath::Direction direction = (margin > 0.0f) ?
+			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
+
+	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
 
 	emit offsettedPathChanged();
 }
@@ -99,6 +100,12 @@ const Model::PathSettings &Path::settings() const
 Model::PathSettings &Path::settings()
 {
 	return m_settings;
+}
+
+Geometry::CuttingDirection Path::cuttingDirection() const
+{
+	return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() :
+			 Geometry::CuttingDirection::FORWARD;
 }
 
 bool Path::globallyVisible() const

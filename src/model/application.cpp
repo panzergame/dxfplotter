@@ -223,12 +223,12 @@ bool Application::exportToGcode(const QString &fileName)
 
 void Application::leftCutterCompensation()
 {
-	cutterCompensation(-1.0f);
+	cutterCompensation(1.0f);
 }
 
 void Application::rightCutterCompensation()
 {
-	cutterCompensation(1.0f);
+	cutterCompensation(-1.0f);
 }
 
 void Application::resetCutterCompensation()

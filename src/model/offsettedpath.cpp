@@ -14,10 +14,14 @@ const Geometry::Polyline::List &OffsettedPath::offsettedPolylines() const
 	return m_offsettedPolylines;
 }
 
-OffsettedPath::Direction OffsettedPath::direction() const
+Geometry::CuttingDirection OffsettedPath::cuttingDirection() const
 {
-	return m_direction;
+	static const Geometry::CuttingDirection offsetDirectionToCuttingDirection[] = {
+		Geometry::CuttingDirection::FORWARD, // OffsettedPath::Direction::LEFT
+		Geometry::CuttingDirection::BACKWARD // OffsettedPath::Direction::RIGHT
+	};
+
+	return offsetDirectionToCuttingDirection[static_cast<int>(m_direction)];
 }
 
 }
-

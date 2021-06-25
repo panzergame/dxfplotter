@@ -24,6 +24,7 @@ void Exporter::convertToGCode(const Model::Task &task)
 void Exporter::convertToGCode(const Model::Path &path)
 {
 	const Model::PathSettings &settings = path.settings();
+	const Geometry::CuttingDirection cuttingDirection = path.cuttingDirection();
 	PathPostProcessor processor(settings, m_tool, m_gcode, m_output);
 
 	const Geometry::Polyline::List polylines = path.finalPolylines();
@@ -36,7 +37,7 @@ void Exporter::convertToGCode(const Model::Path &path)
 		processor.fastPlaneMove(polyline.start());
 		processor.preCut();
 
-		convertToGCode(processor, polyline, depth);
+		convertToGCode(processor, polyline, depth, cuttingDirection);
 
 		// Retract tool for further operations
 		processor.retractDepth();
@@ -49,25 +50,42 @@ class PassesIterator
 {
 private:
 	bool m_odd;
-	bool m_closed;
+	const bool m_closed;
+	const bool m_cuttingBackward;
 	const Geometry::Polyline& m_polyline;
 	const Geometry::Polyline m_polylineInverse;
 
+	bool needPolylineInverse() const
+	{
+		return (!m_closed || m_cuttingBackward);
+	}
+
+	const Geometry::Polyline &polylineForward() const
+	{
+		return (m_cuttingBackward) ? m_polylineInverse : m_polyline;
+	}
+
+	const Geometry::Polyline &polylineBackward() const
+	{
+		return (m_cuttingBackward) ? m_polyline : m_polylineInverse;
+	}
+
 public:
-	explicit PassesIterator(const Geometry::Polyline &polyline)
+	explicit PassesIterator(const Geometry::Polyline &polyline, Geometry::CuttingDirection direction)
 		:m_odd(true),
 		m_closed(polyline.isClosed()),
+		m_cuttingBackward(direction == Geometry::CuttingDirection::BACKWARD),
 		m_polyline(polyline),
-		m_polylineInverse(!m_closed ? polyline.inverse() : Geometry::Polyline())
+		m_polylineInverse(needPolylineInverse() ? m_polyline.inverse() : Geometry::Polyline())
 	{
 	}
 
 	const Geometry::Polyline &operator*() const
 	{
 		if (m_closed || m_odd) {
-			return m_polyline;
+			return polylineForward();
 		}
-		return m_polylineInverse;
+		return polylineBackward();
 	}
 
 	PassesIterator &operator++()
@@ -78,11 +96,11 @@ public:
 	}
 };
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth, Geometry::CuttingDirection cuttingDirection)
 {
 	const float depthPerCut = m_tool.general().depthPerCut();
 
-	PassesIterator iterator(polyline);
+	PassesIterator iterator(polyline, cuttingDirection);
 	for (float depth = depthPerCut; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
 		const float boundDepth = std::fminf(depth, maxDepth);
 		processor.depthLinearMove(-boundDepth);

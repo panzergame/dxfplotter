@@ -40,13 +40,15 @@ public:
 	Geometry::Polyline::List finalPolylines() const;
 
 	Model::OffsettedPath *offsettedPath() const;
-	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
+	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
 	bool isPoint() const;
 
 	const PathSettings &settings() const;
 	PathSettings &settings();
+
+	Geometry::CuttingDirection cuttingDirection() const;
 
 	bool globallyVisible() const;
 
