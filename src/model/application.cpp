@@ -3,7 +3,7 @@
 #include <geometry/cleaner.h>
 
 #include <importer/dxf/importer.h>
-// #include <importer/dxfplot/importer.h>
+#include <importer/dxfplot/importer.h>
 
 #include <exporter/gcode/exporter.h>
 #include <exporter/dxfplot/exporter.h>
@@ -239,17 +239,17 @@ bool Application::loadFromDxf(const QString &fileName)
 bool Application::loadFromDxfplot(const QString &fileName)
 {
 	try {
-// 		Importer::Dxfplot::Importer importer(fileName.toStdString());
+		Importer::Dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
  
-// 		m_task = std::move(importer.task());
+		m_openedDocument = importer(fileName.toStdString());
 	}
 	catch (const Common::FileCouldNotOpenException&) {
 		return false;
 	}
 
-	m_currentDxfplotFileName = fileName;
+// 	m_currentDxfplotFileName = fileName;
 
-	emit documentChanged(m_openedDocument.get());
+// 	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }

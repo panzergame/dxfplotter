@@ -146,9 +146,9 @@ Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Prof
 {
 }
 
-void Exporter::operator()(const Model::Document &document, std::ostream &output) const
+void Exporter::operator()(const Model::Document::UPtr &document, std::ostream &output) const
 {
-	convertToGCode(document.task(), output);
+	convertToGCode(document->task(), output);
 }
 
 
