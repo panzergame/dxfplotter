@@ -17,6 +17,7 @@ private:
 
 public:
 	explicit Document(Task::UPtr&& task, const Config::Tools::Tool &toolConfig, const Config::Profiles::Profile &profileConfig);
+	Document() = default;
 
 	Task& task();
 	const Task& task() const;

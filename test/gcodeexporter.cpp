@@ -26,7 +26,7 @@ TEST(GcodeExporterTest, shouldRenderAllPathsWhenAllVisible)
 	Model::Layer::ListUPtr layers;
 	layers.emplace_back(layer);
 	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
-	Model::Document document(std::move(task), tool, profile);
+	Model::Document::UPtr = document(std::move(task), tool, profile);
 
 	{
 		Exporter::GCode::Exporter exporter(tool, gcode);

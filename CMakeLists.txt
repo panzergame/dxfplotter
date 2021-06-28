@@ -60,6 +60,7 @@ set(LINK_LIBRARIES
 	model
 	config
 	importer-dxf
+	importer-dxfplot
 	exporter-gcode
 	exporter-dxfplot
 	geometry

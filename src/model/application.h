@@ -46,7 +46,7 @@ private:
 	{
 		std::ofstream output(fileName.toStdString());
 		if (output) {
-			exporter(*m_openedDocument, output);
+			exporter(m_openedDocument, output);
 			return true;
 		}
 

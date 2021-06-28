@@ -14,7 +14,7 @@ class Exporter
 public:
 	explicit Exporter() = default;
 
-	void operator()(const Model::Document& document, std::ostream &output)  const;
+	void operator()(const Model::Document::UPtr& document, std::ostream &output)  const;
 };
 
 }
