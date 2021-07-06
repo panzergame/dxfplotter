@@ -1,17 +1,23 @@
 #include <exporter.h>
 
-#include <cereal/cereal.hpp>
-#include <cereal/archives/json.hpp>
+#include <task.h>
 
-#include <document.h>
+#include <cereal/cereal.hpp>
 
 namespace Exporter::Dxfplot
 {
 
-void Exporter::operator()(const Model::Document::UPtr& document, std::ostream &output)  const
+void Exporter::operator()(const Model::Document& document, std::ostream &output)  const
 {
-	cereal::JSONOutputArchive archive(output);
- 	archive(CEREAL_NVP(document));
+	Archive archive(output);
+	save(archive, document);
+}
+
+void Exporter::save(Archive &archive, const Model::Document& document) const
+{
+	archive(cereal::make_nvp("task", document.task()));
+	archive(cereal::make_nvp("profile_name", document.profileConfig().name()));
+	archive(cereal::make_nvp("tool_name", document.toolConfig().name()));
 }
 
 }

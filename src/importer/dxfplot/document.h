@@ -23,8 +23,12 @@ template <> struct LoadAndConstruct<Model::Document>
 		archive(cereal::make_nvp("profile_name", profileName));
 		std::string toolName;
 		archive(cereal::make_nvp("tool_name", toolName));
+		
+		
 		std::cout << profileName << " " << toolName << std::endl;
-		//construct( x );
+		const Config::Tools::Tool tool = archive.m_tools[toolName];
+		const Config::Profiles::Profile profile = archive.m_profiles[toolName];
+		construct(nullptr, tool, profile);
 	}
 };
 

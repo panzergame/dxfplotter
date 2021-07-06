@@ -14,7 +14,7 @@ template<>
 struct Access<Geometry::Polyline>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const Geometry::Polyline &polyline) const
+	void save(Archive &archive, const Geometry::Polyline &polyline) const
 	{
 		archive(cereal::make_nvp("bulges", polyline.m_bulges));
 	}
