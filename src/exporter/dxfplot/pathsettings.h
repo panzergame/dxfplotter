@@ -14,7 +14,7 @@ template<>
 struct Access<Model::PathSettings>
 {
 	template <class Archive> // TODO use serialize in common library
-	void operator()(Archive &archive, const Model::PathSettings &pathSettings) const
+	void save(Archive &archive, const Model::PathSettings &pathSettings) const
 	{
 		archive(cereal::make_nvp("plane_feed_rate", pathSettings.planeFeedRate()));
 		archive(cereal::make_nvp("depth_feed_rate", pathSettings.depthFeedRate()));

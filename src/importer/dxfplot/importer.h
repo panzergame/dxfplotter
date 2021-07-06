@@ -4,6 +4,8 @@
 
 #include <model/document.h>
 
+#include <cereal/archives/json.hpp> // TODO
+
 namespace Importer::Dxfplot
 {
 
@@ -17,6 +19,7 @@ public:
 	explicit Importer(const Config::Tools &tools, const Config::Profiles &profiles);
 
 	Model::Document::UPtr operator()(const std::string &fileName) const;
+	Model::Document::UPtr operator()(std::istream& input) const;
 };
 
 }

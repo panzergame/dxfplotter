@@ -1,12 +1,13 @@
 #include <gtest/gtest.h>
 
-#include <exporter/gcode/exporter.h>
+#include <exporter/dxfplot/exporter.h>
+#include <importer/dxfplot/importer.h>
 #include <config/config.h>
 #include <model/document.h>
 
 #include <sstream>
 
-TEST(GcodeExporterTest, shouldRenderAllPathsWhenAllVisible)
+TEST(DxfplotImporterTest, shouldReimportDocumentWithToolAndProfileConfig)
 {
 	std::ostringstream output;
 	const Config::Tools::Tool tool("tool", YAML::Node());
@@ -29,36 +30,22 @@ TEST(GcodeExporterTest, shouldRenderAllPathsWhenAllVisible)
 	Model::Document document(std::move(task), tool, profile);
 
 	{
-		Exporter::GCode::Exporter exporter(tool, gcode);
+		Exporter::Dxfplot::Exporter exporter;
 		exporter(document, output);
 	}
 
-	EXPECT_EQ(R"(G0 Z 1.000
-G0 X 0.000 Y 0.000
-M4 S 10.000
-G1 Z -1.000 F 10.000
-G1 X 1.000 Y 1.000 F 10.000
-G1 Z -2.000 F 10.000
-G1 X 0.000 Y 0.000 F 10.000
-G1 Z -3.000 F 10.000
-G1 X 1.000 Y 1.000 F 10.000
-G1 Z -4.000 F 10.000
-G1 X 0.000 Y 0.000 F 10.000
-G1 Z -5.000 F 10.000
-G1 X 1.000 Y 1.000 F 10.000
-G1 Z -6.000 F 10.000
-G1 X 0.000 Y 0.000 F 10.000
-G1 Z -7.000 F 10.000
-G1 X 1.000 Y 1.000 F 10.000
-G1 Z -8.000 F 10.000
-G1 X 0.000 Y 0.000 F 10.000
-G1 Z -9.000 F 10.000
-G1 X 1.000 Y 1.000 F 10.000
-G1 Z -10.000 F 10.000
-G1 X 0.000 Y 0.000 F 10.000
-G0 Z 1.000
-M5
-G0 X 0.000 Y 0.000
-)", output.str());
+
+	Config::Tools tools{YAML::Node()};
+	Config::Profiles profiles{YAML::Node()};	
+	Importer::Dxfplot::Importer importer(tools, profiles);
+
+	{
+		std::istringstream input;
+		input.str(output.str());
+		Model::Document::UPtr document = importer(input);
+		
+	}
+	
+	std::cout << output.str() << std::endl;
 }
 

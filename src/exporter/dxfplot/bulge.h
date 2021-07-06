@@ -14,7 +14,7 @@ template<>
 struct Access<Geometry::Bulge>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const Geometry::Bulge &bulge) const
+	void save(Archive &archive, const Geometry::Bulge &bulge) const
 	{
 		archive(cereal::make_nvp("start", bulge.start()));
 		archive(cereal::make_nvp("end", bulge.end()));

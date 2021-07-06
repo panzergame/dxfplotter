@@ -20,6 +20,7 @@ set(SRC
 	arc.cpp
 	bulge.cpp
 	dxfplotexporter.cpp
+	dxfplotimporter.cpp
 	gcodeexporter.cpp
 	polyline.cpp
 	verticalspeed.cpp

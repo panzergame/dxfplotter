@@ -40,7 +40,7 @@ template<>
 struct Access<Model::Task>
 {
 	template <class Archive>
-	void operator()(Archive &archive, const Model::Task &task) const
+	void save(Archive &archive, const Model::Task &task) const
 	{
 		archive(cereal::make_nvp("layers", task.m_layers));
 
