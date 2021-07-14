@@ -1,11 +1,15 @@
 #pragma once
 
+#include <importer/dxf/entityimporter.h>
+#include <importer/dxf/layer.h>
+
 #include <geometry/polyline.h>
-#include <geometry/bezier.h>
 
 #include <string>
+#include <unordered_map>
 
 #include <libdxfrw/drw_entities.h>
+#include <libdxfrw/drw_objects.h>
 
 namespace Importer::Dxf
 {
@@ -13,25 +17,31 @@ namespace Importer::Dxf
 class Importer
 {
 private:
-	Geometry::Polyline::List m_polylines;
+	const BaseEntityImporter::Settings m_entityImporterSettings;
 
-	const float m_splineToArcPrecision;
-	const float m_minimumSplineLength;
+	std::unordered_map<std::string, Layer> m_nameToLayers;
 
-	void addPolyline(const Geometry::Polyline &polyline);
-
-	Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier);
+	void addLayer(const DRW_Layer &layer);
 
 public:
 	explicit Importer(const std::string &filename, float splineToArcPrecision, float minimumSplineLength);
 
-	Geometry::Polyline::List &&polylines();
+	Layer::List layers();
 
-	void convertToPolylines(const DRW_Line &line);
-	void convertToPolylines(const DRW_Spline &spline);
-	void convertToPolylines(const DRW_LWPolyline &lwpolyline);
-	void convertToPolylines(const DRW_Circle &circle);
-	void convertToPolylines(const DRW_Arc &arc);
+	template <class Entity>
+	void processEntity(const Entity &entity)
+	{
+		auto it = m_nameToLayers.find(entity.layer);
+		if (it != m_nameToLayers.end()) {
+			Layer &layer = it->second;
+
+			EntityImporter<Entity> entityImporter(layer, m_entityImporterSettings);
+			entityImporter(entity);
+		}
+	}
 };
+
+template <>
+void Importer::processEntity(const DRW_Layer &layer);
 
 }

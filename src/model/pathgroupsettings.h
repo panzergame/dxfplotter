@@ -27,18 +27,22 @@ private:
 	template <typename Getter, typename Return = typename Common::MemberFunctionTraits<Getter>::Return>
 	std::optional<Return> valueIfAllEqual(Getter &&getter) const
 	{
-		Path::ListPtr::const_iterator it = m_task->selectedPaths().begin();
+		// Reference value of last path to compare with.
+		Return lastValue;
+		bool firstValue = true;
+		bool allEqual = true;
 
-		// Reference value to compare with.
-		const Return &reference = ((*it)->settings().*getter)();
+		m_task->forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const Model::Path &path){
+			const Return &value = (path.settings().*getter)();
+			if (!firstValue && lastValue != value) {
+				allEqual = false;
+			}
+			firstValue = false;
+			lastValue = value;
+		});
 
-		if (std::all_of(++it, m_task->selectedPaths().end(), [reference, &getter](Path *path)
-			{
-				const Return& value = (path->settings().*getter)();
-				return value == reference;
-			}))
-		{
-			return std::make_optional(reference);
+		if (allEqual) {
+			return std::make_optional(lastValue);
 		}
 		return std::nullopt;
 	}
@@ -46,16 +50,19 @@ private:
 	template <typename Setter, typename T>
 	void setValue(Setter &&setter, T value)
 	{
-		m_task->forEachSelectedPath([value, &setter](Model::Path *path){
-			(path->settings().*setter)(value);
+		m_task->forEachSelectedPath([value, &setter](Model::Path &path){
+			(path.settings().*(std::forward<Setter>(setter)))(value);
 		});
 	}
 
 public:
 	explicit PathGroupSettings(const Task *task);
 
-	std::optional<float> feedRate() const;
-	void setFeedRate(float feedRate);
+	std::optional<float> planeFeedRate() const;
+	void setPlaneFeedRate(float planeFeedRate);
+
+	std::optional<float> depthFeedRate() const;
+	void setDepthFeedRate(float depthFeedRate);
 
 	std::optional<float> intensity() const;
 	void setIntensity(float intensity);

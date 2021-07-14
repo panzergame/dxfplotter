@@ -26,3 +26,4 @@ set(SRC
 )
 
 add_library(geometry ${SRC})
+add_coverage(geometry)

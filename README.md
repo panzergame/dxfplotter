@@ -4,20 +4,22 @@
 
 
 [![Build Status](https://travis-ci.com/panzergame/dxfplotter.svg?branch=develop)](https://travis-ci.com/panzergame/dxfplotter)
+[![codecov](https://codecov.io/gh/panzergame/dxfplotter/branch/develop/graph/badge.svg?token=WX16YH71C7)](https://codecov.io/gh/panzergame/dxfplotter)
 
 ![](doc/screen.png)
 
-This application helps users converting DXF to GCode with minimal settings, fully configurable GCode command format and fast spline to arc conversion. 
+This application helps users converting DXF files to GCode with minimal settings, fully configurable GCode commands format and fast spline to arc conversion. 
 
-It targets only laser CNC following every lines and arcs from DXF file.
+It targets only laser and router CNC following every lines and arcs from DXF file with optional desired depth.
 
 
-## Feature
+## Features
 
-* DXF support line, arc, circle, polyline, spline
+* DXF support of line, arc, circle, polyline, spline
 * Configurable GCode command format
 * Multi selected path setting edition
 * Path offseting (Tool Compensation)
+* Multi passes with depth
 
 ## Installation
 
@@ -58,47 +60,78 @@ Launch GUI
 build$ ./dxfplotter
 ```
 
-Or with a dxf file
+With a specified dxf file
 
 ```sh
 build$ ./dxfplotter input.dxf
+```
+
+With a specified file and tool
+
+```sh
+build$ ./dxfplotter input.dxf -t "Mill 1mm"
 ```
 
 Once opened, select path from left panel or from viewport and modify settings of selected path group or of single selected path. 
 
 Export with `File->Export` or `Ctrl+E`
 
+
+## Configuration
+
+![](doc/configuration.png)
+
+Configuration settings are exposed in `Configuration->Settings`, the configuration is splitted in two:
+* general settings aiming dxf importing or default values
+* tools with settings such as radius and gcode formatting
+
 ## GCode format
 
-Simple set of GCode command is used:
+Simple set of GCode command is used per tool:
 
 
-| Description | Default Command | Available Variables |
+| Description | Default Command | Available Variables |
 | - | - | - |
-| Tool On | M4 S \{S:.3f} | S F |
-| Tool Off | M5 | |
-| Fast Move | G0 X \{X:.3f} Y \{Y:.3f} | X Y |
-| Linear Move | G1 X \{X:.3f} Y \{Y:.3f} F \{F:.3f} | S F X Y |
+| Pre Cut | M4 S \{S:.3f} | S F |
+| Post Cut | M5 | |
+| Plane Fast Move | G0 X \{X:.3f} Y \{Y:.3f} | X Y |
+| Plane Linear Move | G1 X \{X:.3f} Y \{Y:.3f} F \{F:.3f} | S F X Y |
+| Depth Fast Move | G0 Z \{Z:.3f} | Z |
+| Depth Linear Move | G1 Z \{Z:.3f} | S F Z |
 | CW Arc Move | G2 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | S F X Y I J |
 | CCW Arc Move | G3 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | S F X Y I J |
 
-They can be customized from Settings panel `Configuration->Settings` or from dxfplotter/config.ini file in your applications configuration folder.
+They can be customized from tool Settings panel `Configuration->Settings->Tools->ToolName->Gcode` or from dxfplotter/config.yml file in your applications configuration folder.
 
-Commands use variables with {#:nf} where # is one of the supported variables and n the float precision: 
+Variables provided in formatting are available with {#:nf} where # is one of the supported variables and n the float precision: 
 
-| Name | Description |
+| Name | Description |
 | - | - |
 | S | Laser intensity |
 | F | Movement feedrate |
-| X | Movement target absciss |
-| Y | Movement target ordinate|
+| X | Movement X axis target |
+| Y | Movement Y axis target |
+| Z | Movement Z axis target |
 | I | Relative arc center absciss |
 | J | Relative arc center ordinate |
 
 Properties `S` and `F` are exposed in path settings in UI.
 
-## Meta
+## Author
 
-Tristan Porteries
+👤 **Tristan Porteries**
 
-Distributed under the MIT license. See LICENSE.txt for more information.
+* Github: [@panzergame](https://github.com/panzergame)
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/panzergame/dxfplotter/issues). 
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+## 📝 License
+
+Copyright © 2020 [Tristan Porteries](https://github.com/panzergame).<br />
+This project is [MIT License](https://github.com/panzergame/dxfplotter/blob/master/LICENSE.md) licensed.

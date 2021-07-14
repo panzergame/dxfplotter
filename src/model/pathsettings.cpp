@@ -3,21 +3,32 @@
 namespace Model
 {
 
-PathSettings::PathSettings(float feedRate, float intensity, float depth)
-	:m_feedRate(feedRate),
+PathSettings::PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)
+	:m_planeFeedRate(planeFeedRate),
+	m_depthFeedRate(depthFeedRate),
 	m_intensity(intensity),
 	m_depth(depth)
 {
 }
 
-float PathSettings::feedRate() const
+float PathSettings::planeFeedRate() const
 {
-	return m_feedRate;
+	return m_planeFeedRate;
 }
 
-void PathSettings::setFeedRate(float feedRate)
+void PathSettings::setPlaneFeedRate(float planeFeedRate)
 {
-	m_feedRate = feedRate;
+	m_planeFeedRate = planeFeedRate;
+}
+
+float PathSettings::depthFeedRate() const
+{
+	return m_depthFeedRate;
+}
+
+void PathSettings::setDepthFeedRate(float depthFeedRate)
+{
+	m_depthFeedRate = depthFeedRate;
 }
 
 float PathSettings::intensity() const

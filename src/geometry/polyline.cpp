@@ -27,7 +27,21 @@ const QVector2D &Polyline::start() const
 	return m_bulges.front().start();
 }
 
+QVector2D &Polyline::start()
+{
+	assert(!m_bulges.empty());
+
+	return m_bulges.front().start();
+}
+
 const QVector2D &Polyline::end() const
+{
+	assert(!m_bulges.empty());
+
+	return m_bulges.back().end();
+}
+
+QVector2D &Polyline::end()
 {
 	assert(!m_bulges.empty());
 
@@ -39,6 +53,13 @@ bool Polyline::isClosed() const
 	assert(!m_bulges.empty());
 
 	return (start() == end());
+}
+
+bool Polyline::isPoint() const
+{
+	assert(!m_bulges.empty());
+
+	return isClosed() && (m_bulges.size() == 1);
 }
 
 Polyline &Polyline::invert()
@@ -65,12 +86,12 @@ Polyline& Polyline::operator+=(const Polyline &other)
 	return *this;
 }
 
-Polyline::List Polyline::offsetted(float offset) const
+Polyline::List Polyline::offsetted(float margin) const
 {
 	cavc::Polyline<double> ccPolyline;
 
 	// Convert to CAVC polyline
-	forEachBulge([&ccPolyline](const Bulge &bulge){
+	forEachBulge([&ccPolyline](const Bulge &bulge) {
 		const QVector2D &start = bulge.start();
 		ccPolyline.addVertex(start.x(), start.y(), bulge.tangent());
 	});
@@ -82,18 +103,17 @@ Polyline::List Polyline::offsetted(float offset) const
 	}
 
 	ccPolyline.isClosed() = closed;
-
 	// Offset CAVC polyline
-	std::vector<cavc::Polyline<double> > offsetedCcPolylines = cavc::parallelOffset(ccPolyline, (double)offset);
+	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(ccPolyline, (double)margin);
 
 	// Convert back to polylines
-	Polyline::List offsetedPolylines(offsetedCcPolylines.size());
-	std::transform(offsetedCcPolylines.begin(), offsetedCcPolylines.end(), offsetedPolylines.begin(),
+	Polyline::List offsettedPolylines(offsettedCcPolylines.size());
+	std::transform(offsettedCcPolylines.begin(), offsettedCcPolylines.end(), offsettedPolylines.begin(),
 		[](const cavc::Polyline<double> &polyline) {
 			return Polyline(polyline);
 		});
 
-	return offsetedPolylines;
+	return offsettedPolylines;
 }
 
 }

@@ -50,6 +50,9 @@
     <addaction name="actionLeftCutterCompensation"/>
     <addaction name="actionRightCutterCompensation"/>
     <addaction name="actionResetCutterCompensation"/>
+    <addaction name="separator"/>
+    <addaction name="actionHideSelection"/>
+    <addaction name="actionShowHidden"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -66,8 +69,24 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionOpenFile"/>
+   <addaction name="actionExportFile"/>
+   <addaction name="separator"/>
+   <addaction name="actionLeftCutterCompensation"/>
+   <addaction name="actionRightCutterCompensation"/>
+   <addaction name="actionResetCutterCompensation"/>
+   <addaction name="separator"/>
+   <addaction name="actionHideSelection"/>
+   <addaction name="actionShowHidden"/>
+   <addaction name="separator"/>
+   <addaction name="actionOpenSettings"/>
+   <addaction name="separator"/>
   </widget>
   <action name="actionOpenFile">
+   <property name="icon">
+    <iconset theme="document-open">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
@@ -76,6 +95,10 @@
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Quit</string>
    </property>
@@ -84,6 +107,10 @@
    </property>
   </action>
   <action name="actionExportFile">
+   <property name="icon">
+    <iconset theme="document-export">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Export</string>
    </property>
@@ -92,11 +119,19 @@
    </property>
   </action>
   <action name="actionOpenSettings">
+   <property name="icon">
+    <iconset theme="settings-configure">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Settings</string>
    </property>
   </action>
   <action name="actionLeftCutterCompensation">
+   <property name="icon">
+    <iconset theme="path-outset">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Left Cutter Compensation</string>
    </property>
@@ -105,6 +140,10 @@
    </property>
   </action>
   <action name="actionRightCutterCompensation">
+   <property name="icon">
+    <iconset theme="path-inset">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Right Cutter Compensation</string>
    </property>
@@ -113,11 +152,42 @@
    </property>
   </action>
   <action name="actionResetCutterCompensation">
+   <property name="icon">
+    <iconset theme="show-path-outline">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
    <property name="text">
     <string>Reset Cutter Compensation</string>
    </property>
    <property name="shortcut">
     <string>C</string>
+   </property>
+  </action>
+  <action name="actionHideSelection">
+   <property name="icon">
+    <iconset theme="object-hidden">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Hide Selection</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
+   </property>
+  </action>
+  <action name="actionShowHidden">
+   <property name="icon">
+    <iconset theme="object-visible">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Show hidden</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Hidden</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+H</string>
    </property>
   </action>
  </widget>

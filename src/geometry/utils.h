@@ -17,6 +17,12 @@ namespace Geometry
 		CCW
 	};
 
+	enum class CuttingDirection
+	{
+		FORWARD,
+		BACKWARD
+	};
+
 	inline float CrossProduct(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2)
 	{
 		const QVector2D x = p1 - p0;

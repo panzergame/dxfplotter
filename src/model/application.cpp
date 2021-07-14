@@ -33,31 +33,45 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
+void Application::selectToolConfig(const Config::Tools::Tool &tool)
+{
+	m_selectedToolConfig = &tool;
+	emit selectedToolConfigChanged(tool);
+}
+
+void Application::selectProfileConfig(const Config::Profiles::Profile &profile)
+{
+	m_selectedProfileConfig = &profile;
+	emit selectedProfileConfigChanged(profile);
+}
+
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Import::DefaultPath &defaultPath = m_importConfig.defaultPath();
-	return PathSettings(defaultPath.feedRate(), defaultPath.intensity(), defaultPath.depth());
+	const Config::Profiles::Profile::DefaultPath &defaultPath = m_selectedProfileConfig->defaultPath();
+	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
 void Application::cutterCompensation(float scale)
 {
-	const Config::Import::Dxf &dxf = m_importConfig.dxf();
+	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	const float radius = m_toolConfig->general().radius();
+	const float radius = m_selectedToolConfig->general().radius();
 	const float scaledRadius = radius * scale;
 
 	m_task->forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
-		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path *path){
-			path->offset(scaledRadius, minimumPolylineLength, minimumArcLength);
+		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path &path){
+			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
 
 Application::Application()
-	:m_config(Config::Config(configFilePath())),
-	m_importConfig(m_config.root().import()),
-	// Default select first tool
-	m_toolConfig(&m_config.root().tools().first())
+	:m_config(Config::Config(configFilePath()))
 {
+	// Default select first tool
+	selectToolConfig(m_config.root().tools().first());
+
+	// Default select first profile
+	selectProfileConfig(m_config.root().profiles().first());
 }
 
 Config::Config &Application::config()
@@ -78,7 +92,7 @@ bool Application::selectTool(const QString &toolName)
 	const bool exists = tools.has(name);
 
 	if (exists) {
-		m_toolConfig = &tools[name];
+		selectToolConfig(tools[name]);
 	}
 
 	return exists;
@@ -89,6 +103,31 @@ void Application::selectToolFromCmd(const QString &toolName)
 	if (!selectTool(toolName)) {
 		qCritical() << "Invalid tool name " << toolName;
 	}
+}
+
+bool Application::selectProfile(const QString &profileName)
+{
+	const Config::Profiles &profiles = m_config.root().profiles();
+	const std::string name = profileName.toStdString();
+	const bool exists = profiles.has(name);
+
+	if (exists) {
+		selectProfileConfig(profiles[name]);
+	}
+
+	return exists;
+}
+
+void Application::selectProfileFromCmd(const QString &profileName)
+{
+	if (!selectProfile(profileName)) {
+		qCritical() << "Invalid profile name " << profileName;
+	}
+}
+
+QString Application::currentFileBaseName() const
+{
+	return m_currentFileBaseName;
 }
 
 void Application::loadFileFromCmd(const QString &fileName)
@@ -116,35 +155,52 @@ bool Application::loadFile(const QString &fileName)
 	}
 
 	// Update window title based on file name.
-	const QString title = QFileInfo(fileName).fileName();
+	const QFileInfo fileInfo(fileName);
+	const QString title = fileInfo.fileName();
 	emit titleChanged(title);
+
+	m_currentFileBaseName = fileInfo.absoluteDir().filePath(fileInfo.baseName());
 
 	return true;
 }
 
 bool Application::loadDxf(const QString &fileName)
 {
-	const Config::Import::Dxf &dxf = m_importConfig.dxf();
+	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
 
-	Geometry::Polyline::List polylines;
+	Importer::Dxf::Layer::List importerLayers;
 	try {
-		// Import data
+		// Import data by layers
 		Importer::Dxf::Importer imp(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
-		polylines = imp.polylines();
+		importerLayers = imp.layers();
 	}
-	catch (const Common::FileException &e) {
+	catch (const Common::FileCouldNotOpenException &e) {
 		return false;
 	}
 
-	// Merge polylines to create longest contours
-	Geometry::Assembler assembler(std::move(polylines), dxf.assembleTolerance());
-	// Remove small bulges
-	Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+	Path::ListUPtr paths;
+	Layer::ListUPtr layers;
+	for (Importer::Dxf::Layer &importerLayer : importerLayers) {
+		// Merge polylines to create longest contours
+		Geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
+		// Remove small bulges
+		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-	m_paths = Path::FromPolylines(cleaner.polylines(), defaultPathSettings());
-	m_task = new Task(this, m_paths);
+		const std::string &layerName = importerLayer.name();
+		Layer::UPtr layer = std::make_unique<Layer>(layerName);
 
-	emit taskChanged(m_task);
+		// Create paths from merged and cleaned polylines of one layer
+		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), *layer);
+		layer->setChildren(children);
+
+		// Track layer and paths to construct task
+		layers.push_back(std::move(layer));
+		paths.insert(paths.end(), std::make_move_iterator(children.begin()), std::make_move_iterator(children.end()));
+	}
+
+	m_task = std::make_unique<Task>(std::move(paths), std::move(layers));
+
+	emit taskChanged(m_task.get());
 
 	return true;
 }
@@ -156,29 +212,45 @@ void Application::loadPlot(const QString &fileName)
 
 bool Application::exportToGcode(const QString &fileName)
 {
-	try {
-		Exporter::GCode::Exporter exporter(m_task, *m_toolConfig, fileName.toStdString());
-	}
-	catch (const Common::FileException &e) {
-		return false;
+	std::ofstream file(fileName.toStdString());
+	if (file) {
+		Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), file);
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 void Application::leftCutterCompensation()
 {
-	cutterCompensation(-1.0f);
+	cutterCompensation(1.0f);
 }
 
 void Application::rightCutterCompensation()
 {
-	cutterCompensation(1.0f);
+	cutterCompensation(-1.0f);
 }
 
 void Application::resetCutterCompensation()
 {
-	m_task->forEachSelectedPath([](Model::Path *path){ path->resetOffset(); });
+	m_task->forEachSelectedPath([](Model::Path &path){ path.resetOffset(); });
+}
+
+void Application::hideSelection()
+{
+	m_task->forEachSelectedPath([](Model::Path &path){
+		path.setVisible(false);
+	});
+}
+
+void Application::showHidden()
+{
+	m_task->forEachPath([](Model::Path &path){
+		if (!path.visible()) {
+			path.setVisible(true);
+			path.setSelected(true);
+		}
+	});
 }
 
 }

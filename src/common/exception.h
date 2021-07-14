@@ -3,7 +3,7 @@
 namespace Common
 {
 
-class FileException : public std::exception
+class FileCouldNotOpenException : public std::exception
 {
 };
 

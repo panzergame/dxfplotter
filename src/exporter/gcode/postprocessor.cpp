@@ -1,12 +1,14 @@
 #include <postprocessor.h>
 
+using namespace fmt::literals;
+
 namespace Exporter::GCode
 {
 
-PostProcessor::PostProcessor(const Config::Tools::Tool& tool, std::ostream &stream)
+PostProcessor::PostProcessor(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
 	:m_stream(stream),
 	m_tool(tool),
-	m_gcode(m_tool.gcode())
+	m_gcode(gcode)
 {
 }
 

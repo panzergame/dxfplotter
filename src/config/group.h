@@ -13,7 +13,25 @@ template <class ... ChildTypes>
 class Group : public Node
 {
 protected:
-	std::tuple<ChildTypes ...> m_children;
+	using Children = std::tuple<ChildTypes ...>;
+
+	const Children& children() const
+	{
+		return m_children;
+	}
+
+	Children& children()
+	{
+		return m_children;
+	}
+
+	void setChildren(const Children& children)
+	{
+		m_children = children;
+	}
+	
+private:
+	Children m_children;
 
 public:
 	explicit Group(const std::string& name, const std::string &description)

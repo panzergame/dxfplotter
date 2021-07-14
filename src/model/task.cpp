@@ -5,52 +5,107 @@
 namespace Model
 {
 
-Task::Task(QObject *parent, const Path::ListPtr &paths)
-	:QObject(parent),
-	m_stack(paths)
+Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
+	:m_paths(std::move(paths)),
+	m_layers(std::move(layers)),
+	m_stack(m_paths.size())
 {
+	std::transform(m_paths.begin(), m_paths.end(), m_stack.begin(),
+		[](const Path::UPtr& ptr){ return ptr.get(); });
+
 	// Register selection/deselection on all paths.
-	forEachPath([this](Path *path) {
-		connect(path, &Path::selected, this, [this, path](){
-			m_selectedPaths.push_back(path);
-			emit pathSelected(path);
-			emit selectionChanged(m_selectedPaths.size());
-		});
+	forEachPath([this](Path &path) {
+		connect(&path, &Path::selectedChanged, this, [this, &path](bool selected){
+			if (selected) {
+				m_selectedPaths.insert(&path);
+			}
+			else {
+				m_selectedPaths.erase(&path);
+			}
 
-		connect(path, &Path::deselected, this, [this, path](){
-			Path::ListPtr::const_iterator it = std::find(m_selectedPaths.cbegin(), m_selectedPaths.cend(), path);
-			assert(it != m_selectedPaths.cend());
-			m_selectedPaths.erase(it);
-
-			emit pathDeselected(path);
+			emit pathSelectedChanged(path, selected);
 			emit selectionChanged(m_selectedPaths.size());
 		});
 	});
 }
 
-int Task::count() const
+int Task::pathCount() const
 {
-	return m_stack.size();
+	return m_paths.size();
 }
 
-Path *Task::pathAt(int index) const
+const Path &Task::pathAt(int index) const
 {
-	assert(0 <= index && index < count());
-	return m_stack[index];
+	assert(0 <= index && index < pathCount());
+	return *m_stack[index];
 }
 
-int Task::indexFor(Path *path) const
+Path &Task::pathAt(int index)
 {
-	Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), path);
+	assert(0 <= index && index < pathCount());
+	return *m_stack[index];
+}
+
+int Task::pathIndexFor(const Path &path) const
+{
+	const Path::ListPtr::const_iterator it = std::find(m_stack.cbegin(), m_stack.cend(), &path);
 
 	assert(it != m_stack.cend());
 
 	return std::distance(m_stack.cbegin(), it);
 }
 
-const Path::ListPtr &Task::selectedPaths() const
+void Task::movePath(int index, MoveDirection direction)
 {
-	return m_selectedPaths;
+	assert(0 <= index && index < pathCount());
+
+	const int newIndex = index + direction;
+
+	if (0 <= newIndex && newIndex < pathCount()) {
+		std::swap(m_stack[index], m_stack[newIndex]);
+	}
+}
+
+int Task::layerCount() const
+{
+	return m_layers.size();
+}
+
+const Layer &Task::layerAt(int index) const
+{
+	assert(0 <= index && index < layerCount());
+	return *m_layers[index];
+}
+
+Layer &Task::layerAt(int index)
+{
+	assert(0 <= index && index < layerCount());
+	return *m_layers[index];
+}
+
+int Task::layerIndexFor(const Layer &layer) const
+{
+	const Layer::ListUPtr::const_iterator it = std::find_if(m_layers.cbegin(), m_layers.cend(),
+			[&layer](const Layer::UPtr &ptr) { return ptr.get() == &layer; });
+
+	assert(it != m_layers.cend());
+
+	return std::distance(m_layers.cbegin(), it);
+}
+
+std::pair<int, int> Task::layerAndPathIndexFor(const Path &path) const
+{
+	for (int layerIndex = 0, size = m_layers.size(); layerIndex < size; ++layerIndex) {
+		const Layer &layer = *m_layers[layerIndex];
+		const int childIndex = layer.childIndexFor(path);
+		if (childIndex != -1) {
+			return std::make_pair(layerIndex, childIndex);
+		}
+	}
+
+	assert(false && "layer not found");
+
+	return std::make_pair(-1, -1);
 }
 
 }

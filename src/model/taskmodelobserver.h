@@ -16,7 +16,7 @@ class Task;
 template <class QtBaseObject>
 class TaskModelObserver : public QtBaseObject
 {
-protected:
+private:
 	/// Current task.
 	Task *m_task;
 
@@ -25,6 +25,12 @@ protected:
 	 * Before the first call to this function, m_task is inaccesible.
 	 */
 	virtual void taskChanged() = 0;
+
+protected:
+	Task *task() const
+	{
+		return m_task;
+	}
 
 private Q_SLOTS:
 	void internalTaskChanged(Task *newTask)

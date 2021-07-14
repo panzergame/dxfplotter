@@ -23,15 +23,17 @@ public:
 	explicit Polyline(Bulge::List &&bulges);
 
 	const QVector2D &start() const;
+	QVector2D &start();
 	const QVector2D &end() const;
+	QVector2D &end();
 
 	bool isClosed() const;
+	bool isPoint() const;
 
 	Polyline &invert();
 	Polyline inverse() const;
 
 	Polyline& operator+=(const Polyline &other);
-
 
 	template <class Functor>
 	void forEachBulge(Functor &&functor) const
@@ -42,7 +44,7 @@ public:
 	}
 
 	template <class Functor>
-	void transformEachBulge(Functor &&functor)
+	void transformBulge(Functor &&functor)
 	{
 		for (Bulge &bulge : m_bulges) {
 			functor(bulge);

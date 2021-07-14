@@ -4,49 +4,57 @@
 
 #include <common/aggregable.h>
 
+#include <model/renderable.h>
 #include <model/pathsettings.h>
+#include <model/offsettedpath.h>
 
 #include <string>
-
-#include <QObject>
 
 namespace Model
 {
 
-class Path : public QObject, public Common::Aggregable<Path>
+class Layer;
+
+class Path : public Renderable, public Common::Aggregable<Path>
 {
 	Q_OBJECT;
 
 private:
 	Geometry::Polyline m_basePolyline;
-	Geometry::Polyline::List m_offsetedPolylines;
-	std::string m_name;
+	std::unique_ptr<Model::OffsettedPath> m_offsettedPath;
 	PathSettings m_settings;
-	bool m_selected;
+	Layer &m_layer;
+	bool m_globallyVisible;
+
+	void updateGlobalVisibility();
 
 public:
-	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
+	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings, Layer &layer);
 
-	static ListPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings);
+	static ListUPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer);
+
+	Layer &layer();
+	const Layer &layer() const;
 
 	const Geometry::Polyline &basePolyline() const;
-	const Geometry::Polyline::List &offsetedPolylines() const;
 	Geometry::Polyline::List finalPolylines() const;
-	const std::string &name() const;
+
+	Model::OffsettedPath *offsettedPath() const;
+	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
+	void resetOffset();
+
+	bool isPoint() const;
+
 	const PathSettings &settings() const;
 	PathSettings &settings();
 
-	void offset(float offset, float minimumPolylineLength, float minimumArcLength);
-	void resetOffset();
+	Geometry::CuttingDirection cuttingDirection() const;
 
-	void select();
-	void deselect();
-	void toggleSelect();
+	bool globallyVisible() const;
 
 Q_SIGNALS:
-	void selected();
-	void deselected();
-	void offseted();
+	void globalVisibilityChanged(bool globallyVisible);
+	void offsettedPathChanged();
 };
 
 }

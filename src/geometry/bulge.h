@@ -34,7 +34,9 @@ public:
 	explicit Bulge() = default;
 
 	const QVector2D &start() const;
+	QVector2D &start();
 	const QVector2D &end() const;
+	QVector2D &end();
 	float tangent() const;
 
 	float length() const;

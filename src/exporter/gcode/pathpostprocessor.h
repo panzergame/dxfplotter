@@ -2,6 +2,8 @@
 
 #include <exporter/gcode/postprocessor.h>
 
+using namespace fmt::literals;
+
 namespace Exporter::GCode
 {
 
@@ -16,12 +18,11 @@ private:
 	void printWithSettings(const std::string &format, Args&& ...args)
 	{
 		print(format, std::forward<Args>(args)...,
-			  "F"_a=m_settings.feedRate(),
 			  "S"_a=m_settings.intensity());
 	}
 
 public:
-	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, std::ostream &stream);
+	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void preCut();
 	void planeLinearMove(const QVector2D &to);

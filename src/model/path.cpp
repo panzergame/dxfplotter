@@ -1,28 +1,55 @@
 #include <path.h>
+#include <layer.h>
+#include <fmt/format.h>
 
 #include <geometry/cleaner.h>
 
 namespace Model
 {
 
-Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
-	:m_basePolyline(basePolyline),
-	m_name(name),
-	m_settings(settings),
-	m_selected(false)
+void Path::updateGlobalVisibility()
 {
+	const bool newGloballyVisible = visible() && m_layer.visible();
+	if (m_globallyVisible != newGloballyVisible) {
+		m_globallyVisible = newGloballyVisible;
+
+		emit globalVisibilityChanged(m_globallyVisible);
+	}
 }
 
-Path::ListPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings)
+Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings, Layer &layer)
+	:Renderable(name),
+	m_basePolyline(basePolyline),
+	m_settings(settings),
+	m_layer(layer),
+	m_globallyVisible(true)
+{
+	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
+	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
+}
+
+Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer)
 {
 	const int size = polylines.size();
-	Path::ListPtr paths(size);
+	Path::ListUPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
-		paths[i] = new Path(std::move(polylines[i]), "Path " + std::to_string(i), settings);
+		static const char *pathNameFormat = "({}) {}";
+		const std::string pathName = fmt::format(pathNameFormat, layer.name(), i);
+		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings, layer));
 	}
 
 	return paths;
+}
+
+Layer &Path::layer()
+{
+	return m_layer;
+}
+
+const Layer &Path::layer() const
+{
+	return m_layer;
 }
 
 const Geometry::Polyline &Path::basePolyline() const
@@ -30,22 +57,39 @@ const Geometry::Polyline &Path::basePolyline() const
 	return m_basePolyline;
 }
 
-const Geometry::Polyline::List &Path::offsetedPolylines() const
-{
-	return m_offsetedPolylines;
-}
-
 Geometry::Polyline::List Path::finalPolylines() const
 {
-	if (m_offsetedPolylines.empty()) {
-		return {m_basePolyline};
-	}
-	return m_offsetedPolylines;
+	return m_offsettedPath ? m_offsettedPath->offsettedPolylines() : Geometry::Polyline::List{m_basePolyline};
 }
 
-const std::string &Path::name() const
+Model::OffsettedPath *Path::offsettedPath() const
 {
-	return m_name;
+	return m_offsettedPath.get();
+}
+
+void Path::offset(float margin, float minimumPolylineLength, float minimumArcLength)
+{
+	Geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
+	Geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
+
+	const OffsettedPath::Direction direction = (margin > 0.0f) ?
+			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
+
+	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
+
+	emit offsettedPathChanged();
+}
+
+void Path::resetOffset()
+{
+	m_offsettedPath.reset();
+
+	emit offsettedPathChanged();
+}
+
+bool Path::isPoint() const
+{
+	return m_basePolyline.isPoint();
 }
 
 const Model::PathSettings &Path::settings() const
@@ -58,50 +102,15 @@ Model::PathSettings &Path::settings()
 	return m_settings;
 }
 
-void Path::offset(float offset, float minimumPolylineLength, float minimumArcLength)
+Geometry::CuttingDirection Path::cuttingDirection() const
 {
-	Geometry::Polyline::List offsetedPolylines = m_basePolyline.offsetted(offset);
-
-	Geometry::Cleaner cleaner(std::move(offsetedPolylines), minimumPolylineLength, minimumArcLength);
-
-	m_offsetedPolylines = cleaner.polylines();
-
-	emit offseted();
+	return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() :
+			 Geometry::CuttingDirection::FORWARD;
 }
 
-void Path::resetOffset()
+bool Path::globallyVisible() const
 {
-	m_offsetedPolylines.clear();
-
-	emit offseted();
-}
-
-void Path::select()
-{
-	if (!m_selected) {
-		m_selected = true;
-
-		emit selected();
-	}
-}
-
-void Path::deselect()
-{
-	if (m_selected) {
-		m_selected = false;
-
-		emit deselected();
-	}
-}
-
-void Path::toggleSelect()
-{
-	if (m_selected) {
-		deselect();
-	}
-	else {
-		select();
-	}
+	return m_globallyVisible;
 }
 
 }

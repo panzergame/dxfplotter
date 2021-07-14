@@ -6,16 +6,20 @@ namespace Model
 class PathSettings
 {
 private:
-	float m_feedRate;
+	float m_planeFeedRate;
+	float m_depthFeedRate;
 	float m_intensity;
 	float m_depth;
 
 public:
 	explicit PathSettings() = default;
-	explicit PathSettings(float feedRate, float intensity, float depth);
+	explicit PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth);
 
-	float feedRate() const;
-	void setFeedRate(float feedRate);
+	float planeFeedRate() const;
+	void setPlaneFeedRate(float planeFeedRate);
+
+	float depthFeedRate() const;
+	void setDepthFeedRate(float depthFeedRate);
 
 	float intensity() const;
 	void setIntensity(float intensity);

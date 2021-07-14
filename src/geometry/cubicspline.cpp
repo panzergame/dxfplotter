@@ -12,7 +12,8 @@ CubicSpline::CubicSpline(Point2DList &&points, bool closed)
 
 Point2DList CubicSpline::convertClosedToBezierPoints() const
 {
-	const int nbcontrol = m_points.size();
+	const Point2DList &allControlPoints = controlPoints();
+	const int nbcontrol = allControlPoints.size();
 
 	const int size = nbcontrol * 3 + 1;
 
@@ -22,13 +23,13 @@ Point2DList CubicSpline::convertClosedToBezierPoints() const
 	for (int i = 0; i <= nbcontrol; ++i) {
 		const int src = i % nbcontrol;
 		const int dst = i * 3;
-		bezierPoints[dst] = m_points[src];
+		bezierPoints[dst] = allControlPoints[src];
 	}
 
 	for (int src = 0, dst = 1; src < nbcontrol; ++src, dst += 3) {
 		const int srcnext = (src + 1) % nbcontrol;
-		bezierPoints[dst] = (m_points[src] * 2.0f + m_points[srcnext]) / 3.0f;
-		bezierPoints[dst + 1] = (m_points[src] + m_points[srcnext] * 2.0f) / 3.0f;
+		bezierPoints[dst] = (allControlPoints[src] * 2.0f + allControlPoints[srcnext]) / 3.0f;
+		bezierPoints[dst + 1] = (allControlPoints[src] + allControlPoints[srcnext] * 2.0f) / 3.0f;
 	}
 
 	for (int i = 3; i < size - 3; i += 3) {
@@ -43,7 +44,8 @@ Point2DList CubicSpline::convertClosedToBezierPoints() const
 
 Point2DList CubicSpline::convertOpenedToBezierPoints() const
 {
-	const int nbcontrol = m_points.size();
+	const Point2DList &allControlPoints = controlPoints();
+	const int nbcontrol = allControlPoints.size();
 	const int lastcontrol = nbcontrol - 1;
 
 	int size = nbcontrol;
@@ -61,26 +63,26 @@ Point2DList CubicSpline::convertOpenedToBezierPoints() const
 	// Copy of two begin and end raw points 0 1 -2 -1 to 0 1 -2 -1
 	for (int src = 0; src < 2; ++src) {
 		// Copy from begin
-		bezierPoints[src] = m_points[src];
+		bezierPoints[src] = allControlPoints[src];
 		// Copy from end
-		bezierPoints[last - src] = m_points[lastcontrol - src];
+		bezierPoints[last - src] = allControlPoints[lastcontrol - src];
 	}
 
 	// Copy of remaining raw points from 2 ... -3 to 3 6 9 ... -10 -7 -4 (every 3 with 6 point distance from begin and end).
 	for (int src = 2, dst = 3; src < (nbcontrol - 2); ++src, dst += 3) {
-		bezierPoints[dst] = m_points[src];
+		bezierPoints[dst] = allControlPoints[src];
 	}
 
 	if (nbcontrol > 4) {
 		// Copy half points 2 and -3
-		bezierPoints[2] = (m_points[1] + m_points[2]) / 2.0f;
-		bezierPoints[last - 2] = (m_points[lastcontrol - 1] + m_points[lastcontrol - 2]) / 2.0f;
+		bezierPoints[2] = (allControlPoints[1] + allControlPoints[2]) / 2.0f;
+		bezierPoints[last - 2] = (allControlPoints[lastcontrol - 1] + allControlPoints[lastcontrol - 2]) / 2.0f;
 	}
 
 	// Copy third point 2 ... -3 to (4 5) (7 8) .. (-9 -8) (-6 -5)
 	for (int src = 2, dst = 4; src < (nbcontrol - 3); ++src, dst += 3) {
-		bezierPoints[dst] = (m_points[src] * 2.0f + m_points[src + 1]) / 3.0f;
-		bezierPoints[dst + 1] = (m_points[src] + m_points[src + 1] * 2.0f) / 3.0f;
+		bezierPoints[dst] = (allControlPoints[src] * 2.0f + allControlPoints[src + 1]) / 3.0f;
+		bezierPoints[dst + 1] = (allControlPoints[src] + allControlPoints[src + 1] * 2.0f) / 3.0f;
 	}
 
 	for (int i = 3; i < (size - 1); i += 3) {
@@ -92,9 +94,9 @@ Point2DList CubicSpline::convertOpenedToBezierPoints() const
 
 Bezier::List CubicSpline::toBeziers() const
 {
-	const Point2DList bezierPoints = (m_closed) ? convertClosedToBezierPoints() : convertOpenedToBezierPoints();
+	const Point2DList bezierPoints = closed() ? convertClosedToBezierPoints() : convertOpenedToBezierPoints();
 
-	return Spline::toBeziers(bezierPoints);
+	return Spline::pointsToBeziers(bezierPoints);
 }
 
 

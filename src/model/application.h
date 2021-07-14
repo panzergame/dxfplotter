@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/task.h>
+#include <model/layer.h>
 #include <config/config.h>
 
 #include <QObject>
@@ -15,15 +16,20 @@ class Application : public QObject
 private:
 	/// Global configuration
 	Config::Config m_config;
-	/// Importing configuration (e.g dxf, default path values)
-	const Config::Import &m_importConfig;
 	/// Selected tool configuration
-	const Config::Tools::Tool *m_toolConfig;
+	const Config::Tools::Tool *m_selectedToolConfig;
+	/// Selected profile configuration
+	const Config::Profiles::Profile *m_selectedProfileConfig;
 
-	Path::ListPtr m_paths; // TODO parent destruct
-	Task *m_task;
+	// Absolute file basename of current loaded file
+	QString m_currentFileBaseName;
+
+	Task::UPtr m_task;
 
 	PathSettings defaultPathSettings() const;
+
+	void selectToolConfig(const Config::Tools::Tool &tool);
+	void selectProfileConfig(const Config::Profiles::Profile &profile);
 
 	void cutterCompensation(float scale);
 
@@ -37,6 +43,11 @@ public:
 	bool selectTool(const QString &toolName);
 	void selectToolFromCmd(const QString &toolName);
 
+	/// Select profile used as configuration for further operations
+	bool selectProfile(const QString &profileName);
+	void selectProfileFromCmd(const QString &profileName);
+
+	QString currentFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadDxf(const QString &fileName);
@@ -48,9 +59,14 @@ public:
 	void rightCutterCompensation();
 	void resetCutterCompensation();
 
+	void hideSelection();
+	void showHidden();
+
 Q_SIGNALS:
 	void taskChanged(Task *newTask);
 	void titleChanged(QString title);
+	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
+	void selectedProfileConfigChanged(const Config::Profiles::Profile &profile);
 	void configChanged(Config::Config &config);
 };
 

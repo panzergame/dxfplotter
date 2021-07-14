@@ -1,8 +1,9 @@
 #include <mainwindow.h>
 #include <info.h>
-#include <path.h>
-#include <task.h>
-#include <viewport.h>
+#include <profile.h>
+#include <task/path.h>
+#include <task/task.h>
+#include <view2d/viewport.h>
 #include <settings/settings.h>
 
 #include <QFileDialog>
@@ -16,8 +17,8 @@ namespace View
 
 QWidget *MainWindow::setupLeftPanel()
 {
-	Task *task = new Task(m_app);
-	Path *path = new Path(m_app);
+	Task::Task *task = new Task::Task(m_app);
+	Task::Path *path = new Task::Path(m_app);
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
 	vertSplitter->addWidget(task);
@@ -30,7 +31,7 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	Viewport *viewport = new Viewport(m_app);
+	View2d::Viewport *viewport = new View2d::Viewport(m_app);
 	Info *info = new Info(viewport);
 
 	QWidget *container = new QWidget(this);
@@ -46,12 +47,8 @@ QWidget *MainWindow::setupCenterPanel()
 
 void MainWindow::setupToolBar()
 {
-	// Tool selector
-	m_toolSelector = new QComboBox();
-
-	connect(m_toolSelector, &QComboBox::currentTextChanged, &m_app, &Model::Application::selectTool);
-
-	toolBar->addWidget(m_toolSelector);
+	Profile *profileBar = new Profile(m_app);
+	toolBar->addWidget(profileBar);
 }
 
 void MainWindow::setupUi()
@@ -80,23 +77,8 @@ void MainWindow::setupMenuActions()
 	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &Model::Application::leftCutterCompensation);
 	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &Model::Application::rightCutterCompensation);
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
-}
-
-void MainWindow::updateToolSelector(const Config::Config &config)
-{
-	// Keep current tool selected.
-	const QString &currentToolName = m_toolSelector->currentText();
-
-	m_toolSelector->clear();
-
-	const Config::Tools &tools = config.root().tools();
-	tools.visitChildren([this](const auto &tool){
-		const QString name = QString::fromStdString(tool.name());
-		m_toolSelector->addItem(name, name);
-	});
-
-	// Try to restore selected tool name
-	m_toolSelector->setCurrentText(currentToolName);
+	connect(actionHideSelection, &QAction::triggered, &m_app, &Model::Application::hideSelection);
+	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
 }
 
 MainWindow::MainWindow(Model::Application &app)
@@ -105,10 +87,8 @@ MainWindow::MainWindow(Model::Application &app)
 	setupUi();
 	setupMenuActions();
 	showMaximized();
-	updateToolSelector(m_app.config());
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &Model::Application::configChanged, this, &MainWindow::configChanged);
 }
 
 void MainWindow::openFile()
@@ -124,7 +104,8 @@ void MainWindow::openFile()
 
 void MainWindow::exportFile()
 {
-	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", "", "Text files (*.ngc *.txt)");
+	const QString defaultPath = m_app.currentFileBaseName() + ".ngc";
+	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty()) {
 		if (!m_app.exportToGcode(fileName)) {
@@ -136,18 +117,10 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	Settings::Settings *settings = new Settings::Settings(m_app);
-	if (settings->exec() == QDialog::Accepted) {
-		m_app.setConfig(settings->newConfig());
+	Settings::Settings settings(m_app);
+	if (settings.exec() == QDialog::Accepted) {
+		m_app.setConfig(settings.newConfig());
 	}
-
-	delete settings;
 }
-
-void MainWindow::configChanged(const Config::Config &config)
-{
-	updateToolSelector(config);
-}
-
 
 }
