@@ -49,4 +49,4 @@ jobs:
       file: 'dxfplotter-x86_64.AppImage'
       cleanup: false
       on:
-        branch: master
+        tags: true
