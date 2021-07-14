@@ -8,7 +8,7 @@
 #include <model/pathsettings.h>
 #include <model/offsettedpath.h>
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 namespace Model
 {
@@ -19,7 +19,7 @@ class Path : public Renderable, public Common::Aggregable<Path>
 {
 	Q_OBJECT;
 
-	friend Exporter::Dxfplot::Access<Path>;
+	friend Serializer::Access<Path>;
 
 private:
 	Geometry::Polyline m_basePolyline;

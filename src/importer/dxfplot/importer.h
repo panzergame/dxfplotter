@@ -12,6 +12,8 @@ namespace Importer::Dxfplot
 class Importer
 {
 private:
+	using Archive = cereal::JSONInputArchive;
+
 	const Config::Tools &m_tools;
 	const Config::Profiles &m_profiles;
 

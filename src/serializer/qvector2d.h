@@ -1,19 +1,19 @@
 #pragma once
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 #include <cereal/cereal.hpp>
 
 #include <QVector2D>
 
-namespace Exporter::Dxfplot
+namespace Serializer
 {
 
 template<>
 struct Access<QVector2D>
 {
 	template <class Archive>
-	void save(Archive &archive, const QVector2D &point) const
+	void serialize(Archive &archive, QVector2D &point) const
 	{
 		archive(cereal::make_nvp("x", point.x()));
 		archive(cereal::make_nvp("y", point.y()));

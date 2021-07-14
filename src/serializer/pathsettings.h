@@ -1,20 +1,20 @@
 #pragma once
 
-#include <exporter/dxfplot/access.h>
-#include <exporter/dxfplot/polyline.h>
+#include <serializer/access.h>
+#include <serializer/polyline.h>
 
 #include <cereal/cereal.hpp>
 
 #include <model/path.h>
 
-namespace Exporter::Dxfplot
+namespace Serializer
 {
 
 template<>
 struct Access<Model::PathSettings>
 {
 	template <class Archive> // TODO use serialize in common library
-	void save(Archive &archive, const Model::PathSettings &pathSettings) const
+	void serialize(Archive &archive, Model::PathSettings &pathSettings) const
 	{
 		archive(cereal::make_nvp("plane_feed_rate", pathSettings.planeFeedRate()));
 		archive(cereal::make_nvp("depth_feed_rate", pathSettings.depthFeedRate()));

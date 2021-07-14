@@ -6,14 +6,14 @@
 
 #include <cavc/polylineoffset.hpp>
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 namespace Geometry
 {
 
 class Polyline : public Common::Aggregable<Polyline>
 {
-	friend Exporter::Dxfplot::Access<Polyline>;
+	friend Serializer::Access<Polyline>;
 
 private:
 	Bulge::List m_bulges;

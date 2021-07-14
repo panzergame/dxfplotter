@@ -35,15 +35,21 @@ TEST(DxfplotImporterTest, shouldReimportDocumentWithToolAndProfileConfig)
 	}
 
 
-	Config::Tools tools{YAML::Node()};
-	Config::Profiles profiles{YAML::Node()};	
+	YAML::Node toolsNode;
+	toolsNode["tool"] = YAML::Node();
+	
+	YAML::Node profilesNode;
+	profilesNode["profile"] = YAML::Node();
+	
+	Config::Tools tools{toolsNode};
+	Config::Profiles profiles{profilesNode};
+	
 	Importer::Dxfplot::Importer importer(tools, profiles);
 
 	{
 		std::istringstream input;
 		input.str(output.str());
 		Model::Document::UPtr document = importer(input);
-		
 	}
 	
 	std::cout << output.str() << std::endl;
