@@ -2,8 +2,6 @@
 
 #include <model/document.h>
 
-#include <config/config.h>
-
 #include <cereal/archives/json.hpp>
 
 #include <fstream>

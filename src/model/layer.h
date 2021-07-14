@@ -2,7 +2,7 @@
 
 #include <model/path.h>
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 namespace Model
 {
@@ -11,7 +11,7 @@ class Layer : public Renderable, public Common::Aggregable<Layer>
 {
 	Q_OBJECT;
 
-	friend Exporter::Dxfplot::Access<Layer>;
+	friend Serializer::Access<Layer>;
 
 private:
 	Path::ListUPtr m_children;

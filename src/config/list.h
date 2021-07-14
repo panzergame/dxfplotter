@@ -43,6 +43,16 @@ public:
 		return m_children.find(name) != m_children.end();
 	}
 
+	const Child *get(const std::string &name) const
+	{
+		const auto it = m_children.find(name);
+		if (it != m_children.end()) {
+			return &it->second;
+		}
+
+		return nullptr;
+	}
+
 	Child &operator[](const std::string &name)
 	{
 		return m_children.find(name)->second;

@@ -8,7 +8,7 @@
 
 #include <cavc/plinesegment.hpp>
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 #include <QVector2D>
 
@@ -17,7 +17,7 @@ namespace Geometry
 
 class Bulge : public Common::Aggregable<Bulge>
 {
-	friend Exporter::Dxfplot::Access<Bulge>;
+	friend Serializer::Access<Bulge>;
 
 private:
 	QVector2D m_start;

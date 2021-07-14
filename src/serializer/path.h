@@ -1,14 +1,14 @@
 #pragma once
 
-#include <exporter/dxfplot/access.h>
-#include <exporter/dxfplot/polyline.h>
-#include <exporter/dxfplot/pathsettings.h>
+#include <serializer/access.h>
+#include <serializer/polyline.h>
+#include <serializer/pathsettings.h>
 
 #include <cereal/cereal.hpp>
 
 #include <model/path.h>
 
-namespace Exporter::Dxfplot
+namespace Serializer
 {
 
 template<>

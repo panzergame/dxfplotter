@@ -3,7 +3,7 @@
 #include <model/path.h>
 #include <model/layer.h>
 
-#include <exporter/dxfplot/access.h>
+#include <serializer/access.h>
 
 namespace Model
 {
@@ -12,7 +12,7 @@ class Task : public QObject, public Common::Aggregable<Task>
 {
 	Q_OBJECT;
 
-	friend Exporter::Dxfplot::Access<Task>;
+	friend Serializer::Access<Task>;
 
 private:
 	Path::ListPtr m_paths;
@@ -28,6 +28,7 @@ public:
 		DOWN = 1
 	};
 
+	explicit Task() = default;
 	explicit Task(Layer::ListUPtr &&layers);
 
 	int pathCount() const;

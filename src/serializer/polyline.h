@@ -1,20 +1,20 @@
 #pragma once
 
-#include <exporter/dxfplot/access.h>
-#include <exporter/dxfplot/bulge.h>
+#include <serializer/access.h>
+#include <serializer/bulge.h>
 
 #include <cereal/cereal.hpp>
 
 #include <geometry/polyline.h>
 
-namespace Exporter::Dxfplot
+namespace Serializer
 {
 
 template<>
 struct Access<Geometry::Polyline>
 {
 	template <class Archive>
-	void save(Archive &archive, const Geometry::Polyline &polyline) const
+	void serialize(Archive &archive, Geometry::Polyline &polyline) const
 	{
 		archive(cereal::make_nvp("bulges", polyline.m_bulges));
 	}

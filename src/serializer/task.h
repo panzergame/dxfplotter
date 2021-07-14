@@ -1,7 +1,7 @@
 #pragma once
 
-#include <exporter/dxfplot/access.h>
-#include <exporter/dxfplot/layer.h>
+#include <serializer/access.h>
+#include <serializer/layer.h>
 
 #include <cereal/cereal.hpp>
 #include <cereal/types/map.hpp>
@@ -11,19 +11,19 @@
 #include <utility>
 #include <model/task.h>
 
-namespace Exporter::Dxfplot
+namespace Serializer
 {
 
 using IndexStackList = std::vector<int>;
 
-int findPathIndex(const Model::Path::ListPtr& paths, const Model::Path *wantedPath)
+inline int findPathIndex(const Model::Path::ListPtr& paths, const Model::Path *wantedPath)
 {
 	const Model::Path::ListPtr::const_iterator it = std::find(paths.cbegin(), paths.cend(), wantedPath);
 
 	return std::distance(paths.cbegin(), it);
 }
 
-IndexStackList convertPathStackToIndexStack(const Model::Path::ListPtr& paths,
+inline IndexStackList convertPathStackToIndexStack(const Model::Path::ListPtr& paths,
 		const Model::Path::ListPtr& stack)
 {
 	IndexStackList indexStack(stack.size());
@@ -46,6 +46,12 @@ struct Access<Model::Task>
 
 		const IndexStackList indexStack = convertPathStackToIndexStack(task.m_paths, task.m_stack);
 		archive(cereal::make_nvp("stack", indexStack));
+	}
+
+	template <class Archive>
+	void load(Archive &archive, Model::Task &task) const
+	{
+		
 	}
 };
 
