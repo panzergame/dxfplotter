@@ -42,9 +42,8 @@ jobs:
   - stage: sonarcloud
     script: bash travis/analysesonarcloud.sh
   - stage: deploy
-    script: skip
+    script: bash travis/buildappimage.sh
     deploy:
-      script: bash travis/buildappimage.sh
       provider: releases
       token: "$GITHUB_TOKEN"
       file: 'dxfplotter-x86_64.AppImage'
