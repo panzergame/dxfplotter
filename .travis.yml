@@ -41,13 +41,12 @@ jobs:
     script: bash travis/buildtestcoverage.sh
   - stage: sonarcloud
     script: bash travis/analysesonarcloud.sh
-  - stage: deploy
-    if: branch = master
-    script: bash travis/buildappimage.sh
-    deploy:
-      provider: releases
-      token: "$GITHUB_TOKEN"
-      file: 'dxfplotter-x86_64.AppImage'
-      skip_cleanup: true
-      on:
-        tags: true
+
+deploy:
+  script: bash travis/buildappimage.sh
+  provider: releases
+  token: "$GITHUB_TOKEN"
+  file: 'dxfplotter-x86_64.AppImage'
+  skip_cleanup: true
+  on:
+    tags: true
