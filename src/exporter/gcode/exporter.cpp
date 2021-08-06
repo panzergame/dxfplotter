@@ -101,7 +101,7 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Poly
 	const float depthPerCut = m_tool.general().depthPerCut();
 
 	PassesIterator iterator(polyline, cuttingDirection);
-	for (float depth = depthPerCut; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
+	for (float depth = 0.0f; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
 		const float boundDepth = std::fminf(depth, maxDepth);
 		processor.depthLinearMove(-boundDepth);
 
