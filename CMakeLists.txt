@@ -47,6 +47,7 @@ set(INCLUDE_DIRS
 )
 
 set(LINK_LIBRARIES
+	resource
 	view
 	view-settings
 	view-task

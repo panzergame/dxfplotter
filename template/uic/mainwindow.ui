@@ -11,11 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>dxfplotter</string>
   </property>
   <property name="windowIcon">
-   <iconset>
-    <normaloff>../../icon/icon.png</normaloff>../../icon/icon.png</iconset>
+   <iconset resource="../../resource/resource.qrc">
+    <normaloff>:/dxfplotter.png</normaloff>:/dxfplotter.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout"/>
@@ -191,6 +191,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resource/resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

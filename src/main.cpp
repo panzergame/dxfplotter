@@ -8,6 +8,8 @@
 
 int main(int argc, char *argv[])
 {
+	Q_INIT_RESOURCE(resource);
+
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");
 	qapp.setApplicationDisplayName("dxfplotter");
