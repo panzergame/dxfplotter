@@ -81,6 +81,16 @@ void MainWindow::setupMenuActions()
 	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
 }
 
+void MainWindow::setTaskToolsEnabled(bool enabled)
+{
+	actionExportFile->setEnabled(enabled);
+	actionLeftCutterCompensation->setEnabled(enabled);
+	actionRightCutterCompensation->setEnabled(enabled);
+	actionResetCutterCompensation->setEnabled(enabled);
+	actionHideSelection->setEnabled(enabled);
+	actionShowHidden->setEnabled(enabled);
+}
+
 MainWindow::MainWindow(Model::Application &app)
 	:m_app(app)
 {
@@ -88,7 +98,10 @@ MainWindow::MainWindow(Model::Application &app)
 	setupMenuActions();
 	showMaximized();
 
+	setTaskToolsEnabled(false);
+
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
+	connect(&m_app, &Model::Application::taskChanged, this, &MainWindow::taskChanged);
 }
 
 void MainWindow::openFile()
@@ -121,6 +134,11 @@ void MainWindow::openSettings()
 	if (settings.exec() == QDialog::Accepted) {
 		m_app.setConfig(settings.newConfig());
 	}
+}
+
+void MainWindow::taskChanged(Model::Task *newTask)
+{
+	setTaskToolsEnabled(true);
 }
 
 }

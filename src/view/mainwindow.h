@@ -30,6 +30,8 @@ private:
 	void setupUi();
 	void setupMenuActions();
 
+	void setTaskToolsEnabled(bool enabled);
+
 public:
 	explicit MainWindow(Model::Application &app);
 
@@ -37,6 +39,7 @@ protected Q_SLOTS:
 	void openFile();
 	void exportFile();
 	void openSettings();
+	void taskChanged(Model::Task *newTask);
 };
 
 }
