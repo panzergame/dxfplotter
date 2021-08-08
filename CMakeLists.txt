@@ -30,6 +30,7 @@ find_package(Qt5 COMPONENTS REQUIRED
 )
 
 find_package(yaml-cpp REQUIRED)
+find_package(fmt REQUIRED)
 
 set(INCLUDE_DIRS
 	src
@@ -58,7 +59,7 @@ set(LINK_LIBRARIES
 	gcode
 	geometry
 	libdxfrw
-	fmt
+	fmt::fmt
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
 )

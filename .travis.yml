@@ -10,6 +10,7 @@ addons:
     - g++-8
     - cmake
     - qtbase5-dev
+    - libfmt-dev
     - libyaml-cpp-dev
     - lcov
   sonarcloud:
