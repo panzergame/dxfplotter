@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include <QComboBox>
+#include <QErrorMessage>
 #include <QDebug>
 
 namespace View
@@ -102,6 +103,7 @@ MainWindow::MainWindow(Model::Application &app)
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 	connect(&m_app, &Model::Application::taskChanged, this, &MainWindow::taskChanged);
+	connect(&m_app, &Model::Application::errorRaised, this, &MainWindow::displayError);
 }
 
 void MainWindow::openFile()
@@ -139,6 +141,12 @@ void MainWindow::openSettings()
 void MainWindow::taskChanged(Model::Task *newTask)
 {
 	setTaskToolsEnabled(true);
+}
+
+void MainWindow::displayError(const QString &message)
+{
+	QMessageBox messageBox;
+	messageBox.critical(this, "Error", message);
 }
 
 }

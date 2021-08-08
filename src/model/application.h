@@ -68,6 +68,7 @@ Q_SIGNALS:
 	void selectedToolConfigChanged(const Config::Tools::Tool &tool);
 	void selectedProfileConfigChanged(const Config::Profiles::Profile &profile);
 	void configChanged(Config::Config &config);
+	void errorRaised(const QString& message);
 };
 
 }

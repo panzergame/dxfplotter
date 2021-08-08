@@ -214,8 +214,13 @@ bool Application::exportToGcode(const QString &fileName)
 {
 	std::ofstream file(fileName.toStdString());
 	if (file) {
-		Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), file);
-		return true;
+		try {
+			Exporter::GCode::Exporter exporter(*m_task, *m_selectedToolConfig, m_selectedProfileConfig->gcode(), file);
+			return true;
+		}
+		catch (const std::exception &exception) {
+			emit errorRaised(exception.what());
+		}
 	}
 
 	return false;

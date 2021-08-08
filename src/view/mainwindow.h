@@ -40,6 +40,7 @@ protected Q_SLOTS:
 	void exportFile();
 	void openSettings();
 	void taskChanged(Model::Task *newTask);
+	void displayError(const QString &message);
 };
 
 }
