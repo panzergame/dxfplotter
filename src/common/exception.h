@@ -19,8 +19,8 @@ private:
 		std::ostringstream stream;
 		stream << "Formatting error, format \"" << format << "\" with arguments";
 
-		((stream << ' ' << args.name), ...);
-		stream << "] : " << error;
+		((stream << ' ' << args), ...);
+		stream << ": " << error;
 
 		return stream.str();
 	}
