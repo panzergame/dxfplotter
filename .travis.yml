@@ -32,10 +32,11 @@ cache:
 before_install:
 - eval "${MATRIX_EVAL}"
 
-branches:
-    except:
-    - # Do not build tags that we create when we upload to GitHub Releases
-    - /^(?i:continuous.*)$/
+on:
+    branches:
+        except:
+        - # Do not build tags that we create when we upload to GitHub Releases
+        - /^(?i:continuous.*)$/
 
 jobs:
   include:
