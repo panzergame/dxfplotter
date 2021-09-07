@@ -32,6 +32,9 @@ pushd "$BUILD_DIR"
 # we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
 cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 
+wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+unzip build-wrapper-linux-x86.zip && chmod +x ${{ github.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64
+
 # Wraps the compilation with the Build Wrapper to generate configuration (used
 # later by the SonarQube Scanner) into the "bw-output" folder
 build-wrapper-linux-x86-64 --out-dir bw-output cmake --build .
