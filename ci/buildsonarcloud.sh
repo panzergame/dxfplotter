@@ -36,3 +36,10 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 # later by the SonarQube Scanner) into the "bw-output" folder
 "$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir $"$REPO_ROOT"/bw-output cmake --build .
 
+docker run \
+    --rm \
+    -e SONAR_HOST_URL="https://sonarcloud.io/" \
+    -e SONAR_LOGIN=$SONAR_TOKEN \
+    -v "$REPO_ROOT:/usr/src" \
+    sonarsource/sonar-scanner-cli
+
