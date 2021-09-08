@@ -38,12 +38,12 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 	--out-dir $"$REPO_ROOT"/bw-output cmake \
 	--build .
 
-cat $"$REPO_ROOT"/bw-output/build-wrapper-dump.json
-
-docker run \
-    --rm \
-    -e SONAR_HOST_URL="https://sonarcloud.io/" \
-    -e SONAR_LOGIN=$SONAR_TOKEN \
-    -v "$REPO_ROOT:/usr/src" \
-    sonarsource/sonar-scanner-cli
+# cat $"$REPO_ROOT"/bw-output/build-wrapper-dump.json
+# 
+# docker run \
+#     --rm \
+#     -e SONAR_HOST_URL="https://sonarcloud.io/" \
+#     -e SONAR_LOGIN=$SONAR_TOKEN \
+#     -v "$REPO_ROOT:/usr/src" \
+#     sonarsource/sonar-scanner-cli
 

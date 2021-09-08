@@ -18,10 +18,13 @@ jobs:
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
           unzip build-wrapper-linux-x86.zip
           chmod +x ${{ github.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip
-      - name: Build and scan
+      - name: Build
         run: ci/buildsonarcloud.sh
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
+        with:
+          args: >
+            -Dsonar.cfamily.build-wrapper-output=/github/workspace/bw-output
