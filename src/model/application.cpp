@@ -133,9 +133,7 @@ QString Application::currentFileBaseName() const
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
-		if (!loadFile(fileName)) {
-			qCritical() << "Invalid file type " << fileName;
-		}
+		loadFile(fileName);
 	}
 }
 
@@ -145,12 +143,15 @@ bool Application::loadFile(const QString &fileName)
 	const QMimeType mime = db.mimeTypeForFile(fileName);
 
 	if (mime.name() == "image/vnd.dxf") {
-		loadDxf(fileName);
+		if (!loadDxf(fileName)) {
+			return false;
+		}
 	}
 	else if (mime.name() == "text/plain") {
 		loadPlot(fileName);
 	}
 	else {
+		qCritical() << "Invalid file type: " << fileName;
 		return false;
 	}
 
@@ -175,6 +176,7 @@ bool Application::loadDxf(const QString &fileName)
 		importerLayers = imp.layers();
 	}
 	catch (const Common::FileCouldNotOpenException &e) {
+		qCritical() << "File not found:" << fileName;
 		return false;
 	}
 
