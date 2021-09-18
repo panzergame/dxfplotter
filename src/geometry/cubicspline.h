@@ -8,8 +8,10 @@ namespace Geometry
 class CubicSpline : public Spline
 {
 private:
-	Point2DList convertClosedToBezierPoints() const;
-	Point2DList convertOpenedToBezierPoints() const;
+	Point2DList convertClosedToCubicBezierPoints() const;
+	Point2DList convertOpenedToCubicBezierPoints() const;
+
+	Bezier::List pointsToBeziers(const Point2DList &bezierPoints) const;
 
 public:
 	explicit CubicSpline(Point2DList &&points, bool closed);

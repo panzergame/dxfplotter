@@ -8,7 +8,7 @@ set(SRC
 	circle.cpp
 	cubicspline.cpp
 	polyline.cpp
-# 	quadraticspline.cpp
+	quadraticspline.cpp
 	spline.cpp
 
 	arc.h

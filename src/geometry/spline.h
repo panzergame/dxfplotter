@@ -13,8 +13,6 @@ private:
 	bool m_closed;
 
 protected:
-	Bezier::List pointsToBeziers(const Point2DList &bezierPoints) const;
-
 	const Point2DList& controlPoints() const;
 	bool closed() const;
 

@@ -4,6 +4,7 @@
 
 #include <importer/dxf/layer.h>
 #include <geometry/cubicspline.h>
+#include <geometry/quadraticspline.h>
 
 #include <libdxfrw/drw_entities.h>
 
@@ -205,6 +206,12 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 	Geometry::Bezier::List beziers;
 	const int degree = spline.degree;
 	switch (degree) {
+		case 2:
+		{
+			Geometry::QuadraticSpline spline(std::move(controlPoints), closed);
+			beziers = spline.toBeziers();
+			break;
+		}
 		case 3:
 		{
 			Geometry::CubicSpline spline(std::move(controlPoints), closed);
