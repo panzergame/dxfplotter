@@ -32,7 +32,7 @@ Point2DList QuadraticSpline::convertOpenedToQuadraticBezierPoints() const
 	const Point2DList &allControlPoints = controlPoints();
 	const int nbcontrol = allControlPoints.size();
 
-	const int size = nbcontrol + 1;
+	const int size = (nbcontrol - 1) * 2 - 1;
 	Point2DList bezierPoints(size);
 
 	for (int src = 1, dst = 1; src < (nbcontrol - 1); ++src, dst += 2) {
