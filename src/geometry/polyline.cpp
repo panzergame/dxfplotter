@@ -88,6 +88,10 @@ Polyline& Polyline::operator+=(const Polyline &other)
 
 Polyline::List Polyline::offsetted(float margin) const
 {
+	if (isPoint()) {
+		return {*this};
+	}
+
 	cavc::Polyline<double> ccPolyline;
 
 	// Convert to CAVC polyline

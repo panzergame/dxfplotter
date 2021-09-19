@@ -124,3 +124,18 @@ TEST(PolylineTest, TestLinePolylineOffsetedHasMovedStartEnd)
 	EXPECT_FLOAT_EQ(offsetedPolyline.start().y(), bulge.start().y() + offset);
 	EXPECT_FLOAT_EQ(offsetedPolyline.end().y(), bulge.end().y() + offset);
 }
+
+TEST(PolylineTest, TestPointPolylineOffsetedIsPoint)
+{
+	const Geometry::Bulge bulge(QVector2D(0.0f, 3.4f), QVector2D(0.0f, 3.4f), 0.0f);
+	const Geometry::Polyline polyline({bulge});
+
+	const float offset = 1.2f;
+	const Geometry::Polyline::List offseted(polyline.offsetted(offset));
+
+	ASSERT_EQ(offseted.size(), 1);
+
+	const Geometry::Polyline &offsetedPolyline = offseted.front();
+	EXPECT_EQ(offsetedPolyline.start(), bulge.start());
+	EXPECT_EQ(offsetedPolyline.end(), bulge.end());
+}
