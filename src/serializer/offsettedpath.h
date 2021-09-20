@@ -14,10 +14,10 @@ template<>
 struct Access<Model::OffsettedPath>
 {
 	template <class Archive>
-	void save(Archive &archive, const Model::OffsettedPath &offsettedPath) const
+	void serialize(Archive &archive, Model::OffsettedPath &offsettedPath) const
 	{
-// 		archive(cereal::make_nvp("offseted_polylines", offsettedPath.offsettedPolylines()));
-// 		archive(cereal::make_nvp("direction", offsettedPath.cuttingDirection()));
+		archive(cereal::make_nvp("offseted_polylines", offsettedPath.m_offsettedPolylines));
+		archive(cereal::make_nvp("direction", offsettedPath.m_direction));
 	}
 };
 

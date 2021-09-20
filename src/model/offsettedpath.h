@@ -7,7 +7,7 @@
 #include <model/renderable.h>
 #include <model/pathsettings.h>
 
-#include <string>
+#include <serializer/access.h>
 
 namespace Model
 {
@@ -16,6 +16,8 @@ class Layer;
 
 class OffsettedPath
 {
+	friend Serializer::Access<OffsettedPath>;
+
 public:
 	enum class Direction
 	{
