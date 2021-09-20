@@ -37,19 +37,10 @@ TEST_F(ExporterTest, shouldRenderAllPathsWhenAllVisible)
 	const Geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
 	Geometry::Polyline polyline({bulge});
 
-	Model::Path::ListUPtr paths;
-	paths.emplace_back(path);
-	layer->setChildren(std::move(paths));
+	createTaskFromPolyline(std::move(polyline));
 
-	Model::Layer::ListUPtr layers;
-	layers.emplace_back(layer);
-	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
-	Model::Document document(std::move(task), tool, profile);
-
-	{
-		Exporter::GCode::Exporter exporter(tool, gcode);
-		exporter(document, output);
-	}
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.000 Y 0.000

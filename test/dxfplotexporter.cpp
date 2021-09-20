@@ -22,7 +22,6 @@ TEST(DxfplotExporterTest, shouldRenderAllPathsWhenAllVisible)
 	Model::Path::ListUPtr paths;
 	paths.emplace_back(path);
 	layer->setChildren(std::move(paths));
-
 	Model::Layer::ListUPtr layers;
 	layers.emplace_back(layer);
 	Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
