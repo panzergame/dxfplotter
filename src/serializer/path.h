@@ -3,6 +3,7 @@
 #include <serializer/access.h>
 #include <serializer/offsettedpath.h>
 #include <serializer/pathsettings.h>
+#include <serializer/renderable.h>
 
 #include <cereal/cereal.hpp>
 
@@ -15,12 +16,13 @@ template<>
 struct Access<Model::Path>
 {
 	template <class Archive>
-	void save(Archive &archive, const Model::Path &path) const
+	void serialize(Archive &archive, Model::Path &path) const
 	{
+		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&path)));
+
 		archive(cereal::make_nvp("base_polyline", path.m_basePolyline));
 		archive(cereal::make_nvp("offseted_path", path.m_offsettedPath));
-		archive(cereal::make_nvp("settings", path.settings()));
-		archive(cereal::make_nvp("visible", path.visible()));
+		archive(cereal::make_nvp("settings", path.m_settings));
 	}
 };
 

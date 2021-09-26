@@ -17,12 +17,18 @@ class Renderable : public QObject
 {
 	Q_OBJECT;
 
+	friend Serializer::Access<Renderable>;
+
 private:
 	std::string m_name;
 
-	struct {
-		bool m_selected : 1;
-		bool m_visible : 1;
+	union {
+		struct {
+			bool m_selected : 1;
+			bool m_visible : 1;
+		};
+
+		int m_flags;
 	};
 
 public:
