@@ -13,7 +13,7 @@ protected:
 	const Config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
 	const Config::Profiles::Profile m_profile{"profile", YAML::Node()};
 	const Model::PathSettings m_settings{10, 10, 10, 0.1};
-	Model::Task::UPtr m_task;
+	Model::Task *m_task;
 	Model::Document::UPtr m_document;
 	std::ostringstream m_output;
 
@@ -27,8 +27,9 @@ protected:
 
 		Model::Layer::ListUPtr layers;
 		layers.push_back(std::move(layer));
-		m_task = std::make_unique<Model::Task>(std::move(layers));
-		m_document = std::make_unique<Model::Document>(std::move(m_task), m_tool, m_profile);
+		Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
+		m_document = std::make_unique<Model::Document>(std::move(task), m_tool, m_profile);
+		m_task = &m_document->task();
 	}
 };
 
@@ -55,7 +56,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBuCutBackward)
+TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
@@ -90,7 +91,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBuCutForward)
+TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
