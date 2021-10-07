@@ -14,11 +14,21 @@ template<>
 struct Access<Model::Layer>
 {
 	template <class Archive>
-	void serialize(Archive &archive, Model::Layer &layer) const
+	void save(Archive &archive, const Model::Layer &layer) const
 	{
 		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
 
 		archive(cereal::make_nvp("children", layer.m_children));
+	}
+
+	template <class Archive>
+	void load(Archive &archive, Model::Layer &layer)
+	{
+		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
+
+		archive(cereal::make_nvp("children", layer.m_children));
+
+		layer.assignSelfToChildren();
 	}
 };
 

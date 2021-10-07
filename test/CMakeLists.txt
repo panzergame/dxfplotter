@@ -21,9 +21,13 @@ set(SRC
 	bulge.cpp
 	dxfplotexporter.cpp
 	dxfplotimporter.cpp
+	exporterfixture.cpp
 	gcodeexporter.cpp
 	polyline.cpp
+	serializer.cpp
 	verticalspeed.cpp
+
+	exporterfixture.h
 )
 
 add_executable(dxfplotter-test ${SRC} main.cpp)

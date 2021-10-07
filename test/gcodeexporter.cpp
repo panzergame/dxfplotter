@@ -1,39 +1,10 @@
-#include <gtest/gtest.h>
+#include <exporterfixture.h>
 
 #include <exporter/gcode/exporter.h>
-#include <config/config.h>
-#include <model/document.h>
 
 #include <sstream>
 
-class ExporterTest : public ::testing::Test
-{
-protected:
-	const Config::Tools::Tool m_tool{"tool", YAML::Node()};
-	const Config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
-	const Config::Profiles::Profile m_profile{"profile", YAML::Node()};
-	const Model::PathSettings m_settings{10, 10, 10, 0.1};
-	Model::Task *m_task;
-	Model::Document::UPtr m_document;
-	std::ostringstream m_output;
-
-	void createTaskFromPolyline(Geometry::Polyline &&polyline)
-	{
-		Model::Layer::UPtr layer = std::make_unique<Model::Layer>("layer");
-		Model::Path::UPtr path = std::make_unique<Model::Path>(std::move(polyline), "", m_settings, *layer);
-
-		Model::Path::ListUPtr paths;
-		paths.push_back(std::move(path));
-
-		Model::Layer::ListUPtr layers;
-		layers.push_back(std::move(layer));
-		Model::Task::UPtr task = std::make_unique<Model::Task>(std::move(layers));
-		m_document = std::make_unique<Model::Document>(std::move(task), m_tool, m_profile);
-		m_task = &m_document->task();
-	}
-};
-
-TEST_F(ExporterTest, shouldRenderAllPathsWhenAllVisible)
+TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
 	const Geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
 	Geometry::Polyline polyline({bulge});
@@ -56,7 +27,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBeCutBackward)
+TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
@@ -91,7 +62,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBeCutForward)
+TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);

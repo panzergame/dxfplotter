@@ -16,8 +16,11 @@ class Layer : public Renderable, public Common::Aggregable<Layer>
 private:
 	Path::ListUPtr m_children;
 
+	void assignSelfToChildren();
+
 public:
-	explicit Layer(const std::string &name);
+	explicit Layer(const std::string &name, Path::ListUPtr &&children);
+	explicit Layer() = default;
 
 	int childrenCount() const;
 	Path& childrenAt(int index);
@@ -31,8 +34,6 @@ public:
 			functor(*child);
 		}
 	}
-
-	void setChildren(Path::ListUPtr &&children);
 };
 
 }

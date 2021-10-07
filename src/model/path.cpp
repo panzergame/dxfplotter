@@ -9,7 +9,7 @@ namespace Model
 
 void Path::updateGlobalVisibility()
 {
-	const bool newGloballyVisible = visible() && m_layer.visible();
+	const bool newGloballyVisible = visible() && m_layer->visible();
 	if (m_globallyVisible != newGloballyVisible) {
 		m_globallyVisible = newGloballyVisible;
 
@@ -17,26 +17,24 @@ void Path::updateGlobalVisibility()
 	}
 }
 
-Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings, Layer &layer)
+Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
 	:Renderable(name),
 	m_basePolyline(basePolyline),
 	m_settings(settings),
-	m_layer(layer),
 	m_globallyVisible(true)
 {
-	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
-Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, Layer &layer)
+Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
 {
 	const int size = polylines.size();
 	Path::ListUPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
 		static const char *pathNameFormat = "({}) {}";
-		const std::string pathName = fmt::format(pathNameFormat, layer.name(), i);
-		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings, layer));
+		const std::string pathName = fmt::format(pathNameFormat, layerName, i);
+		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings));
 	}
 
 	return paths;
@@ -44,12 +42,18 @@ Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const P
 
 Layer &Path::layer()
 {
-	return m_layer;
+	return *m_layer;
 }
 
 const Layer &Path::layer() const
 {
-	return m_layer;
+	return *m_layer;
+}
+
+void Path::setLayer(Layer &layer)
+{
+	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
+	m_layer = &layer;
 }
 
 const Geometry::Polyline &Path::basePolyline() const

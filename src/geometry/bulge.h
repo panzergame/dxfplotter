@@ -42,6 +42,7 @@ public:
 	const QVector2D &end() const;
 	QVector2D &end();
 	float tangent() const;
+	float &tangent();
 
 	float length() const;
 
@@ -61,6 +62,8 @@ public:
 
 	Circle toCircle() const;
 	Arc toArc() const;
+
+	bool operator==(const Bulge& other) const;
 };
 
 }

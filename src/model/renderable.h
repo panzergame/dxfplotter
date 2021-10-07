@@ -22,17 +22,14 @@ class Renderable : public QObject
 private:
 	std::string m_name;
 
-	union {
-		struct {
-			bool m_selected : 1;
-			bool m_visible : 1;
-		};
-
-		int m_flags;
+	struct {
+		bool m_selected : 1;
+		bool m_visible : 1;
 	};
 
 public:
 	explicit Renderable(const std::string &name);
+	explicit Renderable() = default;
 
 	const std::string &name() const;
 

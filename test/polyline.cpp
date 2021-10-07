@@ -69,8 +69,7 @@ TEST(PolylineTest, ConcatTwoSingleBulgePolylineEqualsTwoBulgePolyline)
 	polyline4 += polyline1;
 	polyline4 += polyline2;
 
-	EXPECT_EQ(polyline3.start(), polyline4.start());
-	EXPECT_EQ(polyline3.end(), polyline4.end());
+	EXPECT_EQ(polyline3, polyline4);
 }
 
 TEST(PolylineTest, IterateBulge)
@@ -81,8 +80,7 @@ TEST(PolylineTest, IterateBulge)
 
 	int i = 0;
 	polyline.forEachBulge([&i, &bulges](const Geometry::Bulge& bulge){
-		EXPECT_EQ(bulge.start(), bulges[i].start());
-		EXPECT_EQ(bulge.end(), bulges[i].end());
+		EXPECT_EQ(bulge, bulges[i]);
 		++i;
 	});
 }

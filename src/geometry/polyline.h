@@ -54,6 +54,8 @@ public:
 	}
 
 	Polyline::List offsetted(float offset) const;
+
+	bool operator==(const Polyline &other) const;
 };
 
 }

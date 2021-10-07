@@ -11,6 +11,8 @@
 #include <utility>
 #include <model/task.h>
 
+#include <QDebug>
+
 namespace Serializer
 {
 
@@ -36,6 +38,16 @@ inline IndexStackList convertPathStackToIndexStack(const Model::Path::ListPtr& p
 	return indexStack;
 }
 
+inline Model::Path::ListPtr convertIndexStackToPathStack(const Model::Path::ListPtr& paths, const IndexStackList &indexStack)
+{
+	Model::Path::ListPtr stack(indexStack.size());
+	std::transform(indexStack.begin(), indexStack.end(), stack.begin(), [&paths](int index){
+		return paths[index];
+	});
+
+	return stack;
+}
+
 template<>
 struct Access<Model::Task>
 {
@@ -51,7 +63,19 @@ struct Access<Model::Task>
 	template <class Archive>
 	void load(Archive &archive, Model::Task &task) const
 	{
-		
+		Model::Layer::ListUPtr layers;
+		archive(cereal::make_nvp("layers", task.m_layers));
+
+		Model::Path::ListPtr paths;
+		for (const Model::Layer::UPtr &layer : task.m_layers) {
+			layer->forEachChild([&paths](Model::Path &path){ paths.push_back(&path); });
+		}
+
+		IndexStackList indexStack;
+		archive(cereal::make_nvp("stack", indexStack));
+		task.m_stack = convertIndexStackToPathStack(paths, indexStack);
+
+		task.initPathsFromLayers();
 	}
 };
 

@@ -3,10 +3,18 @@
 namespace Model
 {
 
-Layer::Layer(const std::string &name)
-	:Renderable(name)
+void Layer::assignSelfToChildren()
 {
+	for (Path::UPtr &child : m_children) {
+		child->setLayer(*this);
+	}
+}
 
+Layer::Layer(const std::string &name, Path::ListUPtr &&children)
+	:Renderable(name),
+	m_children(std::move(children))
+{
+	assignSelfToChildren();
 }
 
 int Layer::childrenCount() const
@@ -36,11 +44,6 @@ int Layer::childIndexFor(const Path& child) const
 	}
 
 	return std::distance(m_children.cbegin(), it);
-}
-
-void Layer::setChildren(Path::ListUPtr &&children)
-{
-	m_children = std::move(children);
 }
 
 }
