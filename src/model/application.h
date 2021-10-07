@@ -4,6 +4,7 @@
 #include <config/config.h>
 
 #include <QObject>
+#include <QDebug>
 
 #include <fstream>
 
@@ -44,6 +45,7 @@ private:
 	template <class Exporter>
 	bool saveToFile(Exporter &exporter, const QString &fileName) const
 	{
+		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
 		if (output) {
 			exporter(*m_openedDocument, output);

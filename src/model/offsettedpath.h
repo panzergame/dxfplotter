@@ -26,14 +26,14 @@ public:
 	};
 
 private:
-	Geometry::Polyline::List m_offsettedPolylines;
+	Geometry::Polyline::List m_polylines;
 	Direction m_direction;
 
 public:
 	explicit OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction);
 	explicit OffsettedPath() = default;
 
-	const Geometry::Polyline::List &offsettedPolylines() const;
+	const Geometry::Polyline::List &polylines() const;
 	Geometry::CuttingDirection cuttingDirection() const;
 };
 

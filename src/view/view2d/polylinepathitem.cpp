@@ -55,6 +55,8 @@ PolylinePathItem::PolylinePathItem(Model::Path &path)
 	m_paintPath(paintPath()),
 	m_shapePath(shapePath())
 {
+	updateOffsetedPath();
+
 	connect(&path, &Model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
 }
 

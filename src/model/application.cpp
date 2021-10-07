@@ -247,9 +247,9 @@ bool Application::loadFromDxfplot(const QString &fileName)
 		return false;
 	}
 
-// 	m_currentDxfplotFileName = fileName;
+	m_currentDxfplotFileName = fileName;
 
-// 	emit documentChanged(m_openedDocument.get());
+	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }

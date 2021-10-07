@@ -52,8 +52,9 @@ const Layer &Path::layer() const
 
 void Path::setLayer(Layer &layer)
 {
-	connect(&layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 	m_layer = &layer;
+	updateGlobalVisibility();
+	connect(m_layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
 const Geometry::Polyline &Path::basePolyline() const
@@ -63,7 +64,7 @@ const Geometry::Polyline &Path::basePolyline() const
 
 Geometry::Polyline::List Path::finalPolylines() const
 {
-	return m_offsettedPath ? m_offsettedPath->offsettedPolylines() : Geometry::Polyline::List{m_basePolyline};
+	return m_offsettedPath ? m_offsettedPath->polylines() : Geometry::Polyline::List{m_basePolyline};
 }
 
 Model::OffsettedPath *Path::offsettedPath() const

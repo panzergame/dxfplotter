@@ -4,14 +4,14 @@ namespace Model
 {
 
 OffsettedPath::OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction)
-	:m_offsettedPolylines(offsettedPolylines),
+	:m_polylines(offsettedPolylines),
 	m_direction(direction)
 {
 }
 
-const Geometry::Polyline::List &OffsettedPath::offsettedPolylines() const
+const Geometry::Polyline::List &OffsettedPath::polylines() const
 {
-	return m_offsettedPolylines;
+	return m_polylines;
 }
 
 Geometry::CuttingDirection OffsettedPath::cuttingDirection() const
