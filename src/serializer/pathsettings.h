@@ -13,13 +13,13 @@ namespace Serializer
 template<>
 struct Access<Model::PathSettings>
 {
-	template <class Archive> // TODO use serialize in common library
+	template <class Archive>
 	void serialize(Archive &archive, Model::PathSettings &pathSettings) const
 	{
-		archive(cereal::make_nvp("plane_feed_rate", pathSettings.planeFeedRate()));
-		archive(cereal::make_nvp("depth_feed_rate", pathSettings.depthFeedRate()));
-		archive(cereal::make_nvp("intensity", pathSettings.intensity()));
-		archive(cereal::make_nvp("depth", pathSettings.depth()));
+		archive(cereal::make_nvp("plane_feed_rate", pathSettings.m_planeFeedRate));
+		archive(cereal::make_nvp("depth_feed_rate", pathSettings.m_depthFeedRate));
+		archive(cereal::make_nvp("intensity", pathSettings.m_intensity));
+		archive(cereal::make_nvp("depth", pathSettings.m_depth));
 	}
 };
 
