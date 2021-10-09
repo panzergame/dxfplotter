@@ -13,6 +13,7 @@ addons:
     - libfmt-dev
     - libyaml-cpp-dev
     - lcov
+    - libcereal-dev
   sonarcloud:
     organization: "panzergame"
     token: "$SONARCLOUD_TOKEN"

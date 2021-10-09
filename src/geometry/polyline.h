@@ -4,15 +4,17 @@
 
 #include <geometry/bulge.h>
 
-#include "cavc/polylineoffset.hpp"
+#include <cavc/polylineoffset.hpp>
 
-#include <vector>
+#include <serializer/access.h>
 
 namespace Geometry
 {
 
 class Polyline : public Common::Aggregable<Polyline>
 {
+	friend Serializer::Access<Polyline>;
+
 private:
 	Bulge::List m_bulges;
 
@@ -52,6 +54,8 @@ public:
 	}
 
 	Polyline::List offsetted(float offset) const;
+
+	bool operator==(const Polyline &other) const;
 };
 
 }

@@ -17,6 +17,8 @@ class Renderable : public QObject
 {
 	Q_OBJECT;
 
+	friend Serializer::Access<Renderable>;
+
 private:
 	std::string m_name;
 
@@ -27,6 +29,7 @@ private:
 
 public:
 	explicit Renderable(const std::string &name);
+	explicit Renderable() = default;
 
 	const std::string &name() const;
 

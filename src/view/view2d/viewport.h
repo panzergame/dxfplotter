@@ -1,7 +1,7 @@
 #pragma once
 
 #include <model/task.h>
-#include <model/taskmodelobserver.h>
+#include <model/documentmodelobserver.h>
 
 #include <view/view2d/rubberband.h>
 
@@ -13,7 +13,7 @@
 namespace View::View2d
 {
 
-class Viewport : public Model::TaskModelObserver<QGraphicsView>
+class Viewport : public Model::DocumentModelObserver<QGraphicsView>
 {
 	Q_OBJECT;
 
@@ -37,7 +37,7 @@ private:
 	void fitItemsInView();
 
 protected:
-	void taskChanged() override;
+	void documentChanged() override;
 
 	void wheelEvent(QWheelEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;

@@ -33,4 +33,12 @@ public:
 	}
 };
 
+class ImportCouldNotFindToolConfigException : public std::exception
+{
+};
+
+class ImportCouldNotFindProfileConfigException : public std::exception
+{
+};
+
 }

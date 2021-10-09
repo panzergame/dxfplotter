@@ -1,10 +1,14 @@
 #pragma once
 
+#include <serializer/access.h>
+
 namespace Model
 {
 
 class PathSettings
 {
+	friend Serializer::Access<PathSettings>;
+
 private:
 	float m_planeFeedRate;
 	float m_depthFeedRate;

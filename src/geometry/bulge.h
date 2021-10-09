@@ -6,15 +6,19 @@
 #include <geometry/circle.h>
 #include <geometry/utils.h>
 
-#include <QVector2D>
-
 #include <cavc/plinesegment.hpp>
+
+#include <serializer/access.h>
+
+#include <QVector2D>
 
 namespace Geometry
 {
 
-class Bulge : public Common::Aggregable<Bulge> // TODO rename segment and tangent bulge ?
+class Bulge : public Common::Aggregable<Bulge>
 {
+	friend Serializer::Access<Bulge>;
+
 private:
 	QVector2D m_start;
 	QVector2D m_end;
@@ -38,6 +42,7 @@ public:
 	const QVector2D &end() const;
 	QVector2D &end();
 	float tangent() const;
+	float &tangent();
 
 	float length() const;
 
@@ -57,6 +62,8 @@ public:
 
 	Circle toCircle() const;
 	Arc toArc() const;
+
+	bool operator==(const Bulge& other) const;
 };
 
 }

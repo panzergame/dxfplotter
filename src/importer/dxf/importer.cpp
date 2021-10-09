@@ -27,7 +27,7 @@ Importer::Importer(const std::string& filename, float splineToArcPrecision, floa
 	}
 }
 
-Layer::List Importer::layers()
+Layer::List Importer::layers() const
 {
 	Layer::List layers(m_nameToLayers.size());
 	std::transform(m_nameToLayers.begin(), m_nameToLayers.end(), layers.begin(),

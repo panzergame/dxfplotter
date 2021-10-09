@@ -34,8 +34,10 @@
      <string>File</string>
     </property>
     <addaction name="actionOpenFile"/>
-    <addaction name="actionQuit"/>
+    <addaction name="actionSaveFile"/>
+    <addaction name="actionSaveAsFile"/>
     <addaction name="actionExportFile"/>
+    <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuConfiguration">
     <property name="title">
@@ -70,6 +72,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionOpenFile"/>
+   <addaction name="actionSaveFile"/>
    <addaction name="actionExportFile"/>
    <addaction name="separator"/>
    <addaction name="actionLeftCutterCompensation"/>
@@ -181,13 +184,37 @@
      <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
-    <string>Show hidden</string>
+    <string>Show Hidden</string>
    </property>
    <property name="toolTip">
     <string>Show Hidden</string>
    </property>
    <property name="shortcut">
     <string>Shift+H</string>
+   </property>
+  </action>
+  <action name="actionSaveFile">
+   <property name="icon">
+    <iconset theme="document-save">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveAsFile">
+   <property name="icon">
+    <iconset theme="document-save-as">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Save As</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
  </widget>

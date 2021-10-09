@@ -7,7 +7,7 @@
 #include <model/renderable.h>
 #include <model/pathsettings.h>
 
-#include <string>
+#include <serializer/access.h>
 
 namespace Model
 {
@@ -16,6 +16,8 @@ class Layer;
 
 class OffsettedPath
 {
+	friend Serializer::Access<OffsettedPath>;
+
 public:
 	enum class Direction
 	{
@@ -24,13 +26,14 @@ public:
 	};
 
 private:
-	const Geometry::Polyline::List m_offsettedPolylines;
-	const Direction m_direction;
+	Geometry::Polyline::List m_polylines;
+	Direction m_direction;
 
 public:
 	explicit OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction);
+	explicit OffsettedPath() = default;
 
-	const Geometry::Polyline::List &offsettedPolylines() const;
+	const Geometry::Polyline::List &polylines() const;
 	Geometry::CuttingDirection cuttingDirection() const;
 };
 

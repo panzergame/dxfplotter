@@ -120,4 +120,9 @@ Polyline::List Polyline::offsetted(float margin) const
 	return offsettedPolylines;
 }
 
+bool Polyline::operator==(const Polyline &other) const
+{
+	return m_bulges == other.m_bulges;
+}
+
 }

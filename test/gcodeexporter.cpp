@@ -1,41 +1,18 @@
-#include <gtest/gtest.h>
+#include <exporterfixture.h>
 
 #include <exporter/gcode/exporter.h>
-#include <config/config.h>
-#include <model/task.h>
 
 #include <sstream>
 
-class ExporterTest : public ::testing::Test
-{
-protected:
-	const Config::Tools::Tool m_tool{"tool", YAML::Node()};
-	const Config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
-	const Model::PathSettings m_settings{10, 10, 10, 0.1};
-	Model::Task::UPtr m_task;
-	std::ostringstream m_output;
-
-	void createTaskFromPolyline(Geometry::Polyline &&polyline)
-	{
-		Model::Layer::UPtr layer = std::make_unique<Model::Layer>("layer");
-		Model::Path::UPtr path = std::make_unique<Model::Path>(std::move(polyline), "", m_settings, *layer);
-
-		Model::Path::ListUPtr paths;
-		paths.push_back(std::move(path));
-
-		Model::Layer::ListUPtr layers;
-		layers.push_back(std::move(layer));
-		m_task = std::make_unique<Model::Task>(std::move(paths), std::move(layers));
-	}
-};
-
-TEST_F(ExporterTest, shouldRenderAllPathsWhenAllVisible)
+TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
 	const Geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
 	Geometry::Polyline polyline({bulge});
 
 	createTaskFromPolyline(std::move(polyline));
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.000 Y 0.000
@@ -50,7 +27,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBuCutBackward)
+TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
@@ -65,7 +42,8 @@ TEST_F(ExporterTest, shouldRenderOffsetedRightCwTriangleBuCutBackward)
 		path.offset(-0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X 0.483 Y 0.200
@@ -84,7 +62,7 @@ G0 X 0.000 Y 0.000
 )", m_output.str());
 }
 
-TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBuCutForward)
+TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 {
 	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
@@ -99,7 +77,8 @@ TEST_F(ExporterTest, shouldRenderOffsetedLeftCwTriangleBuCutForward)
 		path.offset(0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(*m_task, m_tool, m_gcode, m_output);
+	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
 G0 X -0.141 Y 0.141

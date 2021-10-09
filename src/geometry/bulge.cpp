@@ -49,6 +49,11 @@ float Bulge::tangent() const
 	return m_tangent;
 }
 
+float &Bulge::tangent()
+{
+	return m_tangent;
+}
+
 float Bulge::length() const
 {
 	if (isLine()) {
@@ -133,6 +138,11 @@ Arc Bulge::toArc() const
 	const float endAngle = LineAngle(m_end - center);
 
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
+}
+
+bool Bulge::operator==(const Bulge& other) const
+{
+	return m_start == other.m_start && m_end == other.m_end && m_tangent == other.m_tangent;
 }
 
 }

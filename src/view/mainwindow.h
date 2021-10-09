@@ -37,9 +37,11 @@ public:
 
 protected Q_SLOTS:
 	void openFile();
+	void saveFile();
+	void saveAsFile();
 	void exportFile();
 	void openSettings();
-	void taskChanged(Model::Task *newTask);
+	void documentChanged(Model::Document *newDocument);
 	void displayError(const QString &message);
 };
 

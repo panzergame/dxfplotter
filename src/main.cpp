@@ -33,12 +33,12 @@ int main(int argc, char *argv[])
 
 	if (parser.isSet(toolOption)) {
 		const QString toolName = parser.value(toolOption);
-		app.selectToolFromCmd(toolName);
+		app.defaultToolFromCmd(toolName);
 	}
 
 	if (parser.isSet(profileOption)) {
 		const QString profileName = parser.value(profileOption);
-		app.selectProfileFromCmd(profileName);
+		app.defaultProfileFromCmd(profileName);
 	}
 
 	// File loading from command line.

@@ -71,6 +71,8 @@ void MainWindow::setupMenuActions()
 {
 	// File actions
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
+	connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
@@ -102,31 +104,46 @@ MainWindow::MainWindow(Model::Application &app)
 	setTaskToolsEnabled(false);
 
 	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &Model::Application::taskChanged, this, &MainWindow::taskChanged);
+	connect(&m_app, &Model::Application::documentChanged, this, &MainWindow::documentChanged);
 	connect(&m_app, &Model::Application::errorRaised, this, &MainWindow::displayError);
 }
 
 void MainWindow::openFile()
 {
 	const QString fileName = QFileDialog::getOpenFileName(this);
-	if (!fileName.isEmpty()) {
-		if (!m_app.loadFile(fileName)) {
-			QMessageBox messageBox;
-			messageBox.critical(this, "Error", "Invalid file type " + fileName);
-		}
+	if (!fileName.isEmpty() && !m_app.loadFile(fileName)) {
+		QMessageBox::critical(this, "Error", "Invalid file type " + fileName);
+	}
+}
+
+void MainWindow::saveFile()
+{
+	const QString fileName = m_app.currentDxfplotFileName();
+	if (fileName.isEmpty()) {
+		saveAsFile();
+	}
+	else if (!m_app.saveToDxfplot(fileName)) {
+		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
+	}
+}
+
+void MainWindow::saveAsFile()
+{
+	const QString defaultPath = m_app.currentImportedFileBaseName() + ".dxfplot";
+	const QString fileName = QFileDialog::getSaveFileName(this, "Save As File", defaultPath, "Text files (*.dxfplot)");
+
+	if (!fileName.isEmpty() && !m_app.saveToDxfplot(fileName)) {
+		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
 
 void MainWindow::exportFile()
 {
-	const QString defaultPath = m_app.currentFileBaseName() + ".ngc";
+	const QString defaultPath = m_app.currentImportedFileBaseName() + ".ngc";
 	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
-	if (!fileName.isEmpty()) {
-		if (!m_app.exportToGcode(fileName)) {
-			QMessageBox messageBox;
-			messageBox.critical(this, "Error", "Couldn't save " + fileName);
-		}
+	if (!fileName.isEmpty() && !m_app.saveToGcode(fileName)) {
+		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
 
@@ -138,9 +155,9 @@ void MainWindow::openSettings()
 	}
 }
 
-void MainWindow::taskChanged(Model::Task *newTask)
+void MainWindow::documentChanged(Model::Document *newDocument)
 {
-	setTaskToolsEnabled(true);
+	setTaskToolsEnabled((newDocument != nullptr));
 }
 
 void MainWindow::displayError(const QString &message)
