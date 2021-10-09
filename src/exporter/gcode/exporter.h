@@ -13,7 +13,7 @@ class PathPostProcessor;
 
 class Exporter
 {
-private:  
+private:
 	const Config::Tools::Tool &m_tool;
 	const Config::Profiles::Profile::Gcode &m_gcode;
 

@@ -17,7 +17,6 @@ struct Access<Model::Layer>
 	void save(Archive &archive, const Model::Layer &layer) const
 	{
 		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
-
 		archive(cereal::make_nvp("children", layer.m_children));
 	}
 
@@ -25,7 +24,6 @@ struct Access<Model::Layer>
 	void load(Archive &archive, Model::Layer &layer)
 	{
 		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
-
 		archive(cereal::make_nvp("children", layer.m_children));
 
 		layer.assignSelfToChildren();

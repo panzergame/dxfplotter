@@ -35,8 +35,8 @@ private:
 
 	PathSettings defaultPathSettings() const;
 
-	std::optional<const Config::Tools::Tool *> findTool(const std::string &name) const;
-	std::optional<const Config::Profiles::Profile *> findProfile(const std::string &name) const;
+	const Config::Tools::Tool *findTool(const std::string &name) const;
+	const Config::Profiles::Profile *findProfile(const std::string &name) const;
 
 	void cutterCompensation(float scale);
 

@@ -42,24 +42,24 @@ PathSettings Application::defaultPathSettings() const
 	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
-std::optional<const Config::Tools::Tool *> Application::findTool(const std::string &name) const
+const Config::Tools::Tool *Application::findTool(const std::string &name) const
 {
 	const Config::Tools &tools = m_config.root().tools();
 	if (tools.has(name)) {
-		return std::make_optional(&tools[name]);
+		return &tools[name];
 	}
 
-	return std::nullopt;
+	return nullptr;
 }
 
-std::optional<const Config::Profiles::Profile *> Application::findProfile(const std::string &name) const
+const Config::Profiles::Profile *Application::findProfile(const std::string &name) const
 {
 	const Config::Profiles &profiles = m_config.root().profiles();
 	if (profiles.has(name)) {
-		return std::make_optional(&profiles[name]);
+		return &profiles[name];
 	}
 
-	return std::nullopt;
+	return nullptr;
 }
 
 void Application::cutterCompensation(float scale)
@@ -120,13 +120,13 @@ void Application::setConfig(Config::Config &&config)
 bool Application::selectTool(const QString &toolName)
 {
 	const std::string name = toolName.toStdString();
-	const std::optional<const Config::Tools::Tool *> tool = findTool(name);
+	const Config::Tools::Tool *tool = findTool(name);
 
 	if (tool) {
 		if (m_openedDocument) {
-			m_openedDocument->setToolConfig(**tool);
+			m_openedDocument->setToolConfig(*tool);
 		}
-		m_defaultToolConfig = *tool;
+		m_defaultToolConfig = tool;
 
 		return true;
 	}
@@ -144,13 +144,13 @@ void Application::defaultToolFromCmd(const QString &toolName)
 bool Application::selectProfile(const QString &profileName)
 {
 	const std::string name = profileName.toStdString();
-	const std::optional<const Config::Profiles::Profile *> profile = findProfile(name);
+	const Config::Profiles::Profile *profile = findProfile(name);
 
 	if (profile) {
 		if (m_openedDocument) {
-			m_openedDocument->setProfileConfig(**profile);
+			m_openedDocument->setProfileConfig(*profile);
 		}
-		m_defaultProfileConfig = *profile;
+		m_defaultProfileConfig = profile;
 
 		return true;
 	}

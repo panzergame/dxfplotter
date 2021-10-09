@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.11)
 
-cmake_policy(SET CMP0077 NEW)
-
 project(dxfplotter)
 
 include(CTest)
@@ -18,7 +16,7 @@ set(BUILD_TESTS OFF)
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-	add_compile_options(-Wno-error=deprecated-copy)
+	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -27,7 +25,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
-find_package(cereal)
+find_package(cereal REQUIRED)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets

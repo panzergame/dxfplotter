@@ -3,7 +3,60 @@
 #include <exporter/dxfplot/exporter.h>
 #include <importer/dxfplot/importer.h>
 
+#include <common/exception.h>
+
 #include <sstream>
+
+
+TEST_F(ExporterFixture, shouldThrowExceptionWhenToolNotFound)
+{
+	std::ostringstream output;
+
+	Geometry::Polyline polyline;
+	createTaskFromPolyline(std::move(polyline));
+
+	Exporter::Dxfplot::Exporter exporter;
+	exporter(*m_document, output);
+
+	YAML::Node toolsNode;	
+	YAML::Node profilesNode;
+	profilesNode["profile"] = YAML::Node();
+	
+	Config::Tools tools{toolsNode};
+	Config::Profiles profiles{profilesNode};
+	
+	Importer::Dxfplot::Importer importer(tools, profiles);
+
+	std::istringstream input;
+	input.str(output.str());
+	
+	EXPECT_THROW(importer(input), Common::ImportCouldNotFindToolConfigException);
+}
+
+TEST_F(ExporterFixture, shouldThrowExceptionWhenProfileNotFound)
+{
+	std::ostringstream output;
+
+	Geometry::Polyline polyline;
+	createTaskFromPolyline(std::move(polyline));
+
+	Exporter::Dxfplot::Exporter exporter;
+	exporter(*m_document, output);
+
+	YAML::Node toolsNode;
+	toolsNode["tool"] = YAML::Node();
+	YAML::Node profilesNode;
+	
+	Config::Tools tools{toolsNode};
+	Config::Profiles profiles{profilesNode};
+	
+	Importer::Dxfplot::Importer importer(tools, profiles);
+
+	std::istringstream input;
+	input.str(output.str());
+	
+	EXPECT_THROW(importer(input), Common::ImportCouldNotFindProfileConfigException);
+}
 
 TEST_F(ExporterFixture, shouldReimportDocumentWithToolAndProfileConfig)
 {
@@ -12,10 +65,8 @@ TEST_F(ExporterFixture, shouldReimportDocumentWithToolAndProfileConfig)
 	Geometry::Polyline polyline;
 	createTaskFromPolyline(std::move(polyline));
 
-	{
-		Exporter::Dxfplot::Exporter exporter;
-		exporter(*m_document, output);
-	}
+	Exporter::Dxfplot::Exporter exporter;
+	exporter(*m_document, output);
 
 	YAML::Node toolsNode;
 	toolsNode["tool"] = YAML::Node();
@@ -28,14 +79,12 @@ TEST_F(ExporterFixture, shouldReimportDocumentWithToolAndProfileConfig)
 	
 	Importer::Dxfplot::Importer importer(tools, profiles);
 
-	{
-		std::istringstream input;
-		input.str(output.str());
-		Model::Document::UPtr document = importer(input);
+	std::istringstream input;
+	input.str(output.str());
+	Model::Document::UPtr document = importer(input);
 
-		EXPECT_EQ(document->toolConfig().name(), "tool");
-		EXPECT_EQ(document->profileConfig().name(), "profile");
-	}
+	EXPECT_EQ(document->toolConfig().name(), "tool");
+	EXPECT_EQ(document->profileConfig().name(), "profile");
 }
 
 TEST_F(ExporterFixture, shouldReimportDocumentWithSameTask)
@@ -47,10 +96,8 @@ TEST_F(ExporterFixture, shouldReimportDocumentWithSameTask)
 
 	createTaskFromPolyline(std::move(polyline));
 
-	{
-		Exporter::Dxfplot::Exporter exporter;
-		exporter(*m_document, output);
-	}
+	Exporter::Dxfplot::Exporter exporter;
+	exporter(*m_document, output);
 
 	YAML::Node toolsNode;
 	toolsNode["tool"] = YAML::Node();
@@ -63,19 +110,16 @@ TEST_F(ExporterFixture, shouldReimportDocumentWithSameTask)
 	
 	Importer::Dxfplot::Importer importer(tools, profiles);
 
-	{
-		std::istringstream input;
-		input.str(output.str());
-		Model::Document::UPtr document = importer(input);
+	std::istringstream input;
+	input.str(output.str());
+	Model::Document::UPtr document = importer(input);
 
-		std::cout << output.str() << std::endl;
+	std::cout << output.str() << std::endl;
 
-		Model::Task &task = document->task();
-		EXPECT_EQ(task.pathCount(), 1);
+	Model::Task &task = document->task();
+	EXPECT_EQ(task.pathCount(), 1);
 
-		const Geometry::Polyline &firstPathPolyline = task.pathAt(0).basePolyline();
-		EXPECT_EQ(polyline, firstPathPolyline);
-	}
-
+	const Geometry::Polyline &firstPathPolyline = task.pathAt(0).basePolyline();
+	EXPECT_EQ(polyline, firstPathPolyline);
 }
 

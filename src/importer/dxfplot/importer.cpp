@@ -11,7 +11,7 @@
 
 namespace Importer::Dxfplot
 {
-	
+
 Importer::Importer(const Config::Tools &tools, const Config::Profiles &profiles)
 	:m_tools(tools),
 	m_profiles(profiles)
@@ -40,7 +40,7 @@ Model::Document::UPtr Importer::operator()(std::istream& input) const
 
 	const Config::Tools::Tool *tool = m_tools.get(toolName);
 	const Config::Profiles::Profile *profile = m_profiles.get(profileName);
-	
+
 	if (!tool) {
 		throw Common::ImportCouldNotFindToolConfigException();
 	}
