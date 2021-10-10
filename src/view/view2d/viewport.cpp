@@ -93,6 +93,20 @@ void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 	}
 }
 
+void Viewport::selectAllItems()
+{
+	for (QGraphicsItem *item : scene()->items()) {
+		item->setSelected(true);
+	}
+}
+
+void Viewport::deselecteAllItems()
+{
+	for (QGraphicsItem *item : scene()->selectedItems()) {
+		item->setSelected(false);
+	}
+}
+
 void Viewport::setupModel()
 {
 	setScene(new QGraphicsScene());
@@ -310,6 +324,19 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	QGraphicsView::mouseMoveEvent(event);
 
 	emit cursorMoved(mapToScene(mousePos));
+}
+
+void Viewport::keyPressEvent(QKeyEvent *event)
+{
+	const int key = event->key();
+	const int modifier = event->modifiers();
+
+	if (key == Qt::Key_A && modifier & Qt::ControlModifier) {
+		selectAllItems();
+	}
+	else if (key == Qt::Key_Escape) {
+		deselecteAllItems();
+	}
 }
 
 void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)

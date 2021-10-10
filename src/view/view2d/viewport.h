@@ -9,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QKeyEvent>
 
 namespace View::View2d
 {
@@ -32,6 +33,9 @@ private:
 	void updateRubberBand(const QPoint &mousePos);
 	void endRubberBand(const QPoint &mousePos, bool addToSelection);
 
+	void selectAllItems();
+	void deselecteAllItems();
+
 	void setupModel();
 
 	void fitItemsInView();
@@ -43,6 +47,7 @@ protected:
 	void mousePressEvent(QMouseEvent *event) override;
 	void mouseReleaseEvent(QMouseEvent *event) override;
 	void mouseMoveEvent(QMouseEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
 	void drawBackground(QPainter *painter, const QRectF &updatedRect) override;
 
 public:
