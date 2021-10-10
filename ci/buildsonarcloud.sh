@@ -19,7 +19,7 @@ cleanup () {
         rm -rf "$BUILD_DIR"
     fi
 }
-trap cleanup EXIT
+# trap cleanup EXIT
 
 # store repo root as variable
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
@@ -37,13 +37,4 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 "$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
 	--out-dir $"$REPO_ROOT"/bw-output cmake \
 	--build .
-
-# cat $"$REPO_ROOT"/bw-output/build-wrapper-dump.json
-# 
-docker run \
-    --rm \
-    -e SONAR_HOST_URL="https://sonarcloud.io/" \
-    -e SONAR_LOGIN=$SONAR_TOKEN \
-    -v "$REPO_ROOT:/usr/src" \
-    sonarsource/sonar-scanner-cli
 
