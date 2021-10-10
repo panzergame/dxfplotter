@@ -1,8 +1,9 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 
 project(dxfplotter)
 
 include(CTest)
+include(FetchContent)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
@@ -25,7 +26,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
-find_package(cereal REQUIRED)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
@@ -34,6 +34,14 @@ find_package(Qt5 COMPONENTS REQUIRED
 
 find_package(yaml-cpp REQUIRED)
 find_package(fmt REQUIRED)
+
+FetchContent_Declare(
+	cereal
+	GIT_REPOSITORY https://github.com/USCiLab/cereal.git
+	GIT_TAG v1.3.0
+)
+set(JUST_INSTALL_CEREAL ON)
+FetchContent_MakeAvailable(cereal)
 
 set(INCLUDE_DIRS
 	src
