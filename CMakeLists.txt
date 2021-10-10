@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.14)
 project(dxfplotter)
 
 include(CTest)
-include(FetchContent)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
@@ -12,6 +11,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(BUILD_TESTS OFF)
+set(JUST_INSTALL_CEREAL ON)
 
 # Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
@@ -34,14 +34,6 @@ find_package(Qt5 COMPONENTS REQUIRED
 
 find_package(yaml-cpp REQUIRED)
 find_package(fmt REQUIRED)
-
-FetchContent_Declare(
-	cereal
-	GIT_REPOSITORY https://github.com/USCiLab/cereal.git
-	GIT_TAG v1.3.0
-)
-set(JUST_INSTALL_CEREAL ON)
-FetchContent_MakeAvailable(cereal)
 
 set(INCLUDE_DIRS
 	src
