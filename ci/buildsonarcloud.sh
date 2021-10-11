@@ -19,7 +19,7 @@ cleanup () {
         rm -rf "$BUILD_DIR"
     fi
 }
-# trap cleanup EXIT
+trap cleanup EXIT
 
 # store repo root as variable
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
