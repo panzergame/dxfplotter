@@ -17,7 +17,7 @@ static const QPen selectPen(selectBrush, 0.0f);
 
 QPainterPath OffsettedPolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline::List polylines = m_offsettedPath.offsettedPolylines();
+	const Geometry::Polyline::List polylines = m_offsettedPath.polylines();
 
 	QPainterPath rootPainter;
 

@@ -18,9 +18,11 @@ BasicPathItem::BasicPathItem(Model::Path &path)
 {
 	setPen(normalPen);
 	setFlag(ItemIsSelectable);
+	setVisible(m_path.globallyVisible());
 
 	connect(&m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
 	connect(&m_path, &Model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
+
 }
 
 void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

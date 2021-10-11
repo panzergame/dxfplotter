@@ -2,6 +2,7 @@
 
 #include <model/path.h>
 #include <exporter/gcode/exporter.h>
+#include <common/exception.h>
 
 #include <fmt/format.h>
 #include <sstream>
@@ -26,7 +27,12 @@ protected:
 	template <class ...Args>
 	void print(const std::string &format, Args&& ...args)
 	{
-		m_stream << fmt::format(format, std::forward<Args>(args)...) << "\n";
+		try {
+			m_stream << fmt::format(format, std::forward<Args>(args)...) << "\n";
+		}
+		catch (const fmt::format_error &exception) {
+			throw Common::GCodeFormatException(format, exception.what(), fmt::to_string(args.name)...);
+		}
 	}
 
 public:

@@ -11,7 +11,7 @@ else
     TEMP_BASE=/tmp
 fi
 
-BUILD_DIR=$(mktemp -d -p "$TEMP_BASE" analyse-sonarcloud-XXXXXX)
+BUILD_DIR=$(mktemp -d -p "$TEMP_BASE" build-XXXXXX)
 
 # make sure to clean up build dir, even if errors occur
 cleanup () {
@@ -30,16 +30,18 @@ pushd "$BUILD_DIR"
 
 # configure build files with CMake
 # we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
-cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
+cmake "$REPO_ROOT" -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
 
-# Wraps the compilation with the Build Wrapper to generate configuration (used
-# later by the SonarQube Scanner) into the "bw-output" folder
-build-wrapper-linux-x86-64 --out-dir bw-output cmake --build .
+# build project and install files into AppDir
+make -j$(nproc)
 
-# And finally run the SonarQube analysis - read the "sonar-project.properties"
-# file to see the specific configuration
-sonar-scanner \
-	-Dsonar.projectBaseDir="$REPO_ROOT" \
-	-Dsonar.cfamily.cache.path=${HOME}/.cfamily \
-	-Dsonar.cfamily.threads=$(nproc --all)
+# Test project
+ctest -VV
+
+# Generate coverage report
+make gcov
+make lcov
+
+# Publish report on codecov
+bash <(curl -s https://codecov.io/bash) -f lcov/data/capture/all_targets.info -R "$REPO_ROOT" || echo "Codecov did not collect coverage reports"
 

@@ -35,7 +35,7 @@ void PathPostProcessor::cwArcMove(const QVector2D &relativeCenter, const QVector
 void PathPostProcessor::ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to)
 {
 	printWithSettings(m_gcode.ccwArcMove(), "X"_a=to.x(), "Y"_a=to.y(),
-		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y(), "F"_a=m_settings.planeFeedRate()); // TODO function for plane move / depth move
+		"I"_a=relativeCenter.x(), "J"_a=relativeCenter.y(), "F"_a=m_settings.planeFeedRate());
 }
 
 }

@@ -16,7 +16,7 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 ## Features
 
 * DXF support of line, arc, circle, polyline, spline
-* Configurable GCode command format
+* Customizable GCode command format
 * Multi selected path setting edition
 * Path offseting (Tool Compensation)
 * Multi passes with depth
@@ -36,10 +36,10 @@ chmod +x dxfplotter-x86_64.AppImage
 
 ### Manual installation from source
 
-This project depends on Qt5 and yaml-cpp, for debian like distribution installing `qtbase5-dev` and `libyaml-cpp-dev` is sufficient:
+This project depends on Qt5, yaml-cpp and fmt, for debian like distribution following command install all dependencies:
 
 ```sh
-sudo apt-get install qtbase5-dev libyaml-cpp-dev
+sudo apt-get install qtbase5-dev libyaml-cpp-dev libfmt-dev
 ```
 
 ```sh

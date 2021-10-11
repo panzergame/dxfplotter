@@ -6,7 +6,7 @@
 
 #include <QWidget>
 #include <QItemSelectionModel>
-#include <model/taskmodelobserver.h>
+#include <model/documentmodelobserver.h>
 
 namespace View::Task
 {
@@ -14,7 +14,7 @@ namespace View::Task
 class PathListModel;
 class LayerTreeModel;
 
-class Task : public Model::TaskModelObserver<QWidget>, private Ui::Task
+class Task : public Model::DocumentModelObserver<QWidget>, private Ui::Task
 {
 private:
 	std::unique_ptr<PathListModel> m_pathListModel;
@@ -23,12 +23,13 @@ private:
 	template <class Model>
 	std::unique_ptr<Model> setupTreeViewModel(QTreeView *treeView)
 	{
-		std::unique_ptr<Model> model = std::make_unique<Model>(*task(), this);
+		std::unique_ptr<Model> model = std::make_unique<Model>(task(), this);
 		treeView->setModel(model.get());
 
 		QHeaderView *header = treeView->header();
 		header->setStretchLastSection(false);
 		header->setSectionResizeMode(0, QHeaderView::Stretch);
+		header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
 		return model;
 	}
@@ -52,7 +53,7 @@ public:
 	explicit Task(Model::Application &app);
 
 protected:
-	void taskChanged();
+	void documentChanged();
 
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);

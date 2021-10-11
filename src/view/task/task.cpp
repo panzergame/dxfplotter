@@ -10,7 +10,7 @@ namespace View::Task
 {
 
 Task::Task(Model::Application &app)
-	:TaskModelObserver(app)
+	:DocumentModelObserver(app)
 {
 	setupUi(this);
 }
@@ -26,7 +26,7 @@ void Task::setupModel()
 void Task::setupController()
 {
 	// Track outside path selection, e.g from graphics view.
-	connect(task(), &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
+	connect(&task(), &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
 	setupTreeViewController(m_pathListModel, pathsTreeView);
 	setupTreeViewController(m_layerTreeModel, layersTreeView);
@@ -41,7 +41,7 @@ void Task::updateItemSelection(const Model::Path &path, QItemSelectionModel::Sel
 	m_layerTreeModel->updateItemSelection(path, flag, layersTreeView->selectionModel());
 }
 
-void Task::taskChanged()
+void Task::documentChanged()
 {
 	setupModel();
 	setupController();

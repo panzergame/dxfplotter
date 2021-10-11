@@ -5,13 +5,11 @@
 namespace Model
 {
 
-Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
-	:m_paths(std::move(paths)),
-	m_layers(std::move(layers)),
-	m_stack(m_paths.size())
+void Task::initPathsFromLayers()
 {
-	std::transform(m_paths.begin(), m_paths.end(), m_stack.begin(),
-		[](const Path::UPtr& ptr){ return ptr.get(); });
+	for (const Layer::UPtr &layer : m_layers) {
+		layer->forEachChild([this](Path &path){ m_paths.push_back(&path); });
+	}
 
 	// Register selection/deselection on all paths.
 	forEachPath([this](Path &path) {
@@ -27,6 +25,14 @@ Task::Task(Path::ListUPtr &&paths, Layer::ListUPtr &&layers)
 			emit selectionChanged(m_selectedPaths.size());
 		});
 	});
+}
+
+Task::Task(Layer::ListUPtr &&layers)
+	:m_layers(std::move(layers))
+{
+	initPathsFromLayers();
+
+	m_stack = m_paths;
 }
 
 int Task::pathCount() const

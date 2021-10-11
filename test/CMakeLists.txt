@@ -5,23 +5,20 @@ FetchContent_Declare(
   	GIT_REPOSITORY https://github.com/google/googletest.git
   	GIT_TAG release-1.10.0
 )
-
-if (${CMAKE_VERSION} VERSION_LESS "3.14")
-	FetchContent_GetProperties(googletest)
-	if(NOT googletest_POPULATED)
-	  FetchContent_Populate(googletest)
-	  add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
-	endif()
-else()
-	FetchContent_MakeAvailable(googletest)
-endif()
+FetchContent_MakeAvailable(googletest)
 
 set(SRC
 	arc.cpp
 	bulge.cpp
-	exporter.cpp
+	dxfplotexporter.cpp
+	dxfplotimporter.cpp
+	exporterfixture.cpp
+	gcodeexporter.cpp
 	polyline.cpp
+	serializer.cpp
 	verticalspeed.cpp
+
+	exporterfixture.h
 )
 
 add_executable(dxfplotter-test ${SRC} main.cpp)

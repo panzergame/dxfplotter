@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 
 project(dxfplotter)
 
@@ -10,11 +10,16 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
+set(BUILD_TESTS OFF)
+set(JUST_INSTALL_CEREAL ON)
+
 # Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-	add_compile_options(-Wno-error=deprecated-copy)
+	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -30,10 +35,12 @@ find_package(Qt5 COMPONENTS REQUIRED
 )
 
 find_package(yaml-cpp REQUIRED)
+find_package(fmt REQUIRED)
 
 set(INCLUDE_DIRS
 	src
 	thirdparty
+	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
@@ -47,17 +54,20 @@ set(INCLUDE_DIRS
 )
 
 set(LINK_LIBRARIES
+	resource
 	view
 	view-settings
 	view-task
 	view-view2d
 	model
 	config
-	dxf
-	gcode
+	importer-dxf
+	importer-dxfplot
+	exporter-gcode
+	exporter-dxfplot
 	geometry
 	libdxfrw
-	fmt
+	fmt::fmt
 	Qt5::Widgets
 	${YAML_CPP_LIBRARIES}
 )
@@ -65,7 +75,7 @@ set(LINK_LIBRARIES
 include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
-add_subdirectory(thirdparty)
+add_subdirectory(thirdparty EXCLUDE_FROM_ALL)
 add_subdirectory(resource)
 add_subdirectory(src)
 

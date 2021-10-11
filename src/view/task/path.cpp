@@ -9,7 +9,7 @@ void Path::setupModel()
 
 	hide();
 
-	connect(task(), &Model::Task::selectionChanged, this, &Path::selectionChanged);
+	connect(&task(), &Model::Task::selectionChanged, this, &Path::selectionChanged);
 
 	connectOnFieldChanged<double>(planeFeedRate, [this](double value) { m_groupSettings->setPlaneFeedRate(value); });
 	connectOnFieldChanged<double>(depthFeedRate, [this](double value) { m_groupSettings->setDepthFeedRate(value); });
@@ -17,13 +17,13 @@ void Path::setupModel()
 	connectOnFieldChanged<double>(Ui::Path::depth, [this](double value) { m_groupSettings->setDepth(value); });
 }
 
-void Path::taskChanged()
+void Path::documentChanged()
 {
 	setupModel();
 }
 
 Path::Path(Model::Application &app)
-	:TaskModelObserver(app)
+	:DocumentModelObserver(app)
 {
 	setupUi(this);
 }

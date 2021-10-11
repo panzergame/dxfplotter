@@ -4,8 +4,11 @@
 
 #include <importer/dxf/layer.h>
 #include <geometry/cubicspline.h>
+#include <geometry/quadraticspline.h>
 
 #include <libdxfrw/drw_entities.h>
+
+#include <fmt/format.h>
 
 namespace Importer::Dxf
 {
@@ -201,9 +204,12 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 		controlPoints.begin(), [](DRW_Coord *coord){ return toVector2D(*coord); });
 
 	Geometry::Bezier::List beziers;
-	switch (spline.degree) {
+	const int degree = spline.degree;
+	switch (degree) {
 		case 2:
 		{
+			Geometry::QuadraticSpline spline(std::move(controlPoints), closed);
+			beziers = spline.toBeziers();
 			break;
 		}
 		case 3:
@@ -213,7 +219,10 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 			break;
 		}
 		default:
+		{
+			throw std::logic_error(fmt::format("Conversion of {}d spline not implemented", degree));
 			break;
+		}
 	}
 
 	Geometry::Bezier::List convexBeziers;

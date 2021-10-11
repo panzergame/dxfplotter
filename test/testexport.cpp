@@ -13,5 +13,5 @@ int main(int argc, char *argv[])
 	Model::Application app;
 	app.loadFileFromCmd(argv[1]);
 
-	app.exportToGcode("");
+	app.saveToGcode("");
 }

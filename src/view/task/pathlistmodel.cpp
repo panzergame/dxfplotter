@@ -21,6 +21,7 @@ QVariant PathListModel::data(const QModelIndex &index, int role) const
 
 	switch (role) {
 		case Qt::DisplayRole:
+		case Qt::ToolTipRole:
 		{
 			switch (index.column()) {
 				case 0:

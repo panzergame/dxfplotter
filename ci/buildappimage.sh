@@ -36,17 +36,19 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 make -j$(nproc)
 make install DESTDIR=AppDir
 
-# now, build AppImage using linuxdeploy and linuxdeploy-plugin-qt
-# download linuxdeploy and its Qt plugin
-wget https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
+# now, build AppImage using linuxdeployqt
+wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
 
 # make them executable
 chmod +x linuxdeploy*.AppImage
 
-# initialize AppDir, bundle shared libraries for QtQuickApp, use Qt plugin to bundle additional resources, and build AppImage, all in one single command
-# Ensure qt5 version is selected
-QT_SELECT=qt5 ./linuxdeploy-x86_64.AppImage --appdir AppDir -e dxfplotter -d ${REPO_ROOT}/meta/dxfplotter.desktop -i ${REPO_ROOT}/meta/dxfplotter.png --plugin qt -l /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0 --output appimage
+# linuxdeployqt seems to need desktop and icon files to be placed at the root of AppDir
+cp AppDir/usr/share/icons/hicolor/256x256/apps/dxfplotter.png AppDir/usr/share/applications/dxfplotter.desktop AppDir
+
+# generate the AppImage
+# use -unsupported-allow-new-glibc for newest linux distribution
+./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/bin/dxfplotter -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so -unsupported-allow-new-glibc
+
 
 # move built AppImage back into original CWD
-mv dxfplotter*.AppImage "$OLD_CWD"
+mv dxfplotter*.AppImage "$OLD_CWD"/dxfplotter-x86_64.AppImage

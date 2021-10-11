@@ -1,5 +1,6 @@
 set(SRC
 	application.cpp
+	document.cpp
 	layer.cpp
 	offsettedpath.cpp
 	path.cpp
@@ -9,6 +10,7 @@ set(SRC
 	task.cpp
 
 	application.h
+	document.h
 	layer.h
 	path.h
 	offsettedpath.h
@@ -16,7 +18,7 @@ set(SRC
 	pathgroupsettings.h
 	renderable.h
 	task.h
-	taskmodelobserver.h
+	documentmodelobserver.h
 )
 
 add_library(model ${SRC})

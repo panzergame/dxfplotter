@@ -30,13 +30,19 @@ private:
 	void setupUi();
 	void setupMenuActions();
 
+	void setTaskToolsEnabled(bool enabled);
+
 public:
 	explicit MainWindow(Model::Application &app);
 
 protected Q_SLOTS:
 	void openFile();
+	void saveFile();
+	void saveAsFile();
 	void exportFile();
 	void openSettings();
+	void documentChanged(Model::Document *newDocument);
+	void displayError(const QString &message);
 };
 
 }

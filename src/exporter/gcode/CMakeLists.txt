@@ -8,6 +8,6 @@ set(SRC
 	pathpostprocessor.h
 )
 
-add_library(gcode ${SRC})
-add_dependencies(gcode generate_config)
-add_coverage(gcode)
+add_library(exporter-gcode ${SRC})
+add_dependencies(exporter-gcode generate_config)
+add_coverage(exporter-gcode)

@@ -10,7 +10,7 @@ CubicSpline::CubicSpline(Point2DList &&points, bool closed)
 {
 }
 
-Point2DList CubicSpline::convertClosedToBezierPoints() const
+Point2DList CubicSpline::convertClosedToCubicBezierPoints() const
 {
 	const Point2DList &allControlPoints = controlPoints();
 	const int nbcontrol = allControlPoints.size();
@@ -36,13 +36,25 @@ Point2DList CubicSpline::convertClosedToBezierPoints() const
 		bezierPoints[i] = ((bezierPoints[i - 1] + bezierPoints[i + 1]) / 2.0f);
 	}
 
-	bezierPoints[0] = (bezierPoints[size - 2] + bezierPoints[1]) / 2.0f;
-	bezierPoints[size - 1] = bezierPoints[0];
+	bezierPoints.front() = (bezierPoints[size - 2] + bezierPoints[1]) / 2.0f;
+	bezierPoints.back() = bezierPoints.front();
 
 	return bezierPoints;
 }
 
-Point2DList CubicSpline::convertOpenedToBezierPoints() const
+Bezier::List CubicSpline::pointsToBeziers(const Point2DList &bezierPoints) const
+{
+	const int size = bezierPoints.size();
+	Bezier::List beziers(size / 3);
+
+	for (int src = 0, dst = 0; src < (size - 1); src += 3, ++dst) {
+		beziers[dst] = Bezier(bezierPoints[src], bezierPoints[src + 1], bezierPoints[src + 2], bezierPoints[src + 3]);
+	}
+
+	return beziers;
+}
+
+Point2DList CubicSpline::convertOpenedToCubicBezierPoints() const
 {
 	const Point2DList &allControlPoints = controlPoints();
 	const int nbcontrol = allControlPoints.size();
@@ -94,9 +106,9 @@ Point2DList CubicSpline::convertOpenedToBezierPoints() const
 
 Bezier::List CubicSpline::toBeziers() const
 {
-	const Point2DList bezierPoints = closed() ? convertClosedToBezierPoints() : convertOpenedToBezierPoints();
+	const Point2DList bezierPoints = closed() ? convertClosedToCubicBezierPoints() : convertOpenedToCubicBezierPoints();
 
-	return Spline::pointsToBeziers(bezierPoints);
+	return pointsToBeziers(bezierPoints);
 }
 
 

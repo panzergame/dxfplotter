@@ -4,16 +4,16 @@
 namespace Exporter::GCode
 {
 
-void Exporter::convertToGCode(const Model::Task &task)
+void Exporter::convertToGCode(const Model::Task &task, std::ostream &output) const
 {
-	PostProcessor processor(m_tool, m_gcode, m_output);
+	PostProcessor processor(m_tool, m_gcode, output);
 
 	// Retract tool before work piece
 	processor.retractDepth();
 
-	task.forEachPathInStack([this](const Model::Path &path){
+	task.forEachPathInStack([this, &output](const Model::Path &path){
 		if (path.globallyVisible()) {
-			convertToGCode(path);
+			convertToGCode(path, output);
 		}
 	});
 
@@ -21,11 +21,11 @@ void Exporter::convertToGCode(const Model::Task &task)
 	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));
 }
 
-void Exporter::convertToGCode(const Model::Path &path)
+void Exporter::convertToGCode(const Model::Path &path, std::ostream &output) const
 {
 	const Model::PathSettings &settings = path.settings();
 	const Geometry::CuttingDirection cuttingDirection = path.cuttingDirection();
-	PathPostProcessor processor(settings, m_tool, m_gcode, m_output);
+	PathPostProcessor processor(settings, m_tool, m_gcode, output);
 
 	const Geometry::Polyline::List polylines = path.finalPolylines();
 
@@ -96,12 +96,12 @@ public:
 	}
 };
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth, Geometry::CuttingDirection cuttingDirection)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth, Geometry::CuttingDirection cuttingDirection) const
 {
 	const float depthPerCut = m_tool.general().depthPerCut();
 
 	PassesIterator iterator(polyline, cuttingDirection);
-	for (float depth = depthPerCut; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
+	for (float depth = 0.0f; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
 		const float boundDepth = std::fminf(depth, maxDepth);
 		processor.depthLinearMove(-boundDepth);
 
@@ -109,12 +109,12 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Poly
 	}
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline) const
 {
 	polyline.forEachBulge([this, &processor](const Geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge)
+void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const
 {
 	if (bulge.isLine()) {
 		processor.planeLinearMove(bulge.end());
@@ -140,13 +140,17 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 	}
 }
 
-Exporter::Exporter(const Model::Task &task, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &output)
-	:m_output(output),
-	m_tool(tool),
+Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode)
+	:m_tool(tool),
 	m_gcode(gcode)
 {
-	convertToGCode(task);
 }
+
+void Exporter::operator()(const Model::Document &document, std::ostream &output) const
+{
+	convertToGCode(document.task(), output);
+}
+
 
 }
 

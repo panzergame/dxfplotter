@@ -13,7 +13,7 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 
 void Viewport::setupPathItems()
 {
-	task()->forEachPath(
+	task().forEachPath(
 		[scene = scene()](Model::Path &path) {
 			BasicPathItem *item;
 			if (path.isPoint()) {
@@ -90,6 +90,20 @@ void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 		path.addRect(m_rubberBand.rect());
 
 		scene()->setSelectionArea(path, addToSelection ? Qt::AddToSelection : Qt::ReplaceSelection);
+	}
+}
+
+void Viewport::selectAllItems()
+{
+	for (QGraphicsItem *item : scene()->items()) {
+		item->setSelected(true);
+	}
+}
+
+void Viewport::deselecteAllItems()
+{
+	for (QGraphicsItem *item : scene()->selectedItems()) {
+		item->setSelected(false);
 	}
 }
 
@@ -233,7 +247,7 @@ public:
 	}
 };
 
-void Viewport::taskChanged()
+void Viewport::documentChanged()
 {
 	setupModel();
 	fitItemsInView();
@@ -312,6 +326,19 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	emit cursorMoved(mapToScene(mousePos));
 }
 
+void Viewport::keyPressEvent(QKeyEvent *event)
+{
+	const int key = event->key();
+	const int modifier = event->modifiers();
+
+	if (key == Qt::Key_A && modifier & Qt::ControlModifier) {
+		selectAllItems();
+	}
+	else if (key == Qt::Key_Escape) {
+		deselecteAllItems();
+	}
+}
+
 void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 {
 
@@ -328,7 +355,7 @@ void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 }
 
 Viewport::Viewport(Model::Application &app)
-	:TaskModelObserver(app)
+	:DocumentModelObserver(app)
 {
 	// Setup default empty scene
 	setScene(new QGraphicsScene());

@@ -69,8 +69,7 @@ TEST(PolylineTest, ConcatTwoSingleBulgePolylineEqualsTwoBulgePolyline)
 	polyline4 += polyline1;
 	polyline4 += polyline2;
 
-	EXPECT_EQ(polyline3.start(), polyline4.start());
-	EXPECT_EQ(polyline3.end(), polyline4.end());
+	EXPECT_EQ(polyline3, polyline4);
 }
 
 TEST(PolylineTest, IterateBulge)
@@ -81,8 +80,7 @@ TEST(PolylineTest, IterateBulge)
 
 	int i = 0;
 	polyline.forEachBulge([&i, &bulges](const Geometry::Bulge& bulge){
-		EXPECT_EQ(bulge.start(), bulges[i].start());
-		EXPECT_EQ(bulge.end(), bulges[i].end());
+		EXPECT_EQ(bulge, bulges[i]);
 		++i;
 	});
 }
@@ -123,4 +121,19 @@ TEST(PolylineTest, TestLinePolylineOffsetedHasMovedStartEnd)
 	EXPECT_FLOAT_EQ(offsetedPolyline.end().x(), bulge.end().x());
 	EXPECT_FLOAT_EQ(offsetedPolyline.start().y(), bulge.start().y() + offset);
 	EXPECT_FLOAT_EQ(offsetedPolyline.end().y(), bulge.end().y() + offset);
+}
+
+TEST(PolylineTest, TestPointPolylineOffsetedIsPoint)
+{
+	const Geometry::Bulge bulge(QVector2D(0.0f, 3.4f), QVector2D(0.0f, 3.4f), 0.0f);
+	const Geometry::Polyline polyline({bulge});
+
+	const float offset = 1.2f;
+	const Geometry::Polyline::List offseted(polyline.offsetted(offset));
+
+	ASSERT_EQ(offseted.size(), 1);
+
+	const Geometry::Polyline &offsetedPolyline = offseted.front();
+	EXPECT_EQ(offsetedPolyline.start(), bulge.start());
+	EXPECT_EQ(offsetedPolyline.end(), bulge.end());
 }
