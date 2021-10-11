@@ -1,0 +1,31 @@
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  static_analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install package
+        run: sudo apt-get -y install qtbase5-dev libfmt-dev libyaml-cpp-dev lcov
+      - name: Install build wrapper
+        run: |
+          wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip build-wrapper-linux-x86.zip
+      - name: Build
+        run: ci/buildsonarcloud.sh
+      - name: SonarCloud Scan
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
+          sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  
+
+

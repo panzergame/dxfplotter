@@ -34,12 +34,7 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 
 # Wraps the compilation with the Build Wrapper to generate configuration (used
 # later by the SonarQube Scanner) into the "bw-output" folder
-build-wrapper-linux-x86-64 --out-dir bw-output cmake --build .
-
-# And finally run the SonarQube analysis - read the "sonar-project.properties"
-# file to see the specific configuration
-sonar-scanner \
-	-Dsonar.projectBaseDir="$REPO_ROOT" \
-	-Dsonar.cfamily.cache.path=${HOME}/.cfamily \
-	-Dsonar.cfamily.threads=$(nproc --all)
+"$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
+	--out-dir $"$REPO_ROOT"/bw-output cmake \
+	--build .
 

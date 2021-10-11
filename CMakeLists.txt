@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.14)
 
 project(dxfplotter)
 
@@ -10,7 +10,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
 set(BUILD_TESTS OFF)
+set(JUST_INSTALL_CEREAL ON)
 
 # Compilation flag with all warning and error as much as possible on warning.
 add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
@@ -25,7 +28,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
-find_package(cereal REQUIRED)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets

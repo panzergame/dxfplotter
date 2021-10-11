@@ -1,3 +1,4 @@
 add_subdirectory(cavaliercontours)
+add_subdirectory(cereal)
 add_subdirectory(libdxfrw)
 add_subdirectory(nanoflann)
