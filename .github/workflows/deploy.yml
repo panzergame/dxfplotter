@@ -1,0 +1,22 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install package
+        run: sudo apt-get -y install qtbase5-dev libfmt-dev libyaml-cpp-dev lcov
+      - name: Build and test
+        run: ci/buildappimage.sh
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dxfplotter-x86_64.AppImage
