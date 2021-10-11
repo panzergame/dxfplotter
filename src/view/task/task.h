@@ -29,6 +29,7 @@ private:
 		QHeaderView *header = treeView->header();
 		header->setStretchLastSection(false);
 		header->setSectionResizeMode(0, QHeaderView::Stretch);
+		header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
 		return model;
 	}
