@@ -55,6 +55,7 @@ void Interface::addAppId(const DRW_AppId& data)
 void Interface::addBlock(const DRW_Block& data)
 {
 	PRINT_FUNC;
+	m_importer.startBlock();
 }
 
 void Interface::setBlock(const int handle)
@@ -65,6 +66,7 @@ void Interface::setBlock(const int handle)
 void Interface::endBlock()
 {
 	PRINT_FUNC;
+	m_importer.endBlock();
 }
 
 void Interface::addPoint(const DRW_Point& data)

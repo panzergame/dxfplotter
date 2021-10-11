@@ -17,7 +17,8 @@ void Importer::addLayer(const DRW_Layer &layer)
 }
 
 Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength)
-	:m_entityImporterSettings({splineToArcPrecision, minimumSplineLength})
+	:m_entityImporterSettings({splineToArcPrecision, minimumSplineLength}),
+	m_ignoreEntities(false)
 {
 	Interface interface(*this);
 
@@ -34,6 +35,16 @@ Layer::List Importer::layers() const
 		[](const auto& pair){ return pair.second; });
 
 	return layers;
+}
+
+void Importer::startBlock()
+{
+	m_ignoreEntities = true;
+}
+
+void Importer::endBlock()
+{
+	m_ignoreEntities = false;
 }
 
 template <>
