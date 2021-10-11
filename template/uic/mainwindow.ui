@@ -221,5 +221,22 @@
  <resources>
   <include location="../../resource/resource.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionQuit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>234</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>234</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
