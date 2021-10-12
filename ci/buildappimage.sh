@@ -49,6 +49,9 @@ cp AppDir/usr/share/icons/hicolor/256x256/apps/dxfplotter.png AppDir/usr/share/a
 # use -unsupported-allow-new-glibc for newest linux distribution
 ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/bin/dxfplotter -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so -unsupported-allow-new-glibc
 
+COMMIT=$(git rev-parse --short HEAD)
+TAG=$(git describe --tags)
+RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64"
 
 # move built AppImage back into original CWD
-mv dxfplotter*.AppImage "$OLD_CWD"/dxfplotter-x86_64.AppImage
+mv dxfplotter*.AppImage "$OLD_CWD"/"$RELEASE_NAME".AppImage

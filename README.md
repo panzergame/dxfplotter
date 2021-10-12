@@ -30,8 +30,8 @@ Currently only linux distributions are supported, windows will come in futur.
 Download latest ![AppImage](https://github.com/panzergame/dxfplotter/releases) and run:
 
 ```sh
-chmod +x dxfplotter-x86_64.AppImage
-./dxfplotter-x86_64.AppImage
+chmod +x dxfplotter-*.AppImage
+./dxfplotter-*.AppImage
 ```
 
 ### Manual installation from source
