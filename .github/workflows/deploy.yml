@@ -19,4 +19,4 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dxfplotter-x86_64.AppImage
+          files: "dxfplotter*.AppImage"
