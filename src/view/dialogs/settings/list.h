@@ -1,6 +1,6 @@
 #pragma once
 
-#include <uic/settings/ui_list.h>
+#include <uic/dialogs/settings/ui_list.h>
 
 #include <QGroupBox>
 #include <QAbstractListModel>

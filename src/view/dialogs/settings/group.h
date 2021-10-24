@@ -1,6 +1,6 @@
 #pragma once
 
-#include <uic/settings/ui_group.h>
+#include <uic/dialogs/settings/ui_group.h>
 
 #include <view/dialogs/settings/entry.h>
 

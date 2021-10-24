@@ -6,7 +6,7 @@
 
 #include <view/dialogs/settings/entry.h>
 
-#include <uic/settings/ui_settings.h>
+#include <uic/dialogs/settings/ui_settings.h>
 
 #include <QDialog>
 
