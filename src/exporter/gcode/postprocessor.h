@@ -19,7 +19,6 @@ protected:
 	const Config::Tools::Tool& m_tool;
 	const Config::Profiles::Profile::Gcode& m_gcode;
 
-	// TODO manage exception
 	/** Print a command to stream with a format and a list of named arguments
 	 * @param format A fmt valid format string.
 	 * @param args List of named arguments

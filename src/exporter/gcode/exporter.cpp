@@ -140,6 +140,60 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 	}
 }
 
+struct CommentLineStream
+{
+	std::ostream &m_output;
+
+	explicit CommentLineStream(std::ostream &output, const std::string &prefix)
+		:m_output(output)
+	{
+		m_output << "; " << prefix;
+	}
+
+	~CommentLineStream()
+	{
+		m_output << "\n";
+	}
+
+	template <class Value>
+	CommentLineStream& operator<<(const Value &value)
+	{
+		m_output << value;
+		return *this;
+	}
+};
+
+struct ConfigToCommentVisitor
+{
+	std::ostream &m_output;
+	const std::string m_prefix;
+
+	CommentLineStream commentLineStream() const
+	{
+		return CommentLineStream(m_output, m_prefix);
+	}
+
+	template <class ValueType>
+	void operator()(const Config::Property<ValueType> &property)
+	{
+		commentLineStream() << property.name() << " = " << (ValueType)property;
+	}
+
+	template <class Node>
+	void operator()(const Node &node)
+	{
+		commentLineStream() << node.name();
+		node.visitChildren(ConfigToCommentVisitor{m_output, m_prefix + "  "});
+	}
+};
+
+template <class Group>
+void convertConfigNodeToComments(const Group &group, std::ostream &output)
+{
+	ConfigToCommentVisitor visitor{output, ""};
+	visitor(group);
+}
+
 Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode)
 	:m_tool(tool),
 	m_gcode(gcode)
@@ -148,6 +202,9 @@ Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Prof
 
 void Exporter::operator()(const Model::Document &document, std::ostream &output) const
 {
+	convertConfigNodeToComments(m_tool, output);
+	convertConfigNodeToComments(m_gcode, output);
+
 	convertToGCode(document.task(), output);
 }
 
