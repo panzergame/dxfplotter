@@ -92,6 +92,16 @@ void Path::resetOffset()
 	emit offsettedPathChanged();
 }
 
+void Path::transform(const QTransform &matrix)
+{
+	m_basePolyline.transform(matrix);
+	emit basePolylineTransformed();
+
+	if (m_offsettedPath) {
+		m_offsettedPath->transform(matrix);
+	}
+}
+
 bool Path::isPoint() const
 {
 	return m_basePolyline.isPoint();

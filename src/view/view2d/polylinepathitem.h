@@ -20,7 +20,9 @@ private:
 	std::unique_ptr<OffsettedPolylinePathItem> m_offsettedPath;
 
 	QPainterPath paintPath() const;
-	QPainterPath shapePath() const;
+	static QPainterPath shapePath(const QPainterPath &basePath);
+
+	void setupPaths();
 
 	void updateOffsetedPath();
 
@@ -34,6 +36,9 @@ public:
 
 	QPainterPath shape() const override;
 	QRectF boundingRect() const override;
+
+protected:
+	void basePolylineTransformed() override;
 };
 
 }

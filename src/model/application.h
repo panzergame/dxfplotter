@@ -83,6 +83,8 @@ public:
 	void rightCutterCompensation();
 	void resetCutterCompensation();
 
+	void transformSelection(const QTransform& matrix);
+
 	void hideSelection();
 	void showHidden();
 

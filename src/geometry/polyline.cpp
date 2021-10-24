@@ -120,6 +120,13 @@ Polyline::List Polyline::offsetted(float margin) const
 	return offsettedPolylines;
 }
 
+void Polyline::transform(const QTransform &matrix)
+{
+	transformBulge([&matrix](Bulge &bulge){
+		bulge.transform(matrix);
+	});
+}
+
 bool Polyline::operator==(const Polyline &other) const
 {
 	return m_bulges == other.m_bulges;

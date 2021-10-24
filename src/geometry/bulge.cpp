@@ -140,6 +140,18 @@ Arc Bulge::toArc() const
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
 }
 
+inline QVector2D mapVector2D(const QVector2D &vect, const QTransform &matrix)
+{
+	const QPointF point = vect.toPointF();
+	return QVector2D(matrix.map(point));
+}
+
+void Bulge::transform(const QTransform &matrix)
+{
+	m_start = mapVector2D(m_start, matrix);
+	m_end = mapVector2D(m_end, matrix);
+}
+
 bool Bulge::operator==(const Bulge& other) const
 {
 	return m_start == other.m_start && m_end == other.m_end && m_tangent == other.m_tangent;

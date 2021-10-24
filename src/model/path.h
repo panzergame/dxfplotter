@@ -10,6 +10,8 @@
 
 #include <serializer/access.h>
 
+#include <QTransform>
+
 namespace Model
 {
 
@@ -47,6 +49,8 @@ public:
 	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
+	void transform(const QTransform &matrix);
+
 	bool isPoint() const;
 
 	const PathSettings &settings() const;
@@ -59,6 +63,7 @@ public:
 Q_SIGNALS:
 	void globalVisibilityChanged(bool globallyVisible);
 	void offsettedPathChanged();
+	void basePolylineTransformed();
 };
 
 }

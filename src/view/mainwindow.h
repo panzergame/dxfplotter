@@ -41,6 +41,7 @@ protected Q_SLOTS:
 	void saveAsFile();
 	void exportFile();
 	void openSettings();
+	void transformSelection();
 	void documentChanged(Model::Document *newDocument);
 	void displayError(const QString &message);
 };

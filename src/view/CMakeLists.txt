@@ -1,4 +1,4 @@
-add_subdirectory(settings)
+add_subdirectory(dialogs)
 add_subdirectory(task)
 add_subdirectory(view2d)
 
@@ -13,5 +13,5 @@ set(SRC
 )
 
 add_library(view ${SRC})
-add_dependencies(view generate_config uic uic-settings)
+add_dependencies(view generate_config uic)
 

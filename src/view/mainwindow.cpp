@@ -4,7 +4,8 @@
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
-#include <settings/settings.h>
+#include <dialogs/settings/settings.h>
+#include <dialogs/transform.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -82,6 +83,7 @@ void MainWindow::setupMenuActions()
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
 	connect(actionHideSelection, &QAction::triggered, &m_app, &Model::Application::hideSelection);
 	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
+	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 }
 
 void MainWindow::setTaskToolsEnabled(bool enabled)
@@ -92,6 +94,7 @@ void MainWindow::setTaskToolsEnabled(bool enabled)
 	actionResetCutterCompensation->setEnabled(enabled);
 	actionHideSelection->setEnabled(enabled);
 	actionShowHidden->setEnabled(enabled);
+	actionTransformSelection->setEnabled(enabled);
 }
 
 MainWindow::MainWindow(Model::Application &app)
@@ -152,6 +155,14 @@ void MainWindow::openSettings()
 	Settings::Settings settings(m_app);
 	if (settings.exec() == QDialog::Accepted) {
 		m_app.setConfig(settings.newConfig());
+	}
+}
+
+void MainWindow::transformSelection()
+{
+	Transform transform;
+	if (transform.exec() == QDialog::Accepted) {
+		m_app.transformSelection(transform.matrix());
 	}
 }
 

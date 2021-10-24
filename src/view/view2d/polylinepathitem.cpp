@@ -3,6 +3,8 @@
 
 #include <QPainter>
 
+#include <QDebug> // TODO
+
 namespace View::View2d
 {
 
@@ -18,14 +20,20 @@ QPainterPath PolylinePathItem::paintPath() const
 	return painter;
 }
 
-QPainterPath PolylinePathItem::shapePath() const
+QPainterPath PolylinePathItem::shapePath(const QPainterPath& basePath)
 {
 	QPainterPathStroker stroker;
 	stroker.setWidth(0.05f); // TODO const or config
 	stroker.setCapStyle(Qt::RoundCap);
 	stroker.setJoinStyle(Qt::RoundJoin);
 
-	return stroker.createStroke(m_paintPath);
+	return stroker.createStroke(basePath);
+}
+
+void PolylinePathItem::setupPaths()
+{
+	m_paintPath = paintPath();
+	m_shapePath = shapePath(m_paintPath);
 }
 
 void PolylinePathItem::updateOffsetedPath()
@@ -51,10 +59,10 @@ void PolylinePathItem::setSelected(bool selected)
 }
 
 PolylinePathItem::PolylinePathItem(Model::Path &path)
-	:BasicPathItem(path),
-	m_paintPath(paintPath()),
-	m_shapePath(shapePath())
+	:BasicPathItem(path)
 {
+	setupPaths();
+
 	updateOffsetedPath();
 
 	connect(&path, &Model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
@@ -75,6 +83,11 @@ QPainterPath PolylinePathItem::shape() const
 QRectF PolylinePathItem::boundingRect() const
 {
 	return m_shapePath.boundingRect();
+}
+
+void PolylinePathItem::basePolylineTransformed()
+{
+	setupPaths();
 }
 
 }

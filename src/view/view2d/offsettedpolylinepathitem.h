@@ -19,11 +19,16 @@ private:
 
 	QPainterPath shape() const override;
 
+	void setupPaths();
+
 public:
 	explicit OffsettedPolylinePathItem(const Model::OffsettedPath &offsettedPath);
 
 	void selected();
 	void deselected();
+
+protected Q_SLOTS:
+	void polylinesTransformed();
 };
 
 }

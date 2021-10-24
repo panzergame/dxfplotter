@@ -22,6 +22,7 @@ BasicPathItem::BasicPathItem(Model::Path &path)
 
 	connect(&m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
 	connect(&m_path, &Model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
+	connect(&m_path, &Model::Path::basePolylineTransformed, this, &BasicPathItem::basePolylineTransformed);
 
 }
 

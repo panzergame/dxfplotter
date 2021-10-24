@@ -38,13 +38,20 @@ QPainterPath OffsettedPolylinePathItem::shape() const
 	return QPainterPath();
 }
 
+void OffsettedPolylinePathItem::setupPaths()
+{
+	m_paintPath = paintPath();
+	setPath(m_paintPath);
+}
+
 OffsettedPolylinePathItem::OffsettedPolylinePathItem(const Model::OffsettedPath &offsettedPath)
 	:QGraphicsPathItem(QPainterPath()),
-	m_offsettedPath(offsettedPath),
-	m_paintPath(paintPath())
+	m_offsettedPath(offsettedPath)
 {
+	setupPaths();
 	setPen(normalPen);
-	setPath(m_paintPath);
+
+	connect(&offsettedPath, &Model::OffsettedPath::polylinesTransformed, this, &OffsettedPolylinePathItem::polylinesTransformed);
 }
 
 void OffsettedPolylinePathItem::selected()
@@ -55,6 +62,11 @@ void OffsettedPolylinePathItem::selected()
 void OffsettedPolylinePathItem::deselected()
 {
 	setPen(normalPen);
+}
+
+void OffsettedPolylinePathItem::polylinesTransformed()
+{
+	setupPaths();
 }
 
 }

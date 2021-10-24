@@ -11,6 +11,7 @@
 #include <serializer/access.h>
 
 #include <QVector2D>
+#include <QTransform>
 
 namespace Geometry
 {
@@ -62,6 +63,8 @@ public:
 
 	Circle toCircle() const;
 	Arc toArc() const;
+
+	void transform(const QTransform &matrix);
 
 	bool operator==(const Bulge& other) const;
 };

@@ -18,6 +18,8 @@ private:
 
 	QPainterPath shapePath() const;
 
+	void setupPosition();
+
 public:
 	explicit PointPathItem(Model::Path &path);
 
@@ -25,6 +27,10 @@ public:
 
 	QPainterPath shape() const override;
 	QRectF boundingRect() const override;
+
+
+protected:
+	void basePolylineTransformed() override;
 };
 
 }

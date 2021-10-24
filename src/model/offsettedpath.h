@@ -14,8 +14,10 @@ namespace Model
 
 class Layer;
 
-class OffsettedPath
+class OffsettedPath : public QObject
 {
+	Q_OBJECT
+
 	friend Serializer::Access<OffsettedPath>;
 
 public:
@@ -35,6 +37,11 @@ public:
 
 	const Geometry::Polyline::List &polylines() const;
 	Geometry::CuttingDirection cuttingDirection() const;
+
+	void transform(const QTransform &matrix);
+
+Q_SIGNALS:
+	void polylinesTransformed();
 };
 
 }

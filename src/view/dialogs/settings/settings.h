@@ -1,11 +1,10 @@
 #pragma once
 
-
 #include <config/config.h>
 
 #include <model/application.h>
 
-#include <view/settings/entry.h>
+#include <view/dialogs/settings/entry.h>
 
 #include <uic/settings/ui_settings.h>
 

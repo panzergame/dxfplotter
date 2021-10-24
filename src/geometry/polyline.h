@@ -55,6 +55,8 @@ public:
 
 	Polyline::List offsetted(float offset) const;
 
+	void transform(const QTransform &matrix);
+
 	bool operator==(const Polyline &other) const;
 };
 

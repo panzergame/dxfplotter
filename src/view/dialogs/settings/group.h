@@ -2,7 +2,7 @@
 
 #include <uic/settings/ui_group.h>
 
-#include <view/settings/entry.h>
+#include <view/dialogs/settings/entry.h>
 
 #include <QGroupBox>
 
