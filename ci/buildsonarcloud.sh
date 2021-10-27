@@ -35,6 +35,10 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 # Wraps the compilation with the Build Wrapper to generate configuration (used
 # later by the SonarQube Scanner) into the "bw-output" folder
 "$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
-	--out-dir $"$REPO_ROOT"/bw-output cmake \
+	--out-dir bw-output cmake \
 	--build .
+
+# Scan project
+"$REPO_ROOT"/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties
+
 
