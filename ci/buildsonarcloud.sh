@@ -38,3 +38,7 @@ cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr
 	--out-dir $"$REPO_ROOT"/bw-output cmake \
 	--build .
 
+# Scan project
+"$REPO_ROOT"/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties
+
+
