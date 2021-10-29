@@ -259,7 +259,7 @@ bool Application::saveToGcode(const QString &fileName) const
 	std::ofstream file(fileName.toStdString());
 	if (file) {
 		try {
-			Exporter::GCode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode());
+			Exporter::GCode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode(), Exporter::GCode::Exporter::ExportConfig);
 			return saveToFile(exporter, fileName);
 		}
 		catch (const std::exception &exception) {

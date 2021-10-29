@@ -13,9 +13,17 @@ class PathPostProcessor;
 
 class Exporter
 {
+public:
+	enum Options
+	{
+		None = 0,
+		ExportConfig = (1 << 0)
+	};
+
 private:
 	const Config::Tools::Tool &m_tool;
 	const Config::Profiles::Profile::Gcode &m_gcode;
+	const Options m_options;
 
 	void convertToGCode(const Model::Task &task, std::ostream &output) const;
 	void convertToGCode(const Model::Path &path, std::ostream &output) const;
@@ -24,7 +32,7 @@ private:
 	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const;
 
 public:
-	explicit Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode);
+	explicit Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, Options options = None);
 	~Exporter() = default;
 
 	void operator()(const Model::Document& document, std::ostream &output)  const;

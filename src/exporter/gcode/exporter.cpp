@@ -194,16 +194,19 @@ void convertConfigNodeToComments(const Group &group, std::ostream &output)
 	visitor(group);
 }
 
-Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode)
+Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, Options options)
 	:m_tool(tool),
-	m_gcode(gcode)
+	m_gcode(gcode),
+	m_options(options)
 {
 }
 
 void Exporter::operator()(const Model::Document &document, std::ostream &output) const
 {
-	convertConfigNodeToComments(m_tool, output);
-	convertConfigNodeToComments(m_gcode, output);
+	if (m_options & ExportConfig) {
+		convertConfigNodeToComments(m_tool, output);
+		convertConfigNodeToComments(m_gcode, output);
+	}
 
 	convertToGCode(document.task(), output);
 }
