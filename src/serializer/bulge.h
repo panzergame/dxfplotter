@@ -7,14 +7,14 @@
 
 #include <geometry/bulge.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Geometry::Bulge>
+struct Access<geometry::Bulge>
 {
 	template <class Archive>
-	void serialize(Archive &archive, Geometry::Bulge &bulge) const
+	void serialize(Archive &archive, geometry::Bulge &bulge) const
 	{
 		archive(cereal::make_nvp("start", bulge.start()));
 		archive(cereal::make_nvp("end", bulge.end()));

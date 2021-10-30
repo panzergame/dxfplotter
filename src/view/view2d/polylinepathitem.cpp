@@ -3,12 +3,14 @@
 
 #include <QPainter>
 
-namespace View::View2d
+#include <QDebug> // TODO
+
+namespace view::view2d
 {
 
 QPainterPath PolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline &polyline = m_path.basePolyline();
+	const geometry::Polyline &polyline = m_path.basePolyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 
@@ -18,19 +20,25 @@ QPainterPath PolylinePathItem::paintPath() const
 	return painter;
 }
 
-QPainterPath PolylinePathItem::shapePath() const
+QPainterPath PolylinePathItem::shapePath(const QPainterPath& basePath)
 {
 	QPainterPathStroker stroker;
 	stroker.setWidth(0.05f); // TODO const or config
 	stroker.setCapStyle(Qt::RoundCap);
 	stroker.setJoinStyle(Qt::RoundJoin);
 
-	return stroker.createStroke(m_paintPath);
+	return stroker.createStroke(basePath);
+}
+
+void PolylinePathItem::setupPaths()
+{
+	m_paintPath = paintPath();
+	m_shapePath = shapePath(m_paintPath);
 }
 
 void PolylinePathItem::updateOffsetedPath()
 {
-	Model::OffsettedPath *offsettedPath = m_path.offsettedPath();
+	model::OffsettedPath *offsettedPath = m_path.offsettedPath();
 	if (offsettedPath) {
 		m_offsettedPath = std::make_unique<OffsettedPolylinePathItem>(*offsettedPath);
 		// Link our offsetted path item for drawing
@@ -50,14 +58,14 @@ void PolylinePathItem::setSelected(bool selected)
 	}
 }
 
-PolylinePathItem::PolylinePathItem(Model::Path &path)
-	:BasicPathItem(path),
-	m_paintPath(paintPath()),
-	m_shapePath(shapePath())
+PolylinePathItem::PolylinePathItem(model::Path &path)
+	:BasicPathItem(path)
 {
+	setupPaths();
+
 	updateOffsetedPath();
 
-	connect(&path, &Model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
+	connect(&path, &model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
 }
 
 void PolylinePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -75,6 +83,11 @@ QPainterPath PolylinePathItem::shape() const
 QRectF PolylinePathItem::boundingRect() const
 {
 	return m_shapePath.boundingRect();
+}
+
+void PolylinePathItem::basePolylineTransformed()
+{
+	setupPaths();
 }
 
 }

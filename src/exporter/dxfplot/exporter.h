@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-namespace Exporter::Dxfplot
+namespace exporter::dxfplot
 {
 
 class Exporter
@@ -14,12 +14,12 @@ class Exporter
 public:
 	explicit Exporter() = default;
 
-	void operator()(const Model::Document& document, std::ostream &output)  const;
+	void operator()(const model::Document& document, std::ostream &output)  const;
 
 private:
 	using Archive = cereal::JSONOutputArchive;
 
-	void save(Archive &archive, const Model::Document& document) const;
+	void save(Archive &archive, const model::Document& document) const;
 };
 
 }

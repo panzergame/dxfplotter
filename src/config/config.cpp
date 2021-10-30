@@ -4,7 +4,7 @@
 
 #include <fstream>
 
-namespace Config
+namespace config
 {
 
 Config::Config(const std::string &filePath)

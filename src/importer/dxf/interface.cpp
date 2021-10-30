@@ -3,10 +3,7 @@
 
 #include <iostream>
 
-namespace Importer
-{
-
-namespace Dxf
+namespace importer::dxf
 {
 
 Interface::Interface(Importer &importer)
@@ -277,7 +274,4 @@ void Interface::writeAppId()
 }
 
 }
-
-}
-
 

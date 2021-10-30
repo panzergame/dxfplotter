@@ -6,10 +6,10 @@
 #include <config/list.h>
 #include <config/property.h>
 
-namespace Config
+namespace config
 {
 
-namespace Internal
+namespace internal
 {
 
 {% for node in nodes %}{% if node.__class__ == Group %}
@@ -77,19 +77,19 @@ public:
 }
 
 {% for child in root.children %}
-using {{ child.class_name }} = Internal::{{ child.unique_class_name }};
+using {{ child.class_name }} = internal::{{ child.unique_class_name }};
 {% endfor %}
 
-using Root = Internal::{{ root.unique_class_name }};
+using Root = internal::{{ root.unique_class_name }};
 
 using NodeVariant = std::variant<
 {% for node in nodes %}{% if node.__class__ != Property %}
-Internal::{{ node.unique_class_name }}{{ ", " if not loop.last }}{% endif %}{% endfor %}
+internal::{{ node.unique_class_name }}{{ ", " if not loop.last }}{% endif %}{% endfor %}
 >;
 
 using NodePtrVariant = std::variant<
 {% for node in nodes %}{% if node.__class__ != Property %}
-Internal::{{ node.unique_class_name }}*{{ ", " if not loop.last }}{% endif %}{% endfor %}
+internal::{{ node.unique_class_name }}*{{ ", " if not loop.last }}{% endif %}{% endfor %}
 >;
 
 class Config

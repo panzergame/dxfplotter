@@ -4,7 +4,7 @@
 
 #include <yaml-cpp/yaml.h>
 
-namespace Config
+namespace config
 {
 
 class Node

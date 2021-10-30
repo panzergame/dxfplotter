@@ -8,7 +8,8 @@
 
 class QComboBox;
 
-namespace View
+
+namespace view
 {
 
 namespace Task
@@ -22,7 +23,7 @@ class Viewport;
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	Model::Application &m_app;
+	model::Application &m_app;
 
 	QWidget *setupLeftPanel();
 	QWidget *setupCenterPanel();
@@ -33,7 +34,7 @@ private:
 	void setTaskToolsEnabled(bool enabled);
 
 public:
-	explicit MainWindow(Model::Application &app);
+	explicit MainWindow(model::Application &app);
 
 protected Q_SLOTS:
 	void openFile();
@@ -41,7 +42,8 @@ protected Q_SLOTS:
 	void saveAsFile();
 	void exportFile();
 	void openSettings();
-	void documentChanged(Model::Document *newDocument);
+	void transformSelection();
+	void documentChanged(model::Document *newDocument);
 	void displayError(const QString &message);
 };
 

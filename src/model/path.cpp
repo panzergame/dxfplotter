@@ -4,7 +4,7 @@
 
 #include <geometry/cleaner.h>
 
-namespace Model
+namespace model
 {
 
 void Path::updateGlobalVisibility()
@@ -17,7 +17,7 @@ void Path::updateGlobalVisibility()
 	}
 }
 
-Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
+Path::Path(geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
 	:Renderable(name),
 	m_basePolyline(basePolyline),
 	m_settings(settings),
@@ -26,7 +26,7 @@ Path::Path(Geometry::Polyline &&basePolyline, const std::string &name, const Pat
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
-Path::ListUPtr Path::FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
+Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
 {
 	const int size = polylines.size();
 	Path::ListUPtr paths(size);
@@ -57,25 +57,25 @@ void Path::setLayer(Layer &layer)
 	connect(m_layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
-const Geometry::Polyline &Path::basePolyline() const
+const geometry::Polyline &Path::basePolyline() const
 {
 	return m_basePolyline;
 }
 
-Geometry::Polyline::List Path::finalPolylines() const
+geometry::Polyline::List Path::finalPolylines() const
 {
-	return m_offsettedPath ? m_offsettedPath->polylines() : Geometry::Polyline::List{m_basePolyline};
+	return m_offsettedPath ? m_offsettedPath->polylines() : geometry::Polyline::List{m_basePolyline};
 }
 
-Model::OffsettedPath *Path::offsettedPath() const
+model::OffsettedPath *Path::offsettedPath() const
 {
 	return m_offsettedPath.get();
 }
 
 void Path::offset(float margin, float minimumPolylineLength, float minimumArcLength)
 {
-	Geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
-	Geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
+	geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
+	geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
 
 	const OffsettedPath::Direction direction = (margin > 0.0f) ?
 			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
@@ -92,25 +92,35 @@ void Path::resetOffset()
 	emit offsettedPathChanged();
 }
 
+void Path::transform(const QTransform &matrix)
+{
+	m_basePolyline.transform(matrix);
+	emit basePolylineTransformed();
+
+	if (m_offsettedPath) {
+		m_offsettedPath->transform(matrix);
+	}
+}
+
 bool Path::isPoint() const
 {
 	return m_basePolyline.isPoint();
 }
 
-const Model::PathSettings &Path::settings() const
+const model::PathSettings &Path::settings() const
 {
 	return m_settings;
 }
 
-Model::PathSettings &Path::settings()
+model::PathSettings &Path::settings()
 {
 	return m_settings;
 }
 
-Geometry::CuttingDirection Path::cuttingDirection() const
+geometry::CuttingDirection Path::cuttingDirection() const
 {
 	return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() :
-			 Geometry::CuttingDirection::FORWARD;
+			 geometry::CuttingDirection::FORWARD;
 }
 
 bool Path::globallyVisible() const

@@ -8,13 +8,14 @@
 
 #include <fstream>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 	class Importer;
 }
 
-namespace Model
+namespace model
 {
+
 
 class Application : public QObject
 {
@@ -22,33 +23,35 @@ class Application : public QObject
 
 private:
 	/// Global configuration
-	Config::Config m_config;
+	config::Config m_config;
 
-	const Config::Tools::Tool *m_defaultToolConfig;
-	const Config::Profiles::Profile *m_defaultProfileConfig;
+	const config::Tools::Tool *m_defaultToolConfig;
+	const config::Profiles::Profile *m_defaultProfileConfig;
 
-	// Absolute file basename of current imported file
-	QString m_currentImportedFileBaseName;
-	QString m_currentDxfplotFileName;
+	// Last opened or saved file base name.
+	QString m_lastHandledFileBaseName;
 
 	Document::UPtr m_openedDocument;
 
+	static QString baseName(const QString& fileName);	
+
 	PathSettings defaultPathSettings() const;
 
-	const Config::Tools::Tool *findTool(const std::string &name) const;
-	const Config::Profiles::Profile *findProfile(const std::string &name) const;
+	const config::Tools::Tool *findTool(const std::string &name) const;
+	const config::Profiles::Profile *findProfile(const std::string &name) const;
 
 	void cutterCompensation(float scale);
 
-	Task::UPtr createTaskFromDxfImporter(const Importer::Dxf::Importer& importer);
+	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
 	template <class Exporter>
-	bool saveToFile(Exporter &exporter, const QString &fileName) const
+	bool saveToFile(Exporter &exporter, const QString &fileName)
 	{
 		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
 		if (output) {
 			exporter(*m_openedDocument, output);
+			m_lastHandledFileBaseName = baseName(fileName);
 			return true;
 		}
 
@@ -58,8 +61,8 @@ private:
 public:
 	explicit Application();
 
-	Config::Config &config();
-	void setConfig(Config::Config &&config);
+	config::Config &config();
+	void setConfig(config::Config &&config);
 
 	/// Select tool used as configuration for further operations
 	bool selectTool(const QString &toolName);
@@ -69,19 +72,20 @@ public:
 	bool selectProfile(const QString &profileName);
 	void defaultProfileFromCmd(const QString &profileName);
 
-	const QString &currentImportedFileBaseName() const;
-	const QString &currentDxfplotFileName() const;
+	const QString &lastHandledFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadFromDxf(const QString &fileName);
 	bool loadFromDxfplot(const QString &fileName);
 
-	bool saveToGcode(const QString &fileName) const;
+	bool saveToGcode(const QString &fileName);
 	bool saveToDxfplot(const QString &fileName);
 
 	void leftCutterCompensation();
 	void rightCutterCompensation();
 	void resetCutterCompensation();
+
+	void transformSelection(const QTransform& matrix);
 
 	void hideSelection();
 	void showHidden();
@@ -89,7 +93,7 @@ public:
 Q_SIGNALS:
 	void documentChanged(Document *newDocument);
 	void titleChanged(QString title);
-	void configChanged(Config::Config &config);
+	void configChanged(config::Config &config);
 	void errorRaised(const QString& message) const;
 };
 

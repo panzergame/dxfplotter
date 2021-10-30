@@ -4,13 +4,14 @@
 
 #include <model/documentmodelobserver.h>
 
-namespace View
+
+namespace view
 {
 
-class Profile : public Model::DocumentModelObserver<QWidget>, public Ui::Profile
+class Profile : public model::DocumentModelObserver<QWidget>, public Ui::Profile
 {
 private:
-	Model::Application &m_app;
+	model::Application &m_app;
 
 	bool m_outsideToolChangeBlocked;
 	bool m_outsideProfileChangeBlocked;
@@ -35,16 +36,16 @@ private:
 	void updateAllComboBoxesItems();
 
 public:
-	explicit Profile(Model::Application &app);
+	explicit Profile(model::Application &app);
 
 protected:
 	void documentChanged() override;
 
 public Q_SLOTS:
-	void configChanged(const Config::Config &config);
-	void toolConfigChanged(const Config::Tools::Tool &tool);
+	void configChanged(const config::Config &config);
+	void toolConfigChanged(const config::Tools::Tool &tool);
 	void currentToolTextChanged(const QString &toolName);
-	void profileConfigChanged(const Config::Profiles::Profile &profile);
+	void profileConfigChanged(const config::Profiles::Profile &profile);
 	void currentProfileTextChanged(const QString &profileName);
 };
 

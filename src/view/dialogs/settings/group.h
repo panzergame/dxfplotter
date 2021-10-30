@@ -1,12 +1,12 @@
 #pragma once
 
-#include <uic/settings/ui_group.h>
+#include <uic/dialogs/settings/ui_group.h>
 
-#include <view/settings/entry.h>
+#include <view/dialogs/settings/entry.h>
 
 #include <QGroupBox>
 
-namespace View::Settings
+namespace view::settings
 {
 
 class Group : public QGroupBox, private Ui::Group
@@ -25,7 +25,7 @@ private:
 		}
 
 		template <class ValueType>
-		void operator()(Config::Property<ValueType> &property)
+		void operator()(config::Property<ValueType> &property)
 		{
 			Entry<ValueType> *entry = new Entry<ValueType>(property, &m_parent);
 

@@ -7,7 +7,7 @@
 #include <QInputDialog>
 #include <QDebug> // TODO
 
-namespace View::Settings
+namespace view::settings
 {
 
 /// Node visitor selecting list UI or group UI
@@ -18,13 +18,13 @@ private:
 
 public:
 	template <class ... Child>
-	void operator()(Config::Group<Child ...> &node)
+	void operator()(config::Group<Child ...> &node)
 	{
 		m_newWidget = new Group(node);
 	}
 
 	template <class Child>
-	void operator()(Config::List<Child> &node)
+	void operator()(config::List<Child> &node)
 	{
 		m_newWidget = new List(node);
 	}
@@ -44,7 +44,7 @@ void Settings::setupUi()
 	treeView->resizeColumnToContents(0);
 }
 
-Settings::Settings(Model::Application &app)
+Settings::Settings(model::Application &app)
 	:m_app(app),
 	m_newConfig(app.config()),
 	m_model(new TreeModel(m_newConfig.root(), this))
@@ -56,7 +56,7 @@ Settings::Settings(Model::Application &app)
 
 Settings::~Settings() = default;
 
-Config::Config &&Settings::newConfig()
+config::Config &&Settings::newConfig()
 {
 	return std::move(m_newConfig);
 }

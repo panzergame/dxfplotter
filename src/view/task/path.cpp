@@ -1,15 +1,15 @@
 #include <path.h>
 
-namespace View::Task
+namespace view::task
 {
 
 void Path::setupModel()
 {
-	m_groupSettings.reset(new Model::PathGroupSettings(task()));
+	m_groupSettings.reset(new model::PathGroupSettings(task()));
 
 	hide();
 
-	connect(&task(), &Model::Task::selectionChanged, this, &Path::selectionChanged);
+	connect(&task(), &model::Task::selectionChanged, this, &Path::selectionChanged);
 
 	connectOnFieldChanged<double>(planeFeedRate, [this](double value) { m_groupSettings->setPlaneFeedRate(value); });
 	connectOnFieldChanged<double>(depthFeedRate, [this](double value) { m_groupSettings->setDepthFeedRate(value); });
@@ -22,7 +22,7 @@ void Path::documentChanged()
 	setupModel();
 }
 
-Path::Path(Model::Application &app)
+Path::Path(model::Application &app)
 	:DocumentModelObserver(app)
 {
 	setupUi(this);

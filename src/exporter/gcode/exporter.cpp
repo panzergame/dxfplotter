@@ -1,17 +1,17 @@
 #include <exporter.h>
 #include <pathpostprocessor.h>
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
-void Exporter::convertToGCode(const Model::Task &task, std::ostream &output) const
+void Exporter::convertToGCode(const model::Task &task, std::ostream &output) const
 {
 	PostProcessor processor(m_tool, m_gcode, output);
 
 	// Retract tool before work piece
 	processor.retractDepth();
 
-	task.forEachPathInStack([this, &output](const Model::Path &path){
+	task.forEachPathInStack([this, &output](const model::Path &path){
 		if (path.globallyVisible()) {
 			convertToGCode(path, output);
 		}
@@ -21,18 +21,18 @@ void Exporter::convertToGCode(const Model::Task &task, std::ostream &output) con
 	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));
 }
 
-void Exporter::convertToGCode(const Model::Path &path, std::ostream &output) const
+void Exporter::convertToGCode(const model::Path &path, std::ostream &output) const
 {
-	const Model::PathSettings &settings = path.settings();
-	const Geometry::CuttingDirection cuttingDirection = path.cuttingDirection();
+	const model::PathSettings &settings = path.settings();
+	const geometry::CuttingDirection cuttingDirection = path.cuttingDirection();
 	PathPostProcessor processor(settings, m_tool, m_gcode, output);
 
-	const Geometry::Polyline::List polylines = path.finalPolylines();
+	const geometry::Polyline::List polylines = path.finalPolylines();
 
 	// Depth to be cut
 	const float depth = settings.depth();
 
-	for (const Geometry::Polyline &polyline : polylines) {
+	for (const geometry::Polyline &polyline : polylines) {
 		// Move to polyline begining
 		processor.fastPlaneMove(polyline.start());
 		processor.preCut();
@@ -52,35 +52,35 @@ private:
 	bool m_odd;
 	const bool m_closed;
 	const bool m_cuttingBackward;
-	const Geometry::Polyline& m_polyline;
-	const Geometry::Polyline m_polylineInverse;
+	const geometry::Polyline& m_polyline;
+	const geometry::Polyline m_polylineInverse;
 
 	bool needPolylineInverse() const
 	{
 		return (!m_closed || m_cuttingBackward);
 	}
 
-	const Geometry::Polyline &polylineForward() const
+	const geometry::Polyline &polylineForward() const
 	{
 		return (m_cuttingBackward) ? m_polylineInverse : m_polyline;
 	}
 
-	const Geometry::Polyline &polylineBackward() const
+	const geometry::Polyline &polylineBackward() const
 	{
 		return (m_cuttingBackward) ? m_polyline : m_polylineInverse;
 	}
 
 public:
-	explicit PassesIterator(const Geometry::Polyline &polyline, Geometry::CuttingDirection direction)
+	explicit PassesIterator(const geometry::Polyline &polyline, geometry::CuttingDirection direction)
 		:m_odd(true),
 		m_closed(polyline.isClosed()),
-		m_cuttingBackward(direction == Geometry::CuttingDirection::BACKWARD),
+		m_cuttingBackward(direction == geometry::CuttingDirection::BACKWARD),
 		m_polyline(polyline),
-		m_polylineInverse(needPolylineInverse() ? m_polyline.inverse() : Geometry::Polyline())
+		m_polylineInverse(needPolylineInverse() ? m_polyline.inverse() : geometry::Polyline())
 	{
 	}
 
-	const Geometry::Polyline &operator*() const
+	const geometry::Polyline &operator*() const
 	{
 		if (m_closed || m_odd) {
 			return polylineForward();
@@ -96,7 +96,7 @@ public:
 	}
 };
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth, Geometry::CuttingDirection cuttingDirection) const
+void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Polyline &polyline, float maxDepth, geometry::CuttingDirection cuttingDirection) const
 {
 	const float depthPerCut = m_tool.general().depthPerCut();
 
@@ -109,27 +109,27 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Poly
 	}
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline) const
+void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Polyline &polyline) const
 {
-	polyline.forEachBulge([this, &processor](const Geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
+	polyline.forEachBulge([this, &processor](const geometry::Bulge &bulge){ convertToGCode(processor, bulge); });
 }
 
-void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const
+void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Bulge &bulge) const
 {
 	if (bulge.isLine()) {
 		processor.planeLinearMove(bulge.end());
 	}
 	else {
-		const Geometry::Circle circle = bulge.toCircle();
+		const geometry::Circle circle = bulge.toCircle();
 		// Relative center to start
 		const QVector2D relativeCenter = circle.center() - bulge.start();
 		switch (circle.orientation()) {
-			case Geometry::Orientation::CW:
+			case geometry::Orientation::CW:
 			{
 				processor.cwArcMove(relativeCenter, bulge.end());
 				break;
 			}
-			case Geometry::Orientation::CCW:
+			case geometry::Orientation::CCW:
 			{
 				processor.ccwArcMove(relativeCenter, bulge.end());
 				break;
@@ -140,14 +140,74 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const Geometry::Bulg
 	}
 }
 
-Exporter::Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode)
+struct CommentLineStream
+{
+	std::ostream &m_output;
+
+	explicit CommentLineStream(std::ostream &output, const std::string &prefix)
+		:m_output(output)
+	{
+		m_output << "; " << prefix;
+	}
+
+	~CommentLineStream()
+	{
+		m_output << "\n";
+	}
+
+	template <class Value>
+	CommentLineStream& operator<<(const Value &value)
+	{
+		m_output << value;
+		return *this;
+	}
+};
+
+struct ConfigToCommentVisitor
+{
+	std::ostream &m_output;
+	const std::string m_prefix;
+
+	CommentLineStream commentLineStream() const
+	{
+		return CommentLineStream(m_output, m_prefix);
+	}
+
+	template <class ValueType>
+	void operator()(const config::Property<ValueType> &property)
+	{
+		commentLineStream() << property.name() << " = " << (ValueType)property;
+	}
+
+	template <class Node>
+	void operator()(const Node &node)
+	{
+		commentLineStream() << node.name();
+		node.visitChildren(ConfigToCommentVisitor{m_output, m_prefix + "  "});
+	}
+};
+
+template <class Group>
+void convertConfigNodeToComments(const Group &group, std::ostream &output)
+{
+	ConfigToCommentVisitor visitor{output, ""};
+	visitor(group);
+}
+
+Exporter::Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, Options options)
 	:m_tool(tool),
-	m_gcode(gcode)
+	m_gcode(gcode),
+	m_options(options)
 {
 }
 
-void Exporter::operator()(const Model::Document &document, std::ostream &output) const
+void Exporter::operator()(const model::Document &document, std::ostream &output) const
 {
+	if (m_options & ExportConfig) {
+		convertConfigNodeToComments(m_tool, output);
+		convertConfigNodeToComments(m_gcode, output);
+	}
+
 	convertToGCode(document.task(), output);
 }
 

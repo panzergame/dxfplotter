@@ -2,7 +2,7 @@
 
 #include <libdxfrw/drw_interface.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 class Importer;

@@ -6,7 +6,7 @@
 #include <config/property.h>
 #include <common/aggregable.h>
 
-namespace View::Settings
+namespace view::settings
 {
 
 /** @brief Interface for setting entry, expose saving to configuration destructor
@@ -27,10 +27,10 @@ template <>
 class Entry<float> : public QDoubleSpinBox, public IEntry
 {
 private:
-	Config::Property<float> &m_property;
+	config::Property<float> &m_property;
 
 public:
-	explicit Entry(Config::Property<float> &property, QWidget *parent)
+	explicit Entry(config::Property<float> &property, QWidget *parent)
 		:QDoubleSpinBox(parent),
 		m_property(property)
 	{
@@ -49,10 +49,10 @@ template <>
 class Entry<int> : public QSpinBox, public IEntry
 {
 private:
-	Config::Property<int> &m_property;
+	config::Property<int> &m_property;
 
 public:
-	explicit Entry(Config::Property<int> &property, QWidget *parent)
+	explicit Entry(config::Property<int> &property, QWidget *parent)
 		:QSpinBox(parent),
 		m_property(property)
 	{
@@ -69,10 +69,10 @@ template <>
 class Entry<std::string> : public QLineEdit, public IEntry
 {
 private:
-	Config::Property<std::string> &m_property;
+	config::Property<std::string> &m_property;
 
 public:
-	explicit Entry(Config::Property<std::string> &property, QWidget *parent)
+	explicit Entry(config::Property<std::string> &property, QWidget *parent)
 		:QLineEdit(parent),
 		m_property(property)
 	{

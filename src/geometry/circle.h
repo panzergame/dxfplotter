@@ -2,7 +2,7 @@
 
 #include <geometry/utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class Circle

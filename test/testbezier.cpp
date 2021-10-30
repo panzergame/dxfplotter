@@ -3,7 +3,7 @@
 
 #include <QDebug>
 
-void print(const Geometry::Bezier &b)
+void print(const geometry::Bezier &b)
 {
 	qInfo() << ".........................";
 	qInfo() << b.point1();
@@ -20,12 +20,12 @@ int main()
 	const QVector2D sb(100, 0);
 	const QVector2D eb(50, 50);
 
-	/*const std::optional<QVector2D> intersection = Geometry::ForwardLineIntersection(sa, ea, sb, eb);
+	/*const std::optional<QVector2D> intersection = geometry::ForwardLineIntersection(sa, ea, sb, eb);
 	if (intersection) {
 		const QVector2D &in = *intersection;
 		qInfo() << in;
 
-		const QVector2D incenter = Geometry::TriangleIncenter(sa, in, sb);
+		const QVector2D incenter = geometry::TriangleIncenter(sa, in, sb);
 		qInfo() << incenter;
 	}
 	else {
@@ -33,17 +33,17 @@ int main()
 	}*/
 
 	// CCW bezier
-	Geometry::Bezier bcw(sa, ea, eb, sb);
+	geometry::Bezier bcw(sa, ea, eb, sb);
 	// CW bezier
-	Geometry::Bezier bccw(sb, eb, ea, sa);
+	geometry::Bezier bccw(sb, eb, ea, sa);
 
 	bcw.toBiarc()->toPolyline();
 	qInfo() << "..........................";
 	bccw.toBiarc()->toPolyline();
 
 
-	/*Geometry::Bezier::Pair p1 = b.splitHalf();
-	Geometry::Bezier::Pair p2 = b.split(0.5f);
+	/*geometry::Bezier::Pair p1 = b.splitHalf();
+	geometry::Bezier::Pair p2 = b.split(0.5f);
 
 	print(b);
 	print(p1[0]);

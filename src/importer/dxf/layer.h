@@ -4,13 +4,13 @@
 
 #include <common/aggregable.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 class Layer : public Common::Aggregable<Layer>
 {
 private:
-	Geometry::Polyline::List m_polylines;
+	geometry::Polyline::List m_polylines;
 	std::string m_name;
 
 public:
@@ -18,9 +18,9 @@ public:
 
 	explicit Layer(const std::string& name);
 
-	void addPolyline(const Geometry::Polyline& polyline);
+	void addPolyline(const geometry::Polyline& polyline);
 
-	Geometry::Polyline::List &&polylines();
+	geometry::Polyline::List &&polylines();
 
 	const std::string& name() const;
 };

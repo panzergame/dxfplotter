@@ -1,6 +1,6 @@
 #include <pathsettings.h>
 
-namespace Model
+namespace model
 {
 
 PathSettings::PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)

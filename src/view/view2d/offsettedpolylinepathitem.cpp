@@ -7,7 +7,7 @@
 #include <QPen>
 #include <QDebug>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 static const QBrush normalBrush(Qt::magenta);
@@ -17,11 +17,11 @@ static const QPen selectPen(selectBrush, 0.0f);
 
 QPainterPath OffsettedPolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline::List polylines = m_offsettedPath.polylines();
+	const geometry::Polyline::List polylines = m_offsettedPath.polylines();
 
 	QPainterPath rootPainter;
 
-	for (const Geometry::Polyline &polyline : polylines) {
+	for (const geometry::Polyline &polyline : polylines) {
 		QPainterPath painter(polyline.start().toPointF());
 
 		BulgePainter functor(painter);
@@ -38,13 +38,20 @@ QPainterPath OffsettedPolylinePathItem::shape() const
 	return QPainterPath();
 }
 
-OffsettedPolylinePathItem::OffsettedPolylinePathItem(const Model::OffsettedPath &offsettedPath)
-	:QGraphicsPathItem(QPainterPath()),
-	m_offsettedPath(offsettedPath),
-	m_paintPath(paintPath())
+void OffsettedPolylinePathItem::setupPaths()
 {
-	setPen(normalPen);
+	m_paintPath = paintPath();
 	setPath(m_paintPath);
+}
+
+OffsettedPolylinePathItem::OffsettedPolylinePathItem(const model::OffsettedPath &offsettedPath)
+	:QGraphicsPathItem(QPainterPath()),
+	m_offsettedPath(offsettedPath)
+{
+	setupPaths();
+	setPen(normalPen);
+
+	connect(&offsettedPath, &model::OffsettedPath::polylinesTransformed, this, &OffsettedPolylinePathItem::polylinesTransformed);
 }
 
 void OffsettedPolylinePathItem::selected()
@@ -55,6 +62,11 @@ void OffsettedPolylinePathItem::selected()
 void OffsettedPolylinePathItem::deselected()
 {
 	setPen(normalPen);
+}
+
+void OffsettedPolylinePathItem::polylinesTransformed()
+{
+	setupPaths();
 }
 
 }

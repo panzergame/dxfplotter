@@ -8,13 +8,13 @@
 
 #include <QWidget>
 
-namespace View::Task
+namespace view::task
 {
 
-class Path : public Model::DocumentModelObserver<QWidget>, private Ui::Path
+class Path : public model::DocumentModelObserver<QWidget>, private Ui::Path
 {
 private:
-	std::unique_ptr<Model::PathGroupSettings> m_groupSettings;
+	std::unique_ptr<model::PathGroupSettings> m_groupSettings;
 
 	void selectionChanged(int size);
 
@@ -41,7 +41,7 @@ protected:
 	void documentChanged() override;
 
 public:
-	explicit Path(Model::Application &app);
+	explicit Path(model::Application &app);
 
 };
 

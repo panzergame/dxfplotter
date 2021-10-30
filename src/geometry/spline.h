@@ -3,7 +3,7 @@
 #include <geometry/bezier.h>
 #include <geometry/utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class Spline

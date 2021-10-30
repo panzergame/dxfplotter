@@ -33,7 +33,6 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionOpenFile"/>
     <addaction name="actionSaveFile"/>
     <addaction name="actionSaveAsFile"/>
     <addaction name="actionExportFile"/>
@@ -49,12 +48,15 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionOpenFile"/>
     <addaction name="actionLeftCutterCompensation"/>
     <addaction name="actionRightCutterCompensation"/>
     <addaction name="actionResetCutterCompensation"/>
     <addaction name="separator"/>
     <addaction name="actionHideSelection"/>
     <addaction name="actionShowHidden"/>
+    <addaction name="separator"/>
+    <addaction name="actionTransformSelection"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -78,6 +80,8 @@
    <addaction name="actionLeftCutterCompensation"/>
    <addaction name="actionRightCutterCompensation"/>
    <addaction name="actionResetCutterCompensation"/>
+   <addaction name="separator"/>
+   <addaction name="actionTransformSelection"/>
    <addaction name="separator"/>
    <addaction name="actionHideSelection"/>
    <addaction name="actionShowHidden"/>
@@ -217,6 +221,18 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
+  <action name="actionTransformSelection">
+   <property name="icon">
+    <iconset theme="transform-rotate">
+     <normaloff>.</normaloff>.</iconset>
+   </property>
+   <property name="text">
+    <string>Transform Selection</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../resource/resource.qrc"/>
@@ -229,8 +245,8 @@
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>234</x>
-     <y>299</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>234</x>

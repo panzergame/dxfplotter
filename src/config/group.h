@@ -4,7 +4,7 @@
 
 #include <config/node.h>
 
-namespace Config
+namespace config
 {
 
 /** @brief A configuration group.

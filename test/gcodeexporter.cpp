@@ -6,12 +6,12 @@
 
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
-	const Geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
-	Geometry::Polyline polyline({bulge});
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	geometry::Polyline polyline({bulge});
 
 	createTaskFromPolyline(std::move(polyline));
 
-	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
@@ -29,20 +29,20 @@ G0 X 0.000 Y 0.000
 
 TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 {
-	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
-	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
-	const Geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
-	Geometry::Polyline polyline({b1, b2, b3});
+	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
+	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
+	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
+	geometry::Polyline polyline({b1, b2, b3});
 
 	ASSERT_TRUE(polyline.isClosed());
 
 	createTaskFromPolyline(std::move(polyline));
 
-	m_task->forEachPath([](Model::Path& path){
+	m_task->forEachPath([](model::Path& path){
 		path.offset(-0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
@@ -64,20 +64,20 @@ G0 X 0.000 Y 0.000
 
 TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 {
-	const Geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
-	const Geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
-	const Geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
-	Geometry::Polyline polyline({b1, b2, b3});
+	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
+	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
+	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
+	geometry::Polyline polyline({b1, b2, b3});
 
 	ASSERT_TRUE(polyline.isClosed());
 
 	createTaskFromPolyline(std::move(polyline));
 
-	m_task->forEachPath([](Model::Path& path){
+	m_task->forEachPath([](model::Path& path){
 		path.offset(0.2f, 0.0f, 0.0f);
 	});
 
-	const Exporter::GCode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000

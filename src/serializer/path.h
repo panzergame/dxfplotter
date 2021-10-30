@@ -9,16 +9,16 @@
 
 #include <model/path.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Model::Path>
+struct Access<model::Path>
 {
 	template <class Archive>
-	void serialize(Archive &archive, Model::Path &path) const
+	void serialize(Archive &archive, model::Path &path) const
 	{
-		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&path)));
+		archive(cereal::make_nvp("renderable", cereal::base_class<model::Renderable>(&path)));
 		archive(cereal::make_nvp("base_polyline", path.m_basePolyline));
 		archive(cereal::make_nvp("offsetted_path", path.m_offsettedPath));
 		archive(cereal::make_nvp("settings", path.m_settings));

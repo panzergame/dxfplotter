@@ -4,7 +4,7 @@
 #include <QPen>
 #include <QPainter>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 static const QBrush normalBrush(Qt::white);
@@ -12,7 +12,7 @@ static const QBrush selectBrush(QColor(80, 0, 255));
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
 
-BasicPathItem::BasicPathItem(Model::Path &path)
+BasicPathItem::BasicPathItem(model::Path &path)
 	:m_path(path),
 	m_outsideSelectionBlocked(false)
 {
@@ -20,8 +20,9 @@ BasicPathItem::BasicPathItem(Model::Path &path)
 	setFlag(ItemIsSelectable);
 	setVisible(m_path.globallyVisible());
 
-	connect(&m_path, &Model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
-	connect(&m_path, &Model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
+	connect(&m_path, &model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
+	connect(&m_path, &model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
+	connect(&m_path, &model::Path::basePolylineTransformed, this, &BasicPathItem::basePolylineTransformed);
 
 }
 
@@ -40,7 +41,7 @@ void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 	painter->setPen(pen());
 }
 
-const Model::Path& BasicPathItem::path() const
+const model::Path& BasicPathItem::path() const
 {
 	return m_path;
 }

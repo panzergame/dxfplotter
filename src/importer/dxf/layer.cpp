@@ -1,6 +1,6 @@
 #include <layer.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 Layer::Layer(const std::string& name)
@@ -8,12 +8,12 @@ Layer::Layer(const std::string& name)
 {
 }
 
-void Layer::addPolyline(const Geometry::Polyline& polyline)
+void Layer::addPolyline(const geometry::Polyline& polyline)
 {
 	m_polylines.push_back(polyline);
 }
 
-Geometry::Polyline::List &&Layer::polylines()
+geometry::Polyline::List &&Layer::polylines()
 {
 	return std::move(m_polylines);
 }

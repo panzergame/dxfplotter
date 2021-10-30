@@ -2,7 +2,7 @@
 
 #include <geometry/circle.h>
 
-namespace Geometry
+namespace geometry
 {
 
 /** Arcs are considered as angle clamped circles

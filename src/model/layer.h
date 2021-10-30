@@ -4,14 +4,14 @@
 
 #include <serializer/access.h>
 
-namespace Model
+namespace model
 {
 
 class Layer : public Renderable, public Common::Aggregable<Layer>
 {
 	Q_OBJECT;
 
-	friend Serializer::Access<Layer>;
+	friend serializer::Access<Layer>;
 
 private:
 	Path::ListUPtr m_children;

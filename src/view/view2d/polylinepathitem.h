@@ -3,7 +3,7 @@
 #include <view/view2d/basicpathitem.h>
 #include <view/view2d/offsettedpolylinepathitem.h>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 /** @brief Graphics path item meant to display polylines with length.
@@ -20,7 +20,9 @@ private:
 	std::unique_ptr<OffsettedPolylinePathItem> m_offsettedPath;
 
 	QPainterPath paintPath() const;
-	QPainterPath shapePath() const;
+	static QPainterPath shapePath(const QPainterPath &basePath);
+
+	void setupPaths();
 
 	void updateOffsetedPath();
 
@@ -28,12 +30,15 @@ private:
 	void setSelected(bool selected) override;
 
 public:
-	explicit PolylinePathItem(Model::Path &path);
+	explicit PolylinePathItem(model::Path &path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
 
 	QPainterPath shape() const override;
 	QRectF boundingRect() const override;
+
+protected:
+	void basePolylineTransformed() override;
 };
 
 }

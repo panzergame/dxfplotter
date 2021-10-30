@@ -56,7 +56,8 @@ set(INCLUDE_DIRS
 set(LINK_LIBRARIES
 	resource
 	view
-	view-settings
+	view-dialogs
+	view-dialogs-settings
 	view-task
 	view-view2d
 	model

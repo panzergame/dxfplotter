@@ -2,10 +2,10 @@
 
 using namespace fmt::literals;
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
-PostProcessor::PostProcessor(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
+PostProcessor::PostProcessor(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
 	:m_stream(stream),
 	m_tool(tool),
 	m_gcode(gcode)

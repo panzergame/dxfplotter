@@ -1,14 +1,15 @@
 #include <info.h>
 #include <view2d/viewport.h>
 
-namespace View
+
+namespace view
 {
 
-Info::Info(View2d::Viewport *viewport)
+Info::Info(view2d::Viewport *viewport)
 {
 	setupUi(this);
 
-	connect(viewport, &View2d::Viewport::cursorMoved, this, &Info::cursorMoved);
+	connect(viewport, &view2d::Viewport::cursorMoved, this, &Info::cursorMoved);
 }
 
 void Info::cursorMoved(const QPointF &position)

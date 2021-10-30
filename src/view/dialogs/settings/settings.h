@@ -1,17 +1,16 @@
 #pragma once
 
-
 #include <config/config.h>
 
 #include <model/application.h>
 
-#include <view/settings/entry.h>
+#include <view/dialogs/settings/entry.h>
 
-#include <uic/settings/ui_settings.h>
+#include <uic/dialogs/settings/ui_settings.h>
 
 #include <QDialog>
 
-namespace View::Settings
+namespace view::settings
 {
 
 class TreeModel;
@@ -23,16 +22,16 @@ private:
 
 	void setupUi();
 
-	Model::Application &m_app;
+	model::Application &m_app;
 	// Modified config
-	Config::Config m_newConfig;
+	config::Config m_newConfig;
 	std::unique_ptr<TreeModel> m_model;
 
 public:
-	explicit Settings(Model::Application &app);
+	explicit Settings(model::Application &app);
 	~Settings();
 
-	Config::Config &&newConfig();
+	config::Config &&newConfig();
 
 protected Q_SLOTS:
 	void currentChanged(const QModelIndex &index, const QModelIndex &previous);

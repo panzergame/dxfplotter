@@ -2,10 +2,10 @@
 
 #include <QIcon>
 
-namespace View::Task
+namespace view::task
 {
 
-LayerTreeModel::LayerTreeModel(Model::Task &task, QObject *parent)
+LayerTreeModel::LayerTreeModel(model::Task &task, QObject *parent)
 	:QAbstractItemModel(parent),
 	m_task(task)
 {
@@ -17,7 +17,7 @@ QVariant LayerTreeModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 
-	const Model::Renderable &item = *static_cast<const Model::Renderable *>(index.internalPointer());
+	const model::Renderable &item = *static_cast<const model::Renderable *>(index.internalPointer());
 
 	switch (role) {
 		case Qt::DisplayRole:
@@ -55,13 +55,13 @@ QVariant LayerTreeModel::data(const QModelIndex &index, int role) const
 
 QModelIndex LayerTreeModel::index(int row, int column, const QModelIndex& parent) const
 {
-	Model::Renderable *parentItem = static_cast<Model::Renderable *>(parent.internalPointer());
-	if (Model::Layer *parentLayer = dynamic_cast<Model::Layer *>(parentItem)) {
-		Model::Path &path = parentLayer->childrenAt(row);
+	model::Renderable *parentItem = static_cast<model::Renderable *>(parent.internalPointer());
+	if (model::Layer *parentLayer = dynamic_cast<model::Layer *>(parentItem)) {
+		model::Path &path = parentLayer->childrenAt(row);
 		return createIndex(row, column, &path);
 	}
 	else {
-		Model::Layer &layer = m_task.layerAt(row);
+		model::Layer &layer = m_task.layerAt(row);
 		return createIndex(row, column, &layer);
 	}
 }
@@ -72,9 +72,9 @@ QModelIndex LayerTreeModel::parent(const QModelIndex& index) const
 		return QModelIndex();
 	}
 	
-	Model::Renderable *item = static_cast<Model::Renderable *>(index.internalPointer());
-	if (Model::Path *path = dynamic_cast<Model::Path *>(item)) {
-		Model::Layer &layer = path->layer();
+	model::Renderable *item = static_cast<model::Renderable *>(index.internalPointer());
+	if (model::Path *path = dynamic_cast<model::Path *>(item)) {
+		model::Layer &layer = path->layer();
 		const int row = m_task.layerIndexFor(layer);
 		return createIndex(row, 0, &layer);
 	}
@@ -84,11 +84,11 @@ QModelIndex LayerTreeModel::parent(const QModelIndex& index) const
 
 int LayerTreeModel::rowCount(const QModelIndex& parent) const
 {
-	Model::Renderable *parentItem = static_cast<Model::Renderable *>(parent.internalPointer());
-	if (Model::Layer *parentLayer = dynamic_cast<Model::Layer *>(parentItem)) {
+	model::Renderable *parentItem = static_cast<model::Renderable *>(parent.internalPointer());
+	if (model::Layer *parentLayer = dynamic_cast<model::Layer *>(parentItem)) {
 		return parentLayer->childrenCount();
 	}
-	else if (Model::Path *parentPath = dynamic_cast<Model::Path *>(parentItem)) {
+	else if (model::Path *parentPath = dynamic_cast<model::Path *>(parentItem)) {
 		return 0;
 	}
 	else {
@@ -114,7 +114,7 @@ void LayerTreeModel::itemClicked(const QModelIndex& index)
 	switch (index.column()) {
 		case 1:
 		{
-			Model::Renderable *item = static_cast<Model::Renderable *>(index.internalPointer());
+			model::Renderable *item = static_cast<model::Renderable *>(index.internalPointer());
 			item->toggleVisible();
 
 			emit dataChanged(index, index);
@@ -122,7 +122,7 @@ void LayerTreeModel::itemClicked(const QModelIndex& index)
 	}
 }
 
-void LayerTreeModel::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
+void LayerTreeModel::updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
 {
 	const std::pair<int, int> indices = m_task.layerAndPathIndexFor(path);
 	const QModelIndex parentIndex = index(indices.first, 0);
@@ -133,12 +133,12 @@ void LayerTreeModel::updateItemSelection(const Model::Path &path, QItemSelection
 void LayerTreeModel::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
 	for (const QModelIndex &index : selected.indexes()) {
-		Model::Renderable &renderable = *static_cast<Model::Renderable *>(index.internalPointer());
+		model::Renderable &renderable = *static_cast<model::Renderable *>(index.internalPointer());
 		renderable.setSelected(true);
 	}
 
 	for (const QModelIndex &index : deselected.indexes()) {
-		Model::Renderable &renderable = *static_cast<Model::Renderable *>(index.internalPointer());
+		model::Renderable &renderable = *static_cast<model::Renderable *>(index.internalPointer());
 		renderable.setSelected(false);
 	}
 }

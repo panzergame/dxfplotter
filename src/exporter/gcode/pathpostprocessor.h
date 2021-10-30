@@ -4,7 +4,7 @@
 
 using namespace fmt::literals;
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
 /** @brief Augmented post processor including path settings variables such as feed rate and intensity
@@ -12,7 +12,7 @@ namespace Exporter::GCode
 class PathPostProcessor : public PostProcessor
 {
 private:
-	const Model::PathSettings &m_settings;
+	const model::PathSettings &m_settings;
 
 	template <class ...Args>
 	void printWithSettings(const std::string &format, Args&& ...args)
@@ -22,7 +22,7 @@ private:
 	}
 
 public:
-	explicit PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
+	explicit PathPostProcessor(const model::PathSettings &settings, const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void preCut();
 	void planeLinearMove(const QVector2D &to);

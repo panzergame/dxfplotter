@@ -11,7 +11,7 @@
 #include <libdxfrw/drw_entities.h>
 #include <libdxfrw/drw_objects.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 class Importer

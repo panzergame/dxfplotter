@@ -1,9 +1,9 @@
 #include <document.h>
 
-namespace Model
+namespace model
 {
 
-Document::Document(Task::UPtr&& task, const Config::Tools::Tool &toolConfig, const Config::Profiles::Profile &profileConfig)
+Document::Document(Task::UPtr&& task, const config::Tools::Tool &toolConfig, const config::Profiles::Profile &profileConfig)
 	:m_task(std::move(task)),
 	m_toolConfig(&toolConfig),
 	m_profileConfig(&profileConfig)
@@ -21,23 +21,23 @@ const Task &Document::task() const
 	return *m_task;
 }
 
-const Config::Tools::Tool &Document::toolConfig() const
+const config::Tools::Tool &Document::toolConfig() const
 {
 	return *m_toolConfig;
 }
 
-const Config::Profiles::Profile &Document::profileConfig() const
+const config::Profiles::Profile &Document::profileConfig() const
 {
 	return *m_profileConfig;
 }
 
-void Document::setToolConfig(const Config::Tools::Tool &tool)
+void Document::setToolConfig(const config::Tools::Tool &tool)
 {
 	m_toolConfig = &tool;
 	emit toolConfigChanged(tool);
 }
 
-void Document::setProfileConfig(const Config::Profiles::Profile &profile)
+void Document::setProfileConfig(const config::Profiles::Profile &profile)
 {
 	m_profileConfig = &profile;
 	emit profileConfigChanged(profile);

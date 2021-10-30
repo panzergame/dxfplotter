@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <limits>
 
-namespace Geometry
+namespace geometry
 {
 
 Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)
@@ -138,6 +138,18 @@ Arc Bulge::toArc() const
 	const float endAngle = LineAngle(m_end - center);
 
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
+}
+
+inline QVector2D mapVector2D(const QVector2D &vect, const QTransform &matrix)
+{
+	const QPointF point = vect.toPointF();
+	return QVector2D(matrix.map(point));
+}
+
+void Bulge::transform(const QTransform &matrix)
+{
+	m_start = mapVector2D(m_start, matrix);
+	m_end = mapVector2D(m_end, matrix);
 }
 
 bool Bulge::operator==(const Bulge& other) const

@@ -2,7 +2,7 @@
 
 #include <geometry/spline.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class QuadraticSpline : public Spline

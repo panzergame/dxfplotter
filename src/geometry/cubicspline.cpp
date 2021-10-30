@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace Geometry
+namespace geometry
 {
 
 CubicSpline::CubicSpline(Point2DList &&points, bool closed)

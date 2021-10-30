@@ -1,7 +1,7 @@
 #include <polyline.h>
 #include <utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 Polyline::Polyline(const cavc::Polyline<double> &polyline)
@@ -118,6 +118,13 @@ Polyline::List Polyline::offsetted(float margin) const
 		});
 
 	return offsettedPolylines;
+}
+
+void Polyline::transform(const QTransform &matrix)
+{
+	transformBulge([&matrix](Bulge &bulge){
+		bulge.transform(matrix);
+	});
 }
 
 bool Polyline::operator==(const Polyline &other) const

@@ -6,7 +6,7 @@
 
 #include <QVector2D>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>

@@ -2,7 +2,7 @@
 
 #include <geometry/spline.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class CubicSpline : public Spline

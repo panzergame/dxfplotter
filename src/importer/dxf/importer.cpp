@@ -5,7 +5,7 @@
 
 #include <libdxfrw/libdxfrw.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 void Importer::addLayer(const DRW_Layer &layer)

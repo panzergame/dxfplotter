@@ -1,6 +1,6 @@
 #include <spline.h>
 
-namespace Geometry
+namespace geometry
 {
 
 const Point2DList& Spline::controlPoints() const

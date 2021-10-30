@@ -2,7 +2,7 @@
 
 #include <iterator>
 
-namespace Model
+namespace model
 {
 
 void Task::initPathsFromLayers()

@@ -4,7 +4,7 @@
 
 #include <set>
 
-namespace Geometry
+namespace geometry
 {
 
 /** @brief Clean polyline via merging of small bulges.

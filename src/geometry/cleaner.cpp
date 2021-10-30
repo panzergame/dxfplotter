@@ -4,7 +4,7 @@
 
 #include <QDebug> // TODO
 
-namespace Geometry
+namespace geometry
 {
 
 template<typename T>

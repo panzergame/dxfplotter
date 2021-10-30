@@ -1,7 +1,7 @@
 #include <bulgepainter.h>
 #include <geometry/arc.h>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 void BulgePainter::lineToArcPoint(const QVector2D &center, float radius, float angle)
@@ -16,7 +16,7 @@ BulgePainter::BulgePainter(QPainterPath &painter)
 {
 }
 
-void BulgePainter::operator()(const Geometry::Bulge &bulge)
+void BulgePainter::operator()(const geometry::Bulge &bulge)
 {
 	if (bulge.isLine()) {
 		const QVector2D &start = bulge.start();
@@ -24,7 +24,7 @@ void BulgePainter::operator()(const Geometry::Bulge &bulge)
 		m_painter.lineTo(end.toPointF());
 	}
 	else {
-		const Geometry::Arc arc = bulge.toArc();
+		const geometry::Arc arc = bulge.toArc();
 
 		const float maxError = 0.0001; // TODO const
 
@@ -37,7 +37,7 @@ void BulgePainter::operator()(const Geometry::Bulge &bulge)
 		// Pass by starting point.
 		m_painter.lineTo(arc.start().toPointF());
 
-		if (arc.orientation() == Geometry::Orientation::CCW) {
+		if (arc.orientation() == geometry::Orientation::CCW) {
 			for (float angle = arc.startAngle() + angleStep, end = arc.endAngle(); angle < end; angle += angleStep) {
 				lineToArcPoint(center, radius, angle);
 			}
