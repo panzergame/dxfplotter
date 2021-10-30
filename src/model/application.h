@@ -16,6 +16,7 @@ namespace Importer::Dxf
 namespace Model
 {
 
+
 class Application : public QObject
 {
 	Q_OBJECT;
@@ -27,11 +28,12 @@ private:
 	const Config::Tools::Tool *m_defaultToolConfig;
 	const Config::Profiles::Profile *m_defaultProfileConfig;
 
-	// Absolute file basename of current imported file
-	QString m_currentImportedFileBaseName;
-	QString m_currentDxfplotFileName;
+	// Last opened or saved file base name.
+	QString m_lastHandledFileBaseName;
 
 	Document::UPtr m_openedDocument;
+
+	static QString baseName(const QString& fileName);	
 
 	PathSettings defaultPathSettings() const;
 
@@ -43,12 +45,13 @@ private:
 	Task::UPtr createTaskFromDxfImporter(const Importer::Dxf::Importer& importer);
 
 	template <class Exporter>
-	bool saveToFile(Exporter &exporter, const QString &fileName) const
+	bool saveToFile(Exporter &exporter, const QString &fileName)
 	{
 		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
 		if (output) {
 			exporter(*m_openedDocument, output);
+			m_lastHandledFileBaseName = baseName(fileName);
 			return true;
 		}
 
@@ -69,14 +72,13 @@ public:
 	bool selectProfile(const QString &profileName);
 	void defaultProfileFromCmd(const QString &profileName);
 
-	const QString &currentImportedFileBaseName() const;
-	const QString &currentDxfplotFileName() const;
+	const QString &lastHandledFileBaseName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadFromDxf(const QString &fileName);
 	bool loadFromDxfplot(const QString &fileName);
 
-	bool saveToGcode(const QString &fileName) const;
+	bool saveToGcode(const QString &fileName);
 	bool saveToDxfplot(const QString &fileName);
 
 	void leftCutterCompensation();

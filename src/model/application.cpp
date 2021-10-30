@@ -36,6 +36,12 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
+QString Application::baseName(const QString& fileName)
+{
+	const QFileInfo fileInfo(fileName);
+	return fileInfo.absoluteDir().filePath(fileInfo.baseName());
+}
+
 PathSettings Application::defaultPathSettings() const
 {
 	const Config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
@@ -165,14 +171,9 @@ void Application::defaultProfileFromCmd(const QString &profileName)
 	}
 }
 
-const QString &Application::currentImportedFileBaseName() const
+const QString &Application::lastHandledFileBaseName() const
 {
-	return m_currentImportedFileBaseName;
-}
-
-const QString &Application::currentDxfplotFileName() const
-{
-	return m_currentDxfplotFileName;
+	return m_lastHandledFileBaseName;
 }
 
 void Application::loadFileFromCmd(const QString &fileName)
@@ -185,9 +186,6 @@ void Application::loadFileFromCmd(const QString &fileName)
 bool Application::loadFile(const QString &fileName)
 {
 	qInfo() << "Opening " << fileName;
-
-	m_currentDxfplotFileName = "";
-	m_currentImportedFileBaseName = "";
 
 	const QMimeDatabase db;
 	const QMimeType mime = db.mimeTypeForFile(fileName);
@@ -205,6 +203,8 @@ bool Application::loadFile(const QString &fileName)
 		qCritical() << "Invalid file type: " << fileName;
 		return false;
 	}
+
+	m_lastHandledFileBaseName = baseName(fileName);
 
 	// Update window title based on file name.
 	const QFileInfo fileInfo(fileName);
@@ -228,9 +228,6 @@ bool Application::loadFromDxf(const QString &fileName)
 		return false;
 	}
 
-	const QFileInfo fileInfo(fileName);
-	m_currentImportedFileBaseName = fileInfo.absoluteDir().filePath(fileInfo.baseName());
-
 	emit documentChanged(m_openedDocument.get());
 
 	return true;
@@ -247,14 +244,12 @@ bool Application::loadFromDxfplot(const QString &fileName)
 		return false;
 	}
 
-	m_currentDxfplotFileName = fileName;
-
 	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
 
-bool Application::saveToGcode(const QString &fileName) const
+bool Application::saveToGcode(const QString &fileName)
 {
 	std::ofstream file(fileName.toStdString());
 	if (file) {
@@ -274,12 +269,7 @@ bool Application::saveToDxfplot(const QString &fileName)
 {
 	Exporter::Dxfplot::Exporter exporter;
 	
-	const bool succeedSaving = saveToFile(exporter, fileName);
-	if (succeedSaving) {
-		m_currentDxfplotFileName = fileName;
-	}
-
-	return succeedSaving;
+	return saveToFile(exporter, fileName);
 }
 
 void Application::leftCutterCompensation()
