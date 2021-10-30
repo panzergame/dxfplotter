@@ -3,7 +3,7 @@
 > Fast and easy to use DXF to GCode converter for laser CNC
 
 
-[![Build Status](https://travis-ci.com/panzergame/dxfplotter.svg?branch=develop)](https://travis-ci.com/panzergame/dxfplotter)
+[![Build Status](https://github.com/panzergame/dxfplotter/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/panzergame/dxfplotter/actions)
 [![codecov](https://codecov.io/gh/panzergame/dxfplotter/branch/develop/graph/badge.svg?token=WX16YH71C7)](https://codecov.io/gh/panzergame/dxfplotter)
 
 ![](doc/screen.png)
