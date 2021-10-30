@@ -4,7 +4,8 @@
 
 #include <QDialog>
 
-namespace View
+
+namespace view
 {
 
 class Transform : public QDialog, private Ui::Transform

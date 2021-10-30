@@ -4,7 +4,7 @@
 
 #include <QDebug> // TODO
 
-namespace View::View2d
+namespace view::view2d
 {
 
 constexpr int rubberBandTolerance = 2;
@@ -14,7 +14,7 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 void Viewport::setupPathItems()
 {
 	task().forEachPath(
-		[scene = scene()](Model::Path &path) {
+		[scene = scene()](model::Path &path) {
 			BasicPathItem *item;
 			if (path.isPoint()) {
 				item = new PointPathItem(path);
@@ -354,7 +354,7 @@ void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 	BackgroundPainter backgroundPainter(painter, sceneRect, pixelRatio);
 }
 
-Viewport::Viewport(Model::Application &app)
+Viewport::Viewport(model::Application &app)
 	:DocumentModelObserver(app)
 {
 	// Setup default empty scene

@@ -7,14 +7,14 @@
 
 #include <model/path.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Model::PathSettings>
+struct Access<model::PathSettings>
 {
 	template <class Archive>
-	void serialize(Archive &archive, Model::PathSettings &pathSettings) const
+	void serialize(Archive &archive, model::PathSettings &pathSettings) const
 	{
 		archive(cereal::make_nvp("plane_feed_rate", pathSettings.m_planeFeedRate));
 		archive(cereal::make_nvp("depth_feed_rate", pathSettings.m_depthFeedRate));

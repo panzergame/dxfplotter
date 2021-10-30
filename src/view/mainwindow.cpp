@@ -14,13 +14,13 @@
 #include <QErrorMessage>
 #include <QDebug>
 
-namespace View
+namespace view
 {
 
 QWidget *MainWindow::setupLeftPanel()
 {
-	Task::Task *task = new Task::Task(m_app);
-	Task::Path *path = new Task::Path(m_app);
+	task::Task *task = new task::Task(m_app);
+	task::Path *path = new task::Path(m_app);
 
 	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
 	vertSplitter->addWidget(task);
@@ -33,7 +33,7 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	View2d::Viewport *viewport = new View2d::Viewport(m_app);
+	view2d::Viewport *viewport = new view2d::Viewport(m_app);
 	Info *info = new Info(viewport);
 
 	QWidget *container = new QWidget(this);
@@ -78,11 +78,11 @@ void MainWindow::setupMenuActions()
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
 	// Edit actions
-	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &Model::Application::leftCutterCompensation);
-	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &Model::Application::rightCutterCompensation);
-	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &Model::Application::resetCutterCompensation);
-	connect(actionHideSelection, &QAction::triggered, &m_app, &Model::Application::hideSelection);
-	connect(actionShowHidden, &QAction::triggered, &m_app, &Model::Application::showHidden);
+	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &model::Application::leftCutterCompensation);
+	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &model::Application::rightCutterCompensation);
+	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &model::Application::resetCutterCompensation);
+	connect(actionHideSelection, &QAction::triggered, &m_app, &model::Application::hideSelection);
+	connect(actionShowHidden, &QAction::triggered, &m_app, &model::Application::showHidden);
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 }
 
@@ -97,7 +97,7 @@ void MainWindow::setTaskToolsEnabled(bool enabled)
 	actionTransformSelection->setEnabled(enabled);
 }
 
-MainWindow::MainWindow(Model::Application &app)
+MainWindow::MainWindow(model::Application &app)
 	:m_app(app)
 {
 	setupUi();
@@ -106,9 +106,9 @@ MainWindow::MainWindow(Model::Application &app)
 
 	setTaskToolsEnabled(false);
 
-	connect(&m_app, &Model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &Model::Application::documentChanged, this, &MainWindow::documentChanged);
-	connect(&m_app, &Model::Application::errorRaised, this, &MainWindow::displayError);
+	connect(&m_app, &model::Application::titleChanged, this, &MainWindow::setWindowTitle);
+	connect(&m_app, &model::Application::documentChanged, this, &MainWindow::documentChanged);
+	connect(&m_app, &model::Application::errorRaised, this, &MainWindow::displayError);
 }
 
 void MainWindow::openFile()
@@ -152,7 +152,7 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	Settings::Settings settings(m_app);
+	settings::Settings settings(m_app);
 	if (settings.exec() == QDialog::Accepted) {
 		m_app.setConfig(settings.newConfig());
 	}
@@ -166,7 +166,7 @@ void MainWindow::transformSelection()
 	}
 }
 
-void MainWindow::documentChanged(Model::Document *newDocument)
+void MainWindow::documentChanged(model::Document *newDocument)
 {
 	setTaskToolsEnabled((newDocument != nullptr));
 }

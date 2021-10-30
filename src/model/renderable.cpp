@@ -2,7 +2,7 @@
 
 #include <geometry/cleaner.h>
 
-namespace Model
+namespace model
 {
 
 Renderable::Renderable(const std::string &name)

@@ -6,10 +6,10 @@ constexpr QVector2D point2(1.0f, 0.5f);
 
 TEST(ArcTest, HalfCcwCircleBulgeConvertToArcMatchBulge)
 {
-	const Geometry::Bulge bulge(point1, point2, 1.0f);
-	const Geometry::Arc arc(bulge.toArc());
+	const geometry::Bulge bulge(point1, point2, 1.0f);
+	const geometry::Arc arc(bulge.toArc());
 
-	EXPECT_EQ(arc.orientation(), Geometry::Orientation::CCW);
+	EXPECT_EQ(arc.orientation(), geometry::Orientation::CCW);
 
 	EXPECT_NEAR(arc.center().x(), (point1.x() + point2.x()) / 2.0f, 1e-6);
 	EXPECT_NEAR(arc.center().y(), (point1.y() + point2.y()) / 2.0f, 1e-6);
@@ -28,10 +28,10 @@ TEST(ArcTest, HalfCcwCircleBulgeConvertToArcMatchBulge)
 
 TEST(ArcTest, HalfCwCircleBulgeConvertToArcMatchBulge)
 {
-	const Geometry::Bulge bulge(point1, point2, -1.0f);
-	const Geometry::Arc arc(bulge.toArc());
+	const geometry::Bulge bulge(point1, point2, -1.0f);
+	const geometry::Arc arc(bulge.toArc());
 
-	EXPECT_EQ(arc.orientation(), Geometry::Orientation::CW);
+	EXPECT_EQ(arc.orientation(), geometry::Orientation::CW);
 
 	EXPECT_NEAR(arc.center().x(), (point1.x() + point2.x()) / 2.0f, 1e-6);
 	EXPECT_NEAR(arc.center().y(), (point1.y() + point2.y()) / 2.0f, 1e-6);

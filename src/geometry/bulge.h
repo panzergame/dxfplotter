@@ -13,12 +13,12 @@
 #include <QVector2D>
 #include <QTransform>
 
-namespace Geometry
+namespace geometry
 {
 
 class Bulge : public Common::Aggregable<Bulge>
 {
-	friend Serializer::Access<Bulge>;
+	friend serializer::Access<Bulge>;
 
 private:
 	QVector2D m_start;

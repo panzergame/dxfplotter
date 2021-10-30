@@ -5,10 +5,7 @@
 #include <config/config.h>
 #include <common/aggregable.h>
 
-namespace View
-{
-
-namespace Settings
+namespace view::settings
 {
 
 class TreeModel : public QAbstractItemModel
@@ -30,18 +27,18 @@ private:
 			List
 		} type;
 
-		Config::NodePtrVariant configNode;
+		config::NodePtrVariant configNode;
 		Node *parent;
 		ListUPtr children;
 
 		template <class ... Child>
-		static constexpr Node::Type nodeType(const Config::Group<Child...> &)
+		static constexpr Node::Type nodeType(const config::Group<Child...> &)
 		{
 			return Node::Type::Group;
 		}
 
 		template <class Child>
-		static constexpr Node::Type nodeType(const Config::List<Child> &)
+		static constexpr Node::Type nodeType(const config::List<Child> &)
 		{
 			return Node::Type::List;
 		};
@@ -58,13 +55,13 @@ private:
 		}
 	};
 
-	Config::Root &m_configRoot;
+	config::Root &m_configRoot;
 	Node m_root;
 
 	void constructNodes();
 
 public:
-	explicit TreeModel(Config::Root &root, QObject *parent = nullptr);
+	explicit TreeModel(config::Root &root, QObject *parent = nullptr);
 
 	QVariant data(const QModelIndex &index, int role) const override;
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
@@ -92,7 +89,5 @@ public:
 	void addItem(const QModelIndex &parent, const QString &name);
 	void removeItem(const QModelIndex &index);
 };
-
-}
 
 }

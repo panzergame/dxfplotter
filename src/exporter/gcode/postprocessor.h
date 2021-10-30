@@ -7,7 +7,7 @@
 #include <fmt/format.h>
 #include <sstream>
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
 class PostProcessor
@@ -16,8 +16,8 @@ private:
 	std::ostream &m_stream;
 
 protected:
-	const Config::Tools::Tool& m_tool;
-	const Config::Profiles::Profile::Gcode& m_gcode;
+	const config::Tools::Tool& m_tool;
+	const config::Profiles::Profile::Gcode& m_gcode;
 
 	/** Print a command to stream with a format and a list of named arguments
 	 * @param format A fmt valid format string.
@@ -35,7 +35,7 @@ protected:
 	}
 
 public:
-	explicit PostProcessor(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
+	explicit PostProcessor(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void postCut();
 	void fastPlaneMove(const QVector2D &to);

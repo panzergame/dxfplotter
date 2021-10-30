@@ -6,10 +6,10 @@
 #include <QLabel>
 #include <QDebug>
 
-namespace View::Task
+namespace view::task
 {
 
-Task::Task(Model::Application &app)
+Task::Task(model::Application &app)
 	:DocumentModelObserver(app)
 {
 	setupUi(this);
@@ -26,16 +26,16 @@ void Task::setupModel()
 void Task::setupController()
 {
 	// Track outside path selection, e.g from graphics view.
-	connect(&task(), &Model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
+	connect(&task(), &model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
 	setupTreeViewController(m_pathListModel, pathsTreeView);
 	setupTreeViewController(m_layerTreeModel, layersTreeView);
 
-	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::UP); });
-	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(Model::Task::MoveDirection::DOWN); });
+	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::UP); });
+	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::DOWN); });
 }
 
-void Task::updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag)
+void Task::updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag)
 {
 	m_pathListModel->updateItemSelection(path, flag, pathsTreeView->selectionModel());
 	m_layerTreeModel->updateItemSelection(path, flag, layersTreeView->selectionModel());
@@ -47,13 +47,13 @@ void Task::documentChanged()
 	setupController();
 }
 
-void Task::pathSelectedChanged(Model::Path &path, bool selected)
+void Task::pathSelectedChanged(model::Path &path, bool selected)
 {
 	updateItemSelection(path,
 			selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
 }
 
-void Task::moveCurrentPath(Model::Task::MoveDirection direction)
+void Task::moveCurrentPath(model::Task::MoveDirection direction)
 {
 	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();

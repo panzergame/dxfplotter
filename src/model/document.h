@@ -3,7 +3,7 @@
 #include <model/task.h>
 #include <config/config.h>
 
-namespace Model
+namespace model
 {
 
 class Document : public QObject, public Common::Aggregable<Document>
@@ -12,24 +12,24 @@ class Document : public QObject, public Common::Aggregable<Document>
 
 private:
 	Task::UPtr m_task;
-	const Config::Tools::Tool *m_toolConfig;
-	const Config::Profiles::Profile *m_profileConfig;
+	const config::Tools::Tool *m_toolConfig;
+	const config::Profiles::Profile *m_profileConfig;
 
 public:
-	explicit Document(Task::UPtr&& task, const Config::Tools::Tool &toolConfig, const Config::Profiles::Profile &profileConfig);
+	explicit Document(Task::UPtr&& task, const config::Tools::Tool &toolConfig, const config::Profiles::Profile &profileConfig);
 	Document() = default;
 
 	Task& task();
 	const Task& task() const;
 
-	const Config::Tools::Tool &toolConfig() const;
-	const Config::Profiles::Profile &profileConfig() const;
-	void setToolConfig(const Config::Tools::Tool &tool);
-	void setProfileConfig(const Config::Profiles::Profile &profile);
+	const config::Tools::Tool &toolConfig() const;
+	const config::Profiles::Profile &profileConfig() const;
+	void setToolConfig(const config::Tools::Tool &tool);
+	void setProfileConfig(const config::Profiles::Profile &profile);
 
 Q_SIGNALS:
-	void toolConfigChanged(const Config::Tools::Tool &tool);
-	void profileConfigChanged(const Config::Profiles::Profile &profile);
+	void toolConfigChanged(const config::Tools::Tool &tool);
+	void profileConfigChanged(const config::Profiles::Profile &profile);
 };
 
 }

@@ -8,7 +8,7 @@
 
 #include <common/function.h>
 
-namespace Model
+namespace model
 {
 
 class PathGroupSettings : public QObject
@@ -16,7 +16,7 @@ class PathGroupSettings : public QObject
 	Q_OBJECT;
 
 private:
-	const Model::Task &m_task;
+	const model::Task &m_task;
 
 	/** Return value of a path settings property if all path have
 	 * the same value for the given property.
@@ -32,7 +32,7 @@ private:
 		bool firstValue = true;
 		bool allEqual = true;
 
-		m_task.forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const Model::Path &path){
+		m_task.forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const model::Path &path){
 			const Return &value = (path.settings().*getter)();
 			if (!firstValue && lastValue != value) {
 				allEqual = false;
@@ -50,7 +50,7 @@ private:
 	template <typename Setter, typename T>
 	void setValue(Setter &&setter, T value)
 	{
-		m_task.forEachSelectedPath([value, &setter](Model::Path &path){
+		m_task.forEachSelectedPath([value, &setter](model::Path &path){
 			(path.settings().*(std::forward<Setter>(setter)))(value);
 		});
 	}

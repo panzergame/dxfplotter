@@ -9,11 +9,11 @@ int main()
 	const QVector2D s(0, 0);
 	const QVector2D e(100, 50);
 
-	Geometry::Bulge b1(s, e, 0.5);
-	Geometry::Bulge b2(s, e, -0.5);
+	geometry::Bulge b1(s, e, 0.5);
+	geometry::Bulge b2(s, e, -0.5);
 
-	Geometry::Arc arc1 = b1.toArc();
-	Geometry::Arc arc2 = b2.toArc();
+	geometry::Arc arc1 = b1.toArc();
+	geometry::Arc arc2 = b2.toArc();
 
 	qInfo() << "center :" << arc1.center() << "start :" << qRadiansToDegrees(arc1.startAngle()) << "end :" << qRadiansToDegrees(arc1.endAngle()) << arc1.radius();
 	qInfo() << "center :" << arc2.center() << "start :" << qRadiansToDegrees(arc2.startAngle()) << "end :" << qRadiansToDegrees(arc2.endAngle()) << arc2.radius();

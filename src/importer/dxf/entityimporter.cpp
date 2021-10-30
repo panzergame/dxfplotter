@@ -1,6 +1,6 @@
 #include <importer/dxf/entityimporter.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 BaseEntityImporter::BaseEntityImporter(Layer& layer, const Settings& settings)
@@ -9,7 +9,7 @@ BaseEntityImporter::BaseEntityImporter(Layer& layer, const Settings& settings)
 {
 }
 
-void BaseEntityImporter::addPolyline(const Geometry::Polyline& polyline)
+void BaseEntityImporter::addPolyline(const geometry::Polyline& polyline)
 {
 	m_layer.addPolyline(polyline);
 }

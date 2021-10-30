@@ -7,7 +7,7 @@
 #include <QAbstractItemModel>
 #include <QItemSelectionModel>
 
-namespace View::Task
+namespace view::task
 {
 
 class LayerTreeModel: public QAbstractItemModel
@@ -15,10 +15,10 @@ class LayerTreeModel: public QAbstractItemModel
     Q_OBJECT
 
 private:
-	Model::Task &m_task;
+	model::Task &m_task;
 
 public:
-	explicit LayerTreeModel(Model::Task &task, QObject *parent);
+	explicit LayerTreeModel(model::Task &task, QObject *parent);
 
 	QVariant data(const QModelIndex &index, int role) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
@@ -28,7 +28,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 	void itemClicked(const QModelIndex &index);
-	void updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel);
+	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel);
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 };
 

@@ -1,6 +1,6 @@
 #include <quadraticspline.h>
 
-namespace Geometry
+namespace geometry
 {
 
 Point2DList QuadraticSpline::convertClosedToQuadraticBezierPoints() const

@@ -6,7 +6,7 @@
 
 #include <QGroupBox>
 
-namespace View::Settings
+namespace view::settings
 {
 
 class Group : public QGroupBox, private Ui::Group
@@ -25,7 +25,7 @@ private:
 		}
 
 		template <class ValueType>
-		void operator()(Config::Property<ValueType> &property)
+		void operator()(config::Property<ValueType> &property)
 		{
 			Entry<ValueType> *entry = new Entry<ValueType>(property, &m_parent);
 

@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QtMath>
 
-namespace Geometry
+namespace geometry
 {
 
 Orientation Biarc::orientation() const

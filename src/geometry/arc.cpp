@@ -1,7 +1,7 @@
 #include <arc.h>
 #include <utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 Arc::Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,

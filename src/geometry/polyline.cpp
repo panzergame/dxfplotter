@@ -1,7 +1,7 @@
 #include <polyline.h>
 #include <utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 Polyline::Polyline(const cavc::Polyline<double> &polyline)

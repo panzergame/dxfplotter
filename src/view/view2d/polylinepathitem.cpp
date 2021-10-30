@@ -5,12 +5,12 @@
 
 #include <QDebug> // TODO
 
-namespace View::View2d
+namespace view::view2d
 {
 
 QPainterPath PolylinePathItem::paintPath() const
 {
-	const Geometry::Polyline &polyline = m_path.basePolyline();
+	const geometry::Polyline &polyline = m_path.basePolyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 
@@ -38,7 +38,7 @@ void PolylinePathItem::setupPaths()
 
 void PolylinePathItem::updateOffsetedPath()
 {
-	Model::OffsettedPath *offsettedPath = m_path.offsettedPath();
+	model::OffsettedPath *offsettedPath = m_path.offsettedPath();
 	if (offsettedPath) {
 		m_offsettedPath = std::make_unique<OffsettedPolylinePathItem>(*offsettedPath);
 		// Link our offsetted path item for drawing
@@ -58,14 +58,14 @@ void PolylinePathItem::setSelected(bool selected)
 	}
 }
 
-PolylinePathItem::PolylinePathItem(Model::Path &path)
+PolylinePathItem::PolylinePathItem(model::Path &path)
 	:BasicPathItem(path)
 {
 	setupPaths();
 
 	updateOffsetedPath();
 
-	connect(&path, &Model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
+	connect(&path, &model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
 }
 
 void PolylinePathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)

@@ -2,10 +2,10 @@
 
 using namespace fmt::literals;
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
-PathPostProcessor::PathPostProcessor(const Model::PathSettings &settings, const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
+PathPostProcessor::PathPostProcessor(const model::PathSettings &settings, const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream)
 	:PostProcessor(tool, gcode, stream),
 	m_settings(settings)
 {

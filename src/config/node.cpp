@@ -1,7 +1,7 @@
 #include <node.h>
 #include <algorithm>
 
-namespace Config
+namespace config
 {
 
 Node::Node(const std::string &name, const std::string &description)

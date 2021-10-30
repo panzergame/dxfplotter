@@ -2,7 +2,7 @@
 
 #include <QDebug> // TODO
 
-namespace Model
+namespace model
 {
 
 PathGroupSettings::PathGroupSettings(const Task &task)

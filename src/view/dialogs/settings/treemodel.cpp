@@ -2,7 +2,7 @@
 
 #include <QDebug> // TODO
 
-namespace View::Settings
+namespace view::settings
 {
 
 struct TreeModel::ConstructorItemVisitor
@@ -12,7 +12,7 @@ struct TreeModel::ConstructorItemVisitor
 	int row = 0;
 
 	template <class ValueType>
-	void operator()(Config::Property<ValueType> &)
+	void operator()(config::Property<ValueType> &)
 	{
 	}
 
@@ -36,7 +36,7 @@ struct TreeModel::AddItemVisitor
 	Node &parent;
 
 	template <class Child>
-	void operator()(Config::List<Child> *list)
+	void operator()(config::List<Child> *list)
 	{
 		const int nextRow = parent.children.size();
 
@@ -52,23 +52,23 @@ struct TreeModel::AddItemVisitor
 	}
 
 	template <class ... Child>
-	void operator()(Config::Group<Child ...> *)
+	void operator()(config::Group<Child ...> *)
 	{
 	}
 };
 
 struct TreeModel::RemoveItemVisitor
 {
-	const Config::Node &configNode;
+	const config::Node &configNode;
 
 	template <class Child>
-	void operator()(Config::List<Child> *list)
+	void operator()(config::List<Child> *list)
 	{
 		list->removeChild(static_cast<const Child &>(configNode));
 	}
 
 	template <class ... Child>
-	void operator()(Config::Group<Child ...> *)
+	void operator()(config::Group<Child ...> *)
 	{
 	}
 };
@@ -81,7 +81,7 @@ void TreeModel::constructNodes()
 	m_configRoot.visitChildren(visitor);
 }
 
-TreeModel::TreeModel(Config::Root &root, QObject *parent)
+TreeModel::TreeModel(config::Root &root, QObject *parent)
 	:QAbstractItemModel(parent),
 	m_configRoot(root)
 {

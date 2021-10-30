@@ -7,14 +7,14 @@
 class ExporterFixture : public ::testing::Test
 {
 protected:
-	const Config::Tools::Tool m_tool{"tool", YAML::Node()};
-	const Config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
-	const Config::Profiles::Profile m_profile{"profile", YAML::Node()};
-	const Model::PathSettings m_settings{10, 10, 10, 0.1};
-	Model::Task *m_task;
-	Model::Document::UPtr m_document;
+	const config::Tools::Tool m_tool{"tool", YAML::Node()};
+	const config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
+	const config::Profiles::Profile m_profile{"profile", YAML::Node()};
+	const model::PathSettings m_settings{10, 10, 10, 0.1};
+	model::Task *m_task;
+	model::Document::UPtr m_document;
 	std::ostringstream m_output;
 
-	void createTaskFromPolyline(Geometry::Polyline &&polyline);
+	void createTaskFromPolyline(geometry::Polyline &&polyline);
 };
 

@@ -6,14 +6,14 @@
 
 #include <model/renderable.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Model::Renderable>
+struct Access<model::Renderable>
 {
 	template <class Archive>
-	void save(Archive &archive, const Model::Renderable &renderable) const
+	void save(Archive &archive, const model::Renderable &renderable) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 
@@ -22,7 +22,7 @@ struct Access<Model::Renderable>
 	}
 
 	template <class Archive>
-	void load(Archive &archive, Model::Renderable &renderable) const
+	void load(Archive &archive, model::Renderable &renderable) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 

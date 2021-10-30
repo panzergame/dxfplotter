@@ -6,7 +6,7 @@
 
 #include <fstream>
 
-namespace Exporter::GCode
+namespace exporter::gcode
 {
 
 class PathPostProcessor;
@@ -21,21 +21,21 @@ public:
 	};
 
 private:
-	const Config::Tools::Tool &m_tool;
-	const Config::Profiles::Profile::Gcode &m_gcode;
+	const config::Tools::Tool &m_tool;
+	const config::Profiles::Profile::Gcode &m_gcode;
 	const Options m_options;
 
-	void convertToGCode(const Model::Task &task, std::ostream &output) const;
-	void convertToGCode(const Model::Path &path, std::ostream &output) const;
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline) const;
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Polyline &polyline, float maxDepth, Geometry::CuttingDirection cuttingDirection) const;
-	void convertToGCode(PathPostProcessor &processor, const Geometry::Bulge &bulge) const;
+	void convertToGCode(const model::Task &task, std::ostream &output) const;
+	void convertToGCode(const model::Path &path, std::ostream &output) const;
+	void convertToGCode(PathPostProcessor &processor, const geometry::Polyline &polyline) const;
+	void convertToGCode(PathPostProcessor &processor, const geometry::Polyline &polyline, float maxDepth, geometry::CuttingDirection cuttingDirection) const;
+	void convertToGCode(PathPostProcessor &processor, const geometry::Bulge &bulge) const;
 
 public:
-	explicit Exporter(const Config::Tools::Tool& tool, const Config::Profiles::Profile::Gcode& gcode, Options options = None);
+	explicit Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, Options options = None);
 	~Exporter() = default;
 
-	void operator()(const Model::Document& document, std::ostream &output)  const;
+	void operator()(const model::Document& document, std::ostream &output)  const;
 };
 
 }

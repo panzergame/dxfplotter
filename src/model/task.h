@@ -5,14 +5,14 @@
 
 #include <serializer/access.h>
 
-namespace Model
+namespace model
 {
 
 class Task : public QObject, public Common::Aggregable<Task>
 {
 	Q_OBJECT;
 
-	friend Serializer::Access<Task>;
+	friend serializer::Access<Task>;
 
 private:
 	Path::ListPtr m_paths;

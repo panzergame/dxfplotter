@@ -2,7 +2,7 @@
 
 #include <config/node.h>
 
-namespace Config
+namespace config
 {
 
 template <class ValueType>

@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
 
 	parser.process(qapp);
 
-	Model::Application app;
-	View::MainWindow window(app);
+	model::Application app;
+	view::MainWindow window(app);
 
 	if (parser.isSet(toolOption)) {
 		const QString toolName = parser.value(toolOption);

@@ -13,24 +13,24 @@
 
 #include <QDebug>
 
-namespace Serializer
+namespace serializer
 {
 
 using IndexStackList = std::vector<int>;
 
-inline int findPathIndex(const Model::Path::ListPtr& paths, const Model::Path *wantedPath)
+inline int findPathIndex(const model::Path::ListPtr& paths, const model::Path *wantedPath)
 {
-	const Model::Path::ListPtr::const_iterator it = std::find(paths.cbegin(), paths.cend(), wantedPath);
+	const model::Path::ListPtr::const_iterator it = std::find(paths.cbegin(), paths.cend(), wantedPath);
 
 	return std::distance(paths.cbegin(), it);
 }
 
-inline IndexStackList convertPathStackToIndexStack(const Model::Path::ListPtr& paths,
-		const Model::Path::ListPtr& stack)
+inline IndexStackList convertPathStackToIndexStack(const model::Path::ListPtr& paths,
+		const model::Path::ListPtr& stack)
 {
 	IndexStackList indexStack(stack.size());
 	std::transform(stack.begin(), stack.end(), indexStack.begin(),
-		[&paths](const Model::Path *path){
+		[&paths](const model::Path *path){
 			return findPathIndex(paths, path);
 		}
 	);
@@ -38,9 +38,9 @@ inline IndexStackList convertPathStackToIndexStack(const Model::Path::ListPtr& p
 	return indexStack;
 }
 
-inline Model::Path::ListPtr convertIndexStackToPathStack(const Model::Path::ListPtr& paths, const IndexStackList &indexStack)
+inline model::Path::ListPtr convertIndexStackToPathStack(const model::Path::ListPtr& paths, const IndexStackList &indexStack)
 {
-	Model::Path::ListPtr stack(indexStack.size());
+	model::Path::ListPtr stack(indexStack.size());
 	std::transform(indexStack.begin(), indexStack.end(), stack.begin(), [&paths](int index){
 		return paths[index];
 	});
@@ -49,10 +49,10 @@ inline Model::Path::ListPtr convertIndexStackToPathStack(const Model::Path::List
 }
 
 template<>
-struct Access<Model::Task>
+struct Access<model::Task>
 {
 	template <class Archive>
-	void save(Archive &archive, const Model::Task &task) const
+	void save(Archive &archive, const model::Task &task) const
 	{
 		archive(cereal::make_nvp("layers", task.m_layers));
 
@@ -61,14 +61,14 @@ struct Access<Model::Task>
 	}
 
 	template <class Archive>
-	void load(Archive &archive, Model::Task &task) const
+	void load(Archive &archive, model::Task &task) const
 	{
-		Model::Layer::ListUPtr layers;
+		model::Layer::ListUPtr layers;
 		archive(cereal::make_nvp("layers", task.m_layers));
 
-		Model::Path::ListPtr paths;
-		for (const Model::Layer::UPtr &layer : task.m_layers) {
-			layer->forEachChild([&paths](Model::Path &path){ paths.push_back(&path); });
+		model::Path::ListPtr paths;
+		for (const model::Layer::UPtr &layer : task.m_layers) {
+			layer->forEachChild([&paths](model::Path &path){ paths.push_back(&path); });
 		}
 
 		IndexStackList indexStack;

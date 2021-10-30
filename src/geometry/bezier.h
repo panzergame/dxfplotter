@@ -8,7 +8,7 @@
 
 #include <geometry/biarc.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class Bezier : public Common::Aggregable<Bezier>

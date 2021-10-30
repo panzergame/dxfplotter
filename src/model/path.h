@@ -12,7 +12,7 @@
 
 #include <QTransform>
 
-namespace Model
+namespace model
 {
 
 class Layer;
@@ -21,11 +21,11 @@ class Path : public Renderable, public Common::Aggregable<Path>
 {
 	Q_OBJECT;
 
-	friend Serializer::Access<Path>;
+	friend serializer::Access<Path>;
 
 private:
-	Geometry::Polyline m_basePolyline;
-	std::unique_ptr<Model::OffsettedPath> m_offsettedPath;
+	geometry::Polyline m_basePolyline;
+	std::unique_ptr<model::OffsettedPath> m_offsettedPath;
 	PathSettings m_settings;
 	Layer *m_layer;
 	bool m_globallyVisible;
@@ -33,19 +33,19 @@ private:
 	void updateGlobalVisibility();
 
 public:
-	explicit Path(Geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
+	explicit Path(geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
 	explicit Path() = default;
 
-	static ListUPtr FromPolylines(Geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName);
+	static ListUPtr FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName);
 
 	Layer &layer();
 	const Layer &layer() const;
 	void setLayer(Layer &layer);
 
-	const Geometry::Polyline &basePolyline() const;
-	Geometry::Polyline::List finalPolylines() const;
+	const geometry::Polyline &basePolyline() const;
+	geometry::Polyline::List finalPolylines() const;
 
-	Model::OffsettedPath *offsettedPath() const;
+	model::OffsettedPath *offsettedPath() const;
 	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
@@ -56,7 +56,7 @@ public:
 	const PathSettings &settings() const;
 	PathSettings &settings();
 
-	Geometry::CuttingDirection cuttingDirection() const;
+	geometry::CuttingDirection cuttingDirection() const;
 
 	bool globallyVisible() const;
 

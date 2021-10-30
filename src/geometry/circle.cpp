@@ -1,6 +1,6 @@
 #include <circle.h>
 
-namespace Geometry
+namespace geometry
 {
 
 Circle::Circle(const QVector2D &center, float radius, Orientation orientation)

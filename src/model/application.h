@@ -8,12 +8,12 @@
 
 #include <fstream>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 	class Importer;
 }
 
-namespace Model
+namespace model
 {
 
 
@@ -23,10 +23,10 @@ class Application : public QObject
 
 private:
 	/// Global configuration
-	Config::Config m_config;
+	config::Config m_config;
 
-	const Config::Tools::Tool *m_defaultToolConfig;
-	const Config::Profiles::Profile *m_defaultProfileConfig;
+	const config::Tools::Tool *m_defaultToolConfig;
+	const config::Profiles::Profile *m_defaultProfileConfig;
 
 	// Last opened or saved file base name.
 	QString m_lastHandledFileBaseName;
@@ -37,12 +37,12 @@ private:
 
 	PathSettings defaultPathSettings() const;
 
-	const Config::Tools::Tool *findTool(const std::string &name) const;
-	const Config::Profiles::Profile *findProfile(const std::string &name) const;
+	const config::Tools::Tool *findTool(const std::string &name) const;
+	const config::Profiles::Profile *findProfile(const std::string &name) const;
 
 	void cutterCompensation(float scale);
 
-	Task::UPtr createTaskFromDxfImporter(const Importer::Dxf::Importer& importer);
+	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
 	template <class Exporter>
 	bool saveToFile(Exporter &exporter, const QString &fileName)
@@ -61,8 +61,8 @@ private:
 public:
 	explicit Application();
 
-	Config::Config &config();
-	void setConfig(Config::Config &&config);
+	config::Config &config();
+	void setConfig(config::Config &&config);
 
 	/// Select tool used as configuration for further operations
 	bool selectTool(const QString &toolName);
@@ -93,7 +93,7 @@ public:
 Q_SIGNALS:
 	void documentChanged(Document *newDocument);
 	void titleChanged(QString title);
-	void configChanged(Config::Config &config);
+	void configChanged(config::Config &config);
 	void errorRaised(const QString& message) const;
 };
 

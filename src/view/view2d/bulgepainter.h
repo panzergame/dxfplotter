@@ -4,7 +4,7 @@
 
 #include <QPainterPath>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 class BulgePainter
@@ -17,7 +17,7 @@ private:
 public:
 	explicit BulgePainter(QPainterPath &painter);
 
-	void operator()(const Geometry::Bulge &bulge);
+	void operator()(const geometry::Bulge &bulge);
 };
 
 }

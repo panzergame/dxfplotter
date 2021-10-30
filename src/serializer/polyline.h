@@ -7,14 +7,14 @@
 
 #include <geometry/polyline.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Geometry::Polyline>
+struct Access<geometry::Polyline>
 {
 	template <class Archive>
-	void serialize(Archive &archive, Geometry::Polyline &polyline) const
+	void serialize(Archive &archive, geometry::Polyline &polyline) const
 	{
 		archive(cereal::make_nvp("bulges", polyline.m_bulges));
 	}

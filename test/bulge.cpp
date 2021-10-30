@@ -6,9 +6,9 @@ constexpr QVector2D point2(4.5, 6.7);
 constexpr QVector2D point3(7.8, 9.1);
 constexpr QVector2D point4(11.0, 12.0);
 
-static const Geometry::Bulge bulge1(point1, point2, 0.0f);
-static const Geometry::Bulge bulge2(point2, point3, 1.0f);
-static const Geometry::Bulge bulge3(point3, point4, 0.0f);
+static const geometry::Bulge bulge1(point1, point2, 0.0f);
+static const geometry::Bulge bulge2(point2, point3, 1.0f);
+static const geometry::Bulge bulge3(point3, point4, 0.0f);
 
 TEST(BulgeTest, Length)
 {
@@ -33,7 +33,7 @@ TEST(BulgeTest, IsArc)
 
 TEST(BulgeTest, LinifyBecomeIsLine)
 {
-	Geometry::Bulge bulge(bulge2);
+	geometry::Bulge bulge(bulge2);
 	bulge.linify();
 
 	ASSERT_TRUE(bulge.isLine());

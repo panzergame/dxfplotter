@@ -4,7 +4,7 @@
 
 #include <model/application.h>
 
-namespace Model
+namespace model
 {
 
 class Document;

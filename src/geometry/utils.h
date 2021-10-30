@@ -7,7 +7,7 @@
 
 #include <QVector2D>
 
-namespace Geometry
+namespace geometry
 {
 	using Point2DList = std::vector<QVector2D>;
 

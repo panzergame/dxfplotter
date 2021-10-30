@@ -10,14 +10,14 @@
 
 #include <QObject>
 
-namespace Model
+namespace model
 {
 
 class Renderable : public QObject
 {
 	Q_OBJECT;
 
-	friend Serializer::Access<Renderable>;
+	friend serializer::Access<Renderable>;
 
 private:
 	std::string m_name;

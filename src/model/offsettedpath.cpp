@@ -1,24 +1,24 @@
 #include <offsettedpath.h>
 
-namespace Model
+namespace model
 {
 
-OffsettedPath::OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction)
+OffsettedPath::OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Direction direction)
 	:m_polylines(offsettedPolylines),
 	m_direction(direction)
 {
 }
 
-const Geometry::Polyline::List &OffsettedPath::polylines() const
+const geometry::Polyline::List &OffsettedPath::polylines() const
 {
 	return m_polylines;
 }
 
-Geometry::CuttingDirection OffsettedPath::cuttingDirection() const
+geometry::CuttingDirection OffsettedPath::cuttingDirection() const
 {
-	static const Geometry::CuttingDirection offsetDirectionToCuttingDirection[] = {
-		Geometry::CuttingDirection::FORWARD, // OffsettedPath::Direction::LEFT
-		Geometry::CuttingDirection::BACKWARD // OffsettedPath::Direction::RIGHT
+	static const geometry::CuttingDirection offsetDirectionToCuttingDirection[] = {
+		geometry::CuttingDirection::FORWARD, // OffsettedPath::Direction::LEFT
+		geometry::CuttingDirection::BACKWARD // OffsettedPath::Direction::RIGHT
 	};
 
 	return offsetDirectionToCuttingDirection[static_cast<int>(m_direction)];
@@ -26,7 +26,7 @@ Geometry::CuttingDirection OffsettedPath::cuttingDirection() const
 
 void OffsettedPath::transform(const QTransform &matrix)
 {
-	for (Geometry::Polyline &polyline : m_polylines) {
+	for (geometry::Polyline &polyline : m_polylines) {
 		polyline.transform(matrix);
 	}
 

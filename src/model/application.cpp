@@ -16,7 +16,7 @@
 #include <QFileInfo>
 #include <QDebug>
 
-namespace Model
+namespace model
 {
 
 static const QString configFileName = "config.yml";
@@ -44,13 +44,13 @@ QString Application::baseName(const QString& fileName)
 
 PathSettings Application::defaultPathSettings() const
 {
-	const Config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
+	const config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
 	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
 }
 
-const Config::Tools::Tool *Application::findTool(const std::string &name) const
+const config::Tools::Tool *Application::findTool(const std::string &name) const
 {
-	const Config::Tools &tools = m_config.root().tools();
+	const config::Tools &tools = m_config.root().tools();
 	if (tools.has(name)) {
 		return &tools[name];
 	}
@@ -58,9 +58,9 @@ const Config::Tools::Tool *Application::findTool(const std::string &name) const
 	return nullptr;
 }
 
-const Config::Profiles::Profile *Application::findProfile(const std::string &name) const
+const config::Profiles::Profile *Application::findProfile(const std::string &name) const
 {
-	const Config::Profiles &profiles = m_config.root().profiles();
+	const config::Profiles &profiles = m_config.root().profiles();
 	if (profiles.has(name)) {
 		return &profiles[name];
 	}
@@ -70,27 +70,27 @@ const Config::Profiles::Profile *Application::findProfile(const std::string &nam
 
 void Application::cutterCompensation(float scale)
 {
-	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	const float radius = m_openedDocument->toolConfig().general().radius();
 	const float scaledRadius = radius * scale;
 
 	m_openedDocument->task().forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
-		minimumArcLength=(float)dxf.minimumArcLength()](Model::Path &path){
+		minimumArcLength=(float)dxf.minimumArcLength()](model::Path &path){
 			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
 	});
 }
 
-Task::UPtr Application::createTaskFromDxfImporter(const Importer::Dxf::Importer& importer)
+Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer& importer)
 {
-	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	Layer::ListUPtr layers;
-	for (Importer::Dxf::Layer &importerLayer : importer.layers()) {
+	for (importer::dxf::Layer &importerLayer : importer.layers()) {
 		// Merge polylines to create longest contours
-		Geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
+		geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
 		// Remove small bulges
-		Geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+		geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 		const std::string &layerName = importerLayer.name();
 
@@ -112,12 +112,12 @@ Application::Application()
 {
 }
 
-Config::Config &Application::config()
+config::Config &Application::config()
 {
 	return m_config;
 }
 
-void Application::setConfig(Config::Config &&config)
+void Application::setConfig(config::Config &&config)
 {
 	m_config = std::move(config);
 	emit configChanged(m_config);
@@ -126,7 +126,7 @@ void Application::setConfig(Config::Config &&config)
 bool Application::selectTool(const QString &toolName)
 {
 	const std::string name = toolName.toStdString();
-	const Config::Tools::Tool *tool = findTool(name);
+	const config::Tools::Tool *tool = findTool(name);
 
 	if (tool) {
 		if (m_openedDocument) {
@@ -150,7 +150,7 @@ void Application::defaultToolFromCmd(const QString &toolName)
 bool Application::selectProfile(const QString &profileName)
 {
 	const std::string name = profileName.toStdString();
-	const Config::Profiles::Profile *profile = findProfile(name);
+	const config::Profiles::Profile *profile = findProfile(name);
 
 	if (profile) {
 		if (m_openedDocument) {
@@ -216,10 +216,10 @@ bool Application::loadFile(const QString &fileName)
 
 bool Application::loadFromDxf(const QString &fileName)
 {
-	const Config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	try {
-		Importer::Dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
+		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
  
 		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 	}
@@ -236,7 +236,7 @@ bool Application::loadFromDxf(const QString &fileName)
 bool Application::loadFromDxfplot(const QString &fileName)
 {
 	try {
-		Importer::Dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
+		importer::dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
  
 		m_openedDocument = importer(fileName.toStdString());
 	}
@@ -254,7 +254,7 @@ bool Application::saveToGcode(const QString &fileName)
 	std::ofstream file(fileName.toStdString());
 	if (file) {
 		try {
-			Exporter::GCode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode(), Exporter::GCode::Exporter::ExportConfig);
+			exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode(), exporter::gcode::Exporter::ExportConfig);
 			return saveToFile(exporter, fileName);
 		}
 		catch (const std::exception &exception) {
@@ -267,7 +267,7 @@ bool Application::saveToGcode(const QString &fileName)
 
 bool Application::saveToDxfplot(const QString &fileName)
 {
-	Exporter::Dxfplot::Exporter exporter;
+	exporter::dxfplot::Exporter exporter;
 	
 	return saveToFile(exporter, fileName);
 }
@@ -285,19 +285,19 @@ void Application::rightCutterCompensation()
 void Application::resetCutterCompensation()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([](Model::Path &path){ path.resetOffset(); });
+	task.forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
 }
 
 void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([&matrix](Model::Path &path){ path.transform(matrix); });
+	task.forEachSelectedPath([&matrix](model::Path &path){ path.transform(matrix); });
 }
 
 void Application::hideSelection()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([](Model::Path &path){
+	task.forEachSelectedPath([](model::Path &path){
 		path.setVisible(false);
 	});
 }
@@ -305,7 +305,7 @@ void Application::hideSelection()
 void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachPath([](Model::Path &path){
+	task.forEachPath([](model::Path &path){
 		if (!path.visible()) {
 			path.setVisible(true);
 			path.setSelected(true);

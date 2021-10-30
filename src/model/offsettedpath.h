@@ -9,7 +9,7 @@
 
 #include <serializer/access.h>
 
-namespace Model
+namespace model
 {
 
 class Layer;
@@ -18,7 +18,7 @@ class OffsettedPath : public QObject
 {
 	Q_OBJECT
 
-	friend Serializer::Access<OffsettedPath>;
+	friend serializer::Access<OffsettedPath>;
 
 public:
 	enum class Direction
@@ -28,15 +28,15 @@ public:
 	};
 
 private:
-	Geometry::Polyline::List m_polylines;
+	geometry::Polyline::List m_polylines;
 	Direction m_direction;
 
 public:
-	explicit OffsettedPath(Geometry::Polyline::List &&offsettedPolylines, Direction direction);
+	explicit OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Direction direction);
 	explicit OffsettedPath() = default;
 
-	const Geometry::Polyline::List &polylines() const;
-	Geometry::CuttingDirection cuttingDirection() const;
+	const geometry::Polyline::List &polylines() const;
+	geometry::CuttingDirection cuttingDirection() const;
 
 	void transform(const QTransform &matrix);
 

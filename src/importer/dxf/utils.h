@@ -4,7 +4,7 @@
 
 #include <QVector2D>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 inline QVector2D toVector2D(const DRW_Coord &coord)

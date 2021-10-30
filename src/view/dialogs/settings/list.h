@@ -5,7 +5,7 @@
 #include <QGroupBox>
 #include <QAbstractListModel>
 
-namespace View::Settings
+namespace view::settings
 {
 
 class List : public QGroupBox, private Ui::List

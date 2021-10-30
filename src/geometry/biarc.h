@@ -7,7 +7,7 @@
 #include <geometry/utils.h>
 #include <geometry/polyline.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class Biarc : public Common::Aggregable<Biarc>

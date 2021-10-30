@@ -11,10 +11,10 @@
 #include <QMouseEvent>
 #include <QKeyEvent>
 
-namespace View::View2d
+namespace view::view2d
 {
 
-class Viewport : public Model::DocumentModelObserver<QGraphicsView>
+class Viewport : public model::DocumentModelObserver<QGraphicsView>
 {
 	Q_OBJECT;
 
@@ -51,7 +51,7 @@ protected:
 	void drawBackground(QPainter *painter, const QRectF &updatedRect) override;
 
 public:
-	explicit Viewport(Model::Application &app);
+	explicit Viewport(model::Application &app);
 
 Q_SIGNALS:
 	void cursorMoved(const QPointF &position);

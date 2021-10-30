@@ -8,13 +8,13 @@
 #include <QItemSelectionModel>
 #include <model/documentmodelobserver.h>
 
-namespace View::Task
+namespace view::task
 {
 
 class PathListModel;
 class LayerTreeModel;
 
-class Task : public Model::DocumentModelObserver<QWidget>, private Ui::Task
+class Task : public model::DocumentModelObserver<QWidget>, private Ui::Task
 {
 private:
 	std::unique_ptr<PathListModel> m_pathListModel;
@@ -47,18 +47,18 @@ private:
 	void setupModel();
 	void setupController();
 
-	void updateItemSelection(const Model::Path &path, QItemSelectionModel::SelectionFlag flag);
+	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag);
 
 public:
-	explicit Task(Model::Application &app);
+	explicit Task(model::Application &app);
 
 protected:
 	void documentChanged();
 
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
-	void pathSelectedChanged(Model::Path &path, bool selected);
-	void moveCurrentPath(Model::Task::MoveDirection direction);
+	void pathSelectedChanged(model::Path &path, bool selected);
+	void moveCurrentPath(model::Task::MoveDirection direction);
 };
 
 }

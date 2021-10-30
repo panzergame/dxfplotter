@@ -4,10 +4,11 @@
 
 #include <QWidget>
 
-namespace View
+
+namespace view
 {
 
-namespace View2d
+namespace view2d
 {
 
 class Viewport;
@@ -19,7 +20,7 @@ class Info : public QWidget, private Ui::Info
 private:
 
 public:
-	explicit Info(View2d::Viewport *viewport);
+	explicit Info(view2d::Viewport *viewport);
 
 protected Q_SLOTS:
 	void cursorMoved(const QPointF &position);

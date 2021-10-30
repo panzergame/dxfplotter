@@ -2,12 +2,12 @@
 
 #include <serializer/access.h>
 
-namespace Model
+namespace model
 {
 
 class PathSettings
 {
-	friend Serializer::Access<PathSettings>;
+	friend serializer::Access<PathSettings>;
 
 private:
 	float m_planeFeedRate;

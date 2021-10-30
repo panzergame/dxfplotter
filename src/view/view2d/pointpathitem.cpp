@@ -3,7 +3,7 @@
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
-namespace View::View2d
+namespace view::view2d
 {
 
 QPainterPath PointPathItem::shapePath() const
@@ -21,7 +21,7 @@ void PointPathItem::setupPosition()
 	setPos(m_point);
 }
 
-PointPathItem::PointPathItem(Model::Path& path)
+PointPathItem::PointPathItem(model::Path& path)
 	:BasicPathItem(path),
 	m_shapePath(shapePath())
 {

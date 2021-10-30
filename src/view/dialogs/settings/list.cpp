@@ -1,6 +1,6 @@
 #include <list.h>
 
-namespace View::Settings
+namespace view::settings
 {
 
 }

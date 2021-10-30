@@ -7,7 +7,7 @@
 #include <iomanip>
 #include <limits>
 
-namespace Geometry
+namespace geometry
 {
 
 Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)

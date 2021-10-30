@@ -8,7 +8,7 @@
 
 #include <QDebug>
 
-namespace Geometry
+namespace geometry
 {
 
 class Assembler

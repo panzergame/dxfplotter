@@ -1,6 +1,6 @@
 #include <layer.h>
 
-namespace Model
+namespace model
 {
 
 void Layer::assignSelfToChildren()

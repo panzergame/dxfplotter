@@ -1,7 +1,7 @@
 #include <bezier.h>
 #include <geometry/utils.h>
 
-namespace Geometry
+namespace geometry
 {
 
 bool Bezier::isRealInflexionPoint(const Bezier::Complex &point)

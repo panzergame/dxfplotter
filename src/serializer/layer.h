@@ -7,23 +7,23 @@
 
 #include <model/layer.h>
 
-namespace Serializer
+namespace serializer
 {
 
 template<>
-struct Access<Model::Layer>
+struct Access<model::Layer>
 {
 	template <class Archive>
-	void save(Archive &archive, const Model::Layer &layer) const
+	void save(Archive &archive, const model::Layer &layer) const
 	{
-		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
+		archive(cereal::make_nvp("renderable", cereal::base_class<model::Renderable>(&layer)));
 		archive(cereal::make_nvp("children", layer.m_children));
 	}
 
 	template <class Archive>
-	void load(Archive &archive, Model::Layer &layer)
+	void load(Archive &archive, model::Layer &layer)
 	{
-		archive(cereal::make_nvp("renderable", cereal::base_class<Model::Renderable>(&layer)));
+		archive(cereal::make_nvp("renderable", cereal::base_class<model::Renderable>(&layer)));
 		archive(cereal::make_nvp("children", layer.m_children));
 
 		layer.assignSelfToChildren();

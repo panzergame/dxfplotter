@@ -1,6 +1,7 @@
 #include <transform.h>
 
-namespace View
+
+namespace view
 {
 
 Transform::Transform()

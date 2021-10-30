@@ -10,7 +10,7 @@
 
 #include <fmt/format.h>
 
-namespace Importer::Dxf
+namespace importer::dxf
 {
 
 class BaseEntityImporter
@@ -26,7 +26,7 @@ protected:
 	Layer &m_layer;
 	const Settings &m_settings;
 
-	void addPolyline(const Geometry::Polyline &polyline);
+	void addPolyline(const geometry::Polyline &polyline);
 
 public:
 	explicit BaseEntityImporter(Layer &layer, const Settings &settings);
@@ -45,17 +45,17 @@ template <>
 inline void EntityImporter<DRW_Point>::operator()(const DRW_Point &point)
 {
 	const QVector2D pos(toVector2D(point.basePoint));
-	const Geometry::Bulge bulge(pos, pos, 0.0f);
+	const geometry::Bulge bulge(pos, pos, 0.0f);
 
-	addPolyline(Geometry::Polyline({bulge}));
+	addPolyline(geometry::Polyline({bulge}));
 }
 
 template <>
 inline void EntityImporter<DRW_Line>::operator()(const DRW_Line &line)
 {
-	const Geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
+	const geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
 
-	addPolyline(Geometry::Polyline({bulge}));
+	addPolyline(geometry::Polyline({bulge}));
 }
 
 template <>
@@ -69,7 +69,7 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 	const bool opened = !(lwpolyline.flags & (1 << 0));
 
 	// One bulge more if openeded polyline, to connect last vertex to first vertex.
-	Geometry::Bulge::List bulges(size - ((int)opened));
+	geometry::Bulge::List bulges(size - ((int)opened));
 
 	DRW_Vertex2D *firstVertex = lwpolyline.vertlist.front();
 	DRW_Vertex2D *vertex = firstVertex;
@@ -79,7 +79,7 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 		DRW_Vertex2D *nextVertex = lwpolyline.vertlist[i];
 		const QVector2D end(nextVertex->x, nextVertex->y);
 
-		bulges[i - 1] = Geometry::Bulge(start, end, vertex->bulge);
+		bulges[i - 1] = geometry::Bulge(start, end, vertex->bulge);
 
 		// Pass to next vertex begin
 		vertex = nextVertex;
@@ -89,10 +89,10 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 	// Create end to start bulge if closed polyline.
 	if (!opened) {
 		const QVector2D end(firstVertex->x, firstVertex->y);
-		bulges.back() = Geometry::Bulge(start, end, 0.0f);
+		bulges.back() = geometry::Bulge(start, end, 0.0f);
 	}
 
-	addPolyline(Geometry::Polyline(std::move(bulges)));
+	addPolyline(geometry::Polyline(std::move(bulges)));
 }
 
 template <>
@@ -104,10 +104,10 @@ inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle &circle)
 	const QVector2D startPoint(center.x() - radius, center.y());
 	const QVector2D endPoint(center.x() + radius, center.y());
 
-	const Geometry::Bulge b1(startPoint, endPoint, 1.0f);
-	const Geometry::Bulge b2(endPoint, startPoint, 1.0f);
+	const geometry::Bulge b1(startPoint, endPoint, 1.0f);
+	const geometry::Bulge b2(endPoint, startPoint, 1.0f);
 
-	addPolyline(Geometry::Polyline({b1, b2}));
+	addPolyline(geometry::Polyline({b1, b2}));
 }
 
 template <>
@@ -126,7 +126,7 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 		const QVector2D start = relativeStart + center;
 		const QVector2D end = relativeEnd + center;
 
-		const float theta = Geometry::DeltaAngle(startAngle, endAngle);
+		const float theta = geometry::DeltaAngle(startAngle, endAngle);
 	    
 		// Dxf arcs are CCW
 		assert(theta > 0.0f);
@@ -141,31 +141,31 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 			const QVector2D relativeMiddle = QVector2D(std::cos(middleAngle), std::sin(middleAngle)) * radius;
 			const QVector2D middle = relativeMiddle + center;
 
-			const Geometry::Bulge bulge1(start, middle, tangent);
-			const Geometry::Bulge bulge2(middle, end, tangent);
+			const geometry::Bulge bulge1(start, middle, tangent);
+			const geometry::Bulge bulge2(middle, end, tangent);
 
-			addPolyline(Geometry::Polyline({bulge1, bulge2}));
+			addPolyline(geometry::Polyline({bulge1, bulge2}));
 		}
 		else {
 			const float theta4 = theta / 4.0f;
 			const float tangent = std::tan(theta4);
 
-			const Geometry::Bulge bulge(start, end, tangent);
+			const geometry::Bulge bulge(start, end, tangent);
 
-			addPolyline(Geometry::Polyline({bulge}));
+			addPolyline(geometry::Polyline({bulge}));
 		}
 	}
 }
 
-inline Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier, const BaseEntityImporter::Settings &settings)
+inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, const BaseEntityImporter::Settings &settings)
 {
 	// Queue of bezier to convert to biarc
-	std::stack<Geometry::Bezier, Geometry::Bezier::List> bezierStack({rootBezier});
+	std::stack<geometry::Bezier, geometry::Bezier::List> bezierStack({rootBezier});
 
-	Geometry::Polyline polyline;
+	geometry::Polyline polyline;
 
 	while (!bezierStack.empty()) {
-		const Geometry::Bezier bezier = bezierStack.top();
+		const geometry::Bezier bezier = bezierStack.top();
 		bezierStack.pop();
 
 		if (bezier.approximateLength() < settings.minimumSplineLength) {
@@ -173,9 +173,9 @@ inline Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier, c
 			continue;
 		}
 		else {
-			const std::optional<Geometry::Biarc> optBiarc = bezier.toBiarc();
+			const std::optional<geometry::Biarc> optBiarc = bezier.toBiarc();
 			if (optBiarc) {
-				const Geometry::Biarc &biarc = *optBiarc;
+				const geometry::Biarc &biarc = *optBiarc;
 				const float error = bezier.maxError(biarc);
 				if (error < settings.splineToArcPrecision) {
 					// The approximation is close enough.
@@ -186,7 +186,7 @@ inline Geometry::Polyline bezierToPolyline(const Geometry::Bezier &rootBezier, c
 		}
 
 		// Split bezier and schedule to conversion
-		const Geometry::Bezier::Pair splitted = bezier.splitHalf();
+		const geometry::Bezier::Pair splitted = bezier.splitHalf();
 		bezierStack.push(splitted[1]);
 		bezierStack.push(splitted[0]);
 	}
@@ -199,22 +199,22 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 {
 	const bool closed = spline.flags & (1 << 0);
 
-	Geometry::Point2DList controlPoints(spline.ncontrol);
+	geometry::Point2DList controlPoints(spline.ncontrol);
 	std::transform(spline.controllist.begin(), spline.controllist.end(),
 		controlPoints.begin(), [](DRW_Coord *coord){ return toVector2D(*coord); });
 
-	Geometry::Bezier::List beziers;
+	geometry::Bezier::List beziers;
 	const int degree = spline.degree;
 	switch (degree) {
 		case 2:
 		{
-			Geometry::QuadraticSpline spline(std::move(controlPoints), closed);
+			geometry::QuadraticSpline spline(std::move(controlPoints), closed);
 			beziers = spline.toBeziers();
 			break;
 		}
 		case 3:
 		{
-			Geometry::CubicSpline spline(std::move(controlPoints), closed);
+			geometry::CubicSpline spline(std::move(controlPoints), closed);
 			beziers = spline.toBeziers();
 			break;
 		}
@@ -225,15 +225,15 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 		}
 	}
 
-	Geometry::Bezier::List convexBeziers;
-	for (const Geometry::Bezier &bezier : beziers) {
-		Geometry::Bezier::List splitted = bezier.splitToConvex();
+	geometry::Bezier::List convexBeziers;
+	for (const geometry::Bezier &bezier : beziers) {
+		geometry::Bezier::List splitted = bezier.splitToConvex();
 		convexBeziers.insert(convexBeziers.end(), splitted.begin(), splitted.end());
 	}
 
 	// Full spline polyline
-	Geometry::Polyline polyline;
-	for (const Geometry::Bezier &bezier : convexBeziers) {
+	geometry::Polyline polyline;
+	for (const geometry::Bezier &bezier : convexBeziers) {
 		polyline += bezierToPolyline(bezier, m_settings);
 	}
 

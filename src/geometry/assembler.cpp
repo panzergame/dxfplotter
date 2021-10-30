@@ -2,7 +2,7 @@
 
 #include <iterator>
 
-namespace Geometry
+namespace geometry
 {
 
 Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance)

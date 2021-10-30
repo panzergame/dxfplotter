@@ -8,12 +8,12 @@
 
 #include <serializer/access.h>
 
-namespace Geometry
+namespace geometry
 {
 
 class Polyline : public Common::Aggregable<Polyline>
 {
-	friend Serializer::Access<Polyline>;
+	friend serializer::Access<Polyline>;
 
 private:
 	Bulge::List m_bulges;
