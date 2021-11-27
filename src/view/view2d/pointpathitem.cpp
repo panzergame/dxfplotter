@@ -26,6 +26,8 @@ PointPathItem::PointPathItem(model::Path& path)
 	m_shapePath(shapePath())
 {
 	setFlag(QGraphicsItem::ItemIgnoresTransformations);
+
+	setupPosition();
 }
 
 void PointPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
