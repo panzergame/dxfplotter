@@ -33,6 +33,8 @@ private:
 
 	void setTaskToolsEnabled(bool enabled);
 
+	QString defaultFileName(const QString &extension) const;
+
 public:
 	explicit MainWindow(model::Application &app);
 
@@ -41,6 +43,7 @@ protected Q_SLOTS:
 	void saveFile();
 	void saveAsFile();
 	void exportFile();
+	void exportAsFile();
 	void openSettings();
 	void transformSelection();
 	void documentChanged(model::Document *newDocument);

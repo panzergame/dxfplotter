@@ -30,10 +30,13 @@ private:
 
 	// Last opened or saved file base name.
 	QString m_lastHandledFileBaseName;
+	QString m_lastSavedGcodeFileName;
+	QString m_lastSavedDxfplotFileName;
 
 	Document::UPtr m_openedDocument;
 
 	static QString baseName(const QString& fileName);	
+	void resetLastSavedFileNames();
 
 	PathSettings defaultPathSettings() const;
 
@@ -59,6 +62,11 @@ private:
 	}
 
 public:
+	struct FileExtension {
+		inline static const QString Gcode = ".ngc";
+		inline static const QString Dxfplot = ".dxfplot";
+	};
+
 	explicit Application();
 
 	config::Config &config();
@@ -73,6 +81,8 @@ public:
 	void defaultProfileFromCmd(const QString &profileName);
 
 	const QString &lastHandledFileBaseName() const;
+	const QString &lastSavedDxfplotFileName() const;
+	const QString &lastSavedGcodeFileName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
 	bool loadFromDxf(const QString &fileName);

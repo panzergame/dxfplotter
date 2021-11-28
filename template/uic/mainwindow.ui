@@ -36,6 +36,7 @@
     <addaction name="actionSaveFile"/>
     <addaction name="actionSaveAsFile"/>
     <addaction name="actionExportFile"/>
+    <addaction name="actionExportAsFile"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuConfiguration">
@@ -76,6 +77,7 @@
    <addaction name="actionOpenFile"/>
    <addaction name="actionSaveFile"/>
    <addaction name="actionExportFile"/>
+   <addaction name="actionExportAsFile"/>
    <addaction name="separator"/>
    <addaction name="actionLeftCutterCompensation"/>
    <addaction name="actionRightCutterCompensation"/>
@@ -231,6 +233,20 @@
    </property>
    <property name="shortcut">
     <string>T</string>
+   </property>
+  </action>
+  <action name="actionExportAsFile">
+   <property name="icon">
+    <iconset theme="document-export-as"/>
+   </property>
+   <property name="text">
+    <string>Export As</string>
+   </property>
+   <property name="toolTip">
+    <string>Export As</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+E</string>
    </property>
   </action>
  </widget>

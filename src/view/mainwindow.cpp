@@ -75,6 +75,7 @@ void MainWindow::setupMenuActions()
 	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
 	connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionExportAsFile, &QAction::triggered, this, &MainWindow::exportAsFile);
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
 	// Edit actions
@@ -96,6 +97,12 @@ void MainWindow::setTaskToolsEnabled(bool enabled)
 	actionShowHidden->setEnabled(enabled);
 	actionTransformSelection->setEnabled(enabled);
 }
+
+QString MainWindow::defaultFileName(const QString &extension) const
+{
+	return m_app.lastHandledFileBaseName() + extension;
+}
+
 
 MainWindow::MainWindow(model::Application &app)
 	:m_app(app)
@@ -121,18 +128,18 @@ void MainWindow::openFile()
 
 void MainWindow::saveFile()
 {
-	const QString fileName = m_app.lastHandledFileBaseName();
-	if (fileName.isEmpty()) {
+	const QString lastFileName = m_app.lastSavedDxfplotFileName();
+	if (lastFileName.isEmpty()) {
 		saveAsFile();
 	}
-	else if (!m_app.saveToDxfplot(fileName)) {
+	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Dxfplot); !m_app.saveToDxfplot(fileName)) {
 		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
 
 void MainWindow::saveAsFile()
 {
-	const QString defaultPath = m_app.lastHandledFileBaseName() + ".dxfplot";
+	const QString defaultPath = defaultFileName(model::Application::FileExtension::Dxfplot);
 	const QString fileName = QFileDialog::getSaveFileName(this, "Save As File", defaultPath, "Text files (*.dxfplot)");
 
 	if (!fileName.isEmpty() && !m_app.saveToDxfplot(fileName)) {
@@ -142,7 +149,18 @@ void MainWindow::saveAsFile()
 
 void MainWindow::exportFile()
 {
-	const QString defaultPath = m_app.lastHandledFileBaseName() + ".ngc";
+	const QString lastFileName = m_app.lastSavedGcodeFileName();
+	if (lastFileName.isEmpty()) {
+		exportAsFile();
+	}
+	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Gcode); !m_app.saveToGcode(fileName)) {
+		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
+	}
+}
+
+void MainWindow::exportAsFile()
+{
+	const QString defaultPath = defaultFileName(model::Application::FileExtension::Gcode);
 	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty() && !m_app.saveToGcode(fileName)) {
