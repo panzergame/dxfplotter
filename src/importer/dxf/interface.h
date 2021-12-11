@@ -52,6 +52,7 @@ private:
 	virtual void addImage(const DRW_Image *data) override;
 	virtual void linkImage(const DRW_ImageDef *data) override;
 	virtual void addComment(const char* comment) override;
+    virtual void addPlotSettings(const DRW_PlotSettings *data) override;
 
 	virtual void writeHeader(DRW_Header& data) override;
 	virtual void writeBlocks() override;
@@ -62,6 +63,7 @@ private:
 	virtual void writeTextstyles() override;
 	virtual void writeVports() override;
 	virtual void writeDimstyles() override;
+    virtual void writeObjects() override;
 	virtual void writeAppId() override;
 
 public:

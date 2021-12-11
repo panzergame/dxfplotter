@@ -71,12 +71,12 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 	// One bulge more if openeded polyline, to connect last vertex to first vertex.
 	geometry::Bulge::List bulges(size - ((int)opened));
 
-	DRW_Vertex2D *firstVertex = lwpolyline.vertlist.front();
-	DRW_Vertex2D *vertex = firstVertex;
+	const std::shared_ptr<DRW_Vertex2D>& firstVertex = lwpolyline.vertlist.front();
+	std::shared_ptr<DRW_Vertex2D> vertex = firstVertex;
 	QVector2D start(vertex->x, vertex->y);
 
 	for (int i = 1; i < size; ++i) {
-		DRW_Vertex2D *nextVertex = lwpolyline.vertlist[i];
+		const std::shared_ptr<DRW_Vertex2D>& nextVertex = lwpolyline.vertlist[i];
 		const QVector2D end(nextVertex->x, nextVertex->y);
 
 		bulges[i - 1] = geometry::Bulge(start, end, vertex->bulge);
@@ -201,7 +201,7 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 
 	geometry::Point2DList controlPoints(spline.ncontrol);
 	std::transform(spline.controllist.begin(), spline.controllist.end(),
-		controlPoints.begin(), [](DRW_Coord *coord){ return toVector2D(*coord); });
+		controlPoints.begin(), [](const std::shared_ptr<DRW_Coord>& coord){ return toVector2D(*coord); });
 
 	geometry::Bezier::List beziers;
 	const int degree = spline.degree;

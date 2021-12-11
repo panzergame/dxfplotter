@@ -13,8 +13,6 @@
 #ifndef DWGREADER27_H
 #define DWGREADER27_H
 
-#include <map>
-#include <list>
 #include "drw_textcodec.h"
 #include "dwgbuffer.h"
 #include "dwgreader18.h"
@@ -22,27 +20,26 @@
 class dwgReader27 : public dwgReader18 {
 public:
     dwgReader27(std::ifstream *stream, dwgR *p):dwgReader18(stream, p){ }
-    virtual ~dwgReader27(){}
-    bool readFileHeader();
-    bool readDwgHeader(DRW_Header& hdr);
-    bool readDwgClasses();
+    bool readFileHeader() override;
+    bool readDwgHeader(DRW_Header& hdr) override;
+    bool readDwgClasses() override;
 //    bool readDwgHandles(){return false;}
 //    bool readDwgTables(){return false;}
-    bool readDwgBlocks(DRW_Interface& intfa){
+    bool readDwgBlocks(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgBlocks(intfa, &dataBuf);
         return ret;
     }
-    virtual bool readDwgEntities(DRW_Interface& intfa){
+    bool readDwgEntities(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgEntities(intfa, &dataBuf);
         return ret;
     }
-    virtual bool readDwgObjects(DRW_Interface& intfa){
+    bool readDwgObjects(DRW_Interface& intfa) override {
         bool ret = true;
-        dwgBuffer dataBuf(objData, uncompSize, &decoder);
+        dwgBuffer dataBuf(objData.get(), uncompSize, &decoder);
         ret = dwgReader::readDwgObjects(intfa, &dataBuf);
         return ret;
     }
@@ -52,4 +49,4 @@ public:
 //        return false;}
 };
 
-#endif // DWGREADER21_H
+#endif // DWGREADER27_H
