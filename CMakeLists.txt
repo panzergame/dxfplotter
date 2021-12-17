@@ -50,7 +50,6 @@ set(INCLUDE_DIRS
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	${YAML_CPP_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -70,7 +69,7 @@ set(LINK_LIBRARIES
 	libdxfrw
 	fmt::fmt
 	Qt5::Widgets
-	${YAML_CPP_LIBRARIES}
+	yaml-cpp
 )
 
 include_directories(${INCLUDE_DIRS})
