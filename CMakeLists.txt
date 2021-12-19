@@ -15,8 +15,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_TESTS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
-# Compilation flag with all warning and error as much as possible on warning.
-add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
+# Compilation flag with all warnings.
+add_compile_options(-fPIC -Wall -Wextra)
 
 if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
 	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)

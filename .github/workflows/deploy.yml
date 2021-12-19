@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: true
       - name: Install package
-        run: sudo apt-get -y install qtbase5-dev libfmt-dev libyaml-cpp-dev lcov
+        run: sudo apt-get -y install qtbase5-dev lcov
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release
