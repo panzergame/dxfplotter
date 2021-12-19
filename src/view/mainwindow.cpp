@@ -34,13 +34,14 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	view2d::Viewport *viewport = new view2d::Viewport(m_app);
-	Info *info = new Info(viewport);
+	Info *info = new Info(viewport, m_app);
 
 	QWidget *container = new QWidget(this);
 	QVBoxLayout *layout = new QVBoxLayout();
 
 	layout->addWidget(viewport);
 	layout->addWidget(info);
+	layout->setStretch(0, 1);
 
 	container->setLayout(layout);
 

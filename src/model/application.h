@@ -55,6 +55,7 @@ private:
 		if (output) {
 			exporter(*m_openedDocument, output);
 			m_lastHandledFileBaseName = baseName(fileName);
+			emit fileSaved(fileName);
 			return true;
 		}
 
@@ -105,6 +106,7 @@ Q_SIGNALS:
 	void titleChanged(QString title);
 	void configChanged(config::Config &config);
 	void errorRaised(const QString& message) const;
+	void fileSaved(const QString &fileName);
 };
 
 }

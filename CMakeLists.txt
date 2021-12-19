@@ -34,9 +34,6 @@ find_package(Qt5 COMPONENTS REQUIRED
 	Gui
 )
 
-find_package(yaml-cpp REQUIRED)
-find_package(fmt REQUIRED)
-
 set(INCLUDE_DIRS
 	src
 	thirdparty
