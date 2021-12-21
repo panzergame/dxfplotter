@@ -16,10 +16,10 @@ set(BUILD_TESTS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
 # Compilation flag with all warnings.
-add_compile_options(-fPIC -Wall -Wextra)
-
-if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)
+if(MSVC)
+	add_compile_options(/W4 /WX)
+else()
+	add_compile_options(-fPIC -Wall -Wextra)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
