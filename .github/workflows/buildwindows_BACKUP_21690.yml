@@ -9,6 +9,11 @@ jobs:
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
+<<<<<<< HEAD
+
+
+
+=======
       - uses: lukka/get-cmake@latest
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,4 +22,5 @@ jobs:
       - name: Build
         shell: bash
         run: mkdir build && cd build && cmake ..
+>>>>>>> 7501769 (fix: windows ci)
 
