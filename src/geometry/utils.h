@@ -1,8 +1,11 @@
 #pragma once
 
+#define _USE_MATH_DEFINES // To include M_PI
+#include <math.h>
+#include <cmath>
+
 #include <vector>
 #include <optional>
-#include <cmath>
 #include <cassert>
 
 #include <QVector2D>

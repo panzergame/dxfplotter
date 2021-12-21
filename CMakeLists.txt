@@ -17,7 +17,7 @@ set(JUST_INSTALL_CEREAL ON)
 
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4 /WX)
+	add_compile_options(/W4)
 else()
 	add_compile_options(-fPIC -Wall -Wextra)
 endif()
@@ -28,6 +28,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
+
+find_package(PythonInterp)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
