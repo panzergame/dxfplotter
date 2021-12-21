@@ -10,6 +10,8 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
       - uses: lukka/get-cmake@latest
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
       - name: Checkout
         uses: actions/checkout@v2
         with:
