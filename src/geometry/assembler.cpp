@@ -15,16 +15,7 @@ Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIn
 	m_closeTolerance(closeTolerance)
 {
 	// Expand chain before polyline
-	m_closed = expandSide(std::front_inserter(m_chain), Tip::START);
-	// Expand chain after polyline
-	if (!m_closed) {
-		m_closed = expandSide(std::back_inserter(m_chain), Tip::END);
-	}
-}
-
-Assembler::TipIndex Assembler::ChainBuilder::tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
-{
-	return index * 2 + side;
+	m_closed = expandSide(std::front_inserter(m_chain), Tip::START) || expandSide(std::back_inserter(m_chain), Tip::END);
 }
 
 /// Average point at p1 end and p2 start and assign middle point to both

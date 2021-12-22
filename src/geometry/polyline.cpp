@@ -1,5 +1,6 @@
 #include <polyline.h>
 #include <utils.h>
+#include <cavcutils.h>
 
 namespace geometry
 {

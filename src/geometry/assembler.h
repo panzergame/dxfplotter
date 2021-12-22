@@ -6,8 +6,6 @@
 
 #include <set>
 
-#include <QDebug>
-
 namespace geometry
 {
 
@@ -72,7 +70,10 @@ private:
 		const PolylineIndex m_startIndex;
 		const float m_closeTolerance;
 
-		TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side);
+		constexpr TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
+		{
+			return index * 2 + side;
+		}
 
 		template <class Inserter>
 		bool expandSide(Inserter inserter, Tip::Type side)
@@ -95,22 +96,25 @@ private:
 
 				// Search for the nearest neighbours.
 				const int nbMatches = m_tree.knnSearch(coord, 2, matchIndices.data(), matchDistances.data());
-
 				if (nbMatches == 2) {
 					// Find neighbour that it's not ourself.
 					const int neighbourMatchIndex = (matchIndices[0] == tipIndex) ? 1 : 0;
-					const int neighbourIndex = matchIndices[neighbourMatchIndex];
+					const TipIndex neighbourTipIndex = matchIndices[neighbourMatchIndex];
 					// Check if neighbour is not further than tolerance
 					if (matchDistances[neighbourMatchIndex] <= m_closeTolerance) {
-						const Tip &neighbour = m_tips[neighbourIndex];
+						const Tip &neighbour = m_tips[neighbourTipIndex];
 
 						assert(&tip != &neighbour);
 
 						const PolylineIndex neighbourIndex = neighbour.polylineIndex;
+						// Stop when finding opposite tip of current polyline
+						if (index == neighbourIndex) {
+							return false;
+						}
 						/* If polyline is already connected (in case of circular shape
 						* one side can already connect all polylines) we discard.
 						*/
-						if (m_unconnectedPolylines.find(neighbourIndex) == m_unconnectedPolylines.end()) {
+						else if (m_unconnectedPolylines.find(neighbourIndex) == m_unconnectedPolylines.end()) {
 							// The chain might be closed
 							return true;
 						}
