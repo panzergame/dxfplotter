@@ -1,6 +1,6 @@
 #pragma once
 
-#include <uic/dialogs/ui_transform.h>
+#include <uic/dialogs/ui_mirror.h>
 
 #include <QDialog>
 
@@ -8,13 +8,13 @@
 namespace view::dialogs
 {
 
-class Transform : public QDialog, private Ui::Transform
+class Mirror : public QDialog, private Ui::Mirror
 {
 private:
 	QTransform m_matrix;
 
 public:
-	explicit Transform();
+	explicit Mirror();
 
 	const QTransform &matrix() const;
 

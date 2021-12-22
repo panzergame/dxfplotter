@@ -6,6 +6,7 @@
 #include <view2d/viewport.h>
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
+#include <dialogs/mirror.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -86,6 +87,7 @@ void MainWindow::setupMenuActions()
 	connect(actionHideSelection, &QAction::triggered, &m_app, &model::Application::hideSelection);
 	connect(actionShowHidden, &QAction::triggered, &m_app, &model::Application::showHidden);
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
+	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 }
 
 void MainWindow::setTaskToolsEnabled(bool enabled)
@@ -179,9 +181,17 @@ void MainWindow::openSettings()
 
 void MainWindow::transformSelection()
 {
-	Transform transform;
+	dialogs::Transform transform;
 	if (transform.exec() == QDialog::Accepted) {
 		m_app.transformSelection(transform.matrix());
+	}
+}
+
+void MainWindow::mirrorSelection()
+{
+	dialogs::Mirror mirror;
+	if (mirror.exec() == QDialog::Accepted) {
+		m_app.transformSelection(mirror.matrix());
 	}
 }
 

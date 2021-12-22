@@ -1,8 +1,10 @@
 add_subdirectory(settings)
 
 set(SRC
+	mirror.cpp
 	transform.cpp
 
+	mirror.h
 	transform.h
 )
 

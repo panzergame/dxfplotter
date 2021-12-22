@@ -150,6 +150,13 @@ void Bulge::transform(const QTransform &matrix)
 {
 	m_start = mapVector2D(m_start, matrix);
 	m_end = mapVector2D(m_end, matrix);
+
+	if (matrix.isScaling()) {
+		const bool invertTagent = (matrix.m11() * matrix.m22()) < 0.0f;
+		if (invertTagent) {
+			m_tangent = -m_tangent;
+		}
+	}
 }
 
 bool Bulge::operator==(const Bulge& other) const
