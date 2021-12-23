@@ -52,7 +52,7 @@ template<>
 struct Access<model::Task>
 {
 	template <class Archive>
-	void save(Archive &archive, const model::Task &task) const
+	void save(Archive &archive, const model::Task &task, std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("layers", task.m_layers));
 
@@ -61,7 +61,7 @@ struct Access<model::Task>
 	}
 
 	template <class Archive>
-	void load(Archive &archive, model::Task &task) const
+	void load(Archive &archive, model::Task &task, std::uint32_t const version) const
 	{
 		model::Layer::ListUPtr layers;
 		archive(cereal::make_nvp("layers", task.m_layers));
