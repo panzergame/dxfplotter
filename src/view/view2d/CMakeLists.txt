@@ -13,6 +13,7 @@ set(SRC
 	pointpathitem.h
 	polylinepathitem.h
 	rubberband.h
+	utils.h
 	viewport.h
 )
 

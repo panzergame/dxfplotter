@@ -38,7 +38,7 @@ public:
 	explicit PostProcessor(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void postCut();
-	void fastPlaneMove(const QVector2D &to);
+	void fastPlaneMove(const Eigen::Vector2d &to);
 	void retractDepth();
 };
 

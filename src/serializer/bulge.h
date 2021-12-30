@@ -1,7 +1,7 @@
 #pragma once
 
 #include <serializer/access.h>
-#include <serializer/qvector2d.h>
+#include <serializer/vector2d.h>
 
 #include <cereal/cereal.hpp>
 

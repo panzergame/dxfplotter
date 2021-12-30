@@ -2,8 +2,6 @@
 
 #include <common/aggregable.h>
 
-#include <QVector2D>
-
 #include <complex>
 
 #include <geometry/biarc.h>
@@ -14,36 +12,36 @@ namespace geometry
 class Bezier : public Common::Aggregable<Bezier>
 {
 private:
-	using Complex = std::complex<float>;
+	using Complex = std::complex<double>;
 	using InflexionPoints = std::array<Complex, 2>;
 
-	QVector2D m_point1;
-	QVector2D m_point2;
-	QVector2D m_control1;
-	QVector2D m_control2;
+	Eigen::Vector2d m_point1;
+	Eigen::Vector2d m_point2;
+	Eigen::Vector2d m_control1;
+	Eigen::Vector2d m_control2;
 
 	static bool isRealInflexionPoint(const Bezier::Complex &point);
 
 	InflexionPoints inflexions() const;
-	QVector2D derivativeAt(float t) const;
+	Eigen::Vector2d derivativeAt(double t) const;
 
-	QVector2D findNearestPointWithTangent(const QVector2D &point, const QVector2D& tangent, float maxError) const;
+	Eigen::Vector2d findNearestPointWithTangent(const Eigen::Vector2d &point, const Eigen::Vector2d& tangent, double maxError) const;
 
 public:
-	explicit Bezier(const QVector2D &p1, const QVector2D &c1,
-			const QVector2D &c2, const QVector2D &p2);
+	explicit Bezier(const Eigen::Vector2d &p1, const Eigen::Vector2d &c1,
+			const Eigen::Vector2d &c2, const Eigen::Vector2d &p2);
 	Bezier() = default;
 
-	const QVector2D &point1() const;
-	const QVector2D &point2() const;
-	const QVector2D &control1() const;
-	const QVector2D &control2() const;
+	const Eigen::Vector2d &point1() const;
+	const Eigen::Vector2d &point2() const;
+	const Eigen::Vector2d &control1() const;
+	const Eigen::Vector2d &control2() const;
 
-	QVector2D at(float t) const;
+	Eigen::Vector2d at(double t) const;
 
-	float approximateLength() const;
+	double approximateLength() const;
 
-	Pair split(float t) const;
+	Pair split(double t) const;
 	Pair splitHalf() const;
 	/// Split bezier keeping only convex shape.
 	List splitToConvex() const;
@@ -51,7 +49,7 @@ public:
 	std::optional<Biarc> toBiarc() const;
 	Polyline toLine() const;
 
-	float maxError(const Biarc &biarc) const;
+	double maxError(const Biarc &biarc) const;
 };
 
 }

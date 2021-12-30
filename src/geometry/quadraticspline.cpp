@@ -51,10 +51,10 @@ Point2DList QuadraticSpline::convertOpenedToQuadraticBezierPoints() const
 	return bezierPoints;
 }
 
-static Bezier quadraticBezierPointToCubicBezier(const QVector2D &q0, const QVector2D &q1, const QVector2D &q2)
+static Bezier quadraticBezierPointToCubicBezier(const Eigen::Vector2d &q0, const Eigen::Vector2d &q1, const Eigen::Vector2d &q2)
 {
-	const QVector2D c1 = q0 + 2.0f * (q1 - q0) / 3.0f;
-	const QVector2D c2 = q2 + 2.0f * (q1 - q2) / 3.0f;
+	const Eigen::Vector2d c1 = q0 + 2.0f * (q1 - q0) / 3.0f;
+	const Eigen::Vector2d c2 = q2 + 2.0f * (q1 - q2) / 3.0f;
 
 	return Bezier(q0, c1, c2, q2);
 }

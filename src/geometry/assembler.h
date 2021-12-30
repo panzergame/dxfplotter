@@ -19,7 +19,7 @@ private:
 	{
 		PolylineIndex polylineIndex;
 		// Original point from polyline.
-		QVector2D point;
+		Eigen::Vector2d point;
 
 		enum Type {
 			START = 0,
@@ -36,7 +36,7 @@ private:
 		explicit TipAdaptor(const Tip::List &tips);
 
 		size_t kdtree_get_point_count() const;
-		float kdtree_get_pt(const size_t idx, const size_t dim) const;
+		double kdtree_get_pt(const size_t idx, const size_t dim) const;
 
 		template <class BBOX>
 		bool kdtree_get_bbox(BBOX &bb) const
@@ -45,7 +45,7 @@ private:
 		}
 	};
 
-	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<float, TipAdaptor>, TipAdaptor, 2>;
+	using KDTree = nanoflann::KDTreeSingleIndexAdaptor<nanoflann::L2_Adaptor<double, TipAdaptor>, TipAdaptor, 2>;
 
 	class ChainBuilder
 	{
@@ -68,7 +68,7 @@ private:
 		std::set<PolylineIndex> &m_unconnectedPolylines;
 		const KDTree &m_tree;
 		const PolylineIndex m_startIndex;
-		const float m_closeTolerance;
+		const double m_closeTolerance;
 
 		constexpr TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
 		{
@@ -88,11 +88,11 @@ private:
 				const Tip &tip = m_tips[tipIndex];
 
 				// Coordinate of search point.
-				const float coord[2] = {tip.point.x(), tip.point.y()};
+				const double coord[2] = {tip.point.x(), tip.point.y()};
 
 				// Nearest neighbour with distance.
 				std::array<size_t, 2> matchIndices;
-				std::array<float, 2> matchDistances;
+				std::array<double, 2> matchDistances;
 
 				// Search for the nearest neighbours.
 				const int nbMatches = m_tree.knnSearch(coord, 2, matchIndices.data(), matchDistances.data());
@@ -153,13 +153,13 @@ private:
 		}
 
 	public:
-		explicit ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance);
+		explicit ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, double closeTolerance);
 
 		Polyline mergedPolyline(const Polyline::List &polylines) const;
 	};
 
 	Polyline::List m_unmergedPolylines;
-	const float m_closeTolerance;
+	const double m_closeTolerance;
 
 	Polyline::List m_mergedPolylines;
 
@@ -168,7 +168,7 @@ private:
 	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree);
 
 public:
-	explicit Assembler(Polyline::List &&polylines, float closeTolerance);
+	explicit Assembler(Polyline::List &&polylines, double closeTolerance);
 
 	Polyline::List &&polylines();
 };

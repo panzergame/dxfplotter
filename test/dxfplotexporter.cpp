@@ -7,7 +7,7 @@
 TEST_F(ExporterFixture, shouldExportNotEmpty)
 {
 
-	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	const geometry::Bulge bulge(Eigen::Vector2d::Zero(), Eigen::Vector2d::Ones(), 0);
 	geometry::Polyline polyline({bulge});
 
 	createTaskFromPolyline(std::move(polyline));

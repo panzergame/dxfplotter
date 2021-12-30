@@ -8,15 +8,15 @@ namespace geometry
 class Circle
 {
 private:
-	QVector2D m_center;
-	float m_radius;
+	Eigen::Vector2d m_center;
+	double m_radius;
 	Orientation m_orientation;
 
 public:
-	explicit Circle(const QVector2D &center, float radius, Orientation orientation);
+	explicit Circle(const Eigen::Vector2d &center, double radius, Orientation orientation);
 
-	const QVector2D &center() const;
-	float radius() const;
+	const Eigen::Vector2d &center() const;
+	double radius() const;
 	Orientation orientation() const;
 };
 

@@ -10,21 +10,21 @@ namespace geometry
 class Arc : public Circle
 {
 private:
-	QVector2D m_start;
-	QVector2D m_end;
-	float m_startAngle;
-	float m_endAngle;
-	float m_spanAngle;
+	Eigen::Vector2d m_start;
+	Eigen::Vector2d m_end;
+	double m_startAngle;
+	double m_endAngle;
+	double m_spanAngle;
 
 public:
-	explicit Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
-			float starAngle, float endAngle);
+	explicit Arc(const Circle &circle, const Eigen::Vector2d &start, const Eigen::Vector2d &end,
+			double starAngle, double endAngle);
 
-	const QVector2D &start() const;
-	const QVector2D &end() const;
-	float startAngle() const;
-	float endAngle() const;
-	float spanAngle() const;
+	const Eigen::Vector2d &start() const;
+	const Eigen::Vector2d &end() const;
+	double startAngle() const;
+	double endAngle() const;
+	double spanAngle() const;
 };
 
 };

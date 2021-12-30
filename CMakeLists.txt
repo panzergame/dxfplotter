@@ -39,6 +39,7 @@ set(INCLUDE_DIRS
 	thirdparty
 	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
+	thirdparty/eigen
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
 	thirdparty/yaml-cpp/include

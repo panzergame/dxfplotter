@@ -4,6 +4,7 @@
 
 #include <QDialog>
 
+#include <Eigen/Dense>
 
 namespace view::dialogs
 {
@@ -11,12 +12,12 @@ namespace view::dialogs
 class Transform : public QDialog, private Ui::Transform
 {
 private:
-	QTransform m_matrix;
+	Eigen::Affine2d m_matrix;
 
 public:
 	explicit Transform();
 
-	const QTransform &matrix() const;
+	const Eigen::Affine2d &matrix() const;
 
 	void accept() override;
 };

@@ -6,8 +6,8 @@
 
 int main()
 {
-	const QVector2D s(0, 0);
-	const QVector2D e(100, 50);
+	const Eigen::Vector2d s(0, 0);
+	const Eigen::Vector2d e(100, 50);
 
 	geometry::Bulge b1(s, e, 0.5);
 	geometry::Bulge b2(s, e, -0.5);

@@ -96,7 +96,7 @@ public:
 	void rightCutterCompensation();
 	void resetCutterCompensation();
 
-	void transformSelection(const QTransform& matrix);
+	void transformSelection(const Eigen::Affine2d& matrix);
 
 	void hideSelection();
 	void showHidden();

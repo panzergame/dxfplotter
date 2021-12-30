@@ -1,4 +1,5 @@
 #include <pointpathitem.h>
+#include <utils.h>
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
@@ -17,7 +18,7 @@ QPainterPath PointPathItem::shapePath() const
 
 void PointPathItem::setupPosition()
 {
-	m_point = m_path.basePolyline().start().toPointF();
+	m_point = toPointF(m_path.basePolyline().start());
 	setPos(m_point);
 }
 

@@ -14,18 +14,18 @@ void print(const geometry::Bezier &b)
 
 int main()
 {
-	const QVector2D sa(0, 0);
-	const QVector2D ea(50, 50);
+	const Eigen::Vector2d sa(0, 0);
+	const Eigen::Vector2d ea(50, 50);
 
-	const QVector2D sb(100, 0);
-	const QVector2D eb(50, 50);
+	const Eigen::Vector2d sb(100, 0);
+	const Eigen::Vector2d eb(50, 50);
 
 	/*const std::optional<QVector2D> intersection = geometry::ForwardLineIntersection(sa, ea, sb, eb);
 	if (intersection) {
-		const QVector2D &in = *intersection;
+		const Eigen::Vector2d &in = *intersection;
 		qInfo() << in;
 
-		const QVector2D incenter = geometry::TriangleIncenter(sa, in, sb);
+		const Eigen::Vector2d incenter = geometry::TriangleIncenter(sa, in, sb);
 		qInfo() << incenter;
 	}
 	else {
@@ -51,8 +51,8 @@ int main()
 	print(p2[0]);
 	print(p2[1]);*/
 
-// 	const QVector2D ta = ea - sa;
-// 	const QVector2D tb = eb - sb;
+// 	const Eigen::Vector2d ta = ea - sa;
+// 	const Eigen::Vector2d tb = eb - sb;
 // 
 // 	// Determinant
 // 	const float d = ta.x() * tb.y() - ta.y() * tb.x();

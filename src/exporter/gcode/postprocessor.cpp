@@ -17,7 +17,7 @@ void PostProcessor::postCut()
 	print(m_gcode.postCut());
 }
 
-void PostProcessor::fastPlaneMove(const QVector2D &to)
+void PostProcessor::fastPlaneMove(const Eigen::Vector2d &to)
 {
 	print(m_gcode.planeFastMove(), "X"_a=to.x(), "Y"_a=to.y());
 }

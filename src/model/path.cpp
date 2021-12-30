@@ -92,7 +92,7 @@ void Path::resetOffset()
 	emit offsettedPathChanged();
 }
 
-void Path::transform(const QTransform &matrix)
+void Path::transform(const Eigen::Affine2d &matrix)
 {
 	m_basePolyline.transform(matrix);
 	emit basePolylineTransformed();

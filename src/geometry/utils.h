@@ -5,11 +5,11 @@
 #include <cmath>
 #include <cassert>
 
-#include <QVector2D>
+#include <Eigen/Dense>
 
 namespace geometry
 {
-	using Point2DList = std::vector<QVector2D>;
+	using Point2DList = std::vector<Eigen::Vector2d>;
 
 	enum class Orientation
 	{
@@ -23,63 +23,63 @@ namespace geometry
 		BACKWARD
 	};
 
-	inline float CrossProduct(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2)
+	inline double CrossProduct(const Eigen::Vector2d &p0, const Eigen::Vector2d &p1, const Eigen::Vector2d &p2)
 	{
-		const QVector2D x = p1 - p0;
-		const QVector2D y = p2 - p0;
+		const Eigen::Vector2d x = p1 - p0;
+		const Eigen::Vector2d y = p2 - p0;
 
 		return x.x() * y.y() - y.x() * x.y();
 	}
 
-	inline std::optional<QVector2D> ForwardLineIntersection(const QVector2D &startA, const QVector2D &endA,
-			const QVector2D &startB, const QVector2D &endB)
+	inline std::optional<Eigen::Vector2d> ForwardLineIntersection(const Eigen::Vector2d &startA, const Eigen::Vector2d &endA,
+			const Eigen::Vector2d &startB, const Eigen::Vector2d &endB)
 	{
-		const float a1 = CrossProduct(startA, endA, startB);
-		const float a2 = CrossProduct(startA, endA, endB);
+		const double a1 = CrossProduct(startA, endA, startB);
+		const double a2 = CrossProduct(startA, endA, endB);
 
 		// Lines are parallel
 		if (a1 == a2) {
 			return std::nullopt;
 		}
 
-		const float a3 = CrossProduct(startA, startB, endB);
+		const double a3 = CrossProduct(startA, startB, endB);
 		// Advance on first line
-		const float t = a3 / (a2 - a1);
+		const double t = a3 / (a2 - a1);
 
 		// The intersection is backward the first line.
-		if (t <= 0.0f) {
+		if (t <= 0.0) {
 			return std::nullopt;
 		}
 
-		return std::make_optional(startA + (t * (endA - startA)));
+		return std::make_optional((startA + (t * (endA - startA))).eval());
 	}
 
-	inline QVector2D TriangleIncenter(const QVector2D &t0, const QVector2D &t1, const QVector2D &t2)
+	inline Eigen::Vector2d TriangleIncenter(const Eigen::Vector2d &t0, const Eigen::Vector2d &t1, const Eigen::Vector2d &t2)
 	{
-		const float a = (t1 - t2).length();
-		const float b = (t0 - t2).length();
-		const float c = (t0 - t1).length();
+		const double a = (t1 - t2).norm();
+		const double b = (t0 - t2).norm();
+		const double c = (t0 - t1).norm();
 
-		const float sum = a + b + c;
+		const double sum = a + b + c;
 		return (a * t0 + b * t1 + c * t2) / sum;
 	}
 
-	inline QVector2D PerpendicularLine(const QVector2D &line)
+	inline Eigen::Vector2d PerpendicularLine(const Eigen::Vector2d &line)
 	{
-		return QVector2D(-line.y(), line.x());
+		return {-line.y(), line.x()};
 	}
 
-	inline QVector2D ReflectLine(const QVector2D &vector, const QVector2D &normal)
+	inline Eigen::Vector2d ReflectLine(const Eigen::Vector2d &vector, const Eigen::Vector2d &normal)
 	{
-		return vector - 2.0f * QVector2D::dotProduct(vector, normal) * normal;
+		return vector - 2.0 * vector.dot(normal) * normal;
 	}
 
-	inline float NormalizedAngle(float angle)
+	inline double NormalizedAngle(double angle)
 	{
-		return (angle < 0.0f) ? (angle + M_PI * 2.0f) : angle;
+		return (angle < 0.0) ? (angle + M_PI * 2.0) : angle;
 	}
 
-	inline float LineAngle(const QVector2D &line)
+	inline double LineAngle(const Eigen::Vector2d &line)
 	{
 		return std::atan2(line.y(), line.x());
 	}
@@ -87,11 +87,11 @@ namespace geometry
 	/** Ensure start < end assuming start and end are angle of a CCW arc.
 	 * @return new end angle, may remain unchanged
 	 */
-	inline float EnsureEndGreater(float start, float end)
+	inline double EnsureEndGreater(double start, double end)
 	{
 		if (end < start) {
 			// Add pi*2 ensuring end is greater than start.
-			end += M_PI * 2.0f;
+			end += M_PI * 2.0;
 		}
 
 		assert(start <= end);
@@ -100,7 +100,7 @@ namespace geometry
 	}
 
 	/// Return counter clockwise delta angle between start and end
-	inline float DeltaAngle(float start, float end)
+	inline double DeltaAngle(double start, double end)
 	{
 		return (EnsureEndGreater(start, end) - start);
 	}

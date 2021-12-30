@@ -21,28 +21,28 @@ Polyline::Polyline(Bulge::List &&bulges)
 	assert(!m_bulges.empty());
 }
 
-const QVector2D &Polyline::start() const
+const Eigen::Vector2d &Polyline::start() const
 {
 	assert(!m_bulges.empty());
 
 	return m_bulges.front().start();
 }
 
-QVector2D &Polyline::start()
+Eigen::Vector2d &Polyline::start()
 {
 	assert(!m_bulges.empty());
 
 	return m_bulges.front().start();
 }
 
-const QVector2D &Polyline::end() const
+const Eigen::Vector2d &Polyline::end() const
 {
 	assert(!m_bulges.empty());
 
 	return m_bulges.back().end();
 }
 
-QVector2D &Polyline::end()
+Eigen::Vector2d &Polyline::end()
 {
 	assert(!m_bulges.empty());
 
@@ -63,12 +63,12 @@ bool Polyline::isPoint() const
 	return isClosed() && (m_bulges.size() == 1);
 }
 
-float Polyline::length() const
+double Polyline::length() const
 {
 	assert(!m_bulges.empty());
 
 	return std::accumulate(m_bulges.begin(), m_bulges.end(), 0.0f,
-		[](float sum, const Bulge &bulge2){ return sum + bulge2.length(); });
+		[](double sum, const Bulge &bulge2){ return sum + bulge2.length(); });
 }
 
 Polyline &Polyline::invert()
@@ -95,7 +95,7 @@ Polyline& Polyline::operator+=(const Polyline &other)
 	return *this;
 }
 
-Polyline::List Polyline::offsetted(float margin) const
+Polyline::List Polyline::offsetted(double margin) const
 {
 	if (isPoint()) {
 		return {*this};
@@ -105,13 +105,13 @@ Polyline::List Polyline::offsetted(float margin) const
 
 	// Convert to CAVC polyline
 	forEachBulge([&ccPolyline](const Bulge &bulge) {
-		const QVector2D &start = bulge.start();
+		const Eigen::Vector2d &start = bulge.start();
 		ccPolyline.addVertex(start.x(), start.y(), bulge.tangent());
 	});
 
 	const bool closed = isClosed();
 	if (!closed) {
-		const QVector2D &endV = end();
+		const Eigen::Vector2d &endV = end();
 		ccPolyline.addVertex(endV.x(), endV.y(), 0.0f);
 	}
 
@@ -129,7 +129,7 @@ Polyline::List Polyline::offsetted(float margin) const
 	return offsettedPolylines;
 }
 
-void Polyline::transform(const QTransform &matrix)
+void Polyline::transform(const Eigen::Affine2d &matrix)
 {
 	transformBulge([&matrix](Bulge &bulge){
 		bulge.transform(matrix);

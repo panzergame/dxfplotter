@@ -1,5 +1,6 @@
 #include <polylinepathitem.h>
 #include <bulgepainter.h>
+#include <utils.h>
 
 #include <QPainter>
 
@@ -12,7 +13,7 @@ QPainterPath PolylinePathItem::paintPath() const
 {
 	const geometry::Polyline &polyline = m_path.basePolyline();
 
-	QPainterPath painter(polyline.start().toPointF());
+	QPainterPath painter(toPointF(polyline.start()));
 
 	BulgePainter functor(painter);
 	polyline.forEachBulge(functor);

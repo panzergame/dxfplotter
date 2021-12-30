@@ -49,7 +49,7 @@ public:
 	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
 
-	void transform(const QTransform &matrix);
+	void transform(const Eigen::Affine2d &matrix);
 
 	bool isPoint() const;
 

@@ -6,7 +6,7 @@
 
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
-	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	const geometry::Bulge bulge({0, 0}, {1, 1}, 0);
 	geometry::Polyline polyline({bulge});
 
 	createTaskFromPolyline(std::move(polyline));
@@ -29,9 +29,9 @@ G0 X 0.000 Y 0.000
 
 TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 {
-	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
-	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
-	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
+	const geometry::Bulge b1({0, 0}, {1, 1}, 0);
+	const geometry::Bulge b2({1, 1}, {1, 0}, 0);
+	const geometry::Bulge b3({1, 0}, {0, 0}, 0);
 	geometry::Polyline polyline({b1, b2, b3});
 
 	ASSERT_TRUE(polyline.isClosed());
@@ -64,9 +64,9 @@ G0 X 0.000 Y 0.000
 
 TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 {
-	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
-	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
-	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
+	const geometry::Bulge b1({0, 0}, {1, 1}, 0);
+	const geometry::Bulge b2({1, 1}, {1, 0}, 0);
+	const geometry::Bulge b3({1, 0}, {0, 0}, 0);
 	geometry::Polyline polyline({b1, b2, b3});
 
 	ASSERT_TRUE(polyline.isClosed());

@@ -311,7 +311,7 @@ void Application::resetCutterCompensation()
 	task.forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
 }
 
-void Application::transformSelection(const QTransform& matrix)
+void Application::transformSelection(const Eigen::Affine2d& matrix)
 {
 	Task &task = m_openedDocument->task();
 	task.forEachSelectedPath([&matrix](model::Path &path){ path.transform(matrix); });

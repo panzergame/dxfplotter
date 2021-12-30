@@ -4,8 +4,8 @@
 namespace geometry
 {
 
-Arc::Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
-			float starAngle, float endAngle)
+Arc::Arc(const Circle &circle, const Eigen::Vector2d &start, const Eigen::Vector2d &end,
+			double starAngle, double endAngle)
 	:Circle(circle),
 	m_start(start),
 	m_end(end),
@@ -24,27 +24,27 @@ Arc::Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
 	m_spanAngle = m_endAngle - m_startAngle;
 }
 
-const QVector2D &Arc::start() const
+const Eigen::Vector2d &Arc::start() const
 {
 	return m_start;
 }
 
-const QVector2D &Arc::end() const
+const Eigen::Vector2d &Arc::end() const
 {
 	return m_end;
 }
 
-float Arc::startAngle() const
+double Arc::startAngle() const
 {
 	return m_startAngle;
 }
 
-float Arc::endAngle() const
+double Arc::endAngle() const
 {
 	return m_endAngle;
 }
 
-float Arc::spanAngle() const
+double Arc::spanAngle() const
 {
 	return m_spanAngle;
 }

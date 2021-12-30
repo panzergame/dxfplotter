@@ -24,7 +24,7 @@ geometry::CuttingDirection OffsettedPath::cuttingDirection() const
 	return offsetDirectionToCuttingDirection[static_cast<int>(m_direction)];
 }
 
-void OffsettedPath::transform(const QTransform &matrix)
+void OffsettedPath::transform(const Eigen::Affine2d &matrix)
 {
 	for (geometry::Polyline &polyline : m_polylines) {
 		polyline.transform(matrix);

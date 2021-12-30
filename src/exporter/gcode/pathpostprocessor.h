@@ -25,10 +25,10 @@ public:
 	explicit PathPostProcessor(const model::PathSettings &settings, const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
 	void preCut();
-	void planeLinearMove(const QVector2D &to);
+	void planeLinearMove(const Eigen::Vector2d &to);
 	void depthLinearMove(float depth);
-	void cwArcMove(const QVector2D &relativeCenter, const QVector2D &to);
-	void ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to);
+	void cwArcMove(const Eigen::Vector2d &relativeCenter, const Eigen::Vector2d &to);
+	void ccwArcMove(const Eigen::Vector2d &relativeCenter, const Eigen::Vector2d &to);
 };
 
 }

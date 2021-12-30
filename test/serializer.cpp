@@ -9,7 +9,7 @@
 
 TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
 {
-	const QVector2D point(1, 42);
+	const Eigen::Vector2d point(1, 42);
 
 	std::ostringstream output;
 
@@ -23,7 +23,7 @@ TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
 
 	{
 		cereal::JSONInputArchive archive(input);
-		QVector2D outPoint;
+		Eigen::Vector2d outPoint;
 		archive(outPoint);
 
 		EXPECT_EQ(point, outPoint);
@@ -32,7 +32,7 @@ TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
 
 TEST(Serializer, shouldSerializeBulgeWithNoDataLoose)
 {
-	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	const geometry::Bulge bulge(Eigen::Vector2d::Zero(), Eigen::Vector2d::Ones(), 0);
 
 	std::ostringstream output;
 

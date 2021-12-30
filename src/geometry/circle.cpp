@@ -3,19 +3,19 @@
 namespace geometry
 {
 
-Circle::Circle(const QVector2D &center, float radius, Orientation orientation)
+Circle::Circle(const Eigen::Vector2d &center, double radius, Orientation orientation)
 	:m_center(center),
 	m_radius(radius),
 	m_orientation(orientation)
 {
 }
 
-const QVector2D &Circle::center() const
+const Eigen::Vector2d &Circle::center() const
 {
 	return m_center;
 }
 
-float Circle::radius() const
+double Circle::radius() const
 {
 	return m_radius;
 }

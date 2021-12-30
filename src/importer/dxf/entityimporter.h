@@ -18,8 +18,8 @@ class BaseEntityImporter
 public:
 	struct Settings
 	{
-		const float splineToArcPrecision;
-		const float minimumSplineLength;
+		const double splineToArcPrecision;
+		const double minimumSplineLength;
 	};
 
 protected:
@@ -44,8 +44,8 @@ public:
 template <>
 inline void EntityImporter<DRW_Point>::operator()(const DRW_Point &point)
 {
-	const QVector2D pos(toVector2D(point.basePoint));
-	const geometry::Bulge bulge(pos, pos, 0.0f);
+	const Eigen::Vector2d pos(toVector2D(point.basePoint));
+	const geometry::Bulge bulge(pos, pos, 0.0);
 
 	addPolyline(geometry::Polyline({bulge}));
 }
@@ -53,7 +53,7 @@ inline void EntityImporter<DRW_Point>::operator()(const DRW_Point &point)
 template <>
 inline void EntityImporter<DRW_Line>::operator()(const DRW_Line &line)
 {
-	const geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
+	const geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0);
 
 	addPolyline(geometry::Polyline({bulge}));
 }
@@ -73,11 +73,11 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 
 	const std::shared_ptr<DRW_Vertex2D>& firstVertex = lwpolyline.vertlist.front();
 	std::shared_ptr<DRW_Vertex2D> vertex = firstVertex;
-	QVector2D start(vertex->x, vertex->y);
+	Eigen::Vector2d start(vertex->x, vertex->y);
 
 	for (int i = 1; i < size; ++i) {
 		const std::shared_ptr<DRW_Vertex2D>& nextVertex = lwpolyline.vertlist[i];
-		const QVector2D end(nextVertex->x, nextVertex->y);
+		const Eigen::Vector2d end(nextVertex->x, nextVertex->y);
 
 		bulges[i - 1] = geometry::Bulge(start, end, vertex->bulge);
 
@@ -88,8 +88,8 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 
 	// Create end to start bulge if closed polyline.
 	if (!opened) {
-		const QVector2D end(firstVertex->x, firstVertex->y);
-		bulges.back() = geometry::Bulge(start, end, 0.0f);
+		const Eigen::Vector2d end(firstVertex->x, firstVertex->y);
+		bulges.back() = geometry::Bulge(start, end, 0.0);
 	}
 
 	addPolyline(geometry::Polyline(std::move(bulges)));
@@ -98,14 +98,14 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 template <>
 inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle &circle)
 {
-	const float radius = circle.radious;
-	const QVector2D center(toVector2D(circle.basePoint));
+	const double radius = circle.radious;
+	const Eigen::Vector2d center(toVector2D(circle.basePoint));
 
-	const QVector2D startPoint(center.x() - radius, center.y());
-	const QVector2D endPoint(center.x() + radius, center.y());
+	const Eigen::Vector2d startPoint(center.x() - radius, center.y());
+	const Eigen::Vector2d endPoint(center.x() + radius, center.y());
 
-	const geometry::Bulge b1(startPoint, endPoint, 1.0f);
-	const geometry::Bulge b2(endPoint, startPoint, 1.0f);
+	const geometry::Bulge b1(startPoint, endPoint, 1.0);
+	const geometry::Bulge b2(endPoint, startPoint, 1.0);
 
 	addPolyline(geometry::Polyline({b1, b2}));
 }
@@ -113,33 +113,37 @@ inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle &circle)
 template <>
 inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 {
-	const float radius = arc.radious;
+	const double radius = arc.radious;
 
-	if (radius > 0.0f) {
-		const float startAngle = arc.staangle;
-		const float endAngle = arc.endangle;
-		const QVector2D center(toVector2D(arc.basePoint));
+	if (radius > 0.0) {
+		const double startAngle = arc.staangle;
+		const double endAngle = arc.endangle;
+		const Eigen::Vector2d center(toVector2D(arc.basePoint));
 
-		const QVector2D relativeStart = QVector2D(std::cos(startAngle), std::sin(startAngle)) * radius;
-		const QVector2D relativeEnd = QVector2D(std::cos(endAngle), std::sin(endAngle)) * radius;
+		// TODO big matrix
+		const Eigen::Array2d angles(startAngle, endAngle);
+		const Eigen::Array2d coses = Eigen::cos(angles);
+		const Eigen::Array2d sins = Eigen::sin(angles);
+		const Eigen::Vector2d relativeStart = Eigen::Vector2d(coses.x(), sins.x()) * radius;
+		const Eigen::Vector2d relativeEnd = Eigen::Vector2d(coses.y(), sins.y()) * radius;
 
-		const QVector2D start = relativeStart + center;
-		const QVector2D end = relativeEnd + center;
+		const Eigen::Vector2d start = relativeStart + center;
+		const Eigen::Vector2d end = relativeEnd + center;
 
-		const float theta = geometry::DeltaAngle(startAngle, endAngle);
+		const double theta = geometry::DeltaAngle(startAngle, endAngle);
 	    
 		// Dxf arcs are CCW
-		assert(theta > 0.0f);
+		assert(theta > 0.0);
 
 		// Split arc in two to avoid |tangent| > 1
 		if (theta > M_PI) {
-			const float newtheta = theta / 2.0f;
-			const float theta4 = newtheta / 4.0f;
-			const float tangent = std::tan(theta4);
+			const double newtheta = theta / 2.0;
+			const double theta4 = newtheta / 4.0;
+			const double tangent = std::tan(theta4);
 
-			const float middleAngle = startAngle + newtheta;
-			const QVector2D relativeMiddle = QVector2D(std::cos(middleAngle), std::sin(middleAngle)) * radius;
-			const QVector2D middle = relativeMiddle + center;
+			const double middleAngle = startAngle + newtheta;
+			const Eigen::Vector2d relativeMiddle = Eigen::Vector2d(std::cos(middleAngle), std::sin(middleAngle)) * radius;
+			const Eigen::Vector2d middle = relativeMiddle + center;
 
 			const geometry::Bulge bulge1(start, middle, tangent);
 			const geometry::Bulge bulge2(middle, end, tangent);
@@ -147,8 +151,8 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 			addPolyline(geometry::Polyline({bulge1, bulge2}));
 		}
 		else {
-			const float theta4 = theta / 4.0f;
-			const float tangent = std::tan(theta4);
+			const double theta4 = theta / 4.0;
+			const double tangent = std::tan(theta4);
 
 			const geometry::Bulge bulge(start, end, tangent);
 
@@ -176,7 +180,7 @@ inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, c
 			const std::optional<geometry::Biarc> optBiarc = bezier.toBiarc();
 			if (optBiarc) {
 				const geometry::Biarc &biarc = *optBiarc;
-				const float error = bezier.maxError(biarc);
+				const double error = bezier.maxError(biarc);
 				if (error < settings.splineToArcPrecision) {
 					// The approximation is close enough.
 					polyline += biarc.toPolyline();

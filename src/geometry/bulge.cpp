@@ -10,7 +10,7 @@
 namespace geometry
 {
 
-Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)
+Bulge::Bulge(const Eigen::Vector2d &start, const Eigen::Vector2d &end, double tangent)
 	:m_start(start),
 	m_end(end),
 	m_tangent(tangent)
@@ -24,45 +24,46 @@ Bulge::Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double
 {
 }
 
-const QVector2D &Bulge::start() const
+const Eigen::Vector2d &Bulge::start() const
 {
 	return m_start;
 }
 
-QVector2D &Bulge::start()
+Eigen::Vector2d &Bulge::start()
 {
 	return m_start;
 }
 
-const QVector2D &Bulge::end() const
+const Eigen::Vector2d &Bulge::end() const
 {
 	return m_end;
 }
 
-QVector2D &Bulge::end()
+Eigen::Vector2d &Bulge::end()
 {
 	return m_end;
 }
 
-float Bulge::tangent() const
+double Bulge::tangent() const
 {
 	return m_tangent;
 }
 
-float &Bulge::tangent()
+double &Bulge::tangent()
 {
 	return m_tangent;
 }
 
-float Bulge::length() const
+double Bulge::length() const
 {
+	const double lineLength = (m_end - m_start).norm();
 	if (isLine()) {
-		return m_start.distanceToPoint(m_end);
+		return lineLength;
 	}
 
 	// Radius is half line length * 1 + t^2 / (4 * |t|)
-	const float radius = m_start.distanceToPoint(m_end) * (1.0f + m_tangent * m_tangent) / m_tangent;
-	const float angle = std::atan(m_tangent);
+	const double radius = lineLength * (1.0 + m_tangent * m_tangent) / m_tangent;
+	const double angle = std::atan(m_tangent);
 	return radius * angle;
 }
 
@@ -77,19 +78,19 @@ void Bulge::linify()
 	m_tangent = 0.0f;
 }
 
-Bulge Bulge::extendStart(const QVector2D &start) const
+Bulge Bulge::extendStart(const Eigen::Vector2d &start) const
 {
 	return Bulge(start, m_end, m_tangent);
 }
 
-Bulge Bulge::extendEnd(const QVector2D &end) const
+Bulge Bulge::extendEnd(const Eigen::Vector2d &end) const
 {
 	return Bulge(m_start, end, m_tangent);
 }
 
 bool Bulge::isLine() const
 {
-	return std::abs(m_tangent) < std::numeric_limits<float>::epsilon(); // TODO utils
+	return std::abs(m_tangent) < std::numeric_limits<double>::epsilon(); // TODO utils
 }
 
 bool Bulge::isArc() const
@@ -106,25 +107,25 @@ Circle Bulge::toCircle() const
 {
 	const Orientation ori = orientation();
 
-	const float absTangent = std::abs(m_tangent);
+	const double absTangent = std::abs(m_tangent);
 
 	// Tangent is at end point, so we get line from end to start.
-	const QVector2D line = m_start - m_end;
+	const Eigen::Vector2d line = m_start - m_end;
 
-	const float lineLength = line.length();
-	const float radius = (lineLength * (1.0f + m_tangent * m_tangent)) / (4.0f * absTangent);
+	const double lineLength = line.norm();
+	const double radius = (lineLength * (1.0 + m_tangent * m_tangent)) / (4.0 * absTangent);
 
 	// Angle of line end -> start
-	const float lineAngle = LineAngle(line);
+	const double lineAngle = LineAngle(line);
 	// Angle between line and line from end to middle of arc
-	const float absTheta4 = std::atan(absTangent);
+	const double absTheta4 = std::atan(absTangent);
 
 	// Absolute angle at end point from line to arc center.
-	const float relativeAngleToCenter = M_PI_2 - 2.0f * absTheta4;
-	const float angleToCenter = (ori == Orientation::CCW) ? (lineAngle - relativeAngleToCenter) : (lineAngle + relativeAngleToCenter);
+	const double relativeAngleToCenter = M_PI_2 - 2.0 * absTheta4;
+	const double angleToCenter = (ori == Orientation::CCW) ? (lineAngle - relativeAngleToCenter) : (lineAngle + relativeAngleToCenter);
 
-	const QVector2D relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);
-	const QVector2D center = relativeCenter + m_end;
+	const Eigen::Vector2d relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);
+	const Eigen::Vector2d center = relativeCenter + m_end;
 
 	return Circle(center, radius, ori);
 }
@@ -132,31 +133,31 @@ Circle Bulge::toCircle() const
 Arc Bulge::toArc() const
 {
 	const Circle circle = toCircle();
-	const QVector2D &center = circle.center();
+	const Eigen::Vector2d &center = circle.center();
 
-	const float startAngle = LineAngle(m_start - center);
-	const float endAngle = LineAngle(m_end - center);
+	const double startAngle = LineAngle(m_start - center);
+	const double endAngle = LineAngle(m_end - center);
 
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
 }
 
-inline QVector2D mapVector2D(const QVector2D &vect, const QTransform &matrix)
+inline Eigen::Vector2d mapVector2D(const Eigen::Vector2d &vect, const Eigen::Affine2d &matrix)
 {
-	const QPointF point = vect.toPointF();
-	return QVector2D(matrix.map(point));
+	return matrix * vect;
 }
 
-void Bulge::transform(const QTransform &matrix)
+void Bulge::transform(const Eigen::Affine2d &matrix)
 {
 	m_start = mapVector2D(m_start, matrix);
 	m_end = mapVector2D(m_end, matrix);
 
-	if (matrix.isScaling()) {
+	// TODO
+	/*if (matrix.isScaling()) {
 		const bool invertTagent = (matrix.m11() * matrix.m22()) < 0.0f;
 		if (invertTagent) {
 			m_tangent = -m_tangent;
 		}
-	}
+	}*/
 }
 
 bool Bulge::operator==(const Bulge& other) const

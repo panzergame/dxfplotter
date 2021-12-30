@@ -18,7 +18,7 @@ void Exporter::convertToGCode(const model::Task &task, std::ostream &output) con
 	});
 
 	// Back to home
-	processor.fastPlaneMove(QVector2D(0.0f, 0.0f));
+	processor.fastPlaneMove(Eigen::Vector2d::Zero());
 }
 
 void Exporter::convertToGCode(const model::Path &path, std::ostream &output) const
@@ -122,7 +122,7 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Bulg
 	else {
 		const geometry::Circle circle = bulge.toCircle();
 		// Relative center to start
-		const QVector2D relativeCenter = circle.center() - bulge.start();
+		const Eigen::Vector2d relativeCenter = circle.center() - bulge.start();
 		switch (circle.orientation()) {
 			case geometry::Orientation::CW:
 			{

@@ -1,5 +1,6 @@
 #include <offsettedpolylinepathitem.h>
 #include <bulgepainter.h>
+#include <utils.h>
 
 #include <geometry/arc.h>
 
@@ -22,7 +23,7 @@ QPainterPath OffsettedPolylinePathItem::paintPath() const
 	QPainterPath rootPainter;
 
 	for (const geometry::Polyline &polyline : polylines) {
-		QPainterPath painter(polyline.start().toPointF());
+		QPainterPath painter(toPointF(polyline.start()));
 
 		BulgePainter functor(painter);
 		polyline.forEachBulge(functor);

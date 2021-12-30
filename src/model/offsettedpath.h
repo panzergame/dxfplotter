@@ -38,7 +38,7 @@ public:
 	const geometry::Polyline::List &polylines() const;
 	geometry::CuttingDirection cuttingDirection() const;
 
-	void transform(const QTransform &matrix);
+	void transform(const Eigen::Affine2d &matrix);
 
 Q_SIGNALS:
 	void polylinesTransformed();

@@ -21,10 +21,10 @@ class Bulge : public Common::Aggregable<Bulge>
 	friend serializer::Access<Bulge>;
 
 private:
-	QVector2D m_start;
-	QVector2D m_end;
+	Eigen::Vector2d m_start;
+	Eigen::Vector2d m_end;
 
-	float m_tangent;
+	double m_tangent;
 
 public:
 	/** Define a bulge
@@ -34,18 +34,18 @@ public:
 	 * Negative tangent means the arc goes clockwise from start to end,
 	 * otherwise anti clockwise from start to end.
 	 */
-	explicit Bulge(const QVector2D &start, const QVector2D &end, float tangent);
+	explicit Bulge(const Eigen::Vector2d &start, const Eigen::Vector2d &end, double tangent);
 	explicit Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double> &v2);
 	explicit Bulge() = default;
 
-	const QVector2D &start() const;
-	QVector2D &start();
-	const QVector2D &end() const;
-	QVector2D &end();
-	float tangent() const;
-	float &tangent();
+	const Eigen::Vector2d &start() const;
+	Eigen::Vector2d &start();
+	const Eigen::Vector2d &end() const;
+	Eigen::Vector2d &end();
+	double tangent() const;
+	double &tangent();
 
-	float length() const;
+	double length() const;
 
 	/// Change direction
 	void invert();
@@ -53,9 +53,9 @@ public:
 	void linify();
 
 	// Extend bulge start point
-	Bulge extendStart(const QVector2D &start) const;
+	Bulge extendStart(const Eigen::Vector2d &start) const;
 	// Extend bulge end point
-	Bulge extendEnd(const QVector2D &end) const;
+	Bulge extendEnd(const Eigen::Vector2d &end) const;
 
 	bool isLine() const;
 	bool isArc() const;
@@ -64,7 +64,7 @@ public:
 	Circle toCircle() const;
 	Arc toArc() const;
 
-	void transform(const QTransform &matrix);
+	void transform(const Eigen::Affine2d &matrix);
 
 	bool operator==(const Bulge& other) const;
 };

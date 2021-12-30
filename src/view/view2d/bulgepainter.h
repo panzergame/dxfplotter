@@ -12,7 +12,7 @@ class BulgePainter
 private:
 	QPainterPath &m_painter;
 
-	void lineToArcPoint(const QVector2D &center, float radius, float angle);
+	void lineToArcPoint(const Eigen::Vector2d &center, float radius, float angle);
 
 public:
 	explicit BulgePainter(QPainterPath &painter);

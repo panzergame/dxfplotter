@@ -21,9 +21,9 @@ private:
 	struct Item : Common::Aggregable<Item>
 	{
 		BulgeLinkedList::iterator it;
-		float length;
+		double length;
 
-		explicit Item(BulgeLinkedList::iterator _it, float _length)
+		explicit Item(BulgeLinkedList::iterator _it, double _length)
 			:it(_it),
 			length(_length)
 		{
@@ -36,7 +36,7 @@ private:
 	};
 
 	const Polyline &m_polyline;
-	const float m_minimumPolylineLength;
+	const double m_minimumPolylineLength;
 
 	BulgeLinkedList m_bulges;
 	Item::List m_itemsToMerge;
@@ -52,7 +52,7 @@ private:
 	{
 		// Add every small bulges
 		for (BulgeLinkedList::iterator it = m_bulges.begin(), end = m_bulges.end(); it != end; ++it) {
-			const float length = it->length();
+			const double length = it->length();
 			if (length < m_minimumPolylineLength) {
 				m_itemsToMerge.emplace_back(it, length);
 			}
@@ -105,7 +105,7 @@ private:
 		// Try remove associated item to neighbour bulge
 		removeAssociatedItem(neighbourIt);
 
-		const float length = neighbourIt->length();
+		const double length = neighbourIt->length();
 		// Reinsert extended bulge if still need to be merged.
 		if (length < m_minimumPolylineLength) {
 			insertSortedReverse(m_itemsToMerge, Item(neighbourIt, length));
@@ -113,7 +113,7 @@ private:
 	}
 
 public:
-	explicit PolylineLengthCleaner(const Polyline &polyline, float minimumPolylineLength)
+	explicit PolylineLengthCleaner(const Polyline &polyline, double minimumPolylineLength)
 		:m_polyline(polyline),
 		m_minimumPolylineLength(minimumPolylineLength)
 	{
@@ -142,7 +142,7 @@ private:
 	Polyline m_polyline;
 
 public:
-	explicit ArcLengthCleaner(Polyline &&polyline, float minimumArcLength)
+	explicit ArcLengthCleaner(Polyline &&polyline, double minimumArcLength)
 		:m_polyline(polyline)
 	{
 		m_polyline.transformBulge([minimumArcLength](Bulge &bulge){
@@ -158,7 +158,7 @@ public:
 	}
 };
 
-Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength)
+Cleaner::Cleaner(Polyline::List &&polylines, double minimumPolylineLength, double minimumArcLength)
 {
 	for (const Polyline &polyline : polylines) {
 		// Prune small polyline length

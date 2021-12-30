@@ -5,7 +5,7 @@
 namespace geometry
 {
 
-Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance)
+Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, double closeTolerance)
 	:m_chain{{index, Item::NORMAL}},
 	m_closed(false),
 	m_tips(tips),
@@ -21,7 +21,7 @@ Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIn
 /// Average point at p1 end and p2 start and assign middle point to both
 static void averageStartEndPolyline(Polyline &first, Polyline &second)
 {
-	const QVector2D middlePoint = (first.end() + second.start()) / 2.0f;
+	const Eigen::Vector2d middlePoint = (first.end() + second.start()) / 2.0f;
 	first.end() = middlePoint;
 	second.start() = middlePoint;
 }
@@ -63,7 +63,7 @@ size_t Assembler::TipAdaptor::kdtree_get_point_count() const
 	return m_tips.size();
 }
 
-float Assembler::TipAdaptor::kdtree_get_pt(const size_t idx, const size_t dim) const
+double Assembler::TipAdaptor::kdtree_get_pt(const size_t idx, const size_t dim) const
 {
 	return m_tips[idx].point[dim];
 }
@@ -103,7 +103,7 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 	return mergedPolylines;
 }
 
-Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
+Assembler::Assembler(Polyline::List &&polylines, double closeTolerance)
 	:m_closeTolerance(closeTolerance)
 {
 	// Dispatch polylines to already merged or not merged.

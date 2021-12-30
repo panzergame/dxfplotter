@@ -1,16 +1,16 @@
 #include <gtest/gtest.h>
 #include <geometry/polyline.h>
 
-constexpr QVector2D point1(1.2, 3.4);
-constexpr QVector2D point2(4.5, 6.7);
-constexpr QVector2D point3(7.8, 9.1);
-constexpr QVector2D point4(11.0, 12.0);
+static const Eigen::Vector2d point1(1.2, 3.4);
+static const Eigen::Vector2d point2(4.5, 6.7);
+static const Eigen::Vector2d point3(7.8, 9.1);
+static const Eigen::Vector2d point4(11.0, 12.0);
 
-static const geometry::Bulge pointbulge(point1, point1, 0.0f);
-static const geometry::Bulge bulge1(point1, point2, 0.0f);
-static const geometry::Bulge bulge1next(point2, point3, 0.0f);
-static const geometry::Bulge bulge1invert(point2, point1, 0.0f);
-static const geometry::Bulge bulge2(point3, point4, 0.0f);
+static const geometry::Bulge pointbulge(point1, point1, 0.0);
+static const geometry::Bulge bulge1(point1, point2, 0.0);
+static const geometry::Bulge bulge1next(point2, point3, 0.0);
+static const geometry::Bulge bulge1invert(point2, point1, 0.0);
+static const geometry::Bulge bulge2(point3, point4, 0.0);
 
 
 TEST(PolylineTest, WithEndAndStartEqualsAndOneBulgeIsPoint)
@@ -108,7 +108,7 @@ TEST(PolylineTest, ScaleTransformIterateBulgeScaled)
 
 TEST(PolylineTest, TestLinePolylineOffsetedHasMovedStartEnd)
 {
-	const geometry::Bulge bulge(QVector2D(0.0f, 3.4f), QVector2D(5.0f, 3.4f), 0.0f);
+	const geometry::Bulge bulge({0.0, 3.4}, {5.0, 3.4}, 0.0);
 	const geometry::Polyline polyline({bulge});
 
 	const float offset = 1.2f;
@@ -125,7 +125,7 @@ TEST(PolylineTest, TestLinePolylineOffsetedHasMovedStartEnd)
 
 TEST(PolylineTest, TestPointPolylineOffsetedIsPoint)
 {
-	const geometry::Bulge bulge(QVector2D(0.0f, 3.4f), QVector2D(0.0f, 3.4f), 0.0f);
+	const geometry::Bulge bulge({0.0, 3.4}, {0.0, 3.4}, 0.0);
 	const geometry::Polyline polyline({bulge});
 
 	const float offset = 1.2f;

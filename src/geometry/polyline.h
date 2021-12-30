@@ -24,15 +24,15 @@ public:
 	explicit Polyline() = default;
 	explicit Polyline(Bulge::List &&bulges);
 
-	const QVector2D &start() const;
-	QVector2D &start();
-	const QVector2D &end() const;
-	QVector2D &end();
+	const Eigen::Vector2d &start() const;
+	Eigen::Vector2d &start();
+	const Eigen::Vector2d &end() const;
+	Eigen::Vector2d &end();
 
 	bool isClosed() const;
 	bool isPoint() const;
 
-	float length() const;
+	double length() const;
 
 	Polyline &invert();
 	Polyline inverse() const;
@@ -55,9 +55,9 @@ public:
 		}
 	}
 
-	Polyline::List offsetted(float offset) const;
+	Polyline::List offsetted(double offset) const;
 
-	void transform(const QTransform &matrix);
+	void transform(const Eigen::Affine2d &matrix);
 
 	bool operator==(const Polyline &other) const;
 };
