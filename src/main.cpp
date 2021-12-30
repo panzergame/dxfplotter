@@ -4,7 +4,15 @@
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QFontDatabase>
+#include <QFile>
 #include <QDebug>
+
+QString readStyleSheet()
+{
+	QFile file(":stylesheet.qss");
+	file.open(QFile::ReadOnly | QFile::Text);
+	return file.readAll();
+}
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +21,7 @@ int main(int argc, char *argv[])
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");
 	qapp.setApplicationDisplayName("dxfplotter");
+	qapp.setStyleSheet(readStyleSheet());
 
 	QCommandLineParser parser;
 	parser.addHelpOption();
