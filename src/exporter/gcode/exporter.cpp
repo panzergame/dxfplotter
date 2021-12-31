@@ -33,15 +33,7 @@ void Exporter::convertToGCode(const model::Path &path, std::ostream &output) con
 	const float depth = settings.depth();
 
 	for (const geometry::Polyline &polyline : polylines) {
-		// Move to polyline begining
-		processor.fastPlaneMove(polyline.start());
-		processor.preCut();
-
 		convertToGCode(processor, polyline, depth, cuttingDirection);
-
-		// Retract tool for further operations
-		processor.retractDepth();
-		processor.postCut();
 	}
 }
 
@@ -101,12 +93,21 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Poly
 	const float depthPerCut = m_tool.general().depthPerCut();
 
 	PassesIterator iterator(polyline, cuttingDirection);
+
+	// Move to polyline beginning
+	processor.fastPlaneMove((*iterator).start());
+	processor.preCut();
+
 	for (float depth = 0.0f; depth < maxDepth + depthPerCut; depth += depthPerCut, ++iterator) {
 		const float boundDepth = std::fminf(depth, maxDepth);
 		processor.depthLinearMove(-boundDepth);
 
 		convertToGCode(processor, *iterator);
 	}
+
+	// Retract tool for further operations
+	processor.retractDepth();
+	processor.postCut();
 }
 
 void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Polyline &polyline) const
