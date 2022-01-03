@@ -2,8 +2,6 @@
 
 #include <config/config.h>
 
-#include <model/application.h>
-
 #include <view/dialogs/settings/entry.h>
 
 #include <uic/dialogs/settings/ui_settings.h>
@@ -22,16 +20,13 @@ private:
 
 	void setupUi();
 
-	model::Application &m_app;
 	// Modified config
-	config::Config m_newConfig;
+	config::Config &m_newConfig;
 	std::unique_ptr<TreeModel> m_model;
 
 public:
-	explicit Settings(model::Application &app);
+	explicit Settings(config::Config &newConfig);
 	~Settings();
-
-	config::Config &&newConfig();
 
 protected Q_SLOTS:
 	void currentChanged(const QModelIndex &index, const QModelIndex &previous);

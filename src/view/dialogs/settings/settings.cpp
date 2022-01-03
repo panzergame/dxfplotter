@@ -44,9 +44,8 @@ void Settings::setupUi()
 	treeView->resizeColumnToContents(0);
 }
 
-Settings::Settings(model::Application &app)
-	:m_app(app),
-	m_newConfig(app.config()),
+Settings::Settings(config::Config &newConfig)
+	:m_newConfig(newConfig),
 	m_model(new TreeModel(m_newConfig.root(), this))
 {
 	setupUi();
@@ -55,11 +54,6 @@ Settings::Settings(model::Application &app)
 }
 
 Settings::~Settings() = default;
-
-config::Config &&Settings::newConfig()
-{
-	return std::move(m_newConfig);
-}
 
 void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 {

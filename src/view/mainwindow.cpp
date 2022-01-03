@@ -173,9 +173,15 @@ void MainWindow::exportAsFile()
 
 void MainWindow::openSettings()
 {
-	settings::Settings settings(m_app);
-	if (settings.exec() == QDialog::Accepted) {
-		m_app.setConfig(settings.newConfig());
+	config::Config newConfig = m_app.config();
+
+	const bool accepted = [&newConfig]{
+		settings::Settings settings(newConfig);
+		return (settings.exec() == QDialog::Accepted);
+	}();
+
+	if (accepted) {
+		m_app.setConfig(std::move(newConfig));
 	}
 }
 
