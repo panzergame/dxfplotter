@@ -12,7 +12,9 @@ TEST_F(ExporterFixture, shouldThrowExceptionWhenToolNotFound)
 {
 	std::ostringstream output;
 
-	geometry::Polyline polyline;
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	geometry::Polyline polyline({bulge});
+
 	createTaskFromPolyline(std::move(polyline));
 
 	exporter::dxfplot::Exporter exporter;
@@ -37,7 +39,9 @@ TEST_F(ExporterFixture, shouldThrowExceptionWhenProfileNotFound)
 {
 	std::ostringstream output;
 
-	geometry::Polyline polyline;
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	geometry::Polyline polyline({bulge});
+
 	createTaskFromPolyline(std::move(polyline));
 
 	exporter::dxfplot::Exporter exporter;
@@ -62,7 +66,9 @@ TEST_F(ExporterFixture, shouldReimportDocumentWithToolAndProfileConfig)
 {
 	std::ostringstream output;
 
-	geometry::Polyline polyline;
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	geometry::Polyline polyline({bulge});
+
 	createTaskFromPolyline(std::move(polyline));
 
 	exporter::dxfplot::Exporter exporter;

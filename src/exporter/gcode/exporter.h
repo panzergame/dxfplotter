@@ -22,7 +22,7 @@ public:
 
 private:
 	const config::Tools::Tool &m_tool;
-	const config::Profiles::Profile::Gcode &m_gcode;
+	const config::Profiles::Profile &m_profile;
 	const Options m_options;
 
 	void convertToGCode(const model::Task &task, std::ostream &output) const;
@@ -32,7 +32,7 @@ private:
 	void convertToGCode(PathPostProcessor &processor, const geometry::Bulge &bulge) const;
 
 public:
-	explicit Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, Options options = None);
+	explicit Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Options options = None);
 	~Exporter() = default;
 
 	void operator()(const model::Document& document, std::ostream &output)  const;

@@ -6,7 +6,7 @@ namespace exporter::gcode
 
 void Exporter::convertToGCode(const model::Task &task, std::ostream &output) const
 {
-	PostProcessor processor(m_tool, m_gcode, output);
+	PostProcessor processor(m_tool, m_profile.gcode(), output);
 
 	// Retract tool before work piece
 	processor.retractDepth();
@@ -24,8 +24,8 @@ void Exporter::convertToGCode(const model::Task &task, std::ostream &output) con
 void Exporter::convertToGCode(const model::Path &path, std::ostream &output) const
 {
 	const model::PathSettings &settings = path.settings();
-	const geometry::CuttingDirection cuttingDirection = path.cuttingDirection();
-	PathPostProcessor processor(settings, m_tool, m_gcode, output);
+	const geometry::CuttingDirection cuttingDirection = path.cuttingDirection() | m_profile.cut().direction();
+	PathPostProcessor processor(settings, m_tool, m_profile.gcode(), output);
 
 	const geometry::Polyline::List polylines = path.finalPolylines();
 
@@ -177,7 +177,7 @@ struct ConfigToCommentVisitor
 	template <class ValueType>
 	void operator()(const config::Property<ValueType> &property)
 	{
-		commentLineStream() << property.name() << " = " << (ValueType)property;
+		commentLineStream() << property.name() << " = " << config::toSerializable((ValueType)property);
 	}
 
 	template <class Node>
@@ -195,9 +195,9 @@ void convertConfigNodeToComments(const Group &group, std::ostream &output)
 	visitor(group);
 }
 
-Exporter::Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, Options options)
+Exporter::Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Options options)
 	:m_tool(tool),
-	m_gcode(gcode),
+	m_profile(profile),
 	m_options(options)
 {
 }
@@ -206,7 +206,7 @@ void Exporter::operator()(const model::Document &document, std::ostream &output)
 {
 	if (m_options & ExportConfig) {
 		convertConfigNodeToComments(m_tool, output);
-		convertConfigNodeToComments(m_gcode, output);
+		convertConfigNodeToComments(m_profile, output);
 	}
 
 	convertToGCode(document.task(), output);

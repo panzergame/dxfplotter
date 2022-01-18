@@ -1,7 +1,11 @@
 #pragma once
 
+#include <type_traits>
+
 #include <QDoubleSpinBox>
 #include <QLineEdit>
+#include <QCheckBox>
+#include <QComboBox>
 
 #include <config/property.h>
 #include <common/aggregable.h>
@@ -18,7 +22,7 @@ public:
 	virtual ~IEntry() = default;
 };
 
-template <class PropertyType>
+template <class PropertyType, typename = void>
 class Entry : public IEntry
 {
 };
@@ -82,6 +86,53 @@ public:
 	~Entry()
 	{
 		m_property = text().toStdString();
+	}
+};
+
+template <>
+class Entry<bool> : public QCheckBox, public IEntry
+{
+private:
+	config::Property<bool> &m_property;
+
+public:
+	explicit Entry(config::Property<bool> &property, QWidget *parent)
+		:QCheckBox(parent),
+		m_property(property)
+	{
+		setChecked(m_property);
+	}
+
+	~Entry()
+	{
+		m_property = isChecked();
+	}
+};
+
+template <class EnumType>
+class Entry<EnumType, std::enable_if_t<std::is_enum<EnumType>::value>> : public QComboBox, public IEntry
+{
+private:
+	config::Property<EnumType> &m_property;
+
+public:
+	explicit Entry(config::Property<EnumType> &property, QWidget *parent)
+		:QComboBox(parent),
+		m_property(property)
+	{
+		for (EnumType item : common::enumerate::All<EnumType>()) {
+			const QString name = QString::fromStdString(common::enumerate::toString(item));
+			const QVariant value = QVariant::fromValue(static_cast<int>(item));
+			addItem(name, value);
+		}
+
+		const QString selectedName = QString::fromStdString(common::enumerate::toString(static_cast<EnumType>(m_property)));
+		setCurrentText(selectedName);
+	}
+
+	~Entry()
+	{
+		m_property = static_cast<EnumType>(currentData().value<int>());
 	}
 };
 

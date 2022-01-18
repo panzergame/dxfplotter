@@ -269,7 +269,7 @@ bool Application::loadFromDxfplot(const QString &fileName)
 bool Application::saveToGcode(const QString &fileName)
 {
 	try {
-		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode(), exporter::gcode::Exporter::ExportConfig);
+		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), exporter::gcode::Exporter::ExportConfig);
 		const bool saved = saveToFile(exporter, fileName);
 		if (saved) {
 			m_lastSavedGcodeFileName = fileName;
