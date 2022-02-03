@@ -38,7 +38,7 @@ struct TreeModel::AddItemVisitor
 	template <class Child>
 	void operator()(config::List<Child> *list)
 	{
-		const int nextRow = parent.children.size();
+		const int nextRow = static_cast<int>(parent.children.size());
 
 		Child &child = list->createChild(name.toStdString());
 
@@ -224,8 +224,8 @@ void TreeModel::removeItem(const QModelIndex &index)
 	beginRemoveRows(parent, row, row);
 
 	// Remove item in config list
-	std::visit([&parentNode](auto *node){
-		std::visit(RemoveItemVisitor{*node}, parentNode.configNode);
+	std::visit([&parentNode](auto *configNode){
+		std::visit(RemoveItemVisitor{*configNode}, parentNode.configNode);
 	}, node.configNode);
 
 	// Remove child and retrieve position after.

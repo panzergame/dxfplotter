@@ -14,11 +14,11 @@ void Info::showTimedMessage(const QString &content)
 	m_timer.start(showMessageDelay);
 }
 
-Info::Info(view2d::Viewport *viewport, model::Application &app)
+Info::Info(const view2d::Viewport &viewport, const model::Application &app)
 {
 	setupUi(this);
 
-	connect(viewport, &view2d::Viewport::cursorMoved, this, &Info::cursorMoved);
+	connect(&viewport, &view2d::Viewport::cursorMoved, this, &Info::cursorMoved);
 	connect(&app, &model::Application::fileSaved, this, &Info::fileSaved);
 	connect(&m_timer, &QTimer::timeout, this, &Info::hideMessage);
 }

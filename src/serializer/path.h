@@ -16,7 +16,7 @@ template<>
 struct Access<model::Path>
 {
 	template <class Archive>
-	void serialize(Archive &archive, model::Path &path, std::uint32_t const version) const
+	void serialize(Archive &archive, model::Path &path, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("renderable", cereal::base_class<model::Renderable>(&path)));
 		archive(cereal::make_nvp("base_polyline", path.m_basePolyline));

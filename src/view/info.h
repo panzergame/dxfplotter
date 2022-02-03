@@ -30,7 +30,7 @@ private:
 	void showTimedMessage(const QString &content);
 
 public:
-	explicit Info(view2d::Viewport *viewport, model::Application &app);
+	explicit Info(const view2d::Viewport &viewport, const model::Application &app);
 
 protected Q_SLOTS:
 	void cursorMoved(const QPointF &position);

@@ -43,7 +43,7 @@ public:
 		setValue((float)m_property);
 	}
 
-	~Entry()
+	~Entry() final
 	{
 		m_property = (float)value();
 	}
@@ -63,7 +63,7 @@ public:
 		setValue(m_property);
 	}
 
-	~Entry()
+	~Entry() final
 	{
 		m_property = value();
 	}
@@ -83,7 +83,7 @@ public:
 		setText(QString::fromStdString(m_property));
 	}
 
-	~Entry()
+	~Entry() final
 	{
 		m_property = text().toStdString();
 	}
@@ -103,14 +103,14 @@ public:
 		setChecked(m_property);
 	}
 
-	~Entry()
+	~Entry() final
 	{
 		m_property = isChecked();
 	}
 };
 
 template <class EnumType>
-class Entry<EnumType, std::enable_if_t<std::is_enum<EnumType>::value>> : public QComboBox, public IEntry
+class Entry<EnumType, std::enable_if_t<std::is_enum_v<EnumType>>> : public QComboBox, public IEntry
 {
 private:
 	config::Property<EnumType> &m_property;
@@ -130,7 +130,7 @@ public:
 		setCurrentText(selectedName);
 	}
 
-	~Entry()
+	~Entry() final
 	{
 		m_property = static_cast<EnumType>(currentData().value<int>());
 	}

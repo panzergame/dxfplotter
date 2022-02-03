@@ -13,7 +13,7 @@ template<>
 struct Access<model::Renderable>
 {
 	template <class Archive>
-	void save(Archive &archive, const model::Renderable &renderable, std::uint32_t const version) const
+	void save(Archive &archive, const model::Renderable &renderable, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 
@@ -22,7 +22,7 @@ struct Access<model::Renderable>
 	}
 
 	template <class Archive>
-	void load(Archive &archive, model::Renderable &renderable, std::uint32_t const version) const
+	void load(Archive &archive, model::Renderable &renderable, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 

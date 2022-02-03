@@ -14,7 +14,7 @@ template<>
 struct Access<model::PathSettings>
 {
 	template <class Archive>
-	void serialize(Archive &archive, model::PathSettings &pathSettings, std::uint32_t const version) const
+	void serialize(Archive &archive, model::PathSettings &pathSettings, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("plane_feed_rate", pathSettings.m_planeFeedRate));
 		archive(cereal::make_nvp("depth_feed_rate", pathSettings.m_depthFeedRate));

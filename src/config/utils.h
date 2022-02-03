@@ -8,27 +8,26 @@ namespace config
 {
 
 template <class Type>
-inline std::enable_if_t<!std::is_enum<Type>::value, Type> toSerializable(const Type &value)
+inline std::enable_if_t<!std::is_enum_v<Type>, Type> toSerializable(const Type &value)
 {
 	return value;
 }
 
 template <class EnumType>
-inline std::enable_if_t<std::is_enum<EnumType>::value, std::string> toSerializable(const EnumType& value)
+inline std::enable_if_t<std::is_enum_v<EnumType>, std::string> toSerializable(const EnumType& value)
 {
 	return common::enumerate::toString(value);
 }
 
 template <class Type>
-inline std::enable_if_t<!std::is_enum<Type>::value, Type> fromSerializable(const YAML::Node &node)
+inline Type fromSerializable(const YAML::Node &node)
 {
-	return node.as<Type>();
-}
-
-template <class EnumType>
-inline std::enable_if_t<std::is_enum<EnumType>::value, EnumType> fromSerializable(const YAML::Node &node)
-{
-	return common::enumerate::fromString<EnumType>(node.as<std::string>());
+	if constexpr(std::is_enum_v<Type>) {
+		return common::enumerate::fromString<Type>(node.as<std::string>());
+	}
+	else {
+		return node.as<Type>();
+	}
 }
 
 }

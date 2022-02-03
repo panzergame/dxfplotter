@@ -27,6 +27,11 @@ private:
 		} type;
 	};
 
+	static inline TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
+	{
+		return index * 2 + side;
+	}
+
 	class TipAdaptor
 	{
 	private:
@@ -39,7 +44,7 @@ private:
 		float kdtree_get_pt(const size_t idx, const size_t dim) const;
 
 		template <class BBOX>
-		bool kdtree_get_bbox(BBOX &bb) const
+		bool kdtree_get_bbox([[maybe_unused]] BBOX &bb) const
 		{
 			return false;
 		}
@@ -69,11 +74,6 @@ private:
 		const KDTree &m_tree;
 		const PolylineIndex m_startIndex;
 		const float m_closeTolerance;
-
-		constexpr TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
-		{
-			return index * 2 + side;
-		}
 
 		template <class Inserter>
 		bool expandSide(Inserter inserter, Tip::Type side)

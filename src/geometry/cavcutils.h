@@ -2,10 +2,7 @@
 
 #include <cavc/mathutils.hpp>
 
-namespace cavc
-{
-
-namespace utils
+namespace cavc::utils
 {
 
 // absolute threshold to be used for comparing reals generally
@@ -20,7 +17,5 @@ template <> constexpr double sliceJoinThreshold() { return 1e-8; }
 
 // absolute threshold to be used for pruning invalid slices for offset
 template <> constexpr double offsetThreshold() { return 1e-8; }
-
-}
 
 }
