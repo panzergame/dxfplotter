@@ -93,12 +93,15 @@ void MainWindow::setupMenuActions()
 void MainWindow::setTaskToolsEnabled(bool enabled)
 {
 	actionExportFile->setEnabled(enabled);
+	actionExportAsFile->setEnabled(enabled);
+	actionSaveFile->setEnabled(enabled);
 	actionLeftCutterCompensation->setEnabled(enabled);
 	actionRightCutterCompensation->setEnabled(enabled);
 	actionResetCutterCompensation->setEnabled(enabled);
 	actionHideSelection->setEnabled(enabled);
 	actionShowHidden->setEnabled(enabled);
 	actionTransformSelection->setEnabled(enabled);
+	actionMirrorSelection->setEnabled(enabled);
 }
 
 QString MainWindow::defaultFileName(const QString &extension) const
