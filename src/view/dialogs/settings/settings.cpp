@@ -5,6 +5,7 @@
 
 #include <QVBoxLayout>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QDebug> // TODO
 
 namespace view::settings
@@ -80,9 +81,12 @@ void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 	const bool isItem = m_model->isItem(current);
 	removeButton->disconnect();
 	removeButton->setEnabled(isItem);
+	copyButton->disconnect();
+	copyButton->setEnabled(isItem);
 
 	if (isItem) {
 		connect(removeButton, &QPushButton::pressed, this, [current, this](){ removeItem(current); });
+		connect(copyButton, &QPushButton::pressed, this, [current, this](){ copyItem(current); });
 	}
 }
 
@@ -90,16 +94,35 @@ void Settings::addItem(const QModelIndex &index)
 {
 	bool ok;
 	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-		tr("Tool name:"), QLineEdit::Normal, "", &ok);
+		tr("New name:"), QLineEdit::Normal, "", &ok);
 
 	if (ok && !text.isEmpty()) {
 		m_model->addItem(index, text);
+	}
+	else {
+		QMessageBox::critical(this, "Error", "Invalid name");
 	}
 }
 
 void Settings::removeItem(const QModelIndex &index)
 {
 	m_model->removeItem(index);
+}
+
+void Settings::copyItem(const QModelIndex &index)
+{
+	const QString sourceName = m_model->data(index).toString();
+
+	bool ok;
+	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
+		tr("New name:"), QLineEdit::Normal, sourceName, &ok);
+
+	if (ok && !text.isEmpty() && text != sourceName) {
+		m_model->copyItem(index, text);
+	}
+	else {
+		QMessageBox::critical(this, "Error", "Invalid name");
+	}
 }
 
 }

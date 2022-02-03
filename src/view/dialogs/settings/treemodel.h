@@ -16,6 +16,7 @@ private:
 	struct ConstructorItemVisitor;
 	struct AddItemVisitor;
 	struct RemoveItemVisitor;
+	struct CopyItemVisitor;
 
 	// ItemModel requests each item to know its parent and also its row in parent
 	struct Node : Common::Aggregable<Node>
@@ -63,7 +64,7 @@ private:
 public:
 	explicit TreeModel(config::Root &root, QObject *parent = nullptr);
 
-	QVariant data(const QModelIndex &index, int role) const override;
+	QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
 	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
 	QModelIndex parent(const QModelIndex &index) const override;
@@ -86,8 +87,9 @@ public:
 	/// Check if index contains a config item (parent is a list)
 	bool isItem(const QModelIndex &index) const;
 
-	void addItem(const QModelIndex &parent, const QString &name);
+	void addItem(const QModelIndex &parent, const QString &newName);
 	void removeItem(const QModelIndex &index);
+	void copyItem(const QModelIndex &index, const QString &newName);
 };
 
 }

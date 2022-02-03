@@ -32,6 +32,7 @@ protected Q_SLOTS:
 	void currentChanged(const QModelIndex &index, const QModelIndex &previous);
 	void addItem(const QModelIndex &index);
 	void removeItem(const QModelIndex &index);
+	void copyItem(const QModelIndex &index);
 };
 
 }

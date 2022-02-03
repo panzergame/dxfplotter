@@ -73,6 +73,35 @@ struct TreeModel::RemoveItemVisitor
 	}
 };
 
+struct TreeModel::CopyItemVisitor
+{
+	const QString &name;
+	Node &parent;
+	Node &source;
+
+	template <class Child>
+	void operator()(config::List<Child> *list)
+	{
+		const int nextRow = parent.children.size();
+
+		const Child &sourceChild = *std::get<Child *>(source.configNode);
+		Child &child = list->copyChild(sourceChild, name.toStdString());
+
+		Node::UPtr n = std::make_unique<Node>(nextRow, child, &parent);
+
+		// Create all children
+		ConstructorItemVisitor visitor{*n};
+		child.visitChildren(visitor);
+
+		parent.children.push_back(std::move(n));
+	}
+
+	template <class ... Child>
+	void operator()(config::Group<Child ...> *)
+	{
+	}
+};
+
 void TreeModel::constructNodes()
 {
 	// Construct root node
@@ -168,7 +197,7 @@ bool TreeModel::isItem(const QModelIndex &index) const
 	return (node->parent && node->parent->type == Node::Type::List);
 }
 
-void TreeModel::addItem(const QModelIndex &parent, const QString &name)
+void TreeModel::addItem(const QModelIndex &parent, const QString &newName)
 {
 	assert(isList(parent));
 
@@ -177,7 +206,7 @@ void TreeModel::addItem(const QModelIndex &parent, const QString &name)
 
 	Node &node = *static_cast<Node *>(parent.internalPointer());
 
-	std::visit(AddItemVisitor{name, node}, node.configNode);
+	std::visit(AddItemVisitor{newName, node}, node.configNode);
 
 	endInsertRows();
 }
@@ -189,25 +218,41 @@ void TreeModel::removeItem(const QModelIndex &index)
 	const QModelIndex &parent = index.parent();
 	const int row = index.row();
 
-	Node *parentNode = static_cast<Node *>(parent.internalPointer());
-	Node *node = static_cast<Node *>(index.internalPointer());
+	Node &parentNode = *static_cast<Node *>(parent.internalPointer());
+	Node &node = *static_cast<Node *>(index.internalPointer());
 
 	beginRemoveRows(parent, row, row);
 
 	// Remove item in config list
-	std::visit([parentNode](auto *node){
-		std::visit(RemoveItemVisitor{*node}, parentNode->configNode);
-	}, node->configNode);
+	std::visit([&parentNode](auto *node){
+		std::visit(RemoveItemVisitor{*node}, parentNode.configNode);
+	}, node.configNode);
 
 	// Remove child and retrieve position after.
-	auto it = parentNode->children.erase(parentNode->children.begin() + row);
+	auto it = parentNode.children.erase(parentNode.children.begin() + row);
 
 	// Remap row indices (-1)
-	for (const auto &end = parentNode->children.end(); it != end; ++it) {
+	for (const auto &end = parentNode.children.end(); it != end; ++it) {
 		--(*it)->row;
 	}
 
 	endRemoveRows();
+}
+
+void TreeModel::copyItem(const QModelIndex &index, const QString &newName)
+{
+	const QModelIndex &parent = index.parent();
+	assert(isList(parent));
+
+	const int row = rowCount(parent);
+	beginInsertRows(parent, row, row);
+
+	Node &parentNode = *static_cast<Node *>(parent.internalPointer());
+	Node &node = *static_cast<Node *>(index.internalPointer());
+
+	std::visit(CopyItemVisitor{newName, parentNode, node}, parentNode.configNode);
+
+	endInsertRows();
 }
 
 }
