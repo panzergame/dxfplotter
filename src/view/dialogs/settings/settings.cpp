@@ -96,11 +96,13 @@ void Settings::addItem(const QModelIndex &index)
 	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
 		tr("New name:"), QLineEdit::Normal, "", &ok);
 
-	if (ok && !text.isEmpty()) {
-		m_model->addItem(index, text);
-	}
-	else {
-		QMessageBox::critical(this, "Error", "Invalid name");
+	if (ok) {
+		if (text.isEmpty()) {
+			QMessageBox::critical(this, "Error", "Invalid name");
+		}
+		else {
+			m_model->addItem(index, text);
+		}
 	}
 }
 
@@ -117,11 +119,13 @@ void Settings::copyItem(const QModelIndex &index)
 	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
 		tr("New name:"), QLineEdit::Normal, sourceName, &ok);
 
-	if (ok && !text.isEmpty() && text != sourceName) {
-		m_model->copyItem(index, text);
-	}
-	else {
-		QMessageBox::critical(this, "Error", "Invalid name");
+	if (ok) {
+		if (text.isEmpty() || text == sourceName) {
+			QMessageBox::critical(this, "Error", "Invalid name");
+		}
+		else {
+			m_model->copyItem(index, text);
+		}
 	}
 }
 
