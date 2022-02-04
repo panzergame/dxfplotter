@@ -95,6 +95,7 @@ void MainWindow::setTaskToolsEnabled(bool enabled)
 	actionExportFile->setEnabled(enabled);
 	actionExportAsFile->setEnabled(enabled);
 	actionSaveFile->setEnabled(enabled);
+	actionSaveAsFile->setEnabled(enabled);
 	actionLeftCutterCompensation->setEnabled(enabled);
 	actionRightCutterCompensation->setEnabled(enabled);
 	actionResetCutterCompensation->setEnabled(enabled);

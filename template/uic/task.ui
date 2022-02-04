@@ -76,8 +76,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="go-up">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../resource/resource.qrc">
+          <normaloff>:/icons/icons/go-up.svg</normaloff>:/icons/icons/go-up.svg</iconset>
         </property>
        </widget>
       </item>
@@ -87,8 +87,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="go-down">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../resource/resource.qrc">
+          <normaloff>:/icons/icons/go-down.svg</normaloff>:/icons/icons/go-down.svg</iconset>
         </property>
        </widget>
       </item>
@@ -97,6 +97,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../resource/resource.qrc"/>
+ </resources>
  <connections/>
 </ui>
