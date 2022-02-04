@@ -44,8 +44,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="list-remove">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/list-remove.svg</normaloff>:/icons/icons/list-remove.svg</iconset>
         </property>
        </widget>
       </item>
@@ -65,8 +65,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="list-add">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/list-add.svg</normaloff>:/icons/icons/list-add.svg</iconset>
         </property>
        </widget>
       </item>
@@ -84,8 +84,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="edit-copy">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/edit-copy.svg</normaloff>:/icons/icons/edit-copy.svg</iconset>
         </property>
        </widget>
       </item>
@@ -104,7 +104,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../resource/resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

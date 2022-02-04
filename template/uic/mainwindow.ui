@@ -33,6 +33,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionOpenFile"/>
     <addaction name="actionSaveFile"/>
     <addaction name="actionSaveAsFile"/>
     <addaction name="actionExportFile"/>
@@ -49,7 +50,6 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionOpenFile"/>
     <addaction name="actionLeftCutterCompensation"/>
     <addaction name="actionRightCutterCompensation"/>
     <addaction name="actionResetCutterCompensation"/>
@@ -95,8 +95,8 @@
   </widget>
   <action name="actionOpenFile">
    <property name="icon">
-    <iconset theme="document-open">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/document-open.svg</normaloff>:/icons/icons/document-open.svg</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -107,8 +107,8 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="application-exit">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/application-exit.svg</normaloff>:/icons/icons/application-exit.svg</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -119,8 +119,8 @@
   </action>
   <action name="actionExportFile">
    <property name="icon">
-    <iconset theme="document-export">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/document-export.svg</normaloff>:/icons/icons/document-export.svg</iconset>
    </property>
    <property name="text">
     <string>Export</string>
@@ -131,8 +131,8 @@
   </action>
   <action name="actionOpenSettings">
    <property name="icon">
-    <iconset theme="settings-configure">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/configure.svg</normaloff>:/icons/icons/configure.svg</iconset>
    </property>
    <property name="text">
     <string>Settings</string>
@@ -140,8 +140,8 @@
   </action>
   <action name="actionLeftCutterCompensation">
    <property name="icon">
-    <iconset theme="path-outset">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/path-outset.svg</normaloff>:/icons/icons/path-outset.svg</iconset>
    </property>
    <property name="text">
     <string>Left Cutter Compensation</string>
@@ -152,8 +152,8 @@
   </action>
   <action name="actionRightCutterCompensation">
    <property name="icon">
-    <iconset theme="path-inset">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/path-inset.svg</normaloff>:/icons/icons/path-inset.svg</iconset>
    </property>
    <property name="text">
     <string>Right Cutter Compensation</string>
@@ -164,8 +164,8 @@
   </action>
   <action name="actionResetCutterCompensation">
    <property name="icon">
-    <iconset theme="show-path-outline">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/show-path-outline.svg</normaloff>:/icons/icons/show-path-outline.svg</iconset>
    </property>
    <property name="text">
     <string>Reset Cutter Compensation</string>
@@ -176,8 +176,8 @@
   </action>
   <action name="actionHideSelection">
    <property name="icon">
-    <iconset theme="object-hidden">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/layer-visible-off.svg</normaloff>:/icons/icons/layer-visible-off.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Selection</string>
@@ -188,8 +188,8 @@
   </action>
   <action name="actionShowHidden">
    <property name="icon">
-    <iconset theme="object-visible">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/layer-visible-on.svg</normaloff>:/icons/icons/layer-visible-on.svg</iconset>
    </property>
    <property name="text">
     <string>Show Hidden</string>
@@ -203,8 +203,8 @@
   </action>
   <action name="actionSaveFile">
    <property name="icon">
-    <iconset theme="document-save">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/document-save.svg</normaloff>:/icons/icons/document-save.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -215,8 +215,8 @@
   </action>
   <action name="actionSaveAsFile">
    <property name="icon">
-    <iconset theme="document-save-as">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/document-save-as.svg</normaloff>:/icons/icons/document-save-as.svg</iconset>
    </property>
    <property name="text">
     <string>Save As</string>
@@ -227,8 +227,8 @@
   </action>
   <action name="actionTransformSelection">
    <property name="icon">
-    <iconset theme="transform-rotate">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/transform-rotate.svg</normaloff>:/icons/icons/transform-rotate.svg</iconset>
    </property>
    <property name="text">
     <string>Transform Selection</string>
@@ -239,8 +239,8 @@
   </action>
   <action name="actionExportAsFile">
    <property name="icon">
-    <iconset theme="document-export-as">
-     <normaloff>.</normaloff>.</iconset>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/document-export.svg</normaloff>:/icons/icons/document-export.svg</iconset>
    </property>
    <property name="text">
     <string>Export As</string>
@@ -254,7 +254,8 @@
   </action>
   <action name="actionMirrorSelection">
    <property name="icon">
-    <iconset theme="resizecol"/>
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/resizecol.svg</normaloff>:/icons/icons/resizecol.svg</iconset>
    </property>
    <property name="text">
     <string>Mirror Selection</string>

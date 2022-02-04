@@ -1,6 +1,26 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-<qresource>
-    <file>dxfplotter.png</file>
-</qresource>
+	<qresource>
+	    <file>dxfplotter.png</file>
+	</qresource>
+    <qresource prefix="/icons">
+		<file>icons/application-exit.svg</file>
+		<file>icons/configure.svg</file>
+		<file>icons/document-export.svg</file>
+		<file>icons/document-open.svg</file>
+		<file>icons/document-save-as.svg</file>
+		<file>icons/document-save.svg</file>
+		<file>icons/edit-copy.svg</file>
+		<file>icons/go-down.svg</file>
+		<file>icons/go-up.svg</file>
+		<file>icons/layer-visible-off.svg</file>
+		<file>icons/layer-visible-on.svg</file>
+		<file>icons/list-add.svg</file>
+		<file>icons/list-remove.svg</file>
+		<file>icons/path-inset.svg</file>
+		<file>icons/path-outset.svg</file>
+		<file>icons/resizecol.svg</file>
+		<file>icons/show-path-outline.svg</file>
+		<file>icons/transform-rotate.svg</file>
+    </qresource>
 </RCC> 
