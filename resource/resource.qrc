@@ -2,6 +2,5 @@
 <RCC version="1.0">
 <qresource>
     <file>dxfplotter.png</file>
-	<file>stylesheet.qss</file>
 </qresource>
 </RCC> 
