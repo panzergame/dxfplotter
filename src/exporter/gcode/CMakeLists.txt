@@ -9,5 +9,5 @@ set(SRC
 )
 
 add_library(exporter-gcode ${SRC})
-add_dependencies(exporter-gcode generate_config)
+add_dependencies(exporter-gcode generate-config)
 add_coverage(exporter-gcode)
