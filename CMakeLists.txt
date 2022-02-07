@@ -17,7 +17,7 @@ set(JUST_INSTALL_CEREAL ON)
 
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4)
+	add_compile_options(/W4 /MT)
 else()
 	add_compile_options(-fPIC -Wall -Wextra)
 endif()
