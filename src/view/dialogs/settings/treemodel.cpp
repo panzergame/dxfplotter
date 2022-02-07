@@ -146,9 +146,13 @@ QModelIndex TreeModel::index(int row, int column, const QModelIndex &parent) con
 		return QModelIndex();
 	}
 
-	const Node *parentNode = !parent.isValid() ? &m_root : static_cast<const Node *>(parent.internalPointer());
+	if (parent.isValid()) {
+		const Node *parentNode = static_cast<const Node *>(parent.internalPointer());
+		const Node* childNode = parentNode->children[row].get();
+		return createIndex(row, column, const_cast<Node *>(childNode));
+	}
+	return createIndex(row, column, const_cast<Node*>(&m_root));
 
-	return createIndex(row, column, parentNode->children[row].get());
 }
 
 QModelIndex TreeModel::parent(const QModelIndex &index) const
