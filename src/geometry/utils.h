@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <optional>
+#include <unordered_map>
 #include <cassert>
 
 #include <QVector2D>
