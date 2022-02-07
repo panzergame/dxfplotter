@@ -12,7 +12,7 @@ set(SRC
 )
 
 add_library(config ${SRC})
-add_dependencies(config generate_config)
+add_dependencies(config generate-config)
 
 add_custom_command(
 	OUTPUT config.h
@@ -20,4 +20,4 @@ add_custom_command(
 	DEPENDS config.h.in ${TEMPLATE_DIR}/config.xml config_gen.py
 )
 
-add_custom_target(generate_config DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+add_custom_target(generate-config DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/config.h)
