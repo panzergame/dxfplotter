@@ -32,5 +32,9 @@ jobs:
         shell: bash
         run: mkdir build && cd build && cmake ..
       - name: Build
-        run: msbuild build\dxfplotter.sln
+        run: msbuild build\dxfplotter.sln /property:Configuration=Release
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "build/Release/dxfplotter.exe"
 
