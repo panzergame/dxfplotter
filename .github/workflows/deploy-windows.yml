@@ -33,7 +33,7 @@ jobs:
           submodules: true
       - name: CMake
         shell: bash
-        run: >
+        run: |
           mkdir build
           cd build
           cmake -DBUILD_TESTING=OFF ..
@@ -41,7 +41,7 @@ jobs:
         run: msbuild build\dxfplotter.sln /property:Configuration=Release
       - name: Deploy Qt
         shell: bash
-        run: >
+        run: |
           mkdir install
           cp build/Release/dxfplotter.exe install/dxfplotter.exe
           windeployqt install/dxfplotter.exe
