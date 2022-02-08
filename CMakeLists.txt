@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 project(dxfplotter)
 
@@ -15,9 +15,11 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_TESTS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4 /MT)
+	add_compile_options(/W4)
 else()
 	add_compile_options(-fPIC -Wall -Wextra)
 endif()
