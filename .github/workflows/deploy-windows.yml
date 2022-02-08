@@ -1,8 +1,10 @@
 on:
   push:
+    branches:
+      - "**"
     # Sequence of patterns matched against refs/tags
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    #tags:
+    #  - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
   build:
@@ -31,11 +33,20 @@ jobs:
           submodules: true
       - name: CMake
         shell: bash
-        run: mkdir build && cd build && cmake -DBUILD_TESTING=OFF ..
+        run: >
+          mkdir build
+          cd build
+          cmake -DBUILD_TESTING=OFF ..
       - name: Build
         run: msbuild build\dxfplotter.sln /property:Configuration=Release
+      - name: Deploy Qt
+        shell: bash
+        run: >
+          mkdir install
+          cp build/Release/dxfplotter.exe install/dxfplotter.exe
+          windeployqt install/dxfplotter.exe
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: "build/Release/dxfplotter.exe"
+          files: "install"
 
