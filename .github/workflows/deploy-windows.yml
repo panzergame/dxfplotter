@@ -43,8 +43,12 @@ jobs:
           mkdir install
           cp build/Release/dxfplotter.exe install/dxfplotter.exe
           windeployqt install/dxfplotter.exe
+      - uses: papeloto/action-zip@v1
+        with:
+          files: install/
+          dest: dxfplotter.zip
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: "install"
+          files: "dxfplotter.zip"
 
