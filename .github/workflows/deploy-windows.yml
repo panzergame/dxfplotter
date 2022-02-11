@@ -25,6 +25,9 @@ jobs:
       - name: Install jinja2
         shell: bash
         run: python -m pip install jinja2
+      - name: Install zip
+        shell: bash
+        run: choco install -y zip
       - name: Checkout
         uses: actions/checkout@v2
         with:
@@ -39,15 +42,7 @@ jobs:
         run: msbuild build\dxfplotter.sln /property:Configuration=Release
       - name: Deploy Qt
         shell: bash
-        run: |
-          mkdir install
-          cp build/Release/dxfplotter.exe install/dxfplotter.exe
-          windeployqt install/dxfplotter.exe
-      - name: Zip install files
-        shell: bash
-        run: |
-          choco install -y zip
-          zip -r dxfplotter.zip install/
+        run: ci/deploywindows.sh
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
