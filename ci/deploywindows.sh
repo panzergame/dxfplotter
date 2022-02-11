@@ -9,10 +9,13 @@ TAG=$(git describe --tags)
 RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64"
 
 BUILD_DIR="build"
-BINARY="${BUILD_DIR}/Release/dxfplotter.exe"
-DEPLOY_DIR="${RELEASE_NAME}"
+BINARY_NAME="dxfplotter.exe"
+BINARY_PATH="${BUILD_DIR}/Release/${BINARY_NAME}"
 
-windeployqt --dir $DEPLOY_DIR $BINARY
-cp $BINARY $DEPLOY_DIR
+DEPLOY_DIR="${RELEASE_NAME}"
+mkdir $DEPLOY_DIR
+cp $BINARY_PATH $DEPLOY_DIR
+
+windeployqt --dir $DEPLOY_DIR "${DEPLOY_DIR}/${BINARY_NAME}"
 
 zip -r "${RELEASE_NAME}.zip" $RELEASE_NAME
