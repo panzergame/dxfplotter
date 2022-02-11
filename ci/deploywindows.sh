@@ -13,6 +13,6 @@ BINARY="${BUILD_DIR}/Release/dxfplotter.exe"
 DEPLOY_DIR="${RELEASE_NAME}"
 
 windeployqt --dir $DEPLOY_DIR $BINARY
-
+cp $BINARY $DEPLOY_DIR
 
 zip -r "${RELEASE_NAME}.zip" $RELEASE_NAME
