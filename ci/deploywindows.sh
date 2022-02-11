@@ -16,6 +16,6 @@ DEPLOY_DIR="${RELEASE_NAME}"
 mkdir $DEPLOY_DIR
 cp $BINARY_PATH $DEPLOY_DIR
 
-windeployqt --dir $DEPLOY_DIR "${DEPLOY_DIR}/${BINARY_NAME}"
+windeployqt --release --dir $DEPLOY_DIR "${DEPLOY_DIR}/${BINARY_NAME}"
 
 zip -r "${RELEASE_NAME}.zip" $RELEASE_NAME
