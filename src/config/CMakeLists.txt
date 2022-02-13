@@ -12,12 +12,12 @@ set(SRC
 )
 
 add_library(config ${SRC})
-add_dependencies(config generate_config)
+add_dependencies(config generate-config)
 
 add_custom_command(
 	OUTPUT config.h
-	COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/config_gen.py ${TEMPLATE_DIR}/config.xml ${CMAKE_CURRENT_SOURCE_DIR} config.h.in config.h
+	COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/config_gen.py ${TEMPLATE_DIR}/config.xml ${CMAKE_CURRENT_SOURCE_DIR} config.h.in config.h
 	DEPENDS config.h.in ${TEMPLATE_DIR}/config.xml config_gen.py
 )
 
-add_custom_target(generate_config DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+add_custom_target(generate-config DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/config.h)

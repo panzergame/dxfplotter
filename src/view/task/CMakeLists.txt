@@ -11,4 +11,4 @@ set(SRC
 )
 
 add_library(view-task ${SRC})
-add_dependencies(view-task generate_config uic)
+add_dependencies(view-task generate-config uic)

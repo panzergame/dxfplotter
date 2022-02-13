@@ -11,4 +11,4 @@ set(SRC
 )
 
 add_library(view-dialogs-settings ${SRC})
-add_dependencies(view-dialogs-settings generate_config uic-dialogs-settings)
+add_dependencies(view-dialogs-settings generate-config uic-dialogs-settings)

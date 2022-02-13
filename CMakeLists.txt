@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 project(dxfplotter)
 
@@ -15,11 +15,13 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_TESTS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
-# Compilation flag with all warnings.
-add_compile_options(-fPIC -Wall -Wextra)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)
+# Compilation flag with all warnings.
+if(MSVC)
+	add_compile_options(/W4)
+else()
+	add_compile_options(-fPIC -Wall -Wextra)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -28,6 +30,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
+
+find_package(PythonInterp)
 
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets

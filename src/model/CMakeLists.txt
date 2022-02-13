@@ -22,5 +22,5 @@ set(SRC
 )
 
 add_library(model ${SRC})
-add_dependencies(model generate_config)
+add_dependencies(model generate-config)
 add_coverage(model)

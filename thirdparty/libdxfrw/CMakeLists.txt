@@ -21,4 +21,3 @@ set(SRC
 )
 
 add_library(libdxfrw ${SRC})
-target_compile_options(libdxfrw PUBLIC -Wno-error=implicit-fallthrough -Wno-error=misleading-indentation)

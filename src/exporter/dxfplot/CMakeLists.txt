@@ -5,5 +5,5 @@ set(SRC
 )
 
 add_library(exporter-dxfplot ${SRC})
-add_dependencies(exporter-dxfplot generate_config)
+add_dependencies(exporter-dxfplot generate-config)
 add_coverage(exporter-dxfplot)
