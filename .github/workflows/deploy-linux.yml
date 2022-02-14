@@ -13,7 +13,9 @@ jobs:
         with:
           submodules: true
       - name: Install package
-        run: sudo apt-get -y install qtbase5-dev lcov
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install qtbase5-dev
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release
