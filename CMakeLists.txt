@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 
 project(dxfplotter)
 
@@ -15,11 +15,13 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(BUILD_TESTS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
-# Compilation flag with all warning and error as much as possible on warning.
-add_compile_options(-fPIC -Wall -Wextra -Werror -Wno-error=unused-parameter -Wno-error=unused-variable -Wno-error=unknown-pragmas -Wno-expansion-to-defined -Wno-error=missing-field-initializers)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 9.0)
-	add_compile_options(-Wno-error=deprecated-copy -Wno-error=maybe-uninitialized)
+# Compilation flag with all warnings.
+if(MSVC)
+	add_compile_options(/W4)
+else()
+	add_compile_options(-fPIC -Wall -Wextra)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -29,13 +31,12 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
 
+find_package(PythonInterp)
+
 find_package(Qt5 COMPONENTS REQUIRED 
 	Widgets
 	Gui
 )
-
-find_package(yaml-cpp REQUIRED)
-find_package(fmt REQUIRED)
 
 set(INCLUDE_DIRS
 	src
@@ -44,13 +45,12 @@ set(INCLUDE_DIRS
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
-	thirdparty/tomlplusplus/include
+	thirdparty/yaml-cpp/include
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	${YAML_CPP_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -70,7 +70,7 @@ set(LINK_LIBRARIES
 	libdxfrw
 	fmt::fmt
 	Qt5::Widgets
-	${YAML_CPP_LIBRARIES}
+	yaml-cpp
 )
 
 include_directories(${INCLUDE_DIRS})

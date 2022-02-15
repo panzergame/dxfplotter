@@ -1,7 +1,7 @@
 #include <transform.h>
 
 
-namespace view
+namespace view::dialogs
 {
 
 Transform::Transform()

@@ -1,5 +1,6 @@
 #include <polyline.h>
 #include <utils.h>
+#include <cavcutils.h>
 
 namespace geometry
 {
@@ -60,6 +61,14 @@ bool Polyline::isPoint() const
 	assert(!m_bulges.empty());
 
 	return isClosed() && (m_bulges.size() == 1);
+}
+
+float Polyline::length() const
+{
+	assert(!m_bulges.empty());
+
+	return std::accumulate(m_bulges.begin(), m_bulges.end(), 0.0f,
+		[](float sum, const Bulge &bulge2){ return sum + bulge2.length(); });
 }
 
 Polyline &Polyline::invert()

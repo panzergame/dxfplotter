@@ -222,6 +222,10 @@ void Interface::addComment(const char* comment)
 	PRINT_FUNC;
 }
 
+void Interface::addPlotSettings(const DRW_PlotSettings *data)
+{
+	PRINT_FUNC;
+}
 
 void Interface::writeHeader(DRW_Header& data)
 {
@@ -264,6 +268,11 @@ void Interface::writeVports()
 }
 
 void Interface::writeDimstyles()
+{
+	PRINT_FUNC;
+}
+
+void Interface::writeObjects()
 {
 	PRINT_FUNC;
 }

@@ -44,8 +44,8 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="list-remove">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/list-remove.svg</normaloff>:/icons/icons/list-remove.svg</iconset>
         </property>
        </widget>
       </item>
@@ -65,14 +65,28 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset theme="list-add">
-          <normaloff>.</normaloff>.</iconset>
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/list-add.svg</normaloff>:/icons/icons/list-add.svg</iconset>
         </property>
        </widget>
       </item>
       <item row="2" column="3">
        <widget class="QWidget" name="center" native="true">
         <layout class="QVBoxLayout" name="verticalLayout"/>
+       </widget>
+      </item>
+      <item row="3" column="2">
+       <widget class="QPushButton" name="copyButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../../../resource/resource.qrc">
+          <normaloff>:/icons/icons/edit-copy.svg</normaloff>:/icons/icons/edit-copy.svg</iconset>
+        </property>
        </widget>
       </item>
      </layout>
@@ -90,7 +104,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../../resource/resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

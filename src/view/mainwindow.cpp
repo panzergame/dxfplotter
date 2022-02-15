@@ -6,6 +6,7 @@
 #include <view2d/viewport.h>
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
+#include <dialogs/mirror.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -34,13 +35,14 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	view2d::Viewport *viewport = new view2d::Viewport(m_app);
-	Info *info = new Info(viewport);
+	Info *info = new Info(*viewport, m_app);
 
 	QWidget *container = new QWidget(this);
 	QVBoxLayout *layout = new QVBoxLayout();
 
 	layout->addWidget(viewport);
 	layout->addWidget(info);
+	layout->setStretch(0, 1);
 
 	container->setLayout(layout);
 
@@ -75,6 +77,7 @@ void MainWindow::setupMenuActions()
 	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
 	connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
+	connect(actionExportAsFile, &QAction::triggered, this, &MainWindow::exportAsFile);
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
 	// Edit actions
@@ -84,18 +87,29 @@ void MainWindow::setupMenuActions()
 	connect(actionHideSelection, &QAction::triggered, &m_app, &model::Application::hideSelection);
 	connect(actionShowHidden, &QAction::triggered, &m_app, &model::Application::showHidden);
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
+	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 }
 
 void MainWindow::setTaskToolsEnabled(bool enabled)
 {
 	actionExportFile->setEnabled(enabled);
+	actionExportAsFile->setEnabled(enabled);
+	actionSaveFile->setEnabled(enabled);
+	actionSaveAsFile->setEnabled(enabled);
 	actionLeftCutterCompensation->setEnabled(enabled);
 	actionRightCutterCompensation->setEnabled(enabled);
 	actionResetCutterCompensation->setEnabled(enabled);
 	actionHideSelection->setEnabled(enabled);
 	actionShowHidden->setEnabled(enabled);
 	actionTransformSelection->setEnabled(enabled);
+	actionMirrorSelection->setEnabled(enabled);
 }
+
+QString MainWindow::defaultFileName(const QString &extension) const
+{
+	return m_app.lastHandledFileBaseName() + extension;
+}
+
 
 MainWindow::MainWindow(model::Application &app)
 	:m_app(app)
@@ -121,18 +135,18 @@ void MainWindow::openFile()
 
 void MainWindow::saveFile()
 {
-	const QString fileName = m_app.lastHandledFileBaseName();
-	if (fileName.isEmpty()) {
+	const QString lastFileName = m_app.lastSavedDxfplotFileName();
+	if (lastFileName.isEmpty()) {
 		saveAsFile();
 	}
-	else if (!m_app.saveToDxfplot(fileName)) {
+	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Dxfplot); !m_app.saveToDxfplot(fileName)) {
 		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
 
 void MainWindow::saveAsFile()
 {
-	const QString defaultPath = m_app.lastHandledFileBaseName() + ".dxfplot";
+	const QString defaultPath = defaultFileName(model::Application::FileExtension::Dxfplot);
 	const QString fileName = QFileDialog::getSaveFileName(this, "Save As File", defaultPath, "Text files (*.dxfplot)");
 
 	if (!fileName.isEmpty() && !m_app.saveToDxfplot(fileName)) {
@@ -142,7 +156,18 @@ void MainWindow::saveAsFile()
 
 void MainWindow::exportFile()
 {
-	const QString defaultPath = m_app.lastHandledFileBaseName() + ".ngc";
+	const QString lastFileName = m_app.lastSavedGcodeFileName();
+	if (lastFileName.isEmpty()) {
+		exportAsFile();
+	}
+	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Gcode); !m_app.saveToGcode(fileName)) {
+		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
+	}
+}
+
+void MainWindow::exportAsFile()
+{
+	const QString defaultPath = defaultFileName(model::Application::FileExtension::Gcode);
 	const QString fileName = QFileDialog::getSaveFileName(this, "Export File", defaultPath, "Text files (*.ngc *.txt)");
 
 	if (!fileName.isEmpty() && !m_app.saveToGcode(fileName)) {
@@ -152,17 +177,31 @@ void MainWindow::exportFile()
 
 void MainWindow::openSettings()
 {
-	settings::Settings settings(m_app);
-	if (settings.exec() == QDialog::Accepted) {
-		m_app.setConfig(settings.newConfig());
+	config::Config newConfig = m_app.config();
+
+	const bool accepted = [&newConfig]{
+		settings::Settings settings(newConfig);
+		return (settings.exec() == QDialog::Accepted);
+	}();
+
+	if (accepted) {
+		m_app.setConfig(std::move(newConfig));
 	}
 }
 
 void MainWindow::transformSelection()
 {
-	Transform transform;
+	dialogs::Transform transform;
 	if (transform.exec() == QDialog::Accepted) {
 		m_app.transformSelection(transform.matrix());
+	}
+}
+
+void MainWindow::mirrorSelection()
+{
+	dialogs::Mirror mirror;
+	if (mirror.exec() == QDialog::Accepted) {
+		m_app.transformSelection(mirror.matrix());
 	}
 }
 

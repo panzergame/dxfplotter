@@ -32,6 +32,8 @@ public:
 	bool isClosed() const;
 	bool isPoint() const;
 
+	float length() const;
+
 	Polyline &invert();
 	Polyline inverse() const;
 

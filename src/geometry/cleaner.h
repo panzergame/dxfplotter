@@ -2,8 +2,6 @@
 
 #include <geometry/polyline.h>
 
-#include <set>
-
 namespace geometry
 {
 

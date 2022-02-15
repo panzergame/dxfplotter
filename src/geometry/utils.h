@@ -1,11 +1,17 @@
 #pragma once
 
+#define _USE_MATH_DEFINES // To include M_PI
+#include <math.h>
+#include <cmath>
+
 #include <vector>
 #include <optional>
-#include <cmath>
+#include <unordered_map>
 #include <cassert>
 
 #include <QVector2D>
+
+#include <common/enum.h>
 
 namespace geometry
 {
@@ -22,6 +28,11 @@ namespace geometry
 		FORWARD,
 		BACKWARD
 	};
+
+	inline geometry::CuttingDirection operator|(const geometry::CuttingDirection &dir1, const geometry::CuttingDirection &dir2)
+	{
+		return static_cast<geometry::CuttingDirection>((static_cast<int>(dir1) + static_cast<int>(dir2)) % 2);
+	}
 
 	inline float CrossProduct(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2)
 	{
@@ -104,4 +115,38 @@ namespace geometry
 	{
 		return (EnsureEndGreater(start, end) - start);
 	}
+}
+
+namespace common::enumerate
+{
+
+template <>
+inline std::initializer_list<geometry::CuttingDirection> All()
+{
+	static const std::initializer_list<geometry::CuttingDirection> values = {geometry::CuttingDirection::FORWARD, geometry::CuttingDirection::BACKWARD};
+	return values;
+}
+
+template <>
+inline std::string toString(const geometry::CuttingDirection &direction)
+{
+	static const std::string translations[] = {
+		"forward", // CuttingDirection::FORWARD
+		"backward" // CuttingDirection::BACKWARD
+	};
+
+	return translations[static_cast<int>(direction)];
+}
+
+template <>
+inline geometry::CuttingDirection fromString(const std::string &value)
+{
+	static const std::unordered_map<std::string, geometry::CuttingDirection> translations = {
+		{"forward", geometry::CuttingDirection::FORWARD},
+		{"backward", geometry::CuttingDirection::BACKWARD}
+	};
+
+	return translations.at(value);
+}
+
 }

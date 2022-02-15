@@ -17,4 +17,4 @@ set(SRC
 )
 
 add_library(view-view2d ${SRC})
-add_dependencies(view-view2d generate_config uic)
+add_dependencies(view-view2d generate-config uic)

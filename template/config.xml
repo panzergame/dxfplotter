@@ -20,6 +20,9 @@
 				<property name="cw arc move" type="std::string" default="G2 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
 				<property name="ccw arc move" type="std::string" default="G3 X {X:.3f} Y {Y:.3f} I {I:.3f} J {J:.3f} F {F:.3f}"/>
 			</group>
+			<group name="cut">
+				<property name="direction" type="geometry::CuttingDirection" default="geometry::CuttingDirection::FORWARD"/>
+			</group>
 			<group name="default path">
 				<property name="plane feed rate" type="float" default="40"/>
 				<property name="depth feed rate" type="float" default="20"/>

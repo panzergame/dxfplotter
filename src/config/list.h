@@ -98,6 +98,15 @@ public:
 		return pair.first->second;
 	}
 
+	Child &copyChild(const Child &source, const std::string &newName)
+	{
+		const YAML::Node childYamlNode = YAML::Clone(m_yamlNode[source.name()]);
+		m_yamlNode[newName] = childYamlNode;
+		const auto &pair = m_children.emplace(newName, Child(newName, childYamlNode));
+
+		return pair.first->second;
+	}
+
 	void removeChild(const Child &child)
 	{
 		const std::string &name = child.name();

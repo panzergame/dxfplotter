@@ -13,5 +13,5 @@ set(SRC
 )
 
 add_library(view ${SRC})
-add_dependencies(view generate_config uic)
+add_dependencies(view generate-config uic)
 

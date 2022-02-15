@@ -2,6 +2,8 @@
 
 #include <config/node.h>
 
+#include <config/utils.h>
+
 namespace config
 {
 
@@ -18,7 +20,7 @@ public:
 	{
 		// Assign default value if node isn't defined
 		if (!m_yamlNode.IsDefined()) {
-			m_yamlNode = defaultValue;
+			*this = defaultValue;
 		}
 	}
 
@@ -26,12 +28,12 @@ public:
 
 	operator ValueType() const
 	{
-		return m_yamlNode.as<ValueType>();
+		return fromSerializable<ValueType>(m_yamlNode);
 	}
 
 	Property &operator=(const ValueType &value)
 	{
-		m_yamlNode = value;
+		m_yamlNode = toSerializable<ValueType>(value);
 		return *this;
 	}
 };

@@ -11,7 +11,7 @@ TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 
 	createTaskFromPolyline(std::move(polyline));
 
-	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_profile);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
@@ -42,7 +42,7 @@ TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 		path.offset(-0.2f, 0.0f, 0.0f);
 	});
 
-	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_profile);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000
@@ -77,7 +77,7 @@ TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 		path.offset(0.2f, 0.0f, 0.0f);
 	});
 
-	const exporter::gcode::Exporter exporter(m_tool, m_gcode);
+	const exporter::gcode::Exporter exporter(m_tool, m_profile);
 	exporter(*m_document, m_output);
 
 	EXPECT_EQ(R"(G0 Z 1.000

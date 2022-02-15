@@ -42,6 +42,12 @@ QString Application::baseName(const QString& fileName)
 	return fileInfo.absoluteDir().filePath(fileInfo.baseName());
 }
 
+void Application::resetLastSavedFileNames()
+{
+	m_lastSavedDxfplotFileName.clear();
+	m_lastSavedGcodeFileName.clear();
+}
+
 PathSettings Application::defaultPathSettings() const
 {
 	const config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
@@ -176,6 +182,16 @@ const QString &Application::lastHandledFileBaseName() const
 	return m_lastHandledFileBaseName;
 }
 
+const QString &Application::lastSavedDxfplotFileName() const
+{
+	return m_lastSavedDxfplotFileName;
+}
+
+const QString &Application::lastSavedGcodeFileName() const
+{
+	return m_lastSavedGcodeFileName;
+}
+
 void Application::loadFileFromCmd(const QString &fileName)
 {
 	if (!fileName.isEmpty()) {
@@ -205,6 +221,7 @@ bool Application::loadFile(const QString &fileName)
 	}
 
 	m_lastHandledFileBaseName = baseName(fileName);
+	resetLastSavedFileNames();
 
 	// Update window title based on file name.
 	const QFileInfo fileInfo(fileName);
@@ -251,15 +268,16 @@ bool Application::loadFromDxfplot(const QString &fileName)
 
 bool Application::saveToGcode(const QString &fileName)
 {
-	std::ofstream file(fileName.toStdString());
-	if (file) {
-		try {
-			exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig().gcode(), exporter::gcode::Exporter::ExportConfig);
-			return saveToFile(exporter, fileName);
+	try {
+		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), exporter::gcode::Exporter::ExportConfig);
+		const bool saved = saveToFile(exporter, fileName);
+		if (saved) {
+			m_lastSavedGcodeFileName = fileName;
 		}
-		catch (const std::exception &exception) {
-			emit errorRaised(exception.what());
-		}
+		return saved;
+	}
+	catch (const std::exception &exception) {
+		emit errorRaised(exception.what());
 	}
 
 	return false;
@@ -268,8 +286,13 @@ bool Application::saveToGcode(const QString &fileName)
 bool Application::saveToDxfplot(const QString &fileName)
 {
 	exporter::dxfplot::Exporter exporter;
-	
-	return saveToFile(exporter, fileName);
+
+	const bool saved = saveToFile(exporter, fileName);
+	if (saved) {
+		m_lastSavedDxfplotFileName = fileName;
+	}
+
+	return saved;
 }
 
 void Application::leftCutterCompensation()
