@@ -46,10 +46,8 @@ sudo apt-get install qtbase5-dev libyaml-cpp-dev libfmt-dev
 git submodule init
 git submodule update
 
-mkdir build
-cd build
-cmake ..
-make
+cmake -B build
+cmake --build build -j $(nproc)
 ```
 
 ## Usage example
