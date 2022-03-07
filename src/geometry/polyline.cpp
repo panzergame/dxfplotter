@@ -15,6 +15,36 @@ Polyline::Polyline(const cavc::Polyline<double> &polyline)
 	});
 }
 
+cavc::Polyline<double> Polyline::toCavc() const
+{
+	cavc::Polyline<double> ccPolyline;
+
+	// Convert to CAVC polyline
+	forEachBulge([&ccPolyline](const Bulge &bulge) {
+		const QVector2D &start = bulge.start();
+		ccPolyline.addVertex(start.x(), start.y(), bulge.tangent());
+	});
+
+	const bool closed = isClosed();
+	if (!closed) {
+		const QVector2D &endV = end();
+		ccPolyline.addVertex(endV.x(), endV.y(), 0.0f);
+	}
+
+	ccPolyline.isClosed() = closed;
+
+	return ccPolyline;
+}
+
+cavc::Polyline<double> Polyline::toCavc(Orientation orientation) const
+{
+	cavc::Polyline<double> originalPolyline = toCavc();
+// 	if (cavc::getWindingNumber(originalPolyline) == 1) {
+// 		return cavc::invertDirection(originalPolyline);
+// 	}
+	return originalPolyline;
+}
+
 Polyline::Polyline(Bulge::List &&bulges)
 	:m_bulges(bulges)
 {
@@ -63,12 +93,39 @@ bool Polyline::isPoint() const
 	return isClosed() && (m_bulges.size() == 1);
 }
 
+bool Polyline::isLine() const
+{
+	assert(!m_bulges.empty());
+
+	return (m_bulges.size() == 1) && m_bulges.front().isLine();
+}
+
 float Polyline::length() const
 {
 	assert(!m_bulges.empty());
 
 	return std::accumulate(m_bulges.begin(), m_bulges.end(), 0.0f,
-		[](float sum, const Bulge &bulge2){ return sum + bulge2.length(); });
+		[](float sum, const Bulge &bulge){ return sum + bulge.length(); });
+}
+
+inline float winding(const QVector2D &start, const QVector2D &end)
+{
+	return (end.x() - start.x()) * (end.y() + start.y());
+}
+
+inline float winding(const Bulge &bulge)
+{
+	return winding(bulge.start(), bulge.end());
+}
+
+Orientation Polyline::orientation() const
+{
+	assert(!m_bulges.empty() && isClosed());
+
+	const float windingSum = std::accumulate(m_bulges.begin(), m_bulges.end(), 0.0f,
+		[](float sum, const Bulge &bulge){ return sum + winding(bulge); });
+
+	return (windingSum > 0) ? Orientation::CW : Orientation::CCW;
 }
 
 Polyline &Polyline::invert()
@@ -101,23 +158,8 @@ Polyline::List Polyline::offsetted(float margin) const
 		return {*this};
 	}
 
-	cavc::Polyline<double> ccPolyline;
-
-	// Convert to CAVC polyline
-	forEachBulge([&ccPolyline](const Bulge &bulge) {
-		const QVector2D &start = bulge.start();
-		ccPolyline.addVertex(start.x(), start.y(), bulge.tangent());
-	});
-
-	const bool closed = isClosed();
-	if (!closed) {
-		const QVector2D &endV = end();
-		ccPolyline.addVertex(endV.x(), endV.y(), 0.0f);
-	}
-
-	ccPolyline.isClosed() = closed;
 	// Offset CAVC polyline
-	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(ccPolyline, (double)margin);
+	std::vector<cavc::Polyline<double> > offsettedCcPolylines = cavc::parallelOffset(toCavc(), (double)margin);
 
 	// Convert back to polylines
 	Polyline::List offsettedPolylines(offsettedCcPolylines.size());
@@ -127,6 +169,15 @@ Polyline::List Polyline::offsetted(float margin) const
 		});
 
 	return offsettedPolylines;
+}
+
+Polyline::List Polyline::pocketted(float offset, const Polyline::List &islands) const
+{
+	if (isPoint() || isLine()) {
+		return {*this};
+	}
+
+	
 }
 
 void Polyline::transform(const QTransform &matrix)

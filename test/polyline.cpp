@@ -12,6 +12,27 @@ static const geometry::Bulge bulge1next(point2, point3, 0.0f);
 static const geometry::Bulge bulge1invert(point2, point1, 0.0f);
 static const geometry::Bulge bulge2(point3, point4, 0.0f);
 
+geometry::Polyline createStartPolyline(float innerRadius, float outterRadius, int nbBranches)
+{
+	geometry::Point2DList points(nbBranches * 2);
+
+	for (int i = 0, max = nbBranches * 2; i < max; i += 2) {
+		const float angle = M_PI * i / nbBranches;
+		points[i] = QVector2D(std::cos(angle), std::sin(angle)) * outterRadius;
+	}
+
+	for (int i = 1, max = nbBranches * 2; i < max; i += 2) {
+		const float angle = M_PI * i / nbBranches;
+		points[i] = QVector2D(std::cos(angle), std::sin(angle)) * innerRadius;
+	}
+
+	geometry::Bulge::List bulges(points.size());
+	for (int size = points.size(), i = (size - 1), j = 0; j < size; i = j++) {
+		bulges[j] = geometry::Bulge(points[i], points[j], 0.0f);
+	}
+
+	return geometry::Polyline(std::move(bulges));
+}
 
 TEST(PolylineTest, WithEndAndStartEqualsAndOneBulgeIsPoint)
 {
@@ -136,4 +157,29 @@ TEST(PolylineTest, TestPointPolylineOffsetedIsPoint)
 	const geometry::Polyline &offsetedPolyline = offseted.front();
 	EXPECT_EQ(offsetedPolyline.start(), bulge.start());
 	EXPECT_EQ(offsetedPolyline.end(), bulge.end());
+}
+
+TEST(PolylineTest, TestPolylineOrientation4Bulges)
+{
+	const geometry::Polyline polyline({
+		geometry::Bulge(point1, point2, 0.0f),
+		geometry::Bulge(point2, point3, 0.0f),
+		geometry::Bulge(point3, point4, 0.0f),
+		geometry::Bulge(point4, point1, 0.0f)
+	});
+
+	ASSERT_EQ(polyline.orientation(), geometry::Orientation::CW);
+
+	const geometry::Polyline invertedPolyline = polyline.inverse();
+	ASSERT_EQ(invertedPolyline.orientation(), geometry::Orientation::CCW);
+}
+
+TEST(PolylineTest, TestConcavePolylineOrientation)
+{
+	const geometry::Polyline polyline = createStartPolyline(5.0f, 10.0f, 10);
+
+	ASSERT_EQ(polyline.orientation(), geometry::Orientation::CCW);
+
+	const geometry::Polyline invertedPolyline = polyline.inverse();
+	ASSERT_EQ(invertedPolyline.orientation(), geometry::Orientation::CW);
 }
