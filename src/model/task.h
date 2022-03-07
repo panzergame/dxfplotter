@@ -8,7 +8,7 @@
 namespace model
 {
 
-class Task : public QObject, public Common::Aggregable<Task>
+class Task : public QObject, public common::Aggregable<Task>
 {
 	Q_OBJECT;
 

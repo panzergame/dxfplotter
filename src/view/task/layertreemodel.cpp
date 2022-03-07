@@ -88,7 +88,7 @@ int LayerTreeModel::rowCount(const QModelIndex& parent) const
 	if (model::Layer *parentLayer = dynamic_cast<model::Layer *>(parentItem)) {
 		return parentLayer->childrenCount();
 	}
-	else if (model::Path *parentPath = dynamic_cast<model::Path *>(parentItem)) {
+	else if ([[maybe_unused]] model::Path *parentPath = dynamic_cast<model::Path *>(parentItem)) {
 		return 0;
 	}
 	else {
@@ -96,7 +96,7 @@ int LayerTreeModel::rowCount(const QModelIndex& parent) const
 	}
 }
 
-int LayerTreeModel::columnCount(const QModelIndex& parent) const
+int LayerTreeModel::columnCount([[maybe_unused]] const QModelIndex& parent) const
 {
 	return 2;
 }

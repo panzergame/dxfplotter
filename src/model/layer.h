@@ -7,7 +7,7 @@
 namespace model
 {
 
-class Layer : public Renderable, public Common::Aggregable<Layer>
+class Layer : public Renderable, public common::Aggregable<Layer>
 {
 	Q_OBJECT;
 

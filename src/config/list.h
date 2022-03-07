@@ -19,7 +19,7 @@ private:
 	YAML::Node m_yamlNode;
 
 public:
-	explicit List(const std::string& name, const std::string &description, YAML::Node yamlNode)
+	explicit List(const std::string& name, const std::string &description, const YAML::Node &yamlNode)
 		:Node(name, description),
 		m_yamlNode(yamlNode)
 	{
@@ -29,7 +29,7 @@ public:
 		}
 		else {
 			// Create items from yaml node
-			for (std::pair<YAML::Node, YAML::Node> pair : m_yamlNode) {
+			for (const auto &pair : m_yamlNode) {
 				const std::string &name = pair.first.as<std::string>();
 				m_children.emplace(name, Child(name, pair.second));
 			}
@@ -45,8 +45,7 @@ public:
 
 	const Child *get(const std::string &name) const
 	{
-		const auto it = m_children.find(name);
-		if (it != m_children.end()) {
+		if (const auto it = m_children.find(name); it != m_children.end()) {
 			return &it->second;
 		}
 
@@ -84,7 +83,7 @@ public:
 		template <class Visitor>
 	void visitChildren(Visitor &&visitor) const
 	{
-		for (auto &pair : m_children) {
+		for (const auto &pair : m_children) {
 			visitor(pair.second);
 		}
 	}

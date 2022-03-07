@@ -11,7 +11,7 @@
 namespace geometry
 {
 
-class Polyline : public Common::Aggregable<Polyline>
+class Polyline : public common::Aggregable<Polyline>
 {
 	friend serializer::Access<Polyline>;
 

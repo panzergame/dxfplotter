@@ -41,7 +41,7 @@ void Exporter::convertToGCode(const model::Path &path, std::ostream &output) con
 class PassesIterator
 {
 private:
-	bool m_odd;
+	bool m_odd = true;
 	const bool m_closed;
 	const bool m_cuttingBackward;
 	const geometry::Polyline& m_polyline;
@@ -54,18 +54,17 @@ private:
 
 	const geometry::Polyline &polylineForward() const
 	{
-		return (m_cuttingBackward) ? m_polylineInverse : m_polyline;
+		return m_cuttingBackward ? m_polylineInverse : m_polyline;
 	}
 
 	const geometry::Polyline &polylineBackward() const
 	{
-		return (m_cuttingBackward) ? m_polyline : m_polylineInverse;
+		return m_cuttingBackward ? m_polyline : m_polylineInverse;
 	}
 
 public:
 	explicit PassesIterator(const geometry::Polyline &polyline, geometry::CuttingDirection direction)
-		:m_odd(true),
-		m_closed(polyline.isClosed()),
+		:m_closed(polyline.isClosed()),
 		m_cuttingBackward(direction == geometry::CuttingDirection::BACKWARD),
 		m_polyline(polyline),
 		m_polylineInverse(needPolylineInverse() ? m_polyline.inverse() : geometry::Polyline())
@@ -126,15 +125,11 @@ void Exporter::convertToGCode(PathPostProcessor &processor, const geometry::Bulg
 		const QVector2D relativeCenter = circle.center() - bulge.start();
 		switch (circle.orientation()) {
 			case geometry::Orientation::CW:
-			{
 				processor.cwArcMove(relativeCenter, bulge.end());
 				break;
-			}
 			case geometry::Orientation::CCW:
-			{
 				processor.ccwArcMove(relativeCenter, bulge.end());
 				break;
-			}
 			default:
 				break;
 		}
@@ -150,6 +145,8 @@ struct CommentLineStream
 	{
 		m_output << "; " << prefix;
 	}
+
+	CommentLineStream(CommentLineStream &) = delete;
 
 	~CommentLineStream()
 	{
@@ -175,13 +172,13 @@ struct ConfigToCommentVisitor
 	}
 
 	template <class ValueType>
-	void operator()(const config::Property<ValueType> &property)
+	void operator()(const config::Property<ValueType> &property) const
 	{
 		commentLineStream() << property.name() << " = " << config::toSerializable((ValueType)property);
 	}
 
 	template <class Node>
-	void operator()(const Node &node)
+	void operator()(const Node &node) const
 	{
 		commentLineStream() << node.name();
 		node.visitChildren(ConfigToCommentVisitor{m_output, m_prefix + "  "});
@@ -191,7 +188,7 @@ struct ConfigToCommentVisitor
 template <class Group>
 void convertConfigNodeToComments(const Group &group, std::ostream &output)
 {
-	ConfigToCommentVisitor visitor{output, ""};
+	const ConfigToCommentVisitor visitor{output, ""};
 	visitor(group);
 }
 

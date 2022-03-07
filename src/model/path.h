@@ -17,7 +17,7 @@ namespace model
 
 class Layer;
 
-class Path : public Renderable, public Common::Aggregable<Path>
+class Path : public Renderable, public common::Aggregable<Path>
 {
 	Q_OBJECT;
 

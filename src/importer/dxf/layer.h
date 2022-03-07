@@ -7,7 +7,7 @@
 namespace importer::dxf
 {
 
-class Layer : public Common::Aggregable<Layer>
+class Layer : public common::Aggregable<Layer>
 {
 private:
 	geometry::Polyline::List m_polylines;

@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-namespace Common
+namespace common
 {
 
 class FileCouldNotOpenException : public std::exception
@@ -14,7 +14,7 @@ class GCodeFormatException : public std::runtime_error
 {
 private:
 	template <class ... Args>
-	std::string errorMessage(const std::string &format, const char *error, Args&& ... args)
+	static std::string errorMessage(const std::string &format, const char *error, Args&& ... args)
 	{
 		std::ostringstream stream;
 		stream << "Formatting error, format \"" << format << "\" with arguments";

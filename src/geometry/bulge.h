@@ -16,7 +16,7 @@
 namespace geometry
 {
 
-class Bulge : public Common::Aggregable<Bulge>
+class Bulge : public common::Aggregable<Bulge>
 {
 	friend serializer::Access<Bulge>;
 

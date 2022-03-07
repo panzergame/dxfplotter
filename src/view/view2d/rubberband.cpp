@@ -10,7 +10,7 @@ static const QBrush borderBrush(QColor(0, 0, 255, 255));
 static const QBrush fillBrush(QColor(0, 0, 255, 100));
 static const QPen borderPen(borderBrush, 0.0f);
 
-void RubberBand::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void RubberBand::paint(QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
 {
 	painter->setPen(borderPen);
 	painter->drawRect(m_rectf);

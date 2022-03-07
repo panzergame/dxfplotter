@@ -24,7 +24,7 @@ private:
 	 * @tparam T The returned value type
 	 * @tparam Getter The member function used to acces the poperty.
 	 */
-	template <typename Getter, typename Return = typename Common::MemberFunctionTraits<Getter>::Return>
+	template <typename Getter, typename Return = typename common::MemberFunctionTraits<Getter>::Return>
 	std::optional<Return> valueIfAllEqual(Getter &&getter) const
 	{
 		// Reference value of last path to compare with.

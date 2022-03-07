@@ -26,7 +26,7 @@ BasicPathItem::BasicPathItem(model::Path &path)
 
 }
 
-void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
 {
 	QStyleOptionGraphicsItem fixedOption(*option);
 

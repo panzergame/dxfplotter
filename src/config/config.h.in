@@ -107,7 +107,7 @@ public:
 	Root& root();
 	const Root& root() const;
 
-	void save();
+	void save() const;
 };
 
 }

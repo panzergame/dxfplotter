@@ -5,7 +5,7 @@
 #include <set>
 #include <memory>
 
-namespace Common
+namespace common
 {
 
 template <class Item>

@@ -18,7 +18,7 @@ class PolylineLengthCleaner
 private:
 	using BulgeLinkedList = std::list<Bulge>;
 
-	struct Item : Common::Aggregable<Item>
+	struct Item : common::Aggregable<Item>
 	{
 		BulgeLinkedList::iterator it;
 		float length;

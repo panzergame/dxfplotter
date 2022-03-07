@@ -103,7 +103,7 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 		// Create paths from merged and cleaned polylines of one layer
 		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), layerName);
 
-		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
+		layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
 	}
 
 	return std::make_unique<Task>(std::move(layers));
@@ -240,7 +240,7 @@ bool Application::loadFromDxf(const QString &fileName)
  
 		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 	}
-	catch (const Common::FileCouldNotOpenException&) {
+	catch (const common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
@@ -257,7 +257,7 @@ bool Application::loadFromDxfplot(const QString &fileName)
  
 		m_openedDocument = importer(fileName.toStdString());
 	}
-	catch (const Common::FileCouldNotOpenException&) {
+	catch (const common::FileCouldNotOpenException&) {
 		return false;
 	}
 

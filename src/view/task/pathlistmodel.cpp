@@ -53,12 +53,12 @@ QVariant PathListModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-int PathListModel::rowCount(const QModelIndex& parent) const
+int PathListModel::rowCount([[maybe_unused]] const QModelIndex& parent) const
 {
 	return m_task.pathCount();
 }
 
-int PathListModel::columnCount(const QModelIndex& parent) const
+int PathListModel::columnCount([[maybe_unused]] const QModelIndex& parent) const
 {
 	return 2;
 }

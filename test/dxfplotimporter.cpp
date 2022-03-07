@@ -32,7 +32,7 @@ TEST_F(ExporterFixture, shouldThrowExceptionWhenToolNotFound)
 	std::istringstream input;
 	input.str(output.str());
 	
-	EXPECT_THROW(importer(input), Common::ImportCouldNotFindToolConfigException);
+	EXPECT_THROW(importer(input), common::ImportCouldNotFindToolConfigException);
 }
 
 TEST_F(ExporterFixture, shouldThrowExceptionWhenProfileNotFound)
@@ -59,7 +59,7 @@ TEST_F(ExporterFixture, shouldThrowExceptionWhenProfileNotFound)
 	std::istringstream input;
 	input.str(output.str());
 	
-	EXPECT_THROW(importer(input), Common::ImportCouldNotFindProfileConfigException);
+	EXPECT_THROW(importer(input), common::ImportCouldNotFindProfileConfigException);
 }
 
 TEST_F(ExporterFixture, shouldReimportDocumentWithToolAndProfileConfig)

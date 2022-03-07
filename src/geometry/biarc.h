@@ -10,7 +10,7 @@
 namespace geometry
 {
 
-class Biarc : public Common::Aggregable<Biarc>
+class Biarc : public common::Aggregable<Biarc>
 {
 private:
 	QVector2D m_point1;

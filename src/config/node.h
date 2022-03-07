@@ -9,7 +9,7 @@ namespace config
 
 class Node
 {
-protected:
+private:
 	std::string m_name;
 	std::string m_description;
 
