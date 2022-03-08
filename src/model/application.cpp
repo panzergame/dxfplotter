@@ -311,6 +311,11 @@ void Application::resetCutterCompensation()
 	task.forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
 }
 
+void Application::pocketSelection()
+{
+	
+}
+
 void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();

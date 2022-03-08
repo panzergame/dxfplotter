@@ -18,14 +18,13 @@ class Polyline : public common::Aggregable<Polyline>
 private:
 	Bulge::List m_bulges;
 
-	explicit Polyline(const cavc::Polyline<double> &polyline);
-
-	cavc::Polyline<double> toCavc() const;
-	cavc::Polyline<double> toCavc(Orientation orientation) const;
-
 public:
 	explicit Polyline() = default;
 	explicit Polyline(Bulge::List &&bulges);
+	explicit Polyline(const cavc::Polyline<double> &polyline);
+
+	cavc::Polyline<double> toCavc() const;
+	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
 
 	const QVector2D &start() const;
 	QVector2D &start();
@@ -61,8 +60,8 @@ public:
 		}
 	}
 
-	Polyline::List offsetted(float offset) const;
-	Polyline::List pocketted(float offset, const Polyline::List &islands) const;
+	Polyline::List offsetted(float margin) const;
+	Polyline::List pocketted(const Polyline::List &islands, float margin) const;
 
 	void transform(const QTransform &matrix);
 
