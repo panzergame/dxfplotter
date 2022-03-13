@@ -16,11 +16,14 @@ set(SRC
 	dxfplotimporter.cpp
 	exporterfixture.cpp
 	gcodeexporter.cpp
+	pocketer.cpp
 	polyline.cpp
+	polylineutils.cpp
 	serializer.cpp
 	verticalspeed.cpp
 
 	exporterfixture.h
+	polylineutils.h
 )
 
 add_executable(dxfplotter-test ${SRC} main.cpp)

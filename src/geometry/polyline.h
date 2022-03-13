@@ -22,6 +22,7 @@ private:
 	explicit Polyline(const cavc::Polyline<double> &polyline);
 	cavc::Polyline<double> toCavc() const;
 	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
+	cavc::Polyline<double> toCavc(bool inverse) const;
 
 public:
 	explicit Polyline() = default;

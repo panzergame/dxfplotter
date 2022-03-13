@@ -103,6 +103,13 @@ void Path::pocket(const Path::ListCPtr &islands, float scaledRadius, float minim
 	geometry::Pocketer pocketer(m_basePolyline, polylineIslands, scaledRadius, minimumPolylineLength);
 	geometry::Cleaner cleaner(std::move(pocketer.polylines()), minimumPolylineLength, minimumArcLength);
 
+	const geometry::Orientation basePolylineOrientation = m_basePolyline.orientation();
+	// Pocket is always left after polyline was CCW winded.
+	static const OffsettedPath::Direction basePolylineOrientationToPocketDirection[] = {
+		OffsettedPath::Direction::RIGHT, // Orientation::CW
+		OffsettedPath::Direction::LEFT // Orientation::CCW
+	};
+
 	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), OffsettedPath::Direction::LEFT); // TODO check orientaiton
 
 	emit offsettedPathChanged();
