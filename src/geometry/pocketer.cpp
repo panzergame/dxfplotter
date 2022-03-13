@@ -131,6 +131,11 @@ Pocketer::Pocketer(const Polyline &border, const Polyline::ListCPtr &islands, fl
 	}
 }
 
+Orientation Pocketer::borderOrientation() const
+{
+	return m_borderOrientation;
+}
+
 Polyline::List &&Pocketer::polylines()
 {
 	return std::move(m_polylines);
