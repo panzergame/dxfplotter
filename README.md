@@ -2,7 +2,9 @@
 
 > Fast and easy to use DXF to GCode converter for laser and router CNC
 
-![](doc/logo.png)
+<center>
+	<img src="doc/logo.png"/>
+</center>
 
 
 [![Build Status](https://github.com/panzergame/dxfplotter/actions/workflows/sonarcloud.yml/badge.svg?branch=develop)](https://github.com/panzergame/dxfplotter/actions)
