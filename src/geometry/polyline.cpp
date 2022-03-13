@@ -1,9 +1,6 @@
 #include <polyline.h>
 #include <utils.h>
 #include <cavcutils.h>
-#include <cavc/polylineoffsetislands.hpp>
-
-#include <QDebug> // TODO
 
 namespace geometry
 {
@@ -156,7 +153,7 @@ Polyline& Polyline::operator+=(const Polyline &other)
 
 Polyline::List Polyline::offsetted(float margin) const
 {
-	/*if (isPoint()) {
+	if (isPoint()) {
 		return {*this};
 	}
 
@@ -170,95 +167,7 @@ Polyline::List Polyline::offsetted(float margin) const
 			return Polyline(polyline);
 		});
 
-	return offsettedPolylines;*/
-	return pocketted({}, margin);
-}
-
-namespace pocketer // TODO Move to separate file like assembler
-{
-
-bool isCapable(const Polyline &polyline)
-{
-	return !polyline.isPoint() && polyline.isClosed();
-}
-
-cavc::OffsetLoop<double> polylineToLoop(const Polyline& polyline, Orientation expectedOrientation)
-{
-	const cavc::Polyline loop = polyline.toCavc(expectedOrientation);
-	return {0, loop, cavc::createApproxSpatialIndex(loop)};
-}
-
-Polyline loopToPolyline(const cavc::OffsetLoop<double> &loop)
-{
-	return Polyline(loop.polyline);
-}
-
-cavc::OffsetLoopSet<double> polylinesToLoopSet(const Polyline &border, const Polyline::List &islands)
-{
-	cavc::OffsetLoopSet<double> loopSet;
-	loopSet.ccwLoops.push_back(polylineToLoop(border, Orientation::CCW));
-
-	std::transform(islands.begin(), islands.end(), std::back_inserter(loopSet.cwLoops), [](const Polyline &island){
-		return polylineToLoop(island, Orientation::CW);
-	});
-
-	return loopSet;
-}
-
-Polyline::List loopSetToPolylines(const cavc::OffsetLoopSet<double> &loopSet)
-{
-	const std::vector<cavc::OffsetLoop<double>> &ccwLoops = loopSet.ccwLoops;
-	const std::vector<cavc::OffsetLoop<double>> &cwLoops = loopSet.cwLoops;
-
-	Polyline::List polylines(ccwLoops.size() + cwLoops.size());
-
-	const auto it = std::transform(ccwLoops.begin(), ccwLoops.end(), polylines.begin(), loopToPolyline);
-	std::transform(cwLoops.begin(), cwLoops.end(), it, loopToPolyline);
-
-	return polylines;
-}
-
-bool canContinueOffsetting(const cavc::OffsetLoopSet<double> &loopSet)
-{
-	return !loopSet.ccwLoops.empty() || !loopSet.cwLoops.empty();
-}
-
-void pruneSingularities(std::vector<cavc::OffsetLoop<double>> &loops)
-{
-	std::for_each(loops.begin(), loops.end(), [](cavc::OffsetLoop<double> &loop){
-		loop.polyline = cavc::pruneSingularities(loop.polyline, 0.01);
-	});
-}
-
-Polyline::List createPocket(const Polyline &border, const Polyline::List &islands, float margin)
-{
-	if (!isCapable(border) || !std::all_of(islands.begin(), islands.end(), isCapable)) {
-		return {border};
-	}
-
-	cavc::ParallelOffsetIslands<double> alg;
-	cavc::OffsetLoopSet<double> loopSet = polylinesToLoopSet(border, islands);
-
-	Polyline::List offsettedPolylines;
-	do {
-		loopSet = alg.compute(loopSet, margin);
-
-		pruneSingularities(loopSet.cwLoops);
-		pruneSingularities(loopSet.ccwLoops);
-
-		const Polyline::List currentStepOffsettedPolylines = loopSetToPolylines(loopSet);
-		offsettedPolylines.insert(offsettedPolylines.end(), currentStepOffsettedPolylines.begin(), currentStepOffsettedPolylines.end());
-		qInfo() << loopSet.cwLoops.size() << loopSet.ccwLoops.size();
-	} while (canContinueOffsetting(loopSet));
-
 	return offsettedPolylines;
-}
-
-}
-
-Polyline::List Polyline::pocketted(const Polyline::List &islands, float margin) const
-{
-	return pocketer::createPocket(*this, islands, margin);
 }
 
 void Polyline::transform(const QTransform &matrix)

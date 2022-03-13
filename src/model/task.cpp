@@ -14,11 +14,14 @@ void Task::initPathsFromLayers()
 	// Register selection/deselection on all paths.
 	forEachPath([this](Path &path) {
 		connect(&path, &Path::selectedChanged, this, [this, &path](bool selected){
-			if (selected) {
-				m_selectedPaths.insert(&path);
+			const auto &pathIt = std::find(m_selectedPaths.begin(), m_selectedPaths.end(), &path);
+			const bool exists = (pathIt != m_selectedPaths.end());
+
+			if (selected && !exists) {
+				m_selectedPaths.push_back(&path);
 			}
-			else {
-				m_selectedPaths.erase(&path);
+			else if (exists) {
+				m_selectedPaths.erase(pathIt);
 			}
 
 			emit pathSelectedChanged(path, selected);
@@ -102,6 +105,51 @@ void Task::movePath(int index, MoveDirection direction)
 	if (0 <= newIndex && newIndex < pathCount()) {
 		std::swap(m_stack[index], m_stack[newIndex]);
 	}
+}
+
+void Task::resetCutterCompensationSelection()
+{
+	forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
+}
+
+void Task::cutterCompensationSelection(float scaledRadius, float minimumPolylineLength, float minimumArcLength)
+{
+	forEachSelectedPath([scaledRadius, minimumPolylineLength, minimumArcLength](Path &path){
+		path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
+	});
+}
+
+void Task::pocketSelection(float radius, float minimumPolylineLength, float minimumArcLength)
+{
+	if (m_selectedPaths.empty()) {
+		return;
+	}
+
+	Path *border = m_selectedPaths.front();
+	const Path::ListCPtr islands(m_selectedPaths.begin() + 1, m_selectedPaths.end());
+	border->pocket(islands, radius, minimumPolylineLength, minimumArcLength);
+}
+
+void Task::transformSelection(const QTransform& matrix)
+{
+	forEachSelectedPath([&matrix](Path &path){ path.transform(matrix); });
+}
+
+void Task::hideSelection()
+{
+	forEachSelectedPath([](Path &path){
+		path.setVisible(false);
+	});
+}
+
+void Task::showHidden()
+{
+	forEachPath([](Path &path){
+		if (!path.visible()) {
+			path.setVisible(true);
+			path.setSelected(true);
+		}
+	});
 }
 
 int Task::layerCount() const

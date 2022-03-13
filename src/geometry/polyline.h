@@ -61,7 +61,6 @@ public:
 	}
 
 	Polyline::List offsetted(float margin) const;
-	Polyline::List pocketted(const Polyline::List &islands, float margin) const;
 
 	void transform(const QTransform &matrix);
 
