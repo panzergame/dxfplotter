@@ -28,7 +28,9 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 * Multi passes with depth
 * Scale and translate paths
 
-![](doc/pocket.gif | width=80)
+<p align="center">
+	<img src="doc/pocket.gif" width="80%"/>
+</p>
 
 ## Installation
 
