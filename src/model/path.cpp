@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 
 #include <geometry/cleaner.h>
+#include <geometry/pocketer.h>
 
 namespace model
 {
@@ -91,6 +92,29 @@ void Path::resetOffset()
 
 	emit offsettedPathChanged();
 }
+
+void Path::pocket(const Path::ListCPtr &islands, float scaledRadius, float minimumPolylineLength, float minimumArcLength)
+{
+	geometry::Polyline::ListCPtr polylineIslands(islands.size());
+	std::transform(islands.begin(), islands.end(), polylineIslands.begin(), [](const Path *path){
+		return &path->basePolyline();
+	});
+
+	geometry::Pocketer pocketer(m_basePolyline, polylineIslands, scaledRadius, minimumPolylineLength);
+	geometry::Cleaner cleaner(std::move(pocketer.polylines()), minimumPolylineLength, minimumArcLength);
+
+	// Pocket is left when polyline is CCW winded.
+	static const OffsettedPath::Direction basePolylineOrientationToPocketDirection[] = {
+		OffsettedPath::Direction::RIGHT, // Orientation::CW
+		OffsettedPath::Direction::LEFT // Orientation::CCW
+	};
+	const OffsettedPath::Direction direction = basePolylineOrientationToPocketDirection[static_cast<int>(pocketer.borderOrientation())];
+
+	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
+
+	emit offsettedPathChanged();
+}
+
 
 void Path::transform(const QTransform &matrix)
 {

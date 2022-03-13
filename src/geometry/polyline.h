@@ -14,11 +14,15 @@ namespace geometry
 class Polyline : public common::Aggregable<Polyline>
 {
 	friend serializer::Access<Polyline>;
+	friend class Pocketer;
 
 private:
 	Bulge::List m_bulges;
 
 	explicit Polyline(const cavc::Polyline<double> &polyline);
+	cavc::Polyline<double> toCavc() const;
+	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
+	cavc::Polyline<double> toCavc(bool inverse) const;
 
 public:
 	explicit Polyline() = default;
@@ -31,8 +35,11 @@ public:
 
 	bool isClosed() const;
 	bool isPoint() const;
+	bool isLine() const;
 
 	float length() const;
+
+	Orientation orientation() const;
 
 	Polyline &invert();
 	Polyline inverse() const;
@@ -55,7 +62,7 @@ public:
 		}
 	}
 
-	Polyline::List offsetted(float offset) const;
+	Polyline::List offsetted(float margin) const;
 
 	void transform(const QTransform &matrix);
 

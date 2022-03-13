@@ -53,6 +53,7 @@
     <addaction name="actionLeftCutterCompensation"/>
     <addaction name="actionRightCutterCompensation"/>
     <addaction name="actionResetCutterCompensation"/>
+    <addaction name="actionPocketSelection"/>
     <addaction name="separator"/>
     <addaction name="actionHideSelection"/>
     <addaction name="actionShowHidden"/>
@@ -83,6 +84,7 @@
    <addaction name="actionLeftCutterCompensation"/>
    <addaction name="actionRightCutterCompensation"/>
    <addaction name="actionResetCutterCompensation"/>
+   <addaction name="actionPocketSelection"/>
    <addaction name="separator"/>
    <addaction name="actionTransformSelection"/>
    <addaction name="actionMirrorSelection"/>
@@ -228,7 +230,7 @@
   <action name="actionTransformSelection">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/transform-rotate.svg</normaloff>:/icons/icons/transform-rotate.svg</iconset>
+     <normaloff>:/icons/icons/zoom-in.svg</normaloff>:/icons/icons/zoom-in.svg</iconset>
    </property>
    <property name="text">
     <string>Transform Selection</string>
@@ -262,6 +264,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionPocketSelection">
+   <property name="icon">
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/icons/pocket-shape.svg</normaloff>:/icons/icons/pocket-shape.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Pocket Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pocket Selection&lt;/p&gt;&lt;p&gt;Select border then islands&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
    </property>
   </action>
  </widget>

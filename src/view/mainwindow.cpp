@@ -84,6 +84,7 @@ void MainWindow::setupMenuActions()
 	connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &model::Application::leftCutterCompensation);
 	connect(actionRightCutterCompensation, &QAction::triggered, &m_app, &model::Application::rightCutterCompensation);
 	connect(actionResetCutterCompensation, &QAction::triggered, &m_app, &model::Application::resetCutterCompensation);
+	connect(actionPocketSelection, &QAction::triggered, &m_app, &model::Application::pocketSelection);
 	connect(actionHideSelection, &QAction::triggered, &m_app, &model::Application::hideSelection);
 	connect(actionShowHidden, &QAction::triggered, &m_app, &model::Application::showHidden);
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);

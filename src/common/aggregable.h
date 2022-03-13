@@ -16,6 +16,7 @@ public:
 
 	using List = std::vector<Item>;
 	using ListPtr = std::vector<Item *>;
+	using ListCPtr = std::vector<const Item *>;
 	using ListUPtr = std::vector<UPtr>;
 
 	template <size_t Size>
