@@ -17,9 +17,14 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 
 * DXF support of line, arc, circle, polyline, spline
 * Customizable GCode command format
+* Saving current work to file
 * Multi selected path setting edition
 * Path offseting (Tool Compensation)
+* Pocket generation with islands capabilities
 * Multi passes with depth
+* Scale and translate paths
+
+![](doc/pocket.gif)
 
 ## Installation
 
@@ -36,10 +41,10 @@ chmod +x dxfplotter-*.AppImage
 
 ### Manual installation from source
 
-This project depends on Qt5, yaml-cpp and fmt, for debian like distribution following command install all dependencies:
+This project depends on Qt5, for debian like distribution following command install all dependencies:
 
 ```sh
-sudo apt-get install qtbase5-dev libyaml-cpp-dev libfmt-dev
+sudo apt-get install qtbase5-dev
 ```
 
 ```sh
@@ -73,7 +78,6 @@ build$ ./dxfplotter input.dxf -t "Mill 1mm"
 Once opened, select path from left panel or from viewport and modify settings of selected path group or of single selected path. 
 
 Export with `File->Export` or `Ctrl+E`
-
 
 ## Configuration
 
