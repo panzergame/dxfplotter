@@ -1,10 +1,10 @@
+<p align="center">
+	<img src="doc/logo.png"/>
+</p>
+
 # DXF Plotter
 
 > Fast and easy to use DXF to GCode converter for laser and router CNC
-
-<center>
-	<img src="doc/logo.png"/>
-</center>
 
 
 [![Build Status](https://github.com/panzergame/dxfplotter/actions/workflows/sonarcloud.yml/badge.svg?branch=develop)](https://github.com/panzergame/dxfplotter/actions)
@@ -17,7 +17,7 @@ This application helps users converting DXF files to GCode with minimal settings
 It targets only laser and router CNC following every lines and arcs from DXF file with optional desired depth.
 
 
-## Features
+## ⚙ Features
 
 * DXF support of line, arc, circle, polyline, spline
 * Customizable GCode command format
@@ -28,7 +28,7 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 * Multi passes with depth
 * Scale and translate paths
 
-![](doc/pocket.gif)
+![](doc/pocket.gif | width=80)
 
 ## Installation
 
@@ -43,7 +43,7 @@ chmod +x dxfplotter-*.AppImage
 ./dxfplotter-*.AppImage
 ```
 
-### Manual installation from source
+### 🏗 Manual installation from source
 
 This project depends on Qt5, for debian like distribution following command install all dependencies:
 
@@ -83,7 +83,7 @@ Once opened, select path from left panel or from viewport and modify settings of
 
 Export with `File->Export` or `Ctrl+E`
 
-## Configuration
+## ✏ Configuration
 
 ![](doc/configuration.png)
 
@@ -91,7 +91,7 @@ Configuration settings are exposed in `Configuration->Settings`, the configurati
 * general settings aiming dxf importing or default values
 * tools with settings such as radius and gcode formatting
 
-## GCode format
+## 📝 GCode format
 
 Simple set of GCode command is used per tool:
 
