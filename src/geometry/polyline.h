@@ -14,17 +14,18 @@ namespace geometry
 class Polyline : public common::Aggregable<Polyline>
 {
 	friend serializer::Access<Polyline>;
+	friend class Pocketer;
 
 private:
 	Bulge::List m_bulges;
 
+	explicit Polyline(const cavc::Polyline<double> &polyline);
+	cavc::Polyline<double> toCavc() const;
+	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
+
 public:
 	explicit Polyline() = default;
 	explicit Polyline(Bulge::List &&bulges);
-	explicit Polyline(const cavc::Polyline<double> &polyline);
-
-	cavc::Polyline<double> toCavc() const;
-	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
 
 	const QVector2D &start() const;
 	QVector2D &start();

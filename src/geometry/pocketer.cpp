@@ -3,23 +3,23 @@
 namespace geometry
 {
 
-bool isCapable(const Polyline &polyline)
+bool Pocketer::isCapable(const Polyline &polyline)
 {
 	return !polyline.isPoint() && polyline.isClosed();
 }
 
-cavc::OffsetLoop<double> polylineToLoop(const Polyline& polyline, Orientation expectedOrientation)
+cavc::OffsetLoop<double> Pocketer::polylineToLoop(const Polyline& polyline, Orientation expectedOrientation)
 {
 	const cavc::Polyline loop = polyline.toCavc(expectedOrientation);
 	return {0, loop, cavc::createApproxSpatialIndex(loop)};
 }
 
-Polyline loopToPolyline(const cavc::OffsetLoop<double> &loop)
+Polyline Pocketer::loopToPolyline(const cavc::OffsetLoop<double> &loop)
 {
 	return Polyline(loop.polyline);
 }
 
-Polyline::List loopSetToPolylines(const cavc::OffsetLoopSet<double> &loopSet)
+Polyline::List Pocketer::loopSetToPolylines(const cavc::OffsetLoopSet<double> &loopSet)
 {
 	const std::vector<cavc::OffsetLoop<double>> &ccwLoops = loopSet.ccwLoops;
 	const std::vector<cavc::OffsetLoop<double>> &cwLoops = loopSet.cwLoops;
@@ -32,7 +32,7 @@ Polyline::List loopSetToPolylines(const cavc::OffsetLoopSet<double> &loopSet)
 	return polylines;
 }
 
-bool canContinueOffsetting(const cavc::OffsetLoopSet<double> &loopSet)
+bool Pocketer::canContinueOffsetting(const cavc::OffsetLoopSet<double> &loopSet)
 {
 	return !loopSet.ccwLoops.empty() || !loopSet.cwLoops.empty();
 }

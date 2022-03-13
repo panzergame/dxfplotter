@@ -5,12 +5,6 @@
 namespace geometry
 {
 
-Polyline::Polyline(Bulge::List &&bulges)
-	:m_bulges(bulges)
-{
-	assert(!m_bulges.empty());
-}
-
 Polyline::Polyline(const cavc::Polyline<double> &polyline)
 {
 	m_bulges.resize(polyline.isClosed() ? polyline.size() : polyline.size() - 1);
@@ -48,6 +42,12 @@ cavc::Polyline<double> Polyline::toCavc(Orientation expectedOrientation) const
 		return inverse().toCavc();
 	}
 	return toCavc();
+}
+
+Polyline::Polyline(Bulge::List &&bulges)
+	:m_bulges(bulges)
+{
+	assert(!m_bulges.empty());
 }
 
 const QVector2D &Polyline::start() const

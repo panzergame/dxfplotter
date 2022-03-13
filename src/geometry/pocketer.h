@@ -17,6 +17,11 @@ private:
 
 	Polyline::List m_polylines;
 
+	static bool isCapable(const Polyline &polyline);
+	static cavc::OffsetLoop<double> polylineToLoop(const Polyline& polyline, Orientation expectedOrientation);
+	static Polyline loopToPolyline(const cavc::OffsetLoop<double> &loop);
+	static Polyline::List loopSetToPolylines(const cavc::OffsetLoopSet<double> &loopSet);
+	bool canContinueOffsetting(const cavc::OffsetLoopSet<double> &loopSet);
 	void pruneSingularities(std::vector<cavc::OffsetLoop<double>> &loops) const;
 	cavc::OffsetLoopSet<double> baseLoopSet() const;
 
