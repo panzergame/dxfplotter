@@ -17,7 +17,7 @@ namespace model
 
 class Layer;
 
-class Path : public Renderable, public Common::Aggregable<Path>
+class Path : public Renderable, public common::Aggregable<Path>
 {
 	Q_OBJECT;
 
@@ -48,6 +48,7 @@ public:
 	model::OffsettedPath *offsettedPath() const;
 	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
 	void resetOffset();
+	void pocket(const Path::ListCPtr &islands, float scaledRadius, float minimumPolylineLength, float minimumArcLength);
 
 	void transform(const QTransform &matrix);
 

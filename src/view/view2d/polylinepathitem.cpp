@@ -10,7 +10,7 @@ namespace view::view2d
 
 QPainterPath PolylinePathItem::paintPath() const
 {
-	const geometry::Polyline &polyline = m_path.basePolyline();
+	const geometry::Polyline &polyline = path().basePolyline();
 
 	QPainterPath painter(polyline.start().toPointF());
 
@@ -38,7 +38,7 @@ void PolylinePathItem::setupPaths()
 
 void PolylinePathItem::updateOffsetedPath()
 {
-	model::OffsettedPath *offsettedPath = m_path.offsettedPath();
+	model::OffsettedPath *offsettedPath = path().offsettedPath();
 	if (offsettedPath) {
 		m_offsettedPath = std::make_unique<OffsettedPolylinePathItem>(*offsettedPath);
 		// Link our offsetted path item for drawing

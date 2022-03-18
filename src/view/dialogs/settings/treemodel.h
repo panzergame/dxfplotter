@@ -19,7 +19,7 @@ private:
 	struct CopyItemVisitor;
 
 	// ItemModel requests each item to know its parent and also its row in parent
-	struct Node : Common::Aggregable<Node>
+	struct Node : common::Aggregable<Node>
 	{
 		int row;
 		enum class Type

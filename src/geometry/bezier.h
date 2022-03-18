@@ -11,7 +11,7 @@
 namespace geometry
 {
 
-class Bezier : public Common::Aggregable<Bezier>
+class Bezier : public common::Aggregable<Bezier>
 {
 private:
 	using Complex = std::complex<float>;

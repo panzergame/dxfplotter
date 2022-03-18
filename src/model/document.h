@@ -6,7 +6,7 @@
 namespace model
 {
 
-class Document : public QObject, public Common::Aggregable<Document>
+class Document : public QObject, public common::Aggregable<Document>
 {
 	Q_OBJECT;
 

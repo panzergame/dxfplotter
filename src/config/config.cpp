@@ -13,7 +13,7 @@ Config::Config(const std::string &filePath)
 	try {
 		m_yamlRoot = YAML::LoadFile(filePath);
 	}
-	catch (const YAML::BadFile &e) {
+	catch (const YAML::BadFile&) {
 		qInfo() << "Initializing configuration from defaults";
 	}
 
@@ -43,7 +43,7 @@ const Root &Config::root() const
 	return m_root;
 }
 
-void Config::save()
+void Config::save() const
 {
 	std::ofstream outStream(m_filePath);
 	outStream << m_yamlRoot;

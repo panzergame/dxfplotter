@@ -15,13 +15,13 @@ private:
 	using PolylineIndex = int;
 	using TipIndex = int;
 
-	struct Tip : Common::Aggregable<Tip>
+	struct Tip : common::Aggregable<Tip>
 	{
 		PolylineIndex polylineIndex;
 		// Original point from polyline.
 		QVector2D point;
 
-		enum Type {
+		enum class Type {
 			START = 0,
 			END
 		} type;
@@ -29,7 +29,7 @@ private:
 
 	static inline TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
 	{
-		return index * 2 + side;
+		return index * 2 + static_cast<int>(side);
 	}
 
 	class TipAdaptor
@@ -58,7 +58,7 @@ private:
 		struct Item
 		{
 			PolylineIndex polylineIndex;
-			enum Direction
+			enum class Direction
 			{
 				NORMAL = 0,
 				INVERT ///< Inverted with previous polyline
@@ -68,18 +68,18 @@ private:
 		using List = std::list<Item>;
 
 		List m_chain;
-		bool m_closed;
 		const Tip::List &m_tips;
 		std::set<PolylineIndex> &m_unconnectedPolylines;
 		const KDTree &m_tree;
 		const PolylineIndex m_startIndex;
 		const float m_closeTolerance;
+		bool m_closed;
 
 		template <class Inserter>
 		bool expandSide(Inserter inserter, Tip::Type side)
 		{
 			// Direction of polyline, at first normal direction.
-			Item::Direction direction = Item::NORMAL;
+			Item::Direction direction = Item::Direction::NORMAL;
 
 			PolylineIndex index = m_startIndex;
 			while (index != -1) {
@@ -121,7 +121,7 @@ private:
 						else {
 							// If end matchs start then polylines are in same direction, otherwise they are opposed.
 							const bool isOpposed = (tip.type == neighbour.type);
-							Item::Direction neighbourDirection = (Item::Direction)((direction + isOpposed) % 2);
+							Item::Direction neighbourDirection = static_cast<Item::Direction>((static_cast<int>(direction) + isOpposed) % 2);
 
 							// Insert the polyline.
 							*inserter = {neighbourIndex, neighbourDirection};
@@ -132,7 +132,7 @@ private:
 							// Continue with the neighbour polyline.
 							index = neighbourIndex;
 							// Change to opposite side if polylines are opposed.
-							side = (Tip::Type)((side + isOpposed) % 2);
+							side = static_cast<Tip::Type>((static_cast<int>(side) + isOpposed) % 2);
 							// Update direction
 							direction = neighbourDirection;
 						}
@@ -165,7 +165,7 @@ private:
 
 	Tip::List constructTips();
 
-	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree);
+	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree) const;
 
 public:
 	explicit Assembler(Polyline::List &&polylines, float closeTolerance);

@@ -42,10 +42,10 @@ model::Document::UPtr Importer::operator()(std::istream& input) const
 	const config::Profiles::Profile *profile = m_profiles.get(profileName);
 
 	if (!tool) {
-		throw Common::ImportCouldNotFindToolConfigException();
+		throw common::ImportCouldNotFindToolConfigException();
 	}
 	if (!profile) {
-		throw Common::ImportCouldNotFindProfileConfigException();
+		throw common::ImportCouldNotFindProfileConfigException();
 	}
 
 	return std::make_unique<model::Document>(std::move(task), *tool, *profile);

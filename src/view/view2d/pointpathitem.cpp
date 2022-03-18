@@ -17,7 +17,7 @@ QPainterPath PointPathItem::shapePath() const
 
 void PointPathItem::setupPosition()
 {
-	m_point = m_path.basePolyline().start().toPointF();
+	m_point = path().basePolyline().start().toPointF();
 	setPos(m_point);
 }
 

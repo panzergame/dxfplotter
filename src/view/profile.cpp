@@ -36,7 +36,7 @@ void Profile::documentChanged()
 	profileComboBox->setCurrentText(QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
 }
 
-void Profile::configChanged(const config::Config &config)
+void Profile::configChanged([[maybe_unused]] const config::Config &config)
 {
 	updateAllComboBoxesItems();
 }

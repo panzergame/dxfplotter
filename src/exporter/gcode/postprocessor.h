@@ -30,7 +30,7 @@ protected:
 			m_stream << fmt::format(format, std::forward<Args>(args)...) << "\n";
 		}
 		catch (const fmt::format_error &exception) {
-			throw Common::GCodeFormatException(format, exception.what(), fmt::to_string(args.name)...);
+			throw common::GCodeFormatException(format, exception.what(), fmt::to_string(args.name)...);
 		}
 	}
 

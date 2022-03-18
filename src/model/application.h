@@ -95,6 +95,7 @@ public:
 	void leftCutterCompensation();
 	void rightCutterCompensation();
 	void resetCutterCompensation();
+	void pocketSelection();
 
 	void transformSelection(const QTransform& matrix);
 

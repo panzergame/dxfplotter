@@ -81,10 +81,8 @@ void Application::cutterCompensation(float scale)
 	const float radius = m_openedDocument->toolConfig().general().radius();
 	const float scaledRadius = radius * scale;
 
-	m_openedDocument->task().forEachSelectedPath([scaledRadius, minimumPolylineLength=(float)dxf.minimumPolylineLength(),
-		minimumArcLength=(float)dxf.minimumArcLength()](model::Path &path){
-			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
-	});
+	Task &task = m_openedDocument->task();
+	task.cutterCompensationSelection(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 }
 
 Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer& importer)
@@ -103,7 +101,7 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 		// Create paths from merged and cleaned polylines of one layer
 		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), layerName);
 
-		Layer::UPtr& layer = layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
+		layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
 	}
 
 	return std::make_unique<Task>(std::move(layers));
@@ -240,7 +238,7 @@ bool Application::loadFromDxf(const QString &fileName)
  
 		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 	}
-	catch (const Common::FileCouldNotOpenException&) {
+	catch (const common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
@@ -257,7 +255,7 @@ bool Application::loadFromDxfplot(const QString &fileName)
  
 		m_openedDocument = importer(fileName.toStdString());
 	}
-	catch (const Common::FileCouldNotOpenException&) {
+	catch (const common::FileCouldNotOpenException&) {
 		return false;
 	}
 
@@ -308,32 +306,34 @@ void Application::rightCutterCompensation()
 void Application::resetCutterCompensation()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
+	task.resetCutterCompensationSelection();
+}
+
+void Application::pocketSelection()
+{
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const float radius = m_openedDocument->toolConfig().general().radius();
+
+	Task &task = m_openedDocument->task();
+	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 }
 
 void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([&matrix](model::Path &path){ path.transform(matrix); });
+	task.transformSelection(matrix);
 }
 
 void Application::hideSelection()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachSelectedPath([](model::Path &path){
-		path.setVisible(false);
-	});
+	task.hideSelection();
 }
 
 void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
-	task.forEachPath([](model::Path &path){
-		if (!path.visible()) {
-			path.setVisible(true);
-			path.setSelected(true);
-		}
-	});
+	task.showHidden();
 }
 
 }

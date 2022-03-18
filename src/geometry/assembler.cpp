@@ -6,16 +6,15 @@ namespace geometry
 {
 
 Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance)
-	:m_chain{{index, Item::NORMAL}},
-	m_closed(false),
+	:m_chain{{index, Item::Direction::NORMAL}},
 	m_tips(tips),
 	m_unconnectedPolylines(unconnectedPolylines),
 	m_tree(tree),
 	m_startIndex(index),
-	m_closeTolerance(closeTolerance)
-{
+	m_closeTolerance(closeTolerance),
 	// Expand chain before polyline
-	m_closed = expandSide(std::front_inserter(m_chain), Tip::START) || expandSide(std::back_inserter(m_chain), Tip::END);
+	m_closed(expandSide(std::front_inserter(m_chain), Tip::Type::START) || expandSide(std::back_inserter(m_chain), Tip::Type::END))
+{
 }
 
 /// Average point at p1 end and p2 start and assign middle point to both
@@ -31,14 +30,14 @@ Polyline Assembler::ChainBuilder::mergedPolyline(const Polyline::List& polylines
 	// Initialise with first polyline
 	const Item &firstItem = m_chain.front();
 	Polyline mergedPolyline = polylines[firstItem.polylineIndex];
-	if (firstItem.dir == Item::INVERT) {
+	if (firstItem.dir == Item::Direction::INVERT) {
 		mergedPolyline.invert();
 	}
 
 	// Merge remaining polylines
 	for (List::const_iterator it = ++m_chain.begin(), end = m_chain.end(); it != end; ++it) {
 		Polyline polyline = polylines[it->polylineIndex];
-		if (it->dir == Item::INVERT) {
+		if (it->dir == Item::Direction::INVERT) {
 			polyline.invert();
 		}
 
@@ -74,14 +73,14 @@ Assembler::Tip::List Assembler::constructTips()
 
 	for (int i = 0, size = m_unmergedPolylines.size(); i < size; ++i) {
 		const Polyline &polyline = m_unmergedPolylines[i];
-		tips.push_back({{}, i, polyline.start(), Tip::START});
-		tips.push_back({{}, i, polyline.end(), Tip::END});
+		tips.push_back({{}, i, polyline.start(), Tip::Type::START});
+		tips.push_back({{}, i, polyline.end(), Tip::Type::END});
 	}
 
 	return tips;
 }
 
-Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
+Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree) const
 {
 	// Generate all unconnected polyline index.
 	std::set<PolylineIndex> unconnectedPolylines;
@@ -107,7 +106,7 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	:m_closeTolerance(closeTolerance)
 {
 	// Dispatch polylines to already merged or not merged.
-	for (const Polyline& polyline : polylines) {
+	for (Polyline& polyline : std::move(polylines)) {
 		// Point polylines cannot be merged to others and so are ignored.
 		if (polyline.isPoint()) {
 			m_mergedPolylines.emplace_back(std::move(polyline));

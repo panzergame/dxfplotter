@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <geometry/polyline.h>
+#include <polylineutils.h>
 
 constexpr QVector2D point1(1.2, 3.4);
 constexpr QVector2D point2(4.5, 6.7);
@@ -11,7 +12,6 @@ static const geometry::Bulge bulge1(point1, point2, 0.0f);
 static const geometry::Bulge bulge1next(point2, point3, 0.0f);
 static const geometry::Bulge bulge1invert(point2, point1, 0.0f);
 static const geometry::Bulge bulge2(point3, point4, 0.0f);
-
 
 TEST(PolylineTest, WithEndAndStartEqualsAndOneBulgeIsPoint)
 {
@@ -136,4 +136,29 @@ TEST(PolylineTest, TestPointPolylineOffsetedIsPoint)
 	const geometry::Polyline &offsetedPolyline = offseted.front();
 	EXPECT_EQ(offsetedPolyline.start(), bulge.start());
 	EXPECT_EQ(offsetedPolyline.end(), bulge.end());
+}
+
+TEST(PolylineTest, TestPolylineOrientation4Bulges)
+{
+	const geometry::Polyline polyline({
+		geometry::Bulge(point1, point2, 0.0f),
+		geometry::Bulge(point2, point3, 0.0f),
+		geometry::Bulge(point3, point4, 0.0f),
+		geometry::Bulge(point4, point1, 0.0f)
+	});
+
+	ASSERT_EQ(polyline.orientation(), geometry::Orientation::CW);
+
+	const geometry::Polyline invertedPolyline = polyline.inverse();
+	ASSERT_EQ(invertedPolyline.orientation(), geometry::Orientation::CCW);
+}
+
+TEST(PolylineTest, TestConcavePolylineOrientation)
+{
+	const geometry::Polyline polyline = createStartPolyline(5.0f, 10.0f, 10);
+
+	ASSERT_EQ(polyline.orientation(), geometry::Orientation::CCW);
+
+	const geometry::Polyline invertedPolyline = polyline.inverse();
+	ASSERT_EQ(invertedPolyline.orientation(), geometry::Orientation::CW);
 }

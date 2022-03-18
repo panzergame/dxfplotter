@@ -8,7 +8,7 @@
 namespace model
 {
 
-class Task : public QObject, public Common::Aggregable<Task>
+class Task : public QObject, public common::Aggregable<Task>
 {
 	Q_OBJECT;
 
@@ -19,7 +19,7 @@ private:
 	Layer::ListUPtr m_layers;
 
 	Path::ListPtr m_stack;
-	Path::SetPtr m_selectedPaths;
+	Path::ListPtr m_selectedPaths;
 
 	void initPathsFromLayers();
 	void initStackFromSortedPaths();
@@ -68,11 +68,18 @@ public:
 	template <class Functor>
 	void forEachSelectedPath(Functor &&functor) const
 	{
-		Path::SetPtr selectedPaths(m_selectedPaths);
+		const Path::ListPtr selectedPaths(m_selectedPaths);
 		for (Path *path : selectedPaths) {
 			functor(*path);
 		}
 	}
+
+	void resetCutterCompensationSelection();
+	void cutterCompensationSelection(float scaledRadius, float minimumPolylineLength, float minimumArcLength);
+	void pocketSelection(float radius, float minimumPolylineLength, float minimumArcLength);
+	void transformSelection(const QTransform& matrix);
+	void hideSelection();
+	void showHidden();
 
 	int layerCount() const;
 	const Layer &layerAt(int index) const;

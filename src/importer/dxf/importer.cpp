@@ -24,7 +24,7 @@ Importer::Importer(const std::string& filename, float splineToArcPrecision, floa
 
 	dxfRW rw(filename.c_str());
 	if (!rw.read(&interface, false)) {
-		throw Common::FileCouldNotOpenException();
+		throw common::FileCouldNotOpenException();
 	}
 }
 

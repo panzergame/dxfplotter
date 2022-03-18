@@ -19,7 +19,6 @@ BulgePainter::BulgePainter(QPainterPath &painter)
 void BulgePainter::operator()(const geometry::Bulge &bulge)
 {
 	if (bulge.isLine()) {
-		const QVector2D &start = bulge.start();
 		const QVector2D &end = bulge.end();
 		m_painter.lineTo(end.toPointF());
 	}

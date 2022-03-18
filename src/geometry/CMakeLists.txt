@@ -7,6 +7,7 @@ set(SRC
 	cleaner.cpp
 	circle.cpp
 	cubicspline.cpp
+	pocketer.cpp
 	polyline.cpp
 	quadraticspline.cpp
 	spline.cpp
