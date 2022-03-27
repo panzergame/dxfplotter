@@ -15,6 +15,7 @@ Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)
 	m_end(end),
 	m_tangent(tangent)
 {
+	assert(-1.0f <= tangent && tangent <= 1.0f);
 }
 
 Bulge::Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double> &v2)
