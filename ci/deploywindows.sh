@@ -6,7 +6,7 @@ set -e
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
 TAG=$(git describe --tags)
-RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64"
+RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64-windows"
 
 BUILD_DIR="build"
 BINARY_NAME="dxfplotter.exe"

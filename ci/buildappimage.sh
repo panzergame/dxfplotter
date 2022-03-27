@@ -28,7 +28,7 @@ OLD_CWD=$(readlink -f .)
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
 TAG=$(git describe --tags)
-RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64"
+RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64-linux"
 
 # switch to build dir
 pushd "$BUILD_DIR"
