@@ -20,6 +20,7 @@ public:
 	{
 		const float splineToArcPrecision;
 		const float minimumSplineLength;
+		const float minimumArcLength;
 	};
 
 protected:
@@ -157,6 +158,23 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 	}
 }
 
+inline std::optional<geometry::Polyline> biarcToPolylineIfCloseEnough(const geometry::Biarc & biarc, const geometry::Bezier &bezier, const BaseEntityImporter::Settings &settings)
+{
+	const float approximateBiarcLength = biarc.approximateLength();
+	if (approximateBiarcLength > settings.minimumArcLength) {
+		return std::make_optional(biarc.toLinePolyline());
+	}
+	else {
+		const float error = bezier.maxError(biarc);
+		if (error < settings.splineToArcPrecision) {
+			// The approximation is close enough.
+			return std::make_optional(biarc.toPolyline());
+		}
+	}
+
+	return std::nullopt;
+}
+
 inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, const BaseEntityImporter::Settings &settings)
 {
 	// Queue of bezier to convert to biarc
@@ -173,13 +191,9 @@ inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, c
 			continue;
 		}
 		else {
-			const std::optional<geometry::Biarc> optBiarc = bezier.toBiarc();
-			if (optBiarc) {
-				const geometry::Biarc &biarc = *optBiarc;
-				const float error = bezier.maxError(biarc);
-				if (error < settings.splineToArcPrecision) {
-					// The approximation is close enough.
-					polyline += biarc.toPolyline();
+			if (const std::optional<geometry::Biarc> optBiarc = bezier.toBiarc()) {
+				if (const std::optional<geometry::Polyline> optBiarcPolyline = biarcToPolylineIfCloseEnough(*optBiarc, bezier, settings)) {
+					polyline += *optBiarcPolyline;
 					continue;
 				}
 			}

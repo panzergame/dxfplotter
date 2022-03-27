@@ -44,6 +44,17 @@ QVector2D Biarc::tangentAtMiddle() const
 	return ReflectLine(m_tangent1.normalized(), perpendicularLine1);
 }
 
+float Biarc::approximateLength() const
+{
+	return (m_point1 - m_middle).length() + (m_point2 - m_middle).length();
+}
+
+Polyline Biarc::toLinePolyline() const
+{
+	const Bulge bulge(m_point1, m_point2, 0.0f);
+	return Polyline({bulge});
+}
+
 Polyline Biarc::toPolyline() const
 {
 	/* Angle from end to start line with arc tangent at start point is double of

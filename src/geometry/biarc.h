@@ -35,6 +35,9 @@ public:
 	const QVector2D &middle() const;
 	QVector2D tangentAtMiddle() const;
 
+	float approximateLength() const;
+
+	Polyline toLinePolyline() const;
 	Polyline toPolyline() const;
 };
 

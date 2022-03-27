@@ -234,7 +234,7 @@ bool Application::loadFromDxf(const QString &fileName)
 	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	try {
-		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength());
+		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
  
 		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 	}
