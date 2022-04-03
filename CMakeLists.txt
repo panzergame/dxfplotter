@@ -45,6 +45,7 @@ set(INCLUDE_DIRS
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
+	thirdparty/taskflow/include
 	thirdparty/yaml-cpp/include
 	template
 	${CMAKE_BINARY_DIR}/src

@@ -4,6 +4,9 @@
 
 #include <QDebug> // TODO
 
+#include <taskflow/taskflow.hpp>
+#include <taskflow/algorithm/transform.hpp>
+
 namespace geometry
 {
 
@@ -160,15 +163,44 @@ public:
 
 Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength)
 {
-	for (const Polyline &polyline : polylines) {
-		// Prune small polyline length
-		PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
+	const std::chrono::time_point<std::chrono::system_clock> start = std::chrono::system_clock::now();
 
-		// Convert small arcs to lines
-		ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+	m_polylines.resize(polylines.size());
 
-		m_polylines.push_back(arcCleaner.polyline());
-	}
+#if 0
+	std::transform(polylines.begin(), polylines.end(), m_polylines.begin(),
+		[minimumPolylineLength, minimumArcLength](const Polyline &polyline) {
+			// Prune small polyline length
+			PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
+
+			// Convert small arcs to lines
+			ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+
+			return arcCleaner.polyline();
+		});
+#else
+
+	tf::Executor executor;
+	tf::Taskflow taskflow;
+
+	taskflow.transform(polylines.begin(), polylines.end(), m_polylines.begin(),
+		[minimumPolylineLength, minimumArcLength](const Polyline &polyline) {
+			// Prune small polyline length
+			PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
+
+			// Convert small arcs to lines
+			ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+
+			return arcCleaner.polyline();
+		});
+
+	executor.run(taskflow);
+	executor.wait_for_all();
+#endif
+
+	const std::chrono::time_point<std::chrono::system_clock> end = std::chrono::system_clock::now();
+
+	qInfo() << std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
 
 Polyline::List &&Cleaner::polylines()
