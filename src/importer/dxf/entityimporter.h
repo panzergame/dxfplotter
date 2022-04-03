@@ -187,7 +187,9 @@ inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, c
 		bezierStack.pop();
 
 		if (bezier.approximateLength() < settings.minimumSplineLength) {
-			polyline += bezier.toLine();
+			if (!bezier.isPoint()) {
+				polyline += bezier.toLine();
+			}
 			continue;
 		}
 		else {
