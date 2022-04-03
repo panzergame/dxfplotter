@@ -51,6 +51,8 @@ public:
 	std::optional<Biarc> toBiarc() const;
 	Polyline toLine() const;
 
+	bool isPoint() const;
+
 	float maxError(const Biarc &biarc) const;
 };
 

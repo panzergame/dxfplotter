@@ -239,6 +239,11 @@ Polyline Bezier::toLine() const
 	return Polyline({Bulge{m_point1, m_point2, 0.0f}});
 }
 
+bool Bezier::isPoint() const
+{
+	return (m_point1 == m_point2);
+}
+
 float Bezier::maxError(const Biarc &biarc) const
 {
 	const QVector2D &middle = biarc.middle();
