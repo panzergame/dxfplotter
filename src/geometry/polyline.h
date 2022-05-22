@@ -3,6 +3,7 @@
 #include <common/aggregable.h>
 
 #include <geometry/bulge.h>
+#include <geometry/cavcutils.h>
 
 #include <cavc/polylineoffset.hpp>
 
