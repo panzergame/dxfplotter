@@ -33,7 +33,8 @@ find_package(codecov)
 
 find_package(PythonInterp)
 
-find_package(Qt5 COMPONENTS REQUIRED 
+find_package(Qt6 COMPONENTS REQUIRED
+	Core
 	Widgets
 	Gui
 )
@@ -49,8 +50,8 @@ set(INCLUDE_DIRS
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
-	${Qt5Widgets_INCLUDE_DIRS}
-	${Qt5Gui_INCLUDE_DIRS}
+	${Qt6Widgets_INCLUDE_DIRS}
+	${Qt6Gui_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -69,7 +70,7 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt::fmt
-	Qt5::Widgets
+	Qt::Widgets
 	yaml-cpp
 )
 
