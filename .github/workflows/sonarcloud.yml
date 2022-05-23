@@ -14,7 +14,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qtbase6-dev lcov
+          sudo apt-get -y install qt6-base-dev lcov
       - name: Install build wrapper
         run: |
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
