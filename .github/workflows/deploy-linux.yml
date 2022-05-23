@@ -15,7 +15,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qtbase5-dev
+          sudo apt-get -y install qtbase6-dev
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release
