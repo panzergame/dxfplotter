@@ -15,7 +15,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qt6-base-dev freeglut3
+          sudo apt-get -y install qt6-base-dev freeglut3-dev
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release
