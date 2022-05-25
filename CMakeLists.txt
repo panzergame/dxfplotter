@@ -8,6 +8,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
@@ -38,6 +39,8 @@ find_package(Qt6 COMPONENTS REQUIRED
 	Widgets
 	Gui
 )
+
+qt_standard_project_setup()
 
 set(INCLUDE_DIRS
 	src
