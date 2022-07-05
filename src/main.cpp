@@ -9,6 +9,17 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
+#include <QLabel>
+
+#include <QtPlugin>
+
+Q_IMPORT_PLUGIN(QWasmIntegrationPlugin)
+Q_IMPORT_PLUGIN(QSvgIconPlugin)
+Q_IMPORT_PLUGIN(QGifPlugin)
+Q_IMPORT_PLUGIN(QICOPlugin)
+Q_IMPORT_PLUGIN(QJpegPlugin)
+Q_IMPORT_PLUGIN(QSvgPlugin)
+
 void setDarkPalette(QApplication &qapp)
 {
 	QPalette palette;
@@ -71,5 +82,5 @@ int main(int argc, char *argv[])
 	const QString fileName = parser.positionalArguments().value(0, "");
 	app.loadFileFromCmd(fileName);
 
-	qapp.exec();
+	return qapp.exec();
 }

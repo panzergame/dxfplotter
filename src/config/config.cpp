@@ -1,8 +1,11 @@
+#include "yaml-cpp/exceptions.h"
 #include <config.h>
 
 #include <QDebug>
 
 #include <fstream>
+
+#include <emscripten.h>
 
 namespace config
 {
@@ -11,7 +14,8 @@ Config::Config(const std::string &filePath)
 	:m_filePath(filePath)
 {
 	try {
-		m_yamlRoot = YAML::LoadFile(filePath);
+		//m_yamlRoot = YAML::LoadFile(filePath);
+		throw YAML::BadFile(filePath);
 	}
 	catch (const YAML::BadFile&) {
 		qInfo() << "Initializing configuration from defaults";

@@ -105,8 +105,8 @@ if (BUILD_TESTING)
 	add_subdirectory(test)
 endif()
 
-add_executable(dxfplotter src/main.cpp)
-target_link_libraries(dxfplotter ${LINK_LIBRARIES})
+qt_add_executable(dxfplotter src/main.cpp)
+target_link_libraries(dxfplotter PRIVATE ${LINK_LIBRARIES})
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)

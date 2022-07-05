@@ -19,22 +19,55 @@
 #include <QFileInfo>
 #include <QDebug>
 
+#include <emscripten.h>
+
 namespace model
 {
 
 static const QString configFileName = "config.yml";
+
+static QDir configFileDir()
+{
+	return QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+}
+
+static void ensureDirExists(const QDir &directory)
+{
+	directory.mkpath(".");
+	
+	const char *dirPath = directory.absolutePath().toUtf8().constData();
+
+	EM_ASM({
+		let directory = UTF8ToString($0);
+		console.log("Setup config directory to: " + directory);
+
+		let analyse = FS.analyzePath(directory);
+		if (!analyse.exists) {
+			// Make a directory other than '/'
+			FS.mkdir(directory);
+		}
+
+		// Then mount with IDBFS type
+		FS.mount(IDBFS, {}, directory);
+
+		// Then sync
+		FS.syncfs(true, function (err) {
+			// Error
+		});
+	}, dirPath);
+}
 
 /** Retrieves application config file path
  * @return config file path
  */
 static std::string configFilePath()
 {
-	const QDir dir = QDir(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation));
+	const QDir directory = configFileDir();
 
 	// Ensure the path exists
-	dir.mkpath(".");
+	ensureDirExists(directory);
 
-	const QString path = dir.filePath(configFileName);
+	const QString path = directory.filePath(configFileName);
 
 	return path.toStdString();
 }
