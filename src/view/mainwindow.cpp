@@ -91,19 +91,27 @@ void MainWindow::setupMenuActions()
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 }
 
-void MainWindow::setTaskToolsEnabled(bool enabled)
+void MainWindow::setupOpenedDocumentActions()
 {
-	actionExportFile->setEnabled(enabled);
-	actionExportAsFile->setEnabled(enabled);
-	actionSaveFile->setEnabled(enabled);
-	actionSaveAsFile->setEnabled(enabled);
-	actionLeftCutterCompensation->setEnabled(enabled);
-	actionRightCutterCompensation->setEnabled(enabled);
-	actionResetCutterCompensation->setEnabled(enabled);
-	actionHideSelection->setEnabled(enabled);
-	actionShowHidden->setEnabled(enabled);
-	actionTransformSelection->setEnabled(enabled);
-	actionMirrorSelection->setEnabled(enabled);
+	m_openedDocumentActions.addAction(actionExportFile);
+	m_openedDocumentActions.addAction(actionExportAsFile);
+	m_openedDocumentActions.addAction(actionSaveFile);
+	m_openedDocumentActions.addAction(actionSaveAsFile);
+	m_openedDocumentActions.addAction(actionLeftCutterCompensation);
+	m_openedDocumentActions.addAction(actionRightCutterCompensation);
+	m_openedDocumentActions.addAction(actionResetCutterCompensation);
+	m_openedDocumentActions.addAction(actionPocketSelection);
+	m_openedDocumentActions.addAction(actionHideSelection);
+	m_openedDocumentActions.addAction(actionShowHidden);
+	m_openedDocumentActions.addAction(actionTransformSelection);
+	m_openedDocumentActions.addAction(actionMirrorSelection);
+
+	m_openedDocumentActions.setExclusive(true);
+}
+
+void MainWindow::setDocumentToolsEnabled(bool enabled)
+{
+	m_openedDocumentActions.setEnabled(enabled);
 }
 
 QString MainWindow::defaultFileName(const QString &extension) const
@@ -113,13 +121,15 @@ QString MainWindow::defaultFileName(const QString &extension) const
 
 
 MainWindow::MainWindow(model::Application &app)
-	:m_app(app)
+	:m_app(app),
+	m_openedDocumentActions(this)
 {
 	setupUi();
 	setupMenuActions();
+	setupOpenedDocumentActions();
 	showMaximized();
 
-	setTaskToolsEnabled(false);
+	setDocumentToolsEnabled(false);
 
 	connect(&m_app, &model::Application::titleChanged, this, &MainWindow::setWindowTitle);
 	connect(&m_app, &model::Application::documentChanged, this, &MainWindow::documentChanged);
@@ -208,7 +218,7 @@ void MainWindow::mirrorSelection()
 
 void MainWindow::documentChanged(model::Document *newDocument)
 {
-	setTaskToolsEnabled((newDocument != nullptr));
+	setDocumentToolsEnabled((newDocument != nullptr));
 }
 
 void MainWindow::displayError(const QString &message)

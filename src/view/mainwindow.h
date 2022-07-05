@@ -5,6 +5,7 @@
 #include <uic/ui_mainwindow.h>
 
 #include <QMainWindow>
+#include <QActionGroup>
 
 class QComboBox;
 
@@ -25,13 +26,16 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 private:
 	model::Application &m_app;
 
+	QActionGroup m_openedDocumentActions;
+
 	QWidget *setupLeftPanel();
 	QWidget *setupCenterPanel();
 	void setupToolBar();
 	void setupUi();
 	void setupMenuActions();
+	void setupOpenedDocumentActions();
 
-	void setTaskToolsEnabled(bool enabled);
+	void setDocumentToolsEnabled(bool enabled);
 
 	QString defaultFileName(const QString &extension) const;
 
