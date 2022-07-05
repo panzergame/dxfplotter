@@ -14,7 +14,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qt6-base-dev qt6-svg freeglut3-dev lcov
+          sudo apt-get -y install qt6-base-dev libqt6svg6-dev freeglut3-dev lcov
       - name: Install build wrapper
         run: |
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
