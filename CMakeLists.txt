@@ -38,6 +38,7 @@ find_package(Qt6 COMPONENTS REQUIRED
 	Core
 	Widgets
 	Gui
+	Svg
 )
 
 qt_standard_project_setup()
@@ -74,6 +75,7 @@ set(LINK_LIBRARIES
 	libdxfrw
 	fmt::fmt
 	Qt::Widgets
+	Qt::Svg
 	yaml-cpp
 )
 
