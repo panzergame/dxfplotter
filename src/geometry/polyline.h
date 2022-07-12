@@ -42,6 +42,8 @@ public:
 
 	Orientation orientation() const;
 
+	Rect boundingRect() const;
+
 	Polyline &invert();
 	Polyline inverse() const;
 

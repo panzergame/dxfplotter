@@ -38,3 +38,22 @@ TEST(BulgeTest, LinifyBecomeIsLine)
 
 	ASSERT_TRUE(bulge.isLine());
 }
+
+TEST(BulgeTest, LineBoundingRect)
+{
+	const geometry::Rect box = bulge1.boundingRect();
+	EXPECT_FLOAT_EQ(1.2, box.min().x());
+	EXPECT_FLOAT_EQ(4.5, box.max().x());
+	EXPECT_FLOAT_EQ(3.4, box.min().y());
+	EXPECT_FLOAT_EQ(6.7, box.max().y());
+}
+
+TEST(BulgeTest, ArcBoundingRect)
+{
+	const geometry::Rect box = bulge2.boundingRect();
+	EXPECT_FLOAT_EQ(4.5, box.min().x());
+	EXPECT_FLOAT_EQ(8.19022083, box.max().x());
+	EXPECT_FLOAT_EQ(5.85977936, box.min().y());
+	EXPECT_FLOAT_EQ(9.1, box.max().y());
+}
+

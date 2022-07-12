@@ -127,6 +127,18 @@ Orientation Polyline::orientation() const
 	return (windingSum > 0) ? Orientation::CW : Orientation::CCW;
 }
 
+Rect Polyline::boundingRect() const
+{
+	Bulge::List::const_iterator it = m_bulges.begin();
+	const Rect firstBoundingRest = (it++)->boundingRect();
+
+	return std::transform_reduce(it, m_bulges.end(), firstBoundingRest, std::bit_or(),
+		[](const Bulge& bulge){
+			return bulge.boundingRect();
+		});
+}
+
+
 Polyline &Polyline::invert()
 {
 	for (Bulge &bulge : m_bulges) {
