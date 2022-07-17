@@ -88,6 +88,8 @@ QRectF PolylinePathItem::boundingRect() const
 void PolylinePathItem::basePolylineTransformed()
 {
 	setupPaths();
+
+	update();
 }
 
 }

@@ -67,6 +67,8 @@ void OffsettedPolylinePathItem::deselected()
 void OffsettedPolylinePathItem::polylinesTransformed()
 {
 	setupPaths();
+
+	update();
 }
 
 }
