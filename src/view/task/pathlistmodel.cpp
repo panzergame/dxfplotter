@@ -1,3 +1,4 @@
+#include "qnamespace.h"
 #include <pathlistmodel.h>
 
 #include <QIcon>
@@ -38,10 +39,10 @@ QVariant PathListModel::data(const QModelIndex &index, int role) const
 				case 1:
 				{
 					if (path.globallyVisible()) {
-						return QIcon::fromTheme("object-visible");
+						return QIcon::fromTheme(":/icons/layer-visible-on.svg");
 					}
 					else {
-						return QIcon::fromTheme("object-hidden");
+						return QIcon::fromTheme(":/icons/layer-visible-off.svg");
 					}
 					break;
 				}
@@ -65,7 +66,7 @@ int PathListModel::columnCount([[maybe_unused]] const QModelIndex& parent) const
 
 Qt::ItemFlags PathListModel::flags(const QModelIndex &index) const
 {
-	if (index.column() == 0) {
+	if (index.column() == 0) {                                                                        
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	}
 

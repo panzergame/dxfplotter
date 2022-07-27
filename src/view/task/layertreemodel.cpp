@@ -38,10 +38,10 @@ QVariant LayerTreeModel::data(const QModelIndex &index, int role) const
 				case 1:
 				{
 					if (item.visible()) {
-						return QIcon::fromTheme("object-visible");
+						return QIcon::fromTheme(":/icons/layer-visible-on.svg");
 					}
 					else {
-						return QIcon::fromTheme("object-hidden");
+						return QIcon::fromTheme(":/icons/layer-visible-off.svg");
 					}
 					break;
 				}
