@@ -28,7 +28,7 @@ class Entry : public IEntry
 };
 
 template <>
-class Entry<float> : public QDoubleSpinBox, public IEntry
+class Entry<float> final: public QDoubleSpinBox, public IEntry
 {
 private:
 	config::Property<float> &m_property;
@@ -43,14 +43,14 @@ public:
 		setValue((float)m_property);
 	}
 
-	~Entry() final
+	~Entry()
 	{
 		m_property = (float)value();
 	}
 };
 
 template <>
-class Entry<int> : public QSpinBox, public IEntry
+class Entry<int> final: public QSpinBox, public IEntry
 {
 private:
 	config::Property<int> &m_property;
@@ -63,14 +63,14 @@ public:
 		setValue(m_property);
 	}
 
-	~Entry() final
+	~Entry()
 	{
 		m_property = value();
 	}
 };
 
 template <>
-class Entry<std::string> : public QLineEdit, public IEntry
+class Entry<std::string> final: public QLineEdit, public IEntry
 {
 private:
 	config::Property<std::string> &m_property;
@@ -83,14 +83,14 @@ public:
 		setText(QString::fromStdString(m_property));
 	}
 
-	~Entry() final
+	~Entry()
 	{
 		m_property = text().toStdString();
 	}
 };
 
 template <>
-class Entry<bool> : public QCheckBox, public IEntry
+class Entry<bool> final: public QCheckBox, public IEntry
 {
 private:
 	config::Property<bool> &m_property;
@@ -103,14 +103,14 @@ public:
 		setChecked(m_property);
 	}
 
-	~Entry() final
+	~Entry()
 	{
 		m_property = isChecked();
 	}
 };
 
 template <class EnumType>
-class Entry<EnumType, std::enable_if_t<std::is_enum_v<EnumType>>> : public QComboBox, public IEntry
+class Entry<EnumType, std::enable_if_t<std::is_enum_v<EnumType>>> final: public QComboBox, public IEntry
 {
 private:
 	config::Property<EnumType> &m_property;
@@ -130,9 +130,9 @@ public:
 		setCurrentText(selectedName);
 	}
 
-	~Entry() final
+	~Entry()
 	{
-		m_property = static_cast<EnumType>(currentData().value<int>());
+		m_property = static_cast<EnumType>(currentData().template value<int>());
 	}
 };
 

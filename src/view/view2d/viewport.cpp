@@ -370,6 +370,7 @@ Viewport::Viewport(model::Application &app)
 	setResizeAnchor(AnchorUnderMouse);
 	setTransformationAnchor(AnchorUnderMouse);
 
+	setViewportUpdateMode(FullViewportUpdate);
 	setRenderHints(QPainter::Antialiasing);
 
 	// Hide scroll bars

@@ -15,6 +15,11 @@
 
 namespace geometry
 {
+	namespace precision
+	{
+		constexpr float fuzzyAngle = 1e-5f;
+	}
+
 	using Point2DList = std::vector<QVector2D>;
 
 	enum class Orientation
@@ -29,17 +34,19 @@ namespace geometry
 		BACKWARD
 	};
 
-	inline geometry::CuttingDirection operator|(const geometry::CuttingDirection &dir1, const geometry::CuttingDirection &dir2)
+	inline CuttingDirection operator|(const CuttingDirection &dir1, const CuttingDirection &dir2)
 	{
-		return static_cast<geometry::CuttingDirection>((static_cast<int>(dir1) + static_cast<int>(dir2)) % 2);
+		return static_cast<CuttingDirection>((static_cast<int>(dir1) + static_cast<int>(dir2)) % 2);
+	}
+
+	inline float CrossProduct(const QVector2D &a, const QVector2D &b)
+	{
+		return a.x() * b.y() - b.x() * a.y();
 	}
 
 	inline float CrossProduct(const QVector2D &p0, const QVector2D &p1, const QVector2D &p2)
 	{
-		const QVector2D x = p1 - p0;
-		const QVector2D y = p2 - p0;
-
-		return x.x() * y.y() - y.x() * x.y();
+		return CrossProduct(p1 - p0, p2 - p0);
 	}
 
 	inline std::optional<QVector2D> ForwardLineIntersection(const QVector2D &startA, const QVector2D &endA,
@@ -85,7 +92,7 @@ namespace geometry
 		return vector - 2.0f * QVector2D::dotProduct(vector, normal) * normal;
 	}
 
-	inline float NormalizedAngle(float angle)
+	constexpr float NormalizedAngle(float angle)
 	{
 		return (angle < 0.0f) ? (angle + M_PI * 2.0f) : angle;
 	}
@@ -98,7 +105,7 @@ namespace geometry
 	/** Ensure start < end assuming start and end are angle of a CCW arc.
 	 * @return new end angle, may remain unchanged
 	 */
-	inline float EnsureEndGreater(float start, float end)
+	constexpr float EnsureEndGreater(float start, float end)
 	{
 		if (end < start) {
 			// Add pi*2 ensuring end is greater than start.
@@ -111,7 +118,7 @@ namespace geometry
 	}
 
 	/// Return counter clockwise delta angle between start and end
-	inline float DeltaAngle(float start, float end)
+	constexpr float DeltaAngle(float start, float end)
 	{
 		return (EnsureEndGreater(start, end) - start);
 	}

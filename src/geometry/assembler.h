@@ -5,6 +5,7 @@
 #include <nanoflann.hpp>
 
 #include <set>
+#include <list>
 
 namespace geometry
 {

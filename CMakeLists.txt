@@ -3,11 +3,16 @@ cmake_minimum_required(VERSION 3.15)
 project(dxfplotter)
 
 include(CTest)
+include(CPack)
+
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tristan Porteries")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
@@ -33,10 +38,14 @@ find_package(codecov)
 
 find_package(PythonInterp)
 
-find_package(Qt5 COMPONENTS REQUIRED 
+find_package(Qt6 COMPONENTS REQUIRED
+	Core
 	Widgets
 	Gui
+	Svg
 )
+
+#qt_standard_project_setup()
 
 set(INCLUDE_DIRS
 	src
@@ -49,8 +58,8 @@ set(INCLUDE_DIRS
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
-	${Qt5Widgets_INCLUDE_DIRS}
-	${Qt5Gui_INCLUDE_DIRS}
+	${Qt6Widgets_INCLUDE_DIRS}
+	${Qt6Gui_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -69,7 +78,8 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt::fmt
-	Qt5::Widgets
+	Qt::Widgets
+	Qt::Svg
 	yaml-cpp
 )
 

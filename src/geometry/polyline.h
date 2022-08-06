@@ -3,6 +3,7 @@
 #include <common/aggregable.h>
 
 #include <geometry/bulge.h>
+#include <geometry/cavcutils.h>
 
 #include <cavc/polylineoffset.hpp>
 
@@ -40,6 +41,8 @@ public:
 	float length() const;
 
 	Orientation orientation() const;
+
+	Rect boundingRect() const;
 
 	Polyline &invert();
 	Polyline inverse() const;

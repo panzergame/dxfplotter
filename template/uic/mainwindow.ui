@@ -98,7 +98,7 @@
   <action name="actionOpenFile">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/document-open.svg</normaloff>:/icons/icons/document-open.svg</iconset>
+     <normaloff>:/icons/document-open.svg</normaloff>:/icons/document-open.svg</iconset>
    </property>
    <property name="text">
     <string>Open</string>
@@ -110,7 +110,7 @@
   <action name="actionQuit">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/application-exit.svg</normaloff>:/icons/icons/application-exit.svg</iconset>
+     <normaloff>:/icons/application-exit.svg</normaloff>:/icons/application-exit.svg</iconset>
    </property>
    <property name="text">
     <string>Quit</string>
@@ -122,7 +122,7 @@
   <action name="actionExportFile">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/document-export.svg</normaloff>:/icons/icons/document-export.svg</iconset>
+     <normaloff>:/icons/document-export.svg</normaloff>:/icons/document-export.svg</iconset>
    </property>
    <property name="text">
     <string>Export</string>
@@ -134,7 +134,7 @@
   <action name="actionOpenSettings">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/configure.svg</normaloff>:/icons/icons/configure.svg</iconset>
+     <normaloff>:/icons/configure.svg</normaloff>:/icons/configure.svg</iconset>
    </property>
    <property name="text">
     <string>Settings</string>
@@ -143,7 +143,7 @@
   <action name="actionLeftCutterCompensation">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/path-outset.svg</normaloff>:/icons/icons/path-outset.svg</iconset>
+     <normaloff>:/icons/path-outset.svg</normaloff>:/icons/path-outset.svg</iconset>
    </property>
    <property name="text">
     <string>Left Cutter Compensation</string>
@@ -155,7 +155,7 @@
   <action name="actionRightCutterCompensation">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/path-inset.svg</normaloff>:/icons/icons/path-inset.svg</iconset>
+     <normaloff>:/icons/path-inset.svg</normaloff>:/icons/path-inset.svg</iconset>
    </property>
    <property name="text">
     <string>Right Cutter Compensation</string>
@@ -167,7 +167,7 @@
   <action name="actionResetCutterCompensation">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/show-path-outline.svg</normaloff>:/icons/icons/show-path-outline.svg</iconset>
+     <normaloff>:/icons/show-path-outline.svg</normaloff>:/icons/show-path-outline.svg</iconset>
    </property>
    <property name="text">
     <string>Reset Cutter Compensation</string>
@@ -179,7 +179,7 @@
   <action name="actionHideSelection">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/layer-visible-off.svg</normaloff>:/icons/icons/layer-visible-off.svg</iconset>
+     <normaloff>:/icons/layer-visible-off.svg</normaloff>:/icons/layer-visible-off.svg</iconset>
    </property>
    <property name="text">
     <string>Hide Selection</string>
@@ -191,7 +191,7 @@
   <action name="actionShowHidden">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/layer-visible-on.svg</normaloff>:/icons/icons/layer-visible-on.svg</iconset>
+     <normaloff>:/icons/layer-visible-on.svg</normaloff>:/icons/layer-visible-on.svg</iconset>
    </property>
    <property name="text">
     <string>Show Hidden</string>
@@ -206,7 +206,7 @@
   <action name="actionSaveFile">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/document-save.svg</normaloff>:/icons/icons/document-save.svg</iconset>
+     <normaloff>:/icons/document-save.svg</normaloff>:/icons/document-save.svg</iconset>
    </property>
    <property name="text">
     <string>Save</string>
@@ -218,7 +218,7 @@
   <action name="actionSaveAsFile">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/document-save-as.svg</normaloff>:/icons/icons/document-save-as.svg</iconset>
+     <normaloff>:/icons/document-save-as.svg</normaloff>:/icons/document-save-as.svg</iconset>
    </property>
    <property name="text">
     <string>Save As</string>
@@ -230,7 +230,7 @@
   <action name="actionTransformSelection">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/zoom-in.svg</normaloff>:/icons/icons/zoom-in.svg</iconset>
+     <normaloff>:/icons/zoom-in.svg</normaloff>:/icons/zoom-in.svg</iconset>
    </property>
    <property name="text">
     <string>Transform Selection</string>
@@ -242,7 +242,7 @@
   <action name="actionExportAsFile">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/document-export.svg</normaloff>:/icons/icons/document-export.svg</iconset>
+     <normaloff>:/icons/document-export.svg</normaloff>:/icons/document-export.svg</iconset>
    </property>
    <property name="text">
     <string>Export As</string>
@@ -257,7 +257,7 @@
   <action name="actionMirrorSelection">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/resizecol.svg</normaloff>:/icons/icons/resizecol.svg</iconset>
+     <normaloff>:/icons/resizecol.svg</normaloff>:/icons/resizecol.svg</iconset>
    </property>
    <property name="text">
     <string>Mirror Selection</string>
@@ -269,7 +269,7 @@
   <action name="actionPocketSelection">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
-     <normaloff>:/icons/icons/pocket-shape.svg</normaloff>:/icons/icons/pocket-shape.svg</iconset>
+     <normaloff>:/icons/pocket-shape.svg</normaloff>:/icons/pocket-shape.svg</iconset>
    </property>
    <property name="text">
     <string>Pocket Selection</string>

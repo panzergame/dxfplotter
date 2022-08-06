@@ -161,7 +161,7 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 inline std::optional<geometry::Polyline> biarcToPolylineIfCloseEnough(const geometry::Biarc & biarc, const geometry::Bezier &bezier, const BaseEntityImporter::Settings &settings)
 {
 	const float approximateBiarcLength = biarc.approximateLength();
-	if (approximateBiarcLength > settings.minimumArcLength) {
+	if (approximateBiarcLength < settings.minimumArcLength) {
 		return std::make_optional(biarc.toLinePolyline());
 	}
 	else {

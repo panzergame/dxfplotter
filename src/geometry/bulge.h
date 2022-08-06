@@ -5,6 +5,7 @@
 #include <geometry/arc.h>
 #include <geometry/circle.h>
 #include <geometry/utils.h>
+#include <geometry/rect.h>
 
 #include <cavc/plinesegment.hpp>
 
@@ -26,6 +27,10 @@ private:
 
 	float m_tangent;
 
+	float arcRadius() const;
+	QVector2D relativeArcCenter() const;
+	Point2DList arcBoundingPoints() const;
+
 public:
 	/** Define a bulge
 	 * @param start Starting point of the bulge
@@ -46,6 +51,8 @@ public:
 	float &tangent();
 
 	float length() const;
+
+	Rect boundingRect() const;
 
 	/// Change direction
 	void invert();

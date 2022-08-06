@@ -1,4 +1,6 @@
 #include <bulge.h>
+#include <cmath>
+#include <iterator>
 #include <utils.h>
 #include <limits>
 
@@ -9,6 +11,74 @@
 
 namespace geometry
 {
+
+float Bulge::arcRadius() const
+{
+	const float absTangent = std::abs(m_tangent);
+
+	const QVector2D line = m_end - m_start;
+	const float lineLength = line.length();
+	const float radius = (lineLength * (1.0f + m_tangent * m_tangent)) / (4.0f * absTangent);
+
+	return radius;
+}
+
+QVector2D Bulge::relativeArcCenter() const
+{
+	const QVector2D line = m_end - m_start;
+	const QVector2D halfLine = line / 2.0f;
+
+	const float theta4 = std::atan(m_tangent);
+	const float lineToCenterAngle = M_PI_2 - theta4 * 2.0f;
+
+	if (lineToCenterAngle < precision::fuzzyAngle) {
+		return halfLine;
+	}
+	else {
+		const float lineToCenterTangent = std::tan(lineToCenterAngle);
+
+		const QVector2D perpendicularHalfLine(-halfLine.y(), halfLine.x());
+		const QVector2D relativeCenter = halfLine + perpendicularHalfLine * lineToCenterTangent;
+		return relativeCenter;
+	}
+}
+
+Point2DList Bulge::arcBoundingPoints() const
+{
+	Point2DList points;
+
+	const QVector2D relativeCenter = relativeArcCenter();
+	const QVector2D line = m_end - m_start;
+	const float radius = arcRadius();
+
+	static const QVector2D quadrantPointsUnit[4] = {
+		QVector2D(1, 0),
+		QVector2D(0, 1),
+		QVector2D(-1, 0),
+		QVector2D(0, -1)
+	};
+
+	const bool centerLineSide = std::signbit(CrossProduct(line, relativeCenter));
+
+	QVector2D quadrantPoints[4];
+	std::transform(quadrantPointsUnit, quadrantPointsUnit + 4, quadrantPoints, [&relativeCenter, radius](const QVector2D& pointUnit){
+		return relativeCenter + pointUnit * radius;
+	});
+
+	std::copy_if(quadrantPoints, quadrantPoints + 4, std::back_inserter(points),
+		[centerLineSide, &line](const QVector2D &point){
+			const bool pointLineSide = std::signbit(CrossProduct(line, point));
+			const bool oppositeSideToCenter = (pointLineSide != centerLineSide);
+
+			return oppositeSideToCenter;
+		});
+
+	std::transform(points.begin(), points.end(), points.begin(), [this](const QVector2D& point){
+		return point + m_start;
+	});
+
+	return points;
+}
 
 Bulge::Bulge(const QVector2D &start, const QVector2D &end, float tangent)
 	:m_start(start),
@@ -67,6 +137,31 @@ float Bulge::length() const
 	return radius * angle;
 }
 
+const Rect boundingRectPoints(const Point2DList &points)
+{
+	Point2DList::const_iterator it = points.begin();
+	const QVector2D firstPoint = *(it++);
+
+	return std::accumulate(it, points.end(), Rect(firstPoint));
+}
+
+Rect Bulge::boundingRect() const
+{
+	const Rect lineBoundingRect(m_start, m_end);
+	if (isArc()) {
+		const Point2DList arcPoints = arcBoundingPoints();
+
+		if (arcPoints.empty()) {
+			return lineBoundingRect;
+		}
+
+		const Rect arcPointBoundingRect = boundingRectPoints(arcPoints);
+		return lineBoundingRect | arcPointBoundingRect;
+	}
+
+	return lineBoundingRect;
+}
+
 void Bulge::invert()
 {
 	std::swap(m_start, m_end);
@@ -106,26 +201,8 @@ Orientation Bulge::orientation() const
 Circle Bulge::toCircle() const
 {
 	const Orientation ori = orientation();
-
-	const float absTangent = std::abs(m_tangent);
-
-	// Tangent is at end point, so we get line from end to start.
-	const QVector2D line = m_start - m_end;
-
-	const float lineLength = line.length();
-	const float radius = (lineLength * (1.0f + m_tangent * m_tangent)) / (4.0f * absTangent);
-
-	// Angle of line end -> start
-	const float lineAngle = LineAngle(line);
-	// Angle between line and line from end to middle of arc
-	const float absTheta4 = std::atan(absTangent);
-
-	// Absolute angle at end point from line to arc center.
-	const float relativeAngleToCenter = M_PI_2 - 2.0f * absTheta4;
-	const float angleToCenter = (ori == Orientation::CCW) ? (lineAngle - relativeAngleToCenter) : (lineAngle + relativeAngleToCenter);
-
-	const QVector2D relativeCenter(std::cos(angleToCenter) * radius, std::sin(angleToCenter) * radius);
-	const QVector2D center = relativeCenter + m_end;
+	const float radius = arcRadius();
+	const QVector2D center = m_start + relativeArcCenter();
 
 	return Circle(center, radius, ori);
 }

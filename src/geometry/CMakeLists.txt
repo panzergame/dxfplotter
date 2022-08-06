@@ -10,6 +10,7 @@ set(SRC
 	pocketer.cpp
 	polyline.cpp
 	quadraticspline.cpp
+	rect.cpp
 	spline.cpp
 
 	arc.h
@@ -23,6 +24,7 @@ set(SRC
 	polyline.h
 	quadraticspline.h
 	spline.h
+	rect.h
 	utils.h
 )
 
