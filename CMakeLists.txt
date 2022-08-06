@@ -3,6 +3,10 @@ cmake_minimum_required(VERSION 3.15)
 project(dxfplotter)
 
 include(CTest)
+include(CPack)
+
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tristan Porteries")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
