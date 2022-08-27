@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
+    <width>718</width>
     <height>600</height>
    </rect>
   </property>
@@ -25,7 +25,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>469</width>
+     <width>718</width>
      <height>34</height>
     </rect>
    </property>
@@ -60,6 +60,7 @@
     <addaction name="separator"/>
     <addaction name="actionTransformSelection"/>
     <addaction name="actionMirrorSelection"/>
+    <addaction name="actionSetSelectionOrigin"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -88,6 +89,7 @@
    <addaction name="separator"/>
    <addaction name="actionTransformSelection"/>
    <addaction name="actionMirrorSelection"/>
+   <addaction name="actionSetSelectionOrigin"/>
    <addaction name="separator"/>
    <addaction name="actionHideSelection"/>
    <addaction name="actionShowHidden"/>
@@ -263,7 +265,7 @@
     <string>Mirror Selection</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+M</string>
+    <string>M</string>
    </property>
   </action>
   <action name="actionPocketSelection">
@@ -279,6 +281,18 @@
    </property>
    <property name="shortcut">
     <string>P</string>
+   </property>
+  </action>
+  <action name="actionSetSelectionOrigin">
+   <property name="icon">
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/set-origin.svg</normaloff>:/icons/set-origin.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Set Selection Origin</string>
+   </property>
+   <property name="shortcut">
+    <string>O</string>
    </property>
   </action>
  </widget>

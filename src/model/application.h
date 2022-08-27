@@ -97,6 +97,7 @@ public:
 	void resetCutterCompensation();
 	void pocketSelection();
 
+	geometry::Rect selectionBoundingRect() const;
 	void transformSelection(const QTransform& matrix);
 
 	void hideSelection();

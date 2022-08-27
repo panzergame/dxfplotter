@@ -40,6 +40,8 @@ public:
 
 	void transform(const QTransform &matrix);
 
+	geometry::Rect boundingRect() const;
+
 Q_SIGNALS:
 	void polylinesTransformed();
 };

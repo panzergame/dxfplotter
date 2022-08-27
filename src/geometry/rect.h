@@ -20,6 +20,11 @@ public:
 	const QVector2D &min() const;
 	const QVector2D &max() const;
 
+	QVector2D bottomLeft() const;
+	QVector2D topLeft() const;
+	QVector2D topRight() const;
+	QVector2D bottomRight() const;
+
 	QRectF toQt() const;
 
 	Rect operator|(const Rect& other) const;

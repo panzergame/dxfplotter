@@ -152,6 +152,26 @@ void Task::showHidden()
 	});
 }
 
+geometry::Rect Task::selectionBoundingRect() const
+{
+	bool isFirstPath = true;
+	geometry::Rect boundingRect;
+
+	forEachSelectedPath([&isFirstPath, &boundingRect](Path &path){
+		const geometry::Rect pathBoundingRect = path.boundingRect();
+		if (isFirstPath) {
+			boundingRect = pathBoundingRect;
+			isFirstPath = false;
+		}
+		else {
+			boundingRect |= pathBoundingRect;
+		}
+	});
+
+	return boundingRect;
+}
+
+
 int Task::layerCount() const
 {
 	return m_layers.size();

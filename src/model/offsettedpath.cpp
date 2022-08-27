@@ -33,4 +33,15 @@ void OffsettedPath::transform(const QTransform &matrix)
 	emit polylinesTransformed();
 }
 
+geometry::Rect OffsettedPath::boundingRect() const
+{
+	geometry::Polyline::List::const_iterator it = m_polylines.begin();
+	const geometry::Rect firstBoundingRest = (it++)->boundingRect();
+
+	return std::transform_reduce(it, m_polylines.end(), firstBoundingRest, std::bit_or(),
+		[](const geometry::Polyline& polyline){
+			return polyline.boundingRect();
+		});
+}
+
 }

@@ -52,6 +52,8 @@ public:
 
 	void transform(const QTransform &matrix);
 
+	geometry::Rect boundingRect() const;
+
 	bool isPoint() const;
 
 	const PathSettings &settings() const;

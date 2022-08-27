@@ -36,6 +36,24 @@ const QVector2D &Rect::max() const
 	return m_max;
 }
 
+QVector2D Rect::bottomLeft() const
+{
+	return m_min;
+}
+
+QVector2D Rect::topLeft() const
+{
+	return QVector2D(m_min.x(), m_max.y());
+}
+QVector2D Rect::topRight() const
+{
+	return m_max;
+}
+QVector2D Rect::bottomRight() const
+{
+	return QVector2D(m_max.x(), m_min.y());
+}
+
 QRectF Rect::toQt() const
 {
 	const QPointF topLeft(m_min.x(), m_max.y());

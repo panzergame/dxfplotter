@@ -81,6 +81,8 @@ public:
 	void hideSelection();
 	void showHidden();
 
+	geometry::Rect selectionBoundingRect() const;
+
 	int layerCount() const;
 	const Layer &layerAt(int index) const;
 	Layer &layerAt(int index);

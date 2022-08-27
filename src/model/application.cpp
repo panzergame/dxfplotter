@@ -318,6 +318,12 @@ void Application::pocketSelection()
 	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 }
 
+geometry::Rect Application::selectionBoundingRect() const
+{
+	Task &task = m_openedDocument->task();
+	return task.selectionBoundingRect();
+}
+
 void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();

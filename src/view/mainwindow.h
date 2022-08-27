@@ -51,6 +51,7 @@ protected Q_SLOTS:
 	void openSettings();
 	void transformSelection();
 	void mirrorSelection();
+	void setSelectionOrigin();
 	void documentChanged(model::Document *newDocument);
 	void displayError(const QString &message);
 };
