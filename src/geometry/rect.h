@@ -1,7 +1,7 @@
 #pragma once
 
-#include "qvectornd.h"
 #include <QVector2D>
+#include <QRectF>
 
 namespace geometry
 {

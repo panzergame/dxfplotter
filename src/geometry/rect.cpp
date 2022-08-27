@@ -1,4 +1,3 @@
-#include "qvectornd.h"
 #include <rect.h>
 
 namespace geometry
