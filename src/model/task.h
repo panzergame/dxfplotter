@@ -22,7 +22,6 @@ private:
 	Path::ListPtr m_selectedPaths;
 
 	void initPathsFromLayers();
-	void initStackFromSortedPaths();
 
 public:
 	enum class MoveDirection

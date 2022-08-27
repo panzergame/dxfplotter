@@ -11,6 +11,7 @@ set(SRC
 	polyline.cpp
 	quadraticspline.cpp
 	rect.cpp
+	sorter.cpp
 	spline.cpp
 
 	arc.h
@@ -23,6 +24,7 @@ set(SRC
 	cubicspline.h
 	polyline.h
 	quadraticspline.h
+	sorter.h
 	spline.h
 	rect.h
 	utils.h

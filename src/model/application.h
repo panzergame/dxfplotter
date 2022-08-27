@@ -45,6 +45,7 @@ private:
 
 	void cutterCompensation(float scale);
 
+	geometry::Polyline::List postProcessImportedPolylines(geometry::Polyline::List &&rawPolylines) const;
 	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
 	template <class Exporter>
