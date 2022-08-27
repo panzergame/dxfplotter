@@ -17,14 +17,14 @@ QPainterPath PointPathItem::shapePath() const
 
 void PointPathItem::setupPosition()
 {
-	m_point = path().basePolyline().start().toPointF();
-	setPos(m_point);
+	const QPointF point = path().basePolyline().start().toPointF();
+	setPos(point);
 }
 
 PointPathItem::PointPathItem(model::Path& path)
-	:BasicPathItem(path),
-	m_shapePath(shapePath())
+	:BasicPathItem(path)
 {
+	setPath(shapePath());
 	setFlag(QGraphicsItem::ItemIgnoresTransformations);
 
 	setupPosition();
@@ -36,16 +36,6 @@ void PointPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opt
 
 	painter->drawLine(-1.0f, 0.0f, 1.0f, 0.0f);
 	painter->drawLine(0.0f, -1.0f, 0.0f, 1.0f);
-}
-
-QPainterPath PointPathItem::shape() const
-{
-	return m_shapePath;
-}
-
-QRectF PointPathItem::boundingRect() const
-{
-	return m_shapePath.boundingRect();
 }
 
 void PointPathItem::basePolylineTransformed()

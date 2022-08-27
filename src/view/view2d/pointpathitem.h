@@ -13,9 +13,6 @@ class PointPathItem : public BasicPathItem
 	Q_OBJECT;
 
 private:
-	QPointF m_point;
-	QPainterPath m_shapePath;
-
 	QPainterPath shapePath() const;
 
 	void setupPosition();
@@ -24,9 +21,6 @@ public:
 	explicit PointPathItem(model::Path &path);
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
-	QPainterPath shape() const override;
-	QRectF boundingRect() const override;
 
 
 protected:
