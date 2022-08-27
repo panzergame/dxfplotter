@@ -45,7 +45,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../../../resource/resource.qrc">
-          <normaloff>:/icons/icons/list-remove.svg</normaloff>:/icons/icons/list-remove.svg</iconset>
+          <normaloff>:/icons/list-remove.svg</normaloff>:/icons/list-remove.svg</iconset>
         </property>
        </widget>
       </item>
@@ -66,7 +66,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../../../resource/resource.qrc">
-          <normaloff>:/icons/icons/list-add.svg</normaloff>:/icons/icons/list-add.svg</iconset>
+          <normaloff>:/icons/list-add.svg</normaloff>:/icons/list-add.svg</iconset>
         </property>
        </widget>
       </item>
@@ -85,7 +85,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../../../resource/resource.qrc">
-          <normaloff>:/icons/icons/edit-copy.svg</normaloff>:/icons/icons/edit-copy.svg</iconset>
+          <normaloff>:/icons/edit-copy.svg</normaloff>:/icons/edit-copy.svg</iconset>
         </property>
        </widget>
       </item>
