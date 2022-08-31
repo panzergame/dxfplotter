@@ -78,8 +78,8 @@ set(LINK_LIBRARIES
 	geometry
 	libdxfrw
 	fmt::fmt
-	Qt::Widgets
-	Qt::Svg
+	Qt5::Widgets
+	Qt5::Svg
 	yaml-cpp
 )
 
