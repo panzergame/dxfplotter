@@ -1,4 +1,4 @@
-qt_wrap_ui(UIC_HEADERS
+qt5_wrap_ui(UIC_HEADERS
 	group.ui
 	list.ui
 	settings.ui

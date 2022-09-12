@@ -1,6 +1,6 @@
 add_subdirectory(settings)
 
-qt_wrap_ui(UIC_HEADERS
+qt5_wrap_ui(UIC_HEADERS
 	transform.ui
 	mirror.ui
 	setorigin.ui
