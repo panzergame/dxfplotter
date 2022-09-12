@@ -13,6 +13,8 @@
 		<file>icons/edit-copy.svg</file>
 		<file>icons/go-down.svg</file>
 		<file>icons/go-up.svg</file>
+		<file>icons/layer-lower.svg</file>
+		<file>icons/layer-raise.svg</file>
 		<file>icons/layer-visible-off.svg</file>
 		<file>icons/layer-visible-on.svg</file>
 		<file>icons/list-add.svg</file>
@@ -21,6 +23,7 @@
 		<file>icons/path-outset.svg</file>
 		<file>icons/pocket-shape.svg</file>
 		<file>icons/resizecol.svg</file>
+		<file>icons/set-origin.svg</file>
 		<file>icons/show-path-outline.svg</file>
 		<file>icons/transform-rotate.svg</file>
 		<file>icons/zoom-in.svg</file>

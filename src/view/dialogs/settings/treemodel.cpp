@@ -181,7 +181,7 @@ int TreeModel::rowCount(const QModelIndex& parent) const
 		return node->children.size();
 	}
 
-	return m_root.children.size();
+	return 1;
 }
 
 int TreeModel::columnCount(const QModelIndex &) const

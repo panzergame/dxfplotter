@@ -6,6 +6,7 @@
 			<property name="minimum polyline length" type="float" default="0.01"/>
 			<property name="minimum spline length" type="float" default="0.01"/>
 			<property name="minimum arc length" type="float" default="0.01"/>
+			<property name="sort path by length" type="bool" default="false"/>
 		</group>
 	</group>
 	<list name="profiles">

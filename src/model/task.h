@@ -22,7 +22,6 @@ private:
 	Path::ListPtr m_selectedPaths;
 
 	void initPathsFromLayers();
-	void initStackFromSortedPaths();
 
 public:
 	enum class MoveDirection
@@ -80,6 +79,8 @@ public:
 	void transformSelection(const QTransform& matrix);
 	void hideSelection();
 	void showHidden();
+
+	geometry::Rect selectionBoundingRect() const;
 
 	int layerCount() const;
 	const Layer &layerAt(int index) const;

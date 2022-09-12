@@ -30,44 +30,12 @@ void Task::initPathsFromLayers()
 	});
 }
 
-void Task::initStackFromSortedPaths()
-{
-	struct PathLength
-	{
-		Path *path;
-		float length;
-
-		PathLength() = default;
-
-		explicit PathLength(Path *path)
-			:path(path),
-			length(path->basePolyline().length())
-		{
-		}
-
-		bool operator<(const PathLength& other) const
-		{
-			return length < other.length;
-		}
-	};
-
-	m_stack.resize(m_paths.size());
-
-	std::vector<PathLength> pathLengths(m_paths.size());
-	std::transform(m_paths.begin(), m_paths.end(), pathLengths.begin(),
-		[](Path *path){ return PathLength(path); });
-
-	std::sort(pathLengths.begin(), pathLengths.end());
-
-	std::transform(pathLengths.begin(), pathLengths.end(),
-		m_stack.begin(), [](const PathLength &pathLength){ return pathLength.path; });
-}
-
 Task::Task(Layer::ListUPtr &&layers)
 	:m_layers(std::move(layers))
 {
 	initPathsFromLayers();
-	initStackFromSortedPaths();
+
+	m_stack = m_paths;
 }
 
 int Task::pathCount() const
@@ -151,6 +119,26 @@ void Task::showHidden()
 		}
 	});
 }
+
+geometry::Rect Task::selectionBoundingRect() const
+{
+	bool isFirstPath = true;
+	geometry::Rect boundingRect;
+
+	forEachSelectedPath([&isFirstPath, &boundingRect](Path &path){
+		const geometry::Rect pathBoundingRect = path.boundingRect();
+		if (isFirstPath) {
+			boundingRect = pathBoundingRect;
+			isFirstPath = false;
+		}
+		else {
+			boundingRect |= pathBoundingRect;
+		}
+	});
+
+	return boundingRect;
+}
+
 
 int Task::layerCount() const
 {

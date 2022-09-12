@@ -1,6 +1,7 @@
 #include <application.h>
 #include <geometry/assembler.h>
 #include <geometry/cleaner.h>
+#include <geometry/sorter.h>
 
 #include <importer/dxf/importer.h>
 #include <importer/dxfplot/importer.h>
@@ -85,21 +86,31 @@ void Application::cutterCompensation(float scale)
 	task.cutterCompensationSelection(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 }
 
-Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer& importer)
+geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Polyline::List &&rawPolylines) const
 {
 	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
+	// Merge polylines to create longest contours
+	geometry::Assembler assembler(std::move(rawPolylines), dxf.assembleTolerance());
+	// Remove small bulges
+	geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+
+	if (dxf.sortPathByLength()) {
+		geometry::Sorter sorter(cleaner.polylines());
+		return sorter.polylines();
+	}
+	return cleaner.polylines();
+}
+
+Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer& importer)
+{
 	Layer::ListUPtr layers;
 	for (importer::dxf::Layer &importerLayer : importer.layers()) {
-		// Merge polylines to create longest contours
-		geometry::Assembler assembler(importerLayer.polylines(), dxf.assembleTolerance());
-		// Remove small bulges
-		geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
-
 		const std::string &layerName = importerLayer.name();
+		geometry::Polyline::List polylines = postProcessImportedPolylines(importerLayer.polylines());
 
 		// Create paths from merged and cleaned polylines of one layer
-		Path::ListUPtr children = Path::FromPolylines(cleaner.polylines(), defaultPathSettings(), layerName);
+		Path::ListUPtr children = Path::FromPolylines(std::move(polylines), defaultPathSettings(), layerName);
 
 		layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
 	}
@@ -316,6 +327,12 @@ void Application::pocketSelection()
 
 	Task &task = m_openedDocument->task();
 	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+}
+
+geometry::Rect Application::selectionBoundingRect() const
+{
+	Task &task = m_openedDocument->task();
+	return task.selectionBoundingRect();
 }
 
 void Application::transformSelection(const QTransform& matrix)

@@ -77,7 +77,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../resource/resource.qrc">
-          <normaloff>:/icons/icons/go-up.svg</normaloff>:/icons/icons/go-up.svg</iconset>
+          <normaloff>:/icons/layer-raise.svg</normaloff>:/icons/layer-raise.svg</iconset>
         </property>
        </widget>
       </item>
@@ -88,7 +88,7 @@
         </property>
         <property name="icon">
          <iconset resource="../../resource/resource.qrc">
-          <normaloff>:/icons/icons/go-down.svg</normaloff>:/icons/icons/go-down.svg</iconset>
+          <normaloff>:/icons/layer-lower.svg</normaloff>:/icons/layer-lower.svg</iconset>
         </property>
        </widget>
       </item>

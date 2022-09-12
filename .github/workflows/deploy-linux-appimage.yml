@@ -6,7 +6,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -15,7 +15,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qt6-base-dev libqt6svg6-dev freeglut3-dev fuse
+          sudo apt-get -y install qtbase5-dev libqt5svg5-dev freeglut3-dev
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release

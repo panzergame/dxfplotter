@@ -2,12 +2,12 @@
 
 #include <model/path.h>
 
-#include <QAbstractGraphicsShapeItem>
+#include <QGraphicsPathItem>
 
 namespace view::view2d
 {
 
-class BasicPathItem : public QObject, public QAbstractGraphicsShapeItem
+class BasicPathItem : public QObject, public QGraphicsPathItem
 {
 	Q_OBJECT;
 

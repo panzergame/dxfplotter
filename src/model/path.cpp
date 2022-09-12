@@ -126,6 +126,12 @@ void Path::transform(const QTransform &matrix)
 	}
 }
 
+geometry::Rect Path::boundingRect() const
+{
+	return (m_offsettedPath) ? m_offsettedPath->boundingRect() :
+			 m_basePolyline.boundingRect();
+}
+
 bool Path::isPoint() const
 {
 	return m_basePolyline.isPoint();

@@ -33,6 +33,7 @@ QPainterPath PolylinePathItem::shapePath(const QPainterPath& basePath)
 void PolylinePathItem::setupPaths()
 {
 	m_paintPath = paintPath();
+	setPath(m_paintPath);
 	m_shapePath = shapePath(m_paintPath);
 }
 
@@ -80,16 +81,9 @@ QPainterPath PolylinePathItem::shape() const
 	return m_shapePath;
 }
 
-QRectF PolylinePathItem::boundingRect() const
-{
-	return m_shapePath.boundingRect();
-}
-
 void PolylinePathItem::basePolylineTransformed()
 {
 	setupPaths();
-
-	update();
 }
 
 }

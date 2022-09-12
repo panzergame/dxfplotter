@@ -7,6 +7,7 @@
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
 #include <dialogs/mirror.h>
+#include <dialogs/setorigin.h>
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -89,6 +90,7 @@ void MainWindow::setupMenuActions()
 	connect(actionShowHidden, &QAction::triggered, &m_app, &model::Application::showHidden);
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
+	connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
 }
 
 void MainWindow::setupOpenedDocumentActions()
@@ -105,6 +107,7 @@ void MainWindow::setupOpenedDocumentActions()
 	m_openedDocumentActions.addAction(actionShowHidden);
 	m_openedDocumentActions.addAction(actionTransformSelection);
 	m_openedDocumentActions.addAction(actionMirrorSelection);
+	m_openedDocumentActions.addAction(actionSetSelectionOrigin);
 
 	m_openedDocumentActions.setExclusive(true);
 }
@@ -213,6 +216,16 @@ void MainWindow::mirrorSelection()
 	dialogs::Mirror mirror;
 	if (mirror.exec() == QDialog::Accepted) {
 		m_app.transformSelection(mirror.matrix());
+	}
+}
+
+void MainWindow::setSelectionOrigin()
+{
+	const geometry::Rect selectionBoundingRect = m_app.selectionBoundingRect();
+
+	dialogs::SetOrigin setOrigin(selectionBoundingRect);
+	if (setOrigin.exec() == QDialog::Accepted) {
+		m_app.transformSelection(setOrigin.matrix()); // TODO common function
 	}
 }
 
