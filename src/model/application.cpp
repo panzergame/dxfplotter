@@ -1,7 +1,7 @@
 #include <application.h>
-#include <geometry/assembler.h>
-#include <geometry/cleaner.h>
-#include <geometry/sorter.h>
+#include <geometry/filter/assembler.h>
+#include <geometry/filter/cleaner.h>
+#include <geometry/filter/sorter.h>
 
 #include <importer/dxf/importer.h>
 #include <importer/dxfplot/importer.h>
@@ -91,12 +91,12 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
 	// Merge polylines to create longest contours
-	geometry::Assembler assembler(std::move(rawPolylines), dxf.assembleTolerance());
+	geometry::filter::Assembler assembler(std::move(rawPolylines), dxf.assembleTolerance());
 	// Remove small bulges
-	geometry::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
+	geometry::filter::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 	if (dxf.sortPathByLength()) {
-		geometry::Sorter sorter(cleaner.polylines());
+		geometry::filter::Sorter sorter(cleaner.polylines());
 		return sorter.polylines();
 	}
 	return cleaner.polylines();
