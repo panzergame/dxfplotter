@@ -74,6 +74,8 @@ public:
 	void transform(const QTransform &matrix);
 
 	bool operator==(const Bulge& other) const;
+
+	bool equalsInversed(const Bulge& other) const;
 };
 
 }

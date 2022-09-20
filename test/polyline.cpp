@@ -162,3 +162,16 @@ TEST(PolylineTest, TestConcavePolylineOrientation)
 	const geometry::Polyline invertedPolyline = polyline.inverse();
 	ASSERT_EQ(invertedPolyline.orientation(), geometry::Orientation::CW);
 }
+
+TEST(PolylineTest, TestEquals)
+{
+	const geometry::Polyline polyline1 = createStartPolyline(5.0f, 10.0f, 10);
+	const geometry::Polyline polyline2 = createStartPolyline(5.0f, 10.0f, 10);
+	const geometry::Polyline polyline3 = polyline1.inverse();
+
+	ASSERT_EQ(polyline1, polyline2);
+	ASSERT_TRUE(polyline1.equals(polyline1, false));
+	ASSERT_TRUE(polyline1.equals(polyline2, false));
+	ASSERT_TRUE(polyline1.equals(polyline3, true));
+	ASSERT_FALSE(polyline1.equals(polyline3, false));
+}

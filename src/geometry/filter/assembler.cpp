@@ -106,7 +106,7 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	:m_closeTolerance(closeTolerance)
 {
 	// Dispatch polylines to already merged or not merged.
-	for (Polyline& polyline : std::move(polylines)) {
+	for (Polyline& polyline : polylines) {
 		// Point polylines cannot be merged to others and so are ignored.
 		if (polyline.isPoint()) {
 			m_mergedPolylines.emplace_back(std::move(polyline));

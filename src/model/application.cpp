@@ -1,6 +1,8 @@
 #include <application.h>
+
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
+#include <geometry/filter/removeexactduplicate.h>
 #include <geometry/filter/sorter.h>
 
 #include <importer/dxf/importer.h>
@@ -90,8 +92,10 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 {
 	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
+	geometry::filter::RemoveExactDuplicate removeExactDuplicate(std::move(rawPolylines));
+
 	// Merge polylines to create longest contours
-	geometry::filter::Assembler assembler(std::move(rawPolylines), dxf.assembleTolerance());
+	geometry::filter::Assembler assembler(removeExactDuplicate.polylines(), dxf.assembleTolerance());
 	// Remove small bulges
 	geometry::filter::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
