@@ -2,7 +2,7 @@
 
 #include <geometry/polyline.h>
 
-namespace geometry
+namespace geometry::filter
 {
 
 /** @brief Sort polyline by length.

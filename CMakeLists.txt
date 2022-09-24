@@ -76,6 +76,7 @@ set(LINK_LIBRARIES
 	exporter-gcode
 	exporter-dxfplot
 	geometry
+	geometry-filter
 	libdxfrw
 	fmt::fmt
 	Qt5::Widgets

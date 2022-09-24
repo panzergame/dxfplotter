@@ -7,7 +7,7 @@
 #include <set>
 #include <list>
 
-namespace geometry
+namespace geometry::filter
 {
 
 class Assembler

@@ -1,6 +1,6 @@
 #include <sorter.h>
 
-namespace geometry
+namespace geometry::filter
 {
 
 Sorter::Sorter(Polyline::List &&polylines)

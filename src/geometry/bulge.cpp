@@ -4,8 +4,6 @@
 #include <utils.h>
 #include <limits>
 
-#include <QDebug> // TODO
-#include <iostream> // TODO
 #include <iomanip>
 #include <limits>
 
@@ -240,6 +238,11 @@ void Bulge::transform(const QTransform &matrix)
 bool Bulge::operator==(const Bulge& other) const
 {
 	return m_start == other.m_start && m_end == other.m_end && m_tangent == other.m_tangent;
+}
+
+bool Bulge::equalsInversed(const Bulge& other) const
+{
+	return m_start == other.m_end && m_end == other.m_start && m_tangent == -other.m_tangent;
 }
 
 }

@@ -70,6 +70,8 @@ public:
 	void transform(const QTransform &matrix);
 
 	bool operator==(const Polyline &other) const;
+
+	bool equals(const Polyline &other, bool inverse) const;
 };
 
 }

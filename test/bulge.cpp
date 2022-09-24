@@ -57,3 +57,11 @@ TEST(BulgeTest, ArcBoundingRect)
 	EXPECT_FLOAT_EQ(9.1, box.max().y());
 }
 
+TEST(BulgeTest, EqualsInverse)
+{
+	const geometry::Bulge b1(point1, point2, 0.5f);
+	const geometry::Bulge b2(point2, point1, -0.5f);
+	
+	EXPECT_TRUE(b1.equalsInversed(b2));
+	EXPECT_FALSE(b1.equalsInversed(b1));
+}
