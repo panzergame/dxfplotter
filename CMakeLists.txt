@@ -3,10 +3,12 @@ cmake_minimum_required(VERSION 3.15)
 project(dxfplotter)
 
 include(CTest)
-include(CPack)
 
 set(CPACK_GENERATOR "DEB")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Tristan Porteries")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libqt5widgets5, libqt5gui5, libqt5svg5")
+
+include(CPack)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
