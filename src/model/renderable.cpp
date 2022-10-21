@@ -1,7 +1,5 @@
 #include <renderable.h>
 
-#include <geometry/cleaner.h>
-
 namespace model
 {
 

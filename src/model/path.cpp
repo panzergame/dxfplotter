@@ -2,7 +2,7 @@
 #include <layer.h>
 #include <fmt/format.h>
 
-#include <geometry/cleaner.h>
+#include <geometry/filter/cleaner.h>
 #include <geometry/pocketer.h>
 
 namespace model
@@ -76,7 +76,7 @@ model::OffsettedPath *Path::offsettedPath() const
 void Path::offset(float margin, float minimumPolylineLength, float minimumArcLength)
 {
 	geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
-	geometry::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
+	geometry::filter::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
 
 	const OffsettedPath::Direction direction = (margin > 0.0f) ?
 			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
@@ -101,7 +101,7 @@ void Path::pocket(const Path::ListCPtr &islands, float scaledRadius, float minim
 	});
 
 	geometry::Pocketer pocketer(m_basePolyline, polylineIslands, scaledRadius, minimumPolylineLength);
-	geometry::Cleaner cleaner(std::move(pocketer.polylines()), minimumPolylineLength, minimumArcLength);
+	geometry::filter::Cleaner cleaner(std::move(pocketer.polylines()), minimumPolylineLength, minimumArcLength);
 
 	// Pocket is left when polyline is CCW winded.
 	static const OffsettedPath::Direction basePolylineOrientationToPocketDirection[] = {

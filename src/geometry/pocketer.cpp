@@ -47,6 +47,7 @@ void Pocketer::pruneSingularities(std::vector<cavc::OffsetLoop<double>> &loops) 
 {
 	std::for_each(loops.begin(), loops.end(), [minimumPolylineLength=(double)m_minimumPolylineLength](cavc::OffsetLoop<double> &loop){
 		loop.polyline = cavc::pruneSingularities(loop.polyline, minimumPolylineLength);
+		loop.spatialIndex = cavc::createApproxSpatialIndex(loop.polyline);
 	});
 }
 

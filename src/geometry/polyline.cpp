@@ -194,4 +194,15 @@ bool Polyline::operator==(const Polyline &other) const
 	return m_bulges == other.m_bulges;
 }
 
+bool Polyline::equals(const Polyline &other, bool inverse) const
+{
+	if (inverse) {
+		return std::equal(m_bulges.begin(), m_bulges.end(), other.m_bulges.rbegin(), other.m_bulges.rend(), [](const Bulge& b1, const Bulge &b2){
+			return b1.equalsInversed(b2);
+		});
+	}
+
+	return *this == other;
+}
+
 }
