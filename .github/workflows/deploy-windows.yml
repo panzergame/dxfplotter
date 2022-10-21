@@ -19,7 +19,6 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v2
         with:
-          version: '6.3.0'
           cached: ${{ steps.cache-qt.outputs.cache-hit }}
       - uses: lukka/get-cmake@latest
       - name: Add msbuild to PATH
