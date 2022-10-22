@@ -30,8 +30,8 @@ public:
 		else {
 			// Create items from yaml node
 			for (const auto &pair : m_yamlNode) {
-				const std::string &name = pair.first.as<std::string>();
-				m_children.emplace(name, Child(name, pair.second));
+				const std::string &itemName = pair.first.as<std::string>();
+				m_children.emplace(itemName, Child(itemName, pair.second));
 			}
 		}
 	}
