@@ -16,7 +16,6 @@ private:
 	std::ostream &m_stream;
 
 protected:
-	const config::Tools::Tool& m_tool;
 	const config::Profiles::Profile::Gcode& m_gcode;
 
 	/** Print a command to stream with a format and a list of named arguments
@@ -35,11 +34,16 @@ protected:
 	}
 
 public:
-	explicit PostProcessor(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
+	explicit PostProcessor(const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
+	void preCut(float intensity);
 	void postCut();
+	void planeLinearMove(const QVector2D &to, float feedRate, float intensity);
+	void depthLinearMove(float depth, float feedRate, float intensity);
+	void cwArcMove(const QVector2D &relativeCenter, const QVector2D &to, float feedRate, float intensity);
+	void ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to, float feedRate, float intensity);
 	void fastPlaneMove(const QVector2D &to);
-	void retractDepth();
+	void retractDepth(float depth);
 };
 
 }

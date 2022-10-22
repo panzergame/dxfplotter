@@ -75,6 +75,7 @@ set(LINK_LIBRARIES
 	importer-dxfplot
 	exporter-gcode
 	exporter-dxfplot
+	exporter-renderer
 	geometry
 	geometry-filter
 	libdxfrw

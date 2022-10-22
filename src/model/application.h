@@ -49,7 +49,7 @@ private:
 	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
 	template <class Exporter>
-	bool saveToFile(Exporter &exporter, const QString &fileName)
+	bool saveToFile(Exporter &&exporter, const QString &fileName)
 	{
 		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
