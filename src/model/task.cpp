@@ -14,16 +14,6 @@ void Task::initPathsFromLayers()
 	// Register selection/deselection on all paths.
 	forEachPath([this](Path &path) {
 		connect(&path, &Path::selectedChanged, this, [this, &path](bool selected){
-			const auto &pathIt = std::find(m_selectedPaths.begin(), m_selectedPaths.end(), &path);
-			const bool exists = (pathIt != m_selectedPaths.end());
-
-			if (selected && !exists) {
-				m_selectedPaths.push_back(&path);
-			}
-			else if (exists) {
-				m_selectedPaths.erase(pathIt);
-			}
-
 			emit pathSelectedChanged(path, selected);
 			emit selectionChanged(m_selectedPaths.size());
 		});

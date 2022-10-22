@@ -67,9 +67,11 @@ public:
 	template <class Functor>
 	void forEachSelectedPath(Functor &&functor) const
 	{
-		const Path::ListPtr selectedPaths(m_selectedPaths);
-		for (Path *path : selectedPaths) {
-			functor(*path);
+		const Path::ListPtr paths(m_paths);
+		for (Path *path : paths) {
+			if (path->selected()) {
+				functor(*path);
+			}
 		}
 	}
 

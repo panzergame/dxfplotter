@@ -32,6 +32,7 @@ TEST(AssemblerTest, ShouldMergeAllPolylines)
 		if (!isFirstPoint) {
 			EXPECT_EQ(bulge.start(), lastPoint);
 		}
+		isFirstPoint = false;
 		lastPoint = bulge.end();
 	});
 }
@@ -63,6 +64,7 @@ TEST(AssemblerTest, ShouldMergeAllPolylinesLargeTolerance)
 		if (!isFirstPoint) {
 			EXPECT_EQ(bulge.start(), lastPoint);
 		}
+		isFirstPoint = false;
 		lastPoint = bulge.end();
 	});
 }

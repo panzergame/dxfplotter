@@ -17,6 +17,7 @@ set(SRC
 	dxfplotimporter.cpp
 	exporterfixture.cpp
 	gcodeexporter.cpp
+	pathsettings.cpp
 	pocketer.cpp
 	polyline.cpp
 	polylineutils.cpp

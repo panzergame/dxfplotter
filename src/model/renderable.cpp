@@ -34,6 +34,11 @@ void Renderable::toggleVisible()
 	setVisible(!m_visible);
 }
 
+bool Renderable::selected() const
+{
+	return m_selected;
+}
+
 void Renderable::setSelected(bool selected)
 {
 	if (m_selected != selected) {

@@ -37,6 +37,7 @@ public:
 	void setVisible(bool visible);
 	void toggleVisible();
 
+	bool selected() const;
 	void setSelected(bool selected);
 	void deselect();
 	void toggleSelect();
