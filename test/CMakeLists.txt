@@ -11,6 +11,7 @@ include(GoogleTest)
 
 set(SRC
 	arc.cpp
+	assembler.cpp
 	bulge.cpp
 	dxfplotexporter.cpp
 	dxfplotimporter.cpp
