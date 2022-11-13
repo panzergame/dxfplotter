@@ -9,6 +9,10 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
+find_package(Qt5 COMPONENTS REQUIRED
+	Test
+)
+
 set(SRC
 	arc.cpp
 	assembler.cpp
@@ -17,11 +21,13 @@ set(SRC
 	dxfplotimporter.cpp
 	exporterfixture.cpp
 	gcodeexporter.cpp
+	path.cpp
 	pathsettings.cpp
 	pocketer.cpp
 	polyline.cpp
 	polylineutils.cpp
 	serializer.cpp
+	task.cpp
 	verticalspeed.cpp
 
 	exporterfixture.h
@@ -29,7 +35,10 @@ set(SRC
 )
 
 add_executable(dxfplotter-test ${SRC} main.cpp)
-target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} gtest_main)
+
+target_include_directories(dxfplotter-test PRIVATE ${Qt5Test_INCLUDE_DIRS})
+target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} Qt5::Test gtest_main)
+
 add_coverage(dxfplotter-test)
 
 enable_testing()
