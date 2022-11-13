@@ -16,7 +16,7 @@ class Path : public model::DocumentModelObserver<QWidget>, private Ui::Path
 private:
 	std::unique_ptr<model::PathGroupSettings> m_groupSettings;
 
-	void selectionChanged(int size);
+	void selectionChanged(bool empty);
 
 	template <typename ValueType, class Field>
 	void connectOnFieldChanged(Field *field, std::function<void (ValueType)> &&func)

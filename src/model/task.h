@@ -19,9 +19,9 @@ private:
 	Layer::ListUPtr m_layers;
 
 	Path::ListPtr m_stack;
-	Path::ListPtr m_selectedPaths;
 
 	void initPathsFromLayers();
+	bool pathSelectionEmpty() const;
 
 public:
 	enum class MoveDirection
@@ -92,7 +92,7 @@ public:
 
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);
-	void selectionChanged(int size);
+	void selectionChanged(bool empty);
 };
 
 template <typename T>

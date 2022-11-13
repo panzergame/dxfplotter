@@ -28,18 +28,18 @@ Path::Path(model::Application &app)
 	setupUi(this);
 }
 
-void Path::selectionChanged(int size)
+void Path::selectionChanged(bool empty)
 {
-	if (size > 0) {
+	if (empty) {
+		hide();
+	}
+	else {
 		show();
 
 		updateFieldValue(planeFeedRate, m_groupSettings->planeFeedRate());
 		updateFieldValue(depthFeedRate, m_groupSettings->depthFeedRate());
 		updateFieldValue(intensity, m_groupSettings->intensity());
 		updateFieldValue(Ui::Path::depth, m_groupSettings->depth());
-	}
-	else {
-		hide();
 	}
 }
 

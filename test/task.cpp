@@ -19,7 +19,9 @@ TEST(TaskTest, ShouldEmitSignalsWhenOnePathSelected)
 
 	QSignalSpy spy(&task, &model::Task::selectionChanged);
 
-	task.pathAt(0).setSelected(true);
+	model::Path &firstPath = task.pathAt(0);
+	firstPath.setSelected(true);
 
 	ASSERT_EQ(spy.count(), 1);
+	EXPECT_FALSE(spy.takeFirst().at(0).toBool());
 }
