@@ -19,7 +19,7 @@ private:
 	void render(const model::Task &task) const
 	{
 		// Retract tool before work piece
-		m_visitor.retractDepth(m_depthToRetract);
+		m_visitor.start(m_depthToRetract);
 
 		task.forEachPathInStack([this](const model::Path &path){
 			if (path.globallyVisible()) {
@@ -28,7 +28,7 @@ private:
 		});
 
 		// Back to home
-		m_visitor.fastPlaneMove(QVector2D(0.0f, 0.0f));
+		m_visitor.end(QVector2D(0.0f, 0.0f));
 	}
 
 	void render(const model::Path &path) const
@@ -49,54 +49,20 @@ private:
 	{
 		const float maxDepth = settings.depth();
 		const float intensity = settings.intensity();
+		const float planeFeedRate = settings.planeFeedRate();
 		const float depthFeedRate = settings.depthFeedRate();
 
 		PassesIterator iterator(polyline, cuttingDirection);
 
-		// Move to polyline beginning
-		m_visitor.fastPlaneMove((*iterator).start());
-		m_visitor.preCut(intensity);
+		m_visitor.startOperation((*iterator).start(), intensity);
 
 		for (float depth = 0.0f; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
 			const float boundDepth = std::fminf(depth, maxDepth);
-			m_visitor.depthLinearMove(-boundDepth, depthFeedRate, intensity);
 
-			render(*iterator, settings);
+			m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
 		}
 
-		// Retract tool for further operations
-		m_visitor.retractDepth(m_depthToRetract);
-		m_visitor.postCut();
-	}
-
-	void render(const geometry::Polyline &polyline, const model::PathSettings &settings) const
-	{
-		polyline.forEachBulge([this, &settings](const geometry::Bulge &bulge){ render(bulge, settings); });
-	}
-
-	void render(const geometry::Bulge &bulge, const model::PathSettings &settings) const
-	{
-		const float intensity = settings.intensity();
-		const float planeFeedRate = settings.planeFeedRate();
-
-		if (bulge.isLine()) {
-			m_visitor.planeLinearMove(bulge.end(), planeFeedRate, intensity);
-		}
-		else {
-			const geometry::Circle circle = bulge.toCircle();
-			// Relative center to start
-			const QVector2D relativeCenter = circle.center() - bulge.start();
-			switch (circle.orientation()) {
-				case geometry::Orientation::CW:
-					m_visitor.cwArcMove(relativeCenter, bulge.end(), planeFeedRate, intensity);
-					break;
-				case geometry::Orientation::CCW:
-					m_visitor.ccwArcMove(relativeCenter, bulge.end(), planeFeedRate, intensity);
-					break;
-				default:
-					break;
-			}
-		}
+		m_visitor.endOperation(m_depthToRetract);
 	}
 
 public:

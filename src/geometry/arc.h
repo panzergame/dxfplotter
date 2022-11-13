@@ -27,4 +27,4 @@ public:
 	float spanAngle() const;
 };
 
-};
+}
