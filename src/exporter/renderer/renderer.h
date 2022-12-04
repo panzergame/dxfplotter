@@ -18,8 +18,10 @@ private:
 
 	void render(const model::Task &task) const
 	{
+		const QVector2D home(0.0f, 0.0f);
+
 		// Retract tool before work piece
-		m_visitor.start(m_depthToRetract);
+		m_visitor.start(home, m_depthToRetract);
 
 		task.forEachPathInStack([this](const model::Path &path){
 			if (path.globallyVisible()) {
@@ -28,7 +30,7 @@ private:
 		});
 
 		// Back to home
-		m_visitor.end(QVector2D(0.0f, 0.0f));
+		m_visitor.end(home, m_depthToRetract);
 	}
 
 	void render(const model::Path &path) const

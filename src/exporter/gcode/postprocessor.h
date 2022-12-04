@@ -48,10 +48,10 @@ protected:
 public:
 	explicit PostProcessor(const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
 
-	void start(float depth);
-	void end(const QVector2D& to);
+	void start(const QVector2D& from, float safetyDepth);
+	void end(const QVector2D& to, float safetyDepth);
 	void startOperation(const QVector2D& to, float intensity);
-	void endOperation(float depth);
+	void endOperation(float safetyDepth);
 	void processPathAtDepth(const geometry::Polyline& polyline, float depth, float planeFeedRate, float depthFeedRate);
 };
 

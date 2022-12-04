@@ -19,4 +19,9 @@ const QVector2D &Line::end() const
 	return m_end;
 }
 
+bool Line::lengthNonZero() const
+{
+	return (m_start != m_end);
+}
+
 }

@@ -85,12 +85,12 @@ void PostProcessor::processArc(const geometry::Bulge &bulge, float planeFeedRate
 	}
 }
 
-void PostProcessor::start(float depth)
+void PostProcessor::start(const QVector2D& from, float safetyDepth)
 {
-	retractDepth(depth);
+	retractDepth(safetyDepth);
 }
 
-void PostProcessor::end(const QVector2D& to)
+void PostProcessor::end(const QVector2D& to, float safetyDepth)
 {
 	fastPlaneMove(to);
 }
@@ -102,10 +102,10 @@ void PostProcessor::startOperation(const QVector2D& to, float intensity)
 	preCut(intensity);
 }
 
-void PostProcessor::endOperation(float depth)
+void PostProcessor::endOperation(float safetyDepth)
 {
 	// Retract tool for further operations
-	retractDepth(depth);
+	retractDepth(safetyDepth);
 	postCut();
 }
 

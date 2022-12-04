@@ -19,37 +19,47 @@ private:
 	class Traversable
 	{
 	protected:
-		float m_startTime;
-		float m_endTime;
-		float m_depth;
 
 	public:
-		explicit Traversable(float startTime, float endTime, float depth);
+		explicit Traversable();
 	};
 
-	class LineMotion : Traversable
+	class PlaneLineMotion : Traversable
 	{
 	private:
 		geometry::Line m_line;
+		float m_depth;
 
 	public:
-		explicit LineMotion(float startTime, float feedRate, const geometry::Line &line);
+		explicit PlaneLineMotion(float depth, float feedRate, const geometry::Line &line);
 
 		QVector3D pointAtTime(float time) const;
 	};
 
-	class ArcMotion : Traversable
+	class PlaneArcMotion : Traversable
 	{
 	private:
 		geometry::Arc m_arc;
+		float m_depth;
 
 	public:
-		explicit ArcMotion(float startTime, float feedRate, const geometry::Arc &arc);
+		explicit PlaneArcMotion(float depth, float feedRate, const geometry::Arc &arc);
 
 		QVector3D pointAtTime(float time) const;
 	};
 
-	using Motion = std::variant<LineMotion, ArcMotion>;
+	class DepthMotion : Traversable
+	{
+	private:
+		
+
+	public:
+		explicit DepthMotion(float fromDepth, float toDepth, float feedRate);
+
+		QVector3D pointAtTime(float time) const;
+	};
+
+	using Motion = std::variant<PlaneLineMotion, PlaneArcMotion, DepthMotion>;
 
 	using MotionList = std::vector<Motion>;
 	MotionList m_motions;
