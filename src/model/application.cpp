@@ -360,7 +360,7 @@ void Application::showHidden()
 
 void Application::createSimulation()
 {
-	Simulation simulation(*m_openedDocument, *m_defaultToolConfig, *m_defaultProfileConfig);
+	Simulation simulation(*m_openedDocument);
 }
 
 }

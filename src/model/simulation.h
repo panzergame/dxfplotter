@@ -79,22 +79,6 @@ private:
 		const QVector2D& endPlanePos() const;
 	};
 
-	template <class Visitor>
-	struct GeometryVisitorAdapter
-	{
-		Visitor &visitor;
-
-		void operator()(const PlaneLineMotion& motion)
-		{
-		}
-		void operator()(const PlaneArcMotion& motion)
-		{
-		}
-		void operator()(const DepthMotion& motion)
-		{
-		}
-	};
-
 	using Motion = std::variant<PlaneLineMotion, PlaneArcMotion, DepthMotion>;
 
 	using MotionList = std::vector<Motion>;
@@ -102,22 +86,15 @@ private:
 
 	const Motion &findMotionAtTime(float time) const;
 
-	MotionList renderDocumentToMotions(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profil) const;
+	MotionList renderDocumentToMotions(const Document &document) const;
 
 public:
-	explicit Simulation(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profile);
+	explicit Simulation(const Document &document);
 
 	QVector3D position(float time);
 	float duration() const;
 
-	template <class Visitor>
-	void visitGeometry(Visitor &&visitor)
-	{
-		GeometryVisitorAdapter adapter{visitor};
-		std::for_each(m_motions.begin(), m_motions.end(), [&adapter](const Motion& motion){
-			std::visit(adapter, motion);
-		});
-	}
+	geometry::Point3DList approximatedPathToLines(float maxError) const;
 };
 
 }

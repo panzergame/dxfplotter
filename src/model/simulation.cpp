@@ -195,8 +195,11 @@ public:
 };
 
 
-Simulation::MotionList Simulation::renderDocumentToMotions(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profile) const
+Simulation::MotionList Simulation::renderDocumentToMotions(const Document &document) const
 {
+	const config::Tools::Tool& tool = document.toolConfig();
+	const config::Profiles::Profile& profile = document.profileConfig();
+
 	RenderVisitor visitor(42); // TODO fastfeedRate config
 	exporter::renderer::Renderer renderer(tool, profile, visitor);
 
@@ -205,8 +208,8 @@ Simulation::MotionList Simulation::renderDocumentToMotions(const Document &docum
 	return visitor.motions();
 }
 
-Simulation::Simulation(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profile)
-	:m_motions(renderDocumentToMotions(document, tool, profile))
+Simulation::Simulation(const Document &document)
+	:m_motions(renderDocumentToMotions(document))
 {
 }
 

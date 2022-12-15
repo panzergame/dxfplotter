@@ -21,6 +21,7 @@ namespace geometry
 	}
 
 	using Point2DList = std::vector<QVector2D>;
+	using Point3DList = std::vector<QVector3D>;
 
 	enum class Orientation
 	{

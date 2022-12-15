@@ -16,6 +16,14 @@ private:
 	float m_endAngle;
 	float m_spanAngle;
 
+	template <class Visitor>
+	void lineToArcPointVisit(float angle, Visitor &visitor) const
+	{
+		const QVector2D relativeNormalizedPoint(std::cos(angle), std::sin(angle));
+		const QVector2D point = (center() + relativeNormalizedPoint * radius());
+		visitor(point);
+	}
+
 public:
 	explicit Arc(const Circle &circle, const QVector2D &start, const QVector2D &end,
 			float starAngle, float endAngle);
@@ -27,6 +35,28 @@ public:
 	float spanAngle() const;
 
 	float length() const;
+
+	template <class Visitor>
+	void approximateToLinesVisit(float maxError, Visitor &&visitor) const
+	{
+		visitor(m_start);
+
+		// Calculate the angle step to not exceed allowed error (distance from line to arc).
+		const float angleStep = std::fmax(std::acos(1.0f - maxError) * 2.0f, maxError);
+
+		if (orientation() == geometry::Orientation::CCW) {
+			for (float angle = m_startAngle + angleStep, end = m_endAngle; angle < end; angle += angleStep) {
+				lineToArcPointVisit(angle, visitor);
+			}
+		}
+		else {
+			for (float angle = m_startAngle - angleStep, end = m_endAngle; angle > end; angle -= angleStep) {
+				lineToArcPointVisit(angle, visitor);
+			}
+		}
+
+		visitor(m_end);
+	}
 };
 
 }
