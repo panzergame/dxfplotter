@@ -54,6 +54,7 @@ protected Q_SLOTS:
 	void setSelectionOrigin();
 	void documentChanged(model::Document *newDocument);
 	void displayError(const QString &message);
+	void simulate();
 };
 
 }

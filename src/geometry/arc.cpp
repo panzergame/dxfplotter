@@ -49,4 +49,9 @@ float Arc::spanAngle() const
 	return m_spanAngle;
 }
 
+float Arc::length() const
+{
+	return std::abs(m_spanAngle) * radius();
+}
+
 }

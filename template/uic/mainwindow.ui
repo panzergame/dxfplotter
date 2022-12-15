@@ -61,6 +61,8 @@
     <addaction name="actionTransformSelection"/>
     <addaction name="actionMirrorSelection"/>
     <addaction name="actionSetSelectionOrigin"/>
+    <addaction name="separator"/>
+    <addaction name="actionSimulate"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -96,6 +98,7 @@
    <addaction name="separator"/>
    <addaction name="actionOpenSettings"/>
    <addaction name="separator"/>
+   <addaction name="actionSimulate"/>
   </widget>
   <action name="actionOpenFile">
    <property name="icon">
@@ -293,6 +296,14 @@
    </property>
    <property name="shortcut">
     <string>O</string>
+   </property>
+  </action>
+  <action name="actionSimulate">
+   <property name="text">
+    <string>Simulate</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

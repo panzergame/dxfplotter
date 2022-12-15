@@ -1,4 +1,5 @@
 #include <application.h>
+#include <simulation.h>
 
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
@@ -355,6 +356,11 @@ void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
 	task.showHidden();
+}
+
+void Application::createSimulation()
+{
+	Simulation simulation(*m_openedDocument, *m_defaultToolConfig, *m_defaultProfileConfig);
 }
 
 }

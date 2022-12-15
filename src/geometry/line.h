@@ -18,6 +18,7 @@ public:
 	const QVector2D &end() const;
 
 	bool lengthNonZero() const;
+	float length() const;
 };
 
 }

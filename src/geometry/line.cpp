@@ -24,4 +24,9 @@ bool Line::lengthNonZero() const
 	return (m_start != m_end);
 }
 
+float Line::length() const
+{
+	return m_start.distanceToPoint(m_end);
+}
+
 }

@@ -25,6 +25,8 @@ public:
 	float startAngle() const;
 	float endAngle() const;
 	float spanAngle() const;
+
+	float length() const;
 };
 
 }

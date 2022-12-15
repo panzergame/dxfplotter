@@ -6,12 +6,15 @@
 #include <geometry/arc.h>
 #include <geometry/line.h>
 
+#include <config/config.h>
+#include <common/aggregable.h>
+
 namespace model
 {
 
 class Document;
 
-class Simulation
+class Simulation : public common::Aggregable<Simulation>
 {
 private:
 	class RenderVisitor;
@@ -19,44 +22,77 @@ private:
 	class Traversable
 	{
 	protected:
+		float m_startTime;
+		float m_duration;
 
 	public:
-		explicit Traversable();
+		explicit Traversable(float startTime, float duration);
+
+		float startTime() const;
+		float endTime() const;
+		float duration() const;
 	};
 
-	class PlaneLineMotion : Traversable
+	class PlaneLineMotion : public Traversable
 	{
 	private:
 		geometry::Line m_line;
 		float m_depth;
 
 	public:
-		explicit PlaneLineMotion(float depth, float feedRate, const geometry::Line &line);
+		explicit PlaneLineMotion(float depth, const geometry::Line &line, float feedRate, float startTime);
 
 		QVector3D pointAtTime(float time) const;
+
+		float endDepth() const;
+		const QVector2D& endPlanePos() const;
 	};
 
-	class PlaneArcMotion : Traversable
+	class PlaneArcMotion : public Traversable
 	{
 	private:
 		geometry::Arc m_arc;
 		float m_depth;
 
 	public:
-		explicit PlaneArcMotion(float depth, float feedRate, const geometry::Arc &arc);
+		explicit PlaneArcMotion(float depth, const geometry::Arc &arc, float feedRate, float startTime);
 
 		QVector3D pointAtTime(float time) const;
+
+		float endDepth() const;
+		const QVector2D& endPlanePos() const;
 	};
 
-	class DepthMotion : Traversable
+	class DepthMotion : public Traversable
 	{
 	private:
-		
+		QVector2D m_planePos;
+		float m_fromDepth;
+		float m_toDepth;
 
 	public:
-		explicit DepthMotion(float fromDepth, float toDepth, float feedRate);
+		explicit DepthMotion(const QVector2D &planePos, float fromDepth, float toDepth, float feedRate, float startTime);
 
 		QVector3D pointAtTime(float time) const;
+
+		float endDepth() const;
+		const QVector2D& endPlanePos() const;
+	};
+
+	template <class Visitor>
+	struct GeometryVisitorAdapter
+	{
+		Visitor &visitor;
+
+		void operator()(const PlaneLineMotion& motion)
+		{
+		}
+		void operator()(const PlaneArcMotion& motion)
+		{
+		}
+		void operator()(const DepthMotion& motion)
+		{
+		}
 	};
 
 	using Motion = std::variant<PlaneLineMotion, PlaneArcMotion, DepthMotion>;
@@ -66,11 +102,22 @@ private:
 
 	const Motion &findMotionAtTime(float time) const;
 
+	MotionList renderDocumentToMotions(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profil) const;
+
 public:
-	explicit Simulation(Document &document);
+	explicit Simulation(const Document &document, const config::Tools::Tool& tool, const config::Profiles::Profile& profile);
 
 	QVector3D position(float time);
 	float duration() const;
+
+	template <class Visitor>
+	void visitGeometry(Visitor &&visitor)
+	{
+		GeometryVisitorAdapter adapter{visitor};
+		std::for_each(m_motions.begin(), m_motions.end(), [&adapter](const Motion& motion){
+			std::visit(adapter, motion);
+		});
+	}
 };
 
 }

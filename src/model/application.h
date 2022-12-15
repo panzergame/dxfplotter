@@ -104,6 +104,8 @@ public:
 	void hideSelection();
 	void showHidden();
 
+	void createSimulation();
+
 Q_SIGNALS:
 	void documentChanged(Document *newDocument);
 	void titleChanged(QString title);

@@ -91,6 +91,7 @@ void MainWindow::setupMenuActions()
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 	connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
+	connect(actionSimulate, &QAction::triggered, this, &MainWindow::simulate);
 }
 
 void MainWindow::setupOpenedDocumentActions()
@@ -108,6 +109,7 @@ void MainWindow::setupOpenedDocumentActions()
 	m_openedDocumentActions.addAction(actionTransformSelection);
 	m_openedDocumentActions.addAction(actionMirrorSelection);
 	m_openedDocumentActions.addAction(actionSetSelectionOrigin);
+	m_openedDocumentActions.addAction(actionSimulate);
 
 	m_openedDocumentActions.setExclusive(true);
 }
@@ -238,6 +240,11 @@ void MainWindow::displayError(const QString &message)
 {
 	QMessageBox messageBox;
 	messageBox.critical(this, "Error", message);
+}
+
+void MainWindow::simulate()
+{
+	m_app.createSimulation();
 }
 
 }
