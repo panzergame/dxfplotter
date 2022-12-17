@@ -160,7 +160,6 @@ public:
 
 	void end(const QVector2D& to, float safetyDepth)
 	{
-		linearMoveCursorInDepthTo(safetyDepth, m_fastMoveFeedRate);
 		linearMoveCursorInPlaneTo(to, m_fastMoveFeedRate);
 	}
 
@@ -211,6 +210,20 @@ Simulation::MotionList Simulation::renderDocumentToMotions(const Document &docum
 Simulation::Simulation(const Document &document)
 	:m_motions(renderDocumentToMotions(document))
 {
+}
+
+geometry::Point3DList Simulation::approximatedPathToLines(float maxError) const
+{
+	geometry::Point3DList points;
+	auto pushBackPoint = [&points](const QVector3D &point){ points.push_back(point); };
+
+	std::for_each(m_motions.begin(), m_motions.end(), [&pushBackPoint, maxError](const Motion& motionVariant){
+		std::visit([&pushBackPoint, maxError](const auto &motion){
+			motion.approximateToLinesVisit(maxError, pushBackPoint);
+		}, motionVariant);
+	});
+
+	return points;
 }
 
 }

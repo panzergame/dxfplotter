@@ -46,6 +46,12 @@ private:
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
+
+		template <class Visitor>
+		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
+		{
+			visitor(QVector3D(m_line.end(), m_depth));
+		}
 	};
 
 	class PlaneArcMotion : public Traversable
@@ -61,6 +67,14 @@ private:
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
+
+		template <class Visitor>
+		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
+		{
+			m_arc.approximateToLinesVisit(maxError, [this, &visitor](const QVector2D &point){
+				visitor(QVector3D(point, m_depth));
+			});
+		}
 	};
 
 	class DepthMotion : public Traversable
@@ -77,6 +91,12 @@ private:
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
+
+		template <class Visitor>
+		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
+		{
+			visitor(QVector3D(m_planePos, m_toDepth));
+		}
 	};
 
 	using Motion = std::variant<PlaneLineMotion, PlaneArcMotion, DepthMotion>;

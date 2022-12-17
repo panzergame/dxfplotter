@@ -39,8 +39,6 @@ public:
 	template <class Visitor>
 	void approximateToLinesVisit(float maxError, Visitor &&visitor) const
 	{
-		visitor(m_start);
-
 		// Calculate the angle step to not exceed allowed error (distance from line to arc).
 		const float angleStep = std::fmax(std::acos(1.0f - maxError) * 2.0f, maxError);
 
