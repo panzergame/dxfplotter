@@ -4,6 +4,7 @@
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
+#include <view3d/viewport.h>
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
 #include <dialogs/mirror.h>
@@ -35,16 +36,22 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	view2d::Viewport *viewport = new view2d::Viewport(m_app);
-	Info *info = new Info(*viewport, m_app);
+	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
+	m_viewport3d = new view3d::Viewport(m_app);
+	Info *info = new Info(*viewport2d, m_app);
 
-	QWidget *container = new QWidget(this);
+	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
+	splitter->addWidget(viewport2d);
+	splitter->addWidget(m_viewport3d);
+	splitter->setStretchFactor(0, 1);
+	splitter->setStretchFactor(1, 0);
+
 	QVBoxLayout *layout = new QVBoxLayout();
-
-	layout->addWidget(viewport);
+	layout->addWidget(splitter);
 	layout->addWidget(info);
 	layout->setStretch(0, 1);
 
+	QWidget *container = new QWidget(this);
 	container->setLayout(layout);
 
 	return container;
@@ -244,7 +251,8 @@ void MainWindow::displayError(const QString &message)
 
 void MainWindow::simulate()
 {
-	m_app.createSimulation();
+	model::Simulation simulation = m_app.createSimulation();
+	m_viewport3d->setSimulation(std::move(simulation));
 }
 
 }

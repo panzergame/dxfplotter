@@ -13,10 +13,9 @@ class QComboBox;
 namespace view
 {
 
-namespace Task
+namespace view3d
 {
 
-class Task;
 class Viewport;
 
 }
@@ -25,6 +24,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
 	model::Application &m_app;
+
+	view3d::Viewport *m_viewport3d;
 
 	QActionGroup m_openedDocumentActions;
 
@@ -54,6 +55,8 @@ protected Q_SLOTS:
 	void setSelectionOrigin();
 	void documentChanged(model::Document *newDocument);
 	void displayError(const QString &message);
+
+signals:
 	void simulate();
 };
 

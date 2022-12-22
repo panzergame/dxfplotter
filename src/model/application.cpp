@@ -358,9 +358,9 @@ void Application::showHidden()
 	task.showHidden();
 }
 
-void Application::createSimulation()
+Simulation Application::createSimulation()
 {
-	Simulation simulation(*m_openedDocument);
+	return Simulation(*m_openedDocument);
 }
 
 }

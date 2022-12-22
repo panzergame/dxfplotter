@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/document.h>
+#include <model/simulation.h>
 #include <config/config.h>
 
 #include <QObject>
@@ -104,7 +105,7 @@ public:
 	void hideSelection();
 	void showHidden();
 
-	void createSimulation();
+	Simulation createSimulation();
 
 Q_SIGNALS:
 	void documentChanged(Document *newDocument);

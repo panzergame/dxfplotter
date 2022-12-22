@@ -109,6 +109,7 @@ private:
 	MotionList renderDocumentToMotions(const Document &document) const;
 
 public:
+	Simulation() = default;
 	explicit Simulation(const Document &document);
 
 	QVector3D position(float time);

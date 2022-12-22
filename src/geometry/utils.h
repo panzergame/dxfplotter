@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include <QVector2D>
+#include <QVector3D>
 
 #include <common/enum.h>
 
