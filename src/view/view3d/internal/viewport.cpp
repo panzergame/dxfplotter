@@ -1,14 +1,17 @@
 #include <viewport.h>
 
-#include <vtkNamedColors.h>
+#include <vtkAxesActor.h>
 
 namespace view::view3d::internal
 {
 
 Viewport::Viewport()
 {
-	vtkNew<vtkNamedColors> colors;
 	m_renderer->SetBackground(0.0, 0.0, 0.0);
+
+	vtkNew<vtkAxesActor> axes;
+	axes->AxisLabelsOff();
+	m_renderer->AddActor(axes);
 }
 
 void Viewport::addActor(vtkActor* actor)

@@ -1,5 +1,6 @@
 #include <viewport.h>
 
+#include <internal/tool.h>
 #include <internal/toolpath.h>
 #include <internal/viewport.h>
 
@@ -38,11 +39,13 @@ void Viewport::setSimulation(model::Simulation && simulation)
 	}
 
 	m_simulation = std::move(simulation);
-	m_path = std::make_unique<internal::ToolPath>(m_simulation.approximatedPathToLines(0.01)); // TODO maxError
+	m_tool = std::make_unique<internal::Tool>(m_simulation.toolRadius(), 1.0f); // TODO conf
+	m_toolPath = std::make_unique<internal::ToolPath>(m_simulation.approximatedToolPathToLines(0.01)); // TODO maxError
 
 	m_viewport = std::make_unique<internal::Viewport>();
-	m_viewport->addActor(m_path->actor());
-	m_viewport->resetCamera(m_path->boundingBox());
+	m_viewport->addActor(m_tool->actor());
+	m_viewport->addActor(m_toolPath->actor());
+	m_viewport->resetCamera(m_toolPath->boundingBox());
 
 	window->AddRenderer(m_viewport->renderer());
 	window->Render();

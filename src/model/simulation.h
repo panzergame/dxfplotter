@@ -16,6 +16,22 @@ class Document;
 
 class Simulation : public common::Aggregable<Simulation>
 {
+public:
+	enum class MoveType
+	{
+		NormalWithCut = 0,
+		FastWithoutCut
+	};
+
+	struct ToolPathPoint3D : common::Aggregable<ToolPathPoint3D>
+	{
+		QVector3D position;
+		MoveType moveType;
+
+		ToolPathPoint3D() = default;
+		explicit ToolPathPoint3D(const QVector3D& position, MoveType moveType);
+	};
+
 private:
 	class RenderVisitor;
 
@@ -24,9 +40,12 @@ private:
 	protected:
 		float m_startTime;
 		float m_duration;
+		MoveType m_moveType;
+
+		float timeFactor(float time) const;
 
 	public:
-		explicit Traversable(float startTime, float duration);
+		explicit Traversable(float startTime, float duration, MoveType moveType);
 
 		float startTime() const;
 		float endTime() const;
@@ -40,9 +59,9 @@ private:
 		float m_depth;
 
 	public:
-		explicit PlaneLineMotion(float depth, const geometry::Line &line, float feedRate, float startTime);
+		explicit PlaneLineMotion(float depth, const geometry::Line &line, float feedRate, float startTime, MoveType moveType);
 
-		QVector3D pointAtTime(float time) const;
+		ToolPathPoint3D pointAtTime(float time) const;
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
@@ -50,7 +69,7 @@ private:
 		template <class Visitor>
 		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
 		{
-			visitor(QVector3D(m_line.end(), m_depth));
+			visitor(QVector3D(m_line.end(), m_depth), m_moveType);
 		}
 	};
 
@@ -61,9 +80,9 @@ private:
 		float m_depth;
 
 	public:
-		explicit PlaneArcMotion(float depth, const geometry::Arc &arc, float feedRate, float startTime);
+		explicit PlaneArcMotion(float depth, const geometry::Arc &arc, float feedRate, float startTime, MoveType moveType);
 
-		QVector3D pointAtTime(float time) const;
+		ToolPathPoint3D pointAtTime(float time) const;
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
@@ -72,7 +91,7 @@ private:
 		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
 		{
 			m_arc.approximateToLinesVisit(maxError, [this, &visitor](const QVector2D &point){
-				visitor(QVector3D(point, m_depth));
+				visitor(QVector3D(point, m_depth), m_moveType);
 			});
 		}
 	};
@@ -85,9 +104,9 @@ private:
 		float m_toDepth;
 
 	public:
-		explicit DepthMotion(const QVector2D &planePos, float fromDepth, float toDepth, float feedRate, float startTime);
+		explicit DepthMotion(const QVector2D &planePos, float fromDepth, float toDepth, float feedRate, float startTime, MoveType moveType);
 
-		QVector3D pointAtTime(float time) const;
+		ToolPathPoint3D pointAtTime(float time) const;
 
 		float endDepth() const;
 		const QVector2D& endPlanePos() const;
@@ -95,7 +114,7 @@ private:
 		template <class Visitor>
 		void approximateToLinesVisit(float maxError, Visitor &&visitor) const
 		{
-			visitor(QVector3D(m_planePos, m_toDepth));
+			visitor(QVector3D(m_planePos, m_toDepth), m_moveType);
 		}
 	};
 
@@ -103,19 +122,24 @@ private:
 
 	using MotionList = std::vector<Motion>;
 	MotionList m_motions;
+	float m_duration;
+	float m_toolRadius;
 
 	const Motion &findMotionAtTime(float time) const;
 
-	MotionList renderDocumentToMotions(const Document &document) const;
+	static MotionList renderDocumentToMotions(const Document &document);
+	static float totalDurationOfMotions(const MotionList& motions);
 
 public:
 	Simulation() = default;
 	explicit Simulation(const Document &document);
 
-	QVector3D position(float time);
+	ToolPathPoint3D position(float time) const;
 	float duration() const;
 
-	geometry::Point3DList approximatedPathToLines(float maxError) const;
+	float toolRadius() const;
+
+	ToolPathPoint3D::List approximatedToolPathToLines(float maxError) const;
 };
 
 }

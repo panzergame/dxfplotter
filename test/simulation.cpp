@@ -41,9 +41,9 @@ TEST(SimulationTest, shouldHasMultiLayerDepth)
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document);
-	const geometry::Point3DList points = simulation.approximatedPathToLines(0.001);
+	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 
-	const int exceptedNbPoints = 2 /* retract + start */ + 2 * nbCut /* cut */ + 2 /* retract and home */;
+	const int exceptedNbPoints = 1 /* home */ + 2 /* retract + start */ + 2 * nbCut /* cut */ + 2 /* retract and home */;
 	EXPECT_EQ(exceptedNbPoints, points.size());
 }
 
@@ -58,10 +58,35 @@ TEST(SimulationTest, shouldNotContainsDuplicatePoints)
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document);
-	const geometry::Point3DList points = simulation.approximatedPathToLines(0.001);
+	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 
 	for (int i = 0, size = points.size() - 1; i < size; ++i) {
-		EXPECT_NE(points[i], points[i + 1]);
+		EXPECT_NE(points[i].position, points[i + 1].position);
 	}
+}
+
+#define EXPECT_POINT3D_EQ(a, b) \
+	EXPECT_FLOAT_EQ(a.x(), b.x()); \
+	EXPECT_FLOAT_EQ(a.y(), b.y()); \
+	EXPECT_FLOAT_EQ(a.z(), b.z());
+
+TEST(SimulationTest, shouldMatchPositionAtStartAndEndTime)
+{
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 0), 0);
+	geometry::Polyline polyline({bulge});
+
+	const model::PathSettings settings{10, 10, 10, 1};
+	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
+
+	model::Simulation simulation(*document);
+
+	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
+	const float duration = simulation.duration();
+
+	const model::Simulation::ToolPathPoint3D firstToolPoint = simulation.position(0.0f);
+	EXPECT_POINT3D_EQ(firstToolPoint.position, points.front().position);
+
+	const model::Simulation::ToolPathPoint3D lastToolPoint = simulation.position(duration);
+	EXPECT_POINT3D_EQ(lastToolPoint.position, points.back().position);
 }
 

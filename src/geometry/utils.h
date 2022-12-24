@@ -124,6 +124,12 @@ namespace geometry
 	{
 		return (EnsureEndGreater(start, end) - start);
 	}
+
+	template <class Vector>
+	constexpr Vector Lerp(const Vector& startPoint, const Vector& endPoint, float factor)
+	{
+		return startPoint * (1.0f - factor) + endPoint * factor;
+	}
 }
 
 namespace common::enumerate

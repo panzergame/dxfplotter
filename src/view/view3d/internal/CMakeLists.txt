@@ -1,9 +1,11 @@
 set(SRC
 	toolpath.cpp
 	viewport.cpp
+	tool.cpp
 
 	toolpath.h
 	viewport.h
+	tool.h
 )
 
 add_library(view-view3d-internal ${SRC})

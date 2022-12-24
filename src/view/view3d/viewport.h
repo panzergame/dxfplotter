@@ -14,6 +14,7 @@ namespace view::view3d
 namespace internal
 {
 
+class Tool;
 class ToolPath;
 class Viewport;
 
@@ -24,7 +25,8 @@ class Viewport : public model::DocumentModelObserver<QWidget>
 private:
 	model::Simulation m_simulation;
 	QVTKOpenGLNativeWidget *m_vtkWidget;
-	std::unique_ptr<internal::ToolPath> m_path;
+	std::unique_ptr<internal::Tool> m_tool;
+	std::unique_ptr<internal::ToolPath> m_toolPath;
 	std::unique_ptr<internal::Viewport> m_viewport;
 
 protected:

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <geometry/utils.h>
+#include <model/simulation.h>
 
 #include <vtkActor.h>
 #include <vtkNew.h>
@@ -14,11 +14,11 @@ private:
 	vtkNew<vtkActor> m_actor;
 	double m_boundingBox[6];
 
-	void createPolylineFromPoints(const geometry::Point3DList &points);
+	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List &points);
 
 public:
 	ToolPath() = default;
-	explicit ToolPath(const geometry::Point3DList &points);
+	explicit ToolPath(const model::Simulation::ToolPathPoint3D::List &points);
 
 	vtkActor *actor();
 	const double (&boundingBox() const)[6];

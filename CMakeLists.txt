@@ -43,6 +43,7 @@ find_package(VTK COMPONENTS REQUIRED
 	CommonCore
 	GUISupportQt
 	RenderingCore
+	RenderingAnnotation
 )
 
 find_package(Qt5 COMPONENTS REQUIRED
