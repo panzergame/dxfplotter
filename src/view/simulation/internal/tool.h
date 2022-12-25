@@ -3,7 +3,9 @@
 #include <vtkActor.h>
 #include <vtkNew.h>
 
-namespace view::view3d::internal
+#include <model/simulation.h>
+
+namespace view::simulation::internal
 {
 
 class Tool
@@ -15,6 +17,8 @@ public:
 	explicit Tool(float radius, float height);
 
 	vtkActor *actor();
+
+	void setPosition(const model::Simulation::ToolPathPoint3D& position);
 };
 
 }

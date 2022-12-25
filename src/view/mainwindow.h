@@ -13,10 +13,10 @@ class QComboBox;
 namespace view
 {
 
-namespace view3d
+namespace simulation
 {
 
-class Viewport;
+class Simulation;
 
 }
 
@@ -25,7 +25,7 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 private:
 	model::Application &m_app;
 
-	view3d::Viewport *m_viewport3d;
+	simulation::Simulation *m_simulation;
 
 	QActionGroup m_openedDocumentActions;
 

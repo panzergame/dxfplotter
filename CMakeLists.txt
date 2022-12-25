@@ -77,8 +77,8 @@ set(LINK_LIBRARIES
 	view-dialogs-settings
 	view-task
 	view-view2d
-	view-view3d
-	view-view3d-internal
+	view-simulation
+	view-simulation-internal
 	model
 	config
 	importer-dxf

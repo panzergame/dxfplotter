@@ -11,7 +11,7 @@
 
 #include <QDebug> // TODO
 
-namespace view::view3d::internal
+namespace view::simulation::internal
 {
 
 static vtkNew<vtkNamedColors> namedColors;

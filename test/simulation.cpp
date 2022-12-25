@@ -83,10 +83,10 @@ TEST(SimulationTest, shouldMatchPositionAtStartAndEndTime)
 	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 	const float duration = simulation.duration();
 
-	const model::Simulation::ToolPathPoint3D firstToolPoint = simulation.position(0.0f);
+	const model::Simulation::ToolPathPoint3D firstToolPoint = simulation.toolPositionAtTime(0.0f);
 	EXPECT_POINT3D_EQ(firstToolPoint.position, points.front().position);
 
-	const model::Simulation::ToolPathPoint3D lastToolPoint = simulation.position(duration);
+	const model::Simulation::ToolPathPoint3D lastToolPoint = simulation.toolPositionAtTime(duration);
 	EXPECT_POINT3D_EQ(lastToolPoint.position, points.back().position);
 }
 

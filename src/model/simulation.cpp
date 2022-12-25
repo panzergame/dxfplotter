@@ -263,7 +263,7 @@ Simulation::Simulation(const Document &document)
 {
 }
 
-Simulation::ToolPathPoint3D Simulation::position(float time) const
+Simulation::ToolPathPoint3D Simulation::toolPositionAtTime(float time) const
 {
 	const Motion& motion = findMotionAtTime(time);
 	return std::visit([time](auto &arg){

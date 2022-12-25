@@ -5,7 +5,7 @@
 #include <vtkActor.h>
 #include <vtkNew.h>
 
-namespace view::view3d::internal
+namespace view::simulation::internal
 {
 
 class ToolPath

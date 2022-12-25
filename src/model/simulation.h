@@ -134,7 +134,7 @@ public:
 	Simulation() = default;
 	explicit Simulation(const Document &document);
 
-	ToolPathPoint3D position(float time) const;
+	ToolPathPoint3D toolPositionAtTime(float time) const;
 	float duration() const;
 
 	float toolRadius() const;

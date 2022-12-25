@@ -4,7 +4,7 @@
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
-#include <view3d/viewport.h>
+#include <simulation/simulation.h>
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
 #include <dialogs/mirror.h>
@@ -37,12 +37,12 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
-	m_viewport3d = new view3d::Viewport(m_app);
+	m_simulation = new simulation::Simulation(m_app);
 	Info *info = new Info(*viewport2d, m_app);
 
 	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
 	splitter->addWidget(viewport2d);
-	splitter->addWidget(m_viewport3d);
+	splitter->addWidget(m_simulation);
 	splitter->setStretchFactor(0, 1);
 	splitter->setStretchFactor(1, 0);
 
@@ -252,7 +252,7 @@ void MainWindow::displayError(const QString &message)
 void MainWindow::simulate()
 {
 	model::Simulation simulation = m_app.createSimulation();
-	m_viewport3d->setSimulation(std::move(simulation));
+	m_simulation->setSimulation(std::move(simulation));
 }
 
 }
