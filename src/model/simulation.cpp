@@ -87,7 +87,8 @@ Simulation::PlaneArcMotion::PlaneArcMotion(float depth, const geometry::Arc &arc
 
 Simulation::ToolPathPoint3D Simulation::PlaneArcMotion::pointAtTime(float time) const
 {
-	const QVector2D planePos = geometry::Lerp(m_arc.start(), m_arc.end(), timeFactor(time));
+	const float angle = geometry::Lerp(m_arc.startAngle(), m_arc.endAngle(), timeFactor(time));
+	const QVector2D planePos = m_arc.pointAtAngle(angle);
 	return ToolPathPoint3D(QVector3D(planePos, m_depth), m_moveType);
 }
 
