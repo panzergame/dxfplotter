@@ -299,6 +299,10 @@
    </property>
   </action>
   <action name="actionSimulate">
+   <property name="icon">
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/simulate.svg</normaloff>:/icons/simulate.svg</iconset>
+   </property>
    <property name="text">
     <string>Simulate</string>
    </property>

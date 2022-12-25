@@ -30,6 +30,7 @@ protected:
 
 protected slots:
 	void moveToolAtTime(int ms);
+	void startStopToolAnimation();
 
 public:
 	explicit Simulation(model::Application &app);

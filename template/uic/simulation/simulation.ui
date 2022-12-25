@@ -40,7 +40,11 @@
      <item>
       <widget class="QPushButton" name="startStopButton">
        <property name="text">
-        <string>P</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../../../resource/resource.qrc">
+         <normaloff>:/icons/playback-start.svg</normaloff>:/icons/playback-start.svg</iconset>
        </property>
       </widget>
      </item>
@@ -68,6 +72,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../../resource/resource.qrc"/>
+ </resources>
  <connections/>
 </ui>

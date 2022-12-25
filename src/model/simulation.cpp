@@ -13,19 +13,24 @@ Simulation::ToolPathPoint3D::ToolPathPoint3D(const QVector3D& position, model::S
 {
 }
 
-float entityDuration(const geometry::Line &line, float feedRate)
+float mmPerMinTommPerSec(float mmPerMin)
 {
-	return line.length() / feedRate;
+	return mmPerMin / 60.0f;
 }
 
-float entityDuration(float start, float end, float feedRate)
+float entityDuration(const geometry::Line &line, float feedRateMmPerMin)
 {
-	return std::abs(end - start) / feedRate;
+	return line.length() / mmPerMinTommPerSec(feedRateMmPerMin);
 }
 
-float entityDuration(const geometry::Arc &arc, float feedRate)
+float entityDuration(float start, float end, float feedRateMmPerMin)
 {
-	return arc.length() / feedRate;
+	return std::abs(end - start) / mmPerMinTommPerSec(feedRateMmPerMin);
+}
+
+float entityDuration(const geometry::Arc &arc, float feedRateMmPerMin)
+{
+	return arc.length() / mmPerMinTommPerSec(feedRateMmPerMin);
 }
 
 Simulation::Traversable::Traversable(float startTime, float duration, MoveType moveType)
