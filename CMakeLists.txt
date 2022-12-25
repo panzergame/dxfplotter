@@ -61,6 +61,7 @@ set(INCLUDE_DIRS
 	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
 	thirdparty/nanoflann/include
+	thirdparty/units/include
 	thirdparty/yaml-cpp/include
 	template
 	${CMAKE_BINARY_DIR}/src

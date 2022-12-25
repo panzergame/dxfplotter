@@ -6,6 +6,7 @@
 #include "uic/simulation/ui_simulation.h"
 
 #include <QWidget>
+#include <QTimer>
 
 namespace view::simulation
 {
@@ -22,6 +23,7 @@ class Simulation : private Ui::Simulation, public model::DocumentModelObserver<Q
 private:
 	model::Simulation m_simulation;
 	std::unique_ptr<internal::Viewport> m_viewport;
+	QTimer m_timer;
 
 protected:
 	void documentChanged() override;

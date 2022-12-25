@@ -24,6 +24,12 @@ Simulation::Simulation(model::Application& app)
 	setupUi(this);
 
 	connect(timeSlider, &QSlider::valueChanged, this, &Simulation::moveToolAtTime);
+
+	m_timer.setInterval(30);
+	m_timer.callOnTimeout([this](){
+		timeSlider->setSliderPosition(timeSlider->sliderPosition() + 30);
+	});
+	m_timer.start();
 }
 
 Simulation::~Simulation() = default;

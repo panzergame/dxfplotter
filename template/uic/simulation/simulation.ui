@@ -30,13 +30,20 @@
     <layout class="QVBoxLayout" name="container"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
      <property name="leftMargin">
       <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
+     <item>
+      <widget class="QPushButton" name="startStopButton">
+       <property name="text">
+        <string>P</string>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QLabel" name="timeLabel">
        <property name="text">
