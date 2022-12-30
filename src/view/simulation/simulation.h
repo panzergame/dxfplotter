@@ -1,6 +1,5 @@
 #pragma once
 
-#include <model/documentmodelobserver.h>
 #include <model/simulation.h>
 
 #include "uic/simulation/ui_simulation.h"
@@ -18,22 +17,19 @@ class Viewport;
 
 }
 
-class Simulation : private Ui::Simulation, public model::DocumentModelObserver<QWidget>
+class Simulation : private Ui::Simulation, public QWidget
 {
 private:
 	model::Simulation m_simulation;
 	std::unique_ptr<internal::Viewport> m_viewport;
 	QTimer m_timer;
 
-protected:
-	void documentChanged() override;
-
 protected slots:
 	void moveToolAtTime(int ms);
 	void startStopToolAnimation();
 
 public:
-	explicit Simulation(model::Application &app);
+	explicit Simulation();
 	~Simulation();
 
 	void setSimulation(model::Simulation&& simulation);

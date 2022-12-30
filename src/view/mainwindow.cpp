@@ -37,7 +37,7 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
-	m_simulation = new simulation::Simulation(m_app);
+	m_simulation = new simulation::Simulation();
 	Info *info = new Info(*viewport2d, m_app);
 
 	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
@@ -241,6 +241,8 @@ void MainWindow::setSelectionOrigin()
 void MainWindow::documentChanged(model::Document *newDocument)
 {
 	setDocumentToolsEnabled((newDocument != nullptr));
+
+	m_simulation->hide();
 }
 
 void MainWindow::displayError(const QString &message)
@@ -253,6 +255,7 @@ void MainWindow::simulate()
 {
 	model::Simulation simulation = m_app.createSimulation();
 	m_simulation->setSimulation(std::move(simulation));
+	m_simulation->show();
 }
 
 }

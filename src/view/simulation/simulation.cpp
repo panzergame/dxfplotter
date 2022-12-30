@@ -6,10 +6,6 @@
 namespace view::simulation
 {
 
-void Simulation::documentChanged()
-{
-}
-
 void Simulation::moveToolAtTime(int ms)
 {
 	const QString timeText = QTime::fromMSecsSinceStartOfDay(ms).toString("hh:mm:ss:zzz");
@@ -33,8 +29,7 @@ void Simulation::startStopToolAnimation()
 	}
 }
 
-Simulation::Simulation(model::Application& app)
-	:DocumentModelObserver(app)
+Simulation::Simulation()
 {
 	setupUi(this);
 
