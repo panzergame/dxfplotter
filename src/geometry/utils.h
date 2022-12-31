@@ -10,6 +10,7 @@
 #include <cassert>
 
 #include <QVector2D>
+#include <QVector3D>
 
 #include <common/enum.h>
 
@@ -21,6 +22,7 @@ namespace geometry
 	}
 
 	using Point2DList = std::vector<QVector2D>;
+	using Point3DList = std::vector<QVector3D>;
 
 	enum class Orientation
 	{
@@ -121,6 +123,12 @@ namespace geometry
 	constexpr float DeltaAngle(float start, float end)
 	{
 		return (EnsureEndGreater(start, end) - start);
+	}
+
+	template <class Vector>
+	constexpr Vector Lerp(const Vector& startPoint, const Vector& endPoint, float factor)
+	{
+		return startPoint * (1.0f - factor) + endPoint * factor;
 	}
 }
 

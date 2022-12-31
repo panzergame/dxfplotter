@@ -4,6 +4,7 @@
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
+#include <simulation/simulation.h>
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
 #include <dialogs/mirror.h>
@@ -35,16 +36,22 @@ QWidget *MainWindow::setupLeftPanel()
 
 QWidget *MainWindow::setupCenterPanel()
 {
-	view2d::Viewport *viewport = new view2d::Viewport(m_app);
-	Info *info = new Info(*viewport, m_app);
+	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
+	m_simulation = new simulation::Simulation();
+	Info *info = new Info(*viewport2d, m_app);
 
-	QWidget *container = new QWidget(this);
+	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
+	splitter->addWidget(viewport2d);
+	splitter->addWidget(m_simulation);
+	splitter->setStretchFactor(0, 1);
+	splitter->setStretchFactor(1, 0);
+
 	QVBoxLayout *layout = new QVBoxLayout();
-
-	layout->addWidget(viewport);
+	layout->addWidget(splitter);
 	layout->addWidget(info);
 	layout->setStretch(0, 1);
 
+	QWidget *container = new QWidget(this);
 	container->setLayout(layout);
 
 	return container;
@@ -91,6 +98,7 @@ void MainWindow::setupMenuActions()
 	connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 	connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
+	connect(actionSimulate, &QAction::triggered, this, &MainWindow::simulate);
 }
 
 void MainWindow::setupOpenedDocumentActions()
@@ -108,6 +116,7 @@ void MainWindow::setupOpenedDocumentActions()
 	m_openedDocumentActions.addAction(actionTransformSelection);
 	m_openedDocumentActions.addAction(actionMirrorSelection);
 	m_openedDocumentActions.addAction(actionSetSelectionOrigin);
+	m_openedDocumentActions.addAction(actionSimulate);
 
 	m_openedDocumentActions.setExclusive(true);
 }
@@ -232,12 +241,21 @@ void MainWindow::setSelectionOrigin()
 void MainWindow::documentChanged(model::Document *newDocument)
 {
 	setDocumentToolsEnabled((newDocument != nullptr));
+
+	m_simulation->hide();
 }
 
 void MainWindow::displayError(const QString &message)
 {
 	QMessageBox messageBox;
 	messageBox.critical(this, "Error", message);
+}
+
+void MainWindow::simulate()
+{
+	model::Simulation simulation = m_app.createSimulation();
+	m_simulation->setSimulation(std::move(simulation));
+	m_simulation->show();
 }
 
 }

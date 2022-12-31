@@ -1,4 +1,5 @@
 add_subdirectory(dialogs)
+add_subdirectory(simulation)
 
 qt5_wrap_ui(UIC_HEADERS
 	info.ui
@@ -9,5 +10,5 @@ qt5_wrap_ui(UIC_HEADERS
 )
 
 add_custom_target(uic DEPENDS ${UIC_HEADERS})
-add_dependencies(uic uic-dialogs)
+add_dependencies(uic uic-dialogs uic-simulation)
 

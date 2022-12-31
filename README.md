@@ -100,14 +100,14 @@ Simple set of GCode command is used per tool:
 
 | Description | Default Command | Available Variables |
 | - | - | - |
-| Pre Cut | M4 S \{S:.3f} | S F |
+| Pre Cut | M4 S \{S:.3f} | S |
 | Post Cut | M5 | |
 | Plane Fast Move | G0 X \{X:.3f} Y \{Y:.3f} | X Y |
-| Plane Linear Move | G1 X \{X:.3f} Y \{Y:.3f} F \{F:.3f} | S F X Y |
+| Plane Linear Move | G1 X \{X:.3f} Y \{Y:.3f} F \{F:.3f} | F X Y |
 | Depth Fast Move | G0 Z \{Z:.3f} | Z |
-| Depth Linear Move | G1 Z \{Z:.3f} | S F Z |
-| CW Arc Move | G2 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | S F X Y I J |
-| CCW Arc Move | G3 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | S F X Y I J |
+| Depth Linear Move | G1 Z \{Z:.3f} | F Z |
+| CW Arc Move | G2 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | F X Y I J |
+| CCW Arc Move | G3 X \{X:.3f} Y \{Y:.3f} I \{I:.3f} J \{J:.3f} F \{F:.3f} | F X Y I J |
 
 They can be customized from tool Settings panel `Configuration->Settings->Tools->ToolName->Gcode` or from dxfplotter/config.yml file in your applications configuration folder.
 

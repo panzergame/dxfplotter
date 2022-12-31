@@ -16,7 +16,6 @@ private:
 	std::ostream &m_stream;
 
 protected:
-	const config::Tools::Tool& m_tool;
 	const config::Profiles::Profile::Gcode& m_gcode;
 
 	/** Print a command to stream with a format and a list of named arguments
@@ -34,12 +33,26 @@ protected:
 		}
 	}
 
-public:
-	explicit PostProcessor(const config::Tools::Tool& tool, const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
-
+	void preCut(float intensity);
 	void postCut();
+	void planeLinearMove(const QVector2D &to, float feedRate);
+	void depthLinearMove(float depth, float feedRate);
+	void cwArcMove(const QVector2D &relativeCenter, const QVector2D &to, float feedRate);
+	void ccwArcMove(const QVector2D &relativeCenter, const QVector2D &to, float feedRate);
 	void fastPlaneMove(const QVector2D &to);
-	void retractDepth();
+	void retractDepth(float depth);
+	void processBulge(const geometry::Bulge &bulge, float planeFeedRate);
+	void processLine(const geometry::Bulge &bulge, float planeFeedRate);
+	void processArc(const geometry::Bulge &bulge, float planeFeedRate);
+
+public:
+	explicit PostProcessor(const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
+
+	void start(const QVector2D& from, float safetyDepth);
+	void end(const QVector2D& to, float safetyDepth);
+	void startOperation(const QVector2D& to, float intensity);
+	void endOperation(float safetyDepth);
+	void processPathAtDepth(const geometry::Polyline& polyline, float depth, float planeFeedRate, float depthFeedRate);
 };
 
 }

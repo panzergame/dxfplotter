@@ -7,6 +7,7 @@ set(SRC
 	bulge.cpp
 	circle.cpp
 	cubicspline.cpp
+	line.cpp
 	pocketer.cpp
 	polyline.cpp
 	quadraticspline.cpp
@@ -19,6 +20,7 @@ set(SRC
 	bulge.h
 	circle.h
 	cubicspline.h
+	line.h
 	polyline.h
 	quadraticspline.h
 	spline.h

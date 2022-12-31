@@ -36,7 +36,15 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
 
-find_package(PythonInterp)
+find_package(PythonInterp REQUIRED)
+
+find_package(VTK COMPONENTS REQUIRED
+	CommonColor
+	CommonCore
+	GUISupportQt
+	RenderingCore
+	RenderingAnnotation
+)
 
 find_package(Qt5 COMPONENTS REQUIRED
 	Core
@@ -52,14 +60,15 @@ set(INCLUDE_DIRS
 	thirdparty
 	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
-	thirdparty/fmt/include
 	thirdparty/nanoflann/include
+	thirdparty/units/include
 	thirdparty/yaml-cpp/include
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
+	${VTK_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -69,12 +78,15 @@ set(LINK_LIBRARIES
 	view-dialogs-settings
 	view-task
 	view-view2d
+	view-simulation
+	view-simulation-internal
 	model
 	config
 	importer-dxf
 	importer-dxfplot
 	exporter-gcode
 	exporter-dxfplot
+	exporter-renderer
 	geometry
 	geometry-filter
 	libdxfrw
@@ -82,6 +94,7 @@ set(LINK_LIBRARIES
 	Qt5::Widgets
 	Qt5::Svg
 	yaml-cpp
+	${VTK_LIBRARIES}
 )
 
 include_directories(${INCLUDE_DIRS})
@@ -97,6 +110,7 @@ endif()
 
 add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
+vtk_module_autoinit(TARGETS dxfplotter MODULES ${VTK_LIBRARIES})
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)

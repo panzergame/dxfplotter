@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/document.h>
+#include <model/simulation.h>
 #include <config/config.h>
 
 #include <QObject>
@@ -49,7 +50,7 @@ private:
 	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
 	template <class Exporter>
-	bool saveToFile(Exporter &exporter, const QString &fileName)
+	bool saveToFile(Exporter &&exporter, const QString &fileName)
 	{
 		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
@@ -103,6 +104,8 @@ public:
 
 	void hideSelection();
 	void showHidden();
+
+	Simulation createSimulation();
 
 Q_SIGNALS:
 	void documentChanged(Document *newDocument);

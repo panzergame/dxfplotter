@@ -218,6 +218,11 @@ Arc Bulge::toArc() const
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
 }
 
+Line Bulge::toLine() const
+{
+	return Line(m_start, m_end);
+}
+
 inline QVector2D mapVector2D(const QVector2D &vect, const QTransform &matrix)
 {
 	const QPointF point = vect.toPointF();

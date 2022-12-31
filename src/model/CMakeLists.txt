@@ -7,6 +7,7 @@ set(SRC
 	pathsettings.cpp
 	pathgroupsettings.cpp
 	renderable.cpp
+	simulation.cpp
 	task.cpp
 
 	application.h
@@ -17,6 +18,7 @@ set(SRC
 	pathsettings.h
 	pathgroupsettings.h
 	renderable.h
+	simulation.h
 	task.h
 	documentmodelobserver.h
 )

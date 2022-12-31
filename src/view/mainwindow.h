@@ -13,11 +13,10 @@ class QComboBox;
 namespace view
 {
 
-namespace Task
+namespace simulation
 {
 
-class Task;
-class Viewport;
+class Simulation;
 
 }
 
@@ -25,6 +24,8 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
 	model::Application &m_app;
+
+	simulation::Simulation *m_simulation;
 
 	QActionGroup m_openedDocumentActions;
 
@@ -54,6 +55,9 @@ protected Q_SLOTS:
 	void setSelectionOrigin();
 	void documentChanged(model::Document *newDocument);
 	void displayError(const QString &message);
+
+signals:
+	void simulate();
 };
 
 }

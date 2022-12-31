@@ -27,6 +27,7 @@ set(SRC
 	polyline.cpp
 	polylineutils.cpp
 	serializer.cpp
+	simulation.cpp
 	task.cpp
 	verticalspeed.cpp
 

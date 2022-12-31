@@ -4,6 +4,7 @@
 
 #include <geometry/arc.h>
 #include <geometry/circle.h>
+#include <geometry/line.h>
 #include <geometry/utils.h>
 #include <geometry/rect.h>
 
@@ -70,6 +71,7 @@ public:
 
 	Circle toCircle() const;
 	Arc toArc() const;
+	Line toLine() const;
 
 	void transform(const QTransform &matrix);
 

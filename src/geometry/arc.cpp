@@ -49,4 +49,16 @@ float Arc::spanAngle() const
 	return m_spanAngle;
 }
 
+float Arc::length() const
+{
+	return std::abs(m_spanAngle) * radius();
+}
+
+QVector2D Arc::pointAtAngle(float angle) const
+{
+	const QVector2D relativeNormalizedPoint(std::cos(angle), std::sin(angle));
+	const QVector2D point = (center() + relativeNormalizedPoint * radius());
+	return point;
+}
+
 }

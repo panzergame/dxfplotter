@@ -1,4 +1,5 @@
 #include <application.h>
+#include <simulation.h>
 
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
@@ -355,6 +356,12 @@ void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
 	task.showHidden();
+}
+
+Simulation Application::createSimulation()
+{
+	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();
+	return Simulation(*m_openedDocument, fastMoveFeedRate);
 }
 
 }
