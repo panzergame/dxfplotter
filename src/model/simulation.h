@@ -127,12 +127,12 @@ private:
 
 	const Motion &findMotionAtTime(float time) const;
 
-	static MotionList renderDocumentToMotions(const Document &document);
+	static MotionList renderDocumentToMotions(const Document &document, float fastMoveFeedRate);
 	static float totalDurationOfMotions(const MotionList& motions);
 
 public:
 	Simulation() = default;
-	explicit Simulation(const Document &document);
+	explicit Simulation(const Document &document, float fastMoveFeedRate);
 
 	ToolPathPoint3D toolPositionAtTime(float time) const;
 	float duration() const;

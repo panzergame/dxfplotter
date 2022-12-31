@@ -40,7 +40,7 @@ TEST(SimulationTest, shouldHasMultiLayerDepth)
 	const model::PathSettings settings{10, 10, 10, nbCut - 1};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
-	model::Simulation simulation(*document);
+	model::Simulation simulation(*document, 100.0f);
 	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 
 	const int exceptedNbPoints = 1 /* home */ + 2 /* retract + start */ + 2 * nbCut /* cut */ + 2 /* retract and home */;
@@ -57,7 +57,7 @@ TEST(SimulationTest, shouldNotContainsDuplicatePoints)
 	const model::PathSettings settings{10, 10, 10, nbCut - 1};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
-	model::Simulation simulation(*document);
+	model::Simulation simulation(*document, 100.0f);
 	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 
 	for (int i = 0, size = points.size() - 1; i < size; ++i) {
@@ -66,9 +66,9 @@ TEST(SimulationTest, shouldNotContainsDuplicatePoints)
 }
 
 #define EXPECT_POINT3D_EQ(a, b) \
-	EXPECT_FLOAT_EQ(a.x(), b.x()); \
-	EXPECT_FLOAT_EQ(a.y(), b.y()); \
-	EXPECT_FLOAT_EQ(a.z(), b.z());
+	EXPECT_NEAR(a.x(), b.x(), 1e-5); \
+	EXPECT_NEAR(a.y(), b.y(), 1e-5); \
+	EXPECT_NEAR(a.z(), b.z(), 1e-5);
 
 TEST(SimulationTest, shouldMatchPositionAtStartAndEndTime)
 {
@@ -78,7 +78,7 @@ TEST(SimulationTest, shouldMatchPositionAtStartAndEndTime)
 	const model::PathSettings settings{10, 10, 10, 1};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
-	model::Simulation simulation(*document);
+	model::Simulation simulation(*document, 100.0f);
 
 	const model::Simulation::ToolPathPoint3D::List points = simulation.approximatedToolPathToLines(0.001);
 	const float duration = simulation.duration();

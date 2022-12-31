@@ -360,7 +360,8 @@ void Application::showHidden()
 
 Simulation Application::createSimulation()
 {
-	return Simulation(*m_openedDocument);
+	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();
+	return Simulation(*m_openedDocument, fastMoveFeedRate);
 }
 
 }

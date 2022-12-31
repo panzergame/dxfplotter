@@ -41,4 +41,7 @@
 			</group>
 		</group>
 	</list>
+	<group name="simulation">
+		<property name="fast move feed rate" type="float" default="100"/>
+	</group>
 </group>

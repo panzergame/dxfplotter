@@ -240,12 +240,12 @@ const Simulation::Motion &Simulation::findMotionAtTime(float time) const
 	return *motionIt;
 }
 
-Simulation::MotionList Simulation::renderDocumentToMotions(const Document &document)
+Simulation::MotionList Simulation::renderDocumentToMotions(const Document &document, float fastMoveFeedRate)
 {
 	const config::Tools::Tool& tool = document.toolConfig();
 	const config::Profiles::Profile& profile = document.profileConfig();
 
-	RenderVisitor visitor(42); // TODO fastfeedRate config
+	RenderVisitor visitor(fastMoveFeedRate);
 	exporter::renderer::Renderer renderer(tool, profile, visitor);
 
 	renderer.render(document);
@@ -262,8 +262,8 @@ float Simulation::totalDurationOfMotions(const MotionList& motions)
 }
 
 
-Simulation::Simulation(const Document &document)
-	:m_motions(renderDocumentToMotions(document)),
+Simulation::Simulation(const Document &document, float fastMoveFeedRate)
+	:m_motions(renderDocumentToMotions(document, fastMoveFeedRate)),
 	m_duration(totalDurationOfMotions(m_motions)),
 	m_toolRadius(document.toolConfig().general().radius())
 {
