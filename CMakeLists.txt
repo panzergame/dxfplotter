@@ -35,10 +35,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
-
+find_package(fmt CONFIG REQUIRED)
 find_package(PythonInterp REQUIRED)
 
-find_package(VTK COMPONENTS REQUIRED
+find_package(VTK CONFIG COMPONENTS REQUIRED
 	CommonColor
 	CommonCore
 	GUISupportQt

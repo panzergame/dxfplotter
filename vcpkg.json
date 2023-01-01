@@ -1,0 +1,16 @@
+{
+  "name": "dxfplotter",
+  "version-string": "0.0.1",
+  "dependencies": [
+    "fmt",
+    "qt5-base",
+    "qt5-svg",
+    {
+      "name": "vtk",
+      "features": ["qt"]
+    },
+    "nanoflann",
+    "cereal",
+    "yaml-cpp"
+  ]
+}

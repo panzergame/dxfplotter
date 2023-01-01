@@ -9,18 +9,6 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Cache Qt
-        id: cache-qt
-        uses: actions/cache@v1  # not v2!
-        with:
-          path: ../Qt
-          key: ${{ runner.os }}-QtCache
-      
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          version: '6.3.0'
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
       - uses: lukka/get-cmake@latest
       - name: Add msbuild to PATH
         uses: microsoft/setup-msbuild@v1.1

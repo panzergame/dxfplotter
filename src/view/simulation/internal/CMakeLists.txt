@@ -10,3 +10,4 @@ set(SRC
 
 add_library(view-simulation-internal ${SRC})
 target_link_libraries(view-simulation-internal PRIVATE ${VTK_LIBRARIES})
+add_dependencies(view-simulation-internal generate-config uic)
