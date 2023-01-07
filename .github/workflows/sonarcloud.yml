@@ -15,7 +15,7 @@ jobs:
       - name: Install vcpkg
         uses: lukka/run-vcpkg@v10
         with:
-          vcpkgGitCommitId: 5fdee72bc1fceca198fb1ab7589837206a8b81ba
+          vcpkgGitCommitId: 6f7ffeb18f99796233b958aaaf14ec7bd4fb64b2
       - name: Install package
         run: |
           sudo apt-get update
