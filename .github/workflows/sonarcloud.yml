@@ -37,5 +37,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           VCPKG_DEFAULT_TRIPLET: x64-linux-release
+      - name: debug
+        if: always()
+        run: |
+          cat /home/runner/work/dxfplotter/dxfplotter/vcpkg/buildtrees/qt5-base/config-x64-linux-dbg-err.log
+          cat /home/runner/work/dxfplotter/dxfplotter/vcpkg/buildtrees/qt5-base/config-x64-linux-dbg-err.err
 
 
