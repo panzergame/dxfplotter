@@ -15,7 +15,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install build-essential cmake bison autoconf-archive libgl1-mesa-dev libglu1-mesa-dev xcb libx11-xcb-dev libxkbcommon-x11-dev lcov
+          sudo apt-get -y install build-essential cmake bison autoconf-archive libgl1-mesa-dev libglu1-mesa-dev '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev
       - name: Install vcpkg
         uses: lukka/run-vcpkg@v10
         with:
