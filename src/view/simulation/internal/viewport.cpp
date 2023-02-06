@@ -1,40 +1,36 @@
 #include <viewport.h>
+#include <scene.h>
 
-#include <vtkAxesActor.h>
-#include <vtkRenderer.h>
-#include <vtkNew.h>
-#include <vtkGenericOpenGLRenderWindow.h>
+#include <Qt3DExtras/QOrbitCameraController>
+#include <Qt3DExtras/QForwardRenderer>
+#include <Qt3DRender/QCamera>
 
-#include <QResizeEvent>
+#include <QWidget>
 
 namespace view::simulation::internal
 {
 
-Viewport::Viewport(const model::Simulation& simulation)
-	:m_tool(simulation.toolRadius(), 1.0f),
-	m_toolPath(simulation.approximatedToolPathToLines(0.01))
+Viewport::Viewport()
 {
-	vtkNew<vtkRenderer> renderer;
-	renderer->SetBackground(0.0, 0.0, 0.0);
-
-	renderer->AddActor(m_tool.actor());
-	renderer->AddActor(m_toolPath.actor());
-
-	vtkNew<vtkAxesActor> axes;
-	axes->AxisLabelsOff();
-	renderer->AddActor(axes);
-
-	vtkNew<vtkGenericOpenGLRenderWindow> renderWindow;
-	renderWindow->AddRenderer(renderer);
-	renderer->ResetCamera(m_toolPath.boundingBox());
-	setRenderWindow(renderWindow);
+	defaultFrameGraph()->setClearColor(QColor(0, 0, 0));
 }
 
-void Viewport::setToolPosition(const model::Simulation::ToolPathPoint3D& position)
+QWidget *Viewport::container()
 {
-	m_tool.setPosition(position);
-	renderWindow()->Render();
+	return QWidget::createWindowContainer(this);
 }
+
+void Viewport::setScene(Scene *scene)
+{
+	setRootEntity(scene);
+
+	camera()->viewAll();
+
+	Qt3DExtras::QOrbitCameraController *camController = new Qt3DExtras::QOrbitCameraController(scene);
+	camController->setLinearSpeed( 200.0f );
+	camController->setLookSpeed( 200.0f );
+	camController->setCamera(camera());
 
 }
 
+}

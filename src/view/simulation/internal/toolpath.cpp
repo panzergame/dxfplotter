@@ -1,78 +1,100 @@
 #include <toolpath.h>
 
-#include <vtkNamedColors.h>
-#include <vtkProperty.h>
-#include <vtkPoints.h>
-#include <vtkLine.h>
-#include <vtkCellArray.h>
-#include <vtkCellData.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
+#include <Qt3DRender/QGeometry>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QAttribute> 
+#include <Qt3DRender/QBuffer> 
+
+#include <Qt3DExtras/QPerVertexColorMaterial>
+
+#include <QByteArray>
+#include <QBuffer>
 
 #include <QDebug> // TODO
 
 namespace view::simulation::internal
 {
 
-static vtkNew<vtkNamedColors> namedColors;
+struct PackedVector3D
+{
+	float x;
+	float y;
+	float z;
+
+	PackedVector3D() = default;
+
+	explicit PackedVector3D(const QVector3D& other)
+		:x(other.x()),
+		y(other.y()),
+		z(other.z())
+	{
+	}
+};
 
 void ToolPath::createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List& points)
 {
-	const int nbPoints = points.size();
-	const int nbLines = nbPoints - 1;
+	static const uint32_t colorsByMoveType[] = {
+		(uint32_t)QColor(255, 69, 0).value(),
+		(uint32_t)QColor(72, 61, 139).value()
+	};
 
-	vtkNew<vtkPoints> vertices;
-	vertices->SetNumberOfPoints(nbPoints);
+	const int nbPoints = points.size();
+
+	m_packedPoints = std::make_unique<PackedVector3D[]>(nbPoints);
+	m_colors = std::make_unique<uint32_t[]>(nbPoints);
+	m_indices = std::make_unique<uint32_t[]>(nbPoints);
 
 	for (int i = 0; i < nbPoints; ++i) {
 		const model::Simulation::ToolPathPoint3D &point = points[i];
-		const QVector3D& position = point.position;
-		vertices->SetPoint(i, position.x(), position.y(), position.z());
+		m_packedPoints[i] = PackedVector3D(point.position);
+		m_colors[i] = colorsByMoveType[static_cast<int>(point.moveType)];
+		m_indices[i] = i;
 	}
 
-	vtkNew<vtkUnsignedCharArray> colors;
-	colors->SetNumberOfComponents(3);
-	colors->SetNumberOfTuples(nbLines);
+    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(this);
 
-	static const vtkColor3ub colorsByMoveType[] = {
-		namedColors->GetColor3ub("OrangeRed"), // MoveType::NormalWithCut
-		namedColors->GetColor3ub("SlateBlue") // MoveType::FastWithoutCut
-	};
+	const QByteArray vertexData = QByteArray::fromRawData((const char *)m_packedPoints.get(), sizeof(PackedVector3D) * nbPoints);
+	Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer(geometry);
+	vertexBuffer->setData(vertexData);
 
-	vtkNew<vtkCellArray> cells;
-	for (int i = 0; i < nbLines; ++i) {
-		const model::Simulation::ToolPathPoint3D &secondPoint = points[i + 1];
+	const QByteArray colorData = QByteArray::fromRawData((const char *)m_colors.get(), sizeof(uint32_t) * nbPoints);
+	Qt3DRender::QBuffer *colorBuffer = new Qt3DRender::QBuffer(geometry);
+	colorBuffer->setData(colorData);
 
-		colors->SetTypedTuple(i, colorsByMoveType[static_cast<int>(secondPoint.moveType)].GetData());
+	const QByteArray indexData = QByteArray::fromRawData((const char *)m_indices.get(), sizeof(uint32_t) * nbPoints);
+	Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(geometry);
+	indexBuffer->setData(indexData);
 
-		vtkNew<vtkLine> line;
-		line->GetPointIds()->SetId(0, i);
-		line->GetPointIds()->SetId(1, i + 1);
-		cells->InsertNextCell(line);
-	}
+	Qt3DRender::QAttribute *vertexAttribute = new Qt3DRender::QAttribute(vertexBuffer, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::Float, 3, nbPoints);
+	vertexAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
-	vertices->GetBounds(m_boundingBox);
+	Qt3DRender::QAttribute *colorAttribute = new Qt3DRender::QAttribute(colorBuffer, Qt3DRender::QAttribute::defaultColorAttributeName(), Qt3DRender::QAttribute::UnsignedByte, 4, nbPoints);
+	colorAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
 
-	vtkNew<vtkPolyData> polyData;
-	polyData->SetPoints(vertices);
-	polyData->SetLines(cells);
-    polyData->GetCellData()->SetScalars(colors);
+	Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute(indexBuffer, Qt3DRender::QAttribute::UnsignedInt, 3, nbPoints);
+	indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
 
-	vtkNew<vtkPolyDataMapper> mapper;
-	mapper->SetInputData(polyData);
+	geometry->addAttribute(vertexAttribute);
+	geometry->addAttribute(colorAttribute);
+	geometry->addAttribute(indexAttribute);
 
-	m_actor->SetMapper(mapper);
+	Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer(this);
+	renderer->setGeometry(geometry);
+	renderer->setPrimitiveType(Qt3DRender::QGeometryRenderer::LineStrip);
+
+	Qt3DExtras::QPerVertexColorMaterial *material = new Qt3DExtras::QPerVertexColorMaterial(this);
+
+	addComponent(material);
+	addComponent(renderer);
 }
 
-ToolPath::ToolPath(const model::Simulation::ToolPathPoint3D::List& points)
+ToolPath::ToolPath(Qt3DCore::QEntity *parent, const model::Simulation::ToolPathPoint3D::List& points)
+	:Qt3DCore::QEntity(parent)
 {
 	createPolylineFromPoints(points);
 }
 
-vtkActor *ToolPath::actor()
-{
-	return m_actor;
-}
+ToolPath::~ToolPath() = default;
 
 const double (&ToolPath::boundingBox() const)[6]
 {

@@ -1,26 +1,30 @@
 #pragma once
 
-#include <model/simulation.h>
+#include <Qt3DCore/QEntity>
 
-#include <vtkActor.h>
-#include <vtkNew.h>
+#include <model/simulation.h>
 
 namespace view::simulation::internal
 {
 
-class ToolPath
+struct PackedVector3D;
+
+class ToolPath : public Qt3DCore::QEntity
 {
 private:
-	vtkNew<vtkActor> m_actor;
 	double m_boundingBox[6];
+
+	std::unique_ptr<PackedVector3D[]> m_packedPoints;
+	std::unique_ptr<uint32_t[]> m_colors;
+	std::unique_ptr<uint32_t[]> m_indices;
 
 	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List &points);
 
 public:
 	ToolPath() = default;
-	explicit ToolPath(const model::Simulation::ToolPathPoint3D::List &points);
+	explicit ToolPath(Qt3DCore::QEntity *parent, const model::Simulation::ToolPathPoint3D::List &points);
+	~ToolPath();
 
-	vtkActor *actor();
 	const double (&boundingBox() const)[6];
 };
 

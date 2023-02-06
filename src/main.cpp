@@ -9,8 +9,6 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
-#include <QVTKOpenGLNativeWidget.h>
-
 void setDarkPalette(QApplication &qapp)
 {
 	QPalette palette;
@@ -35,8 +33,6 @@ void setDarkPalette(QApplication &qapp)
 int main(int argc, char *argv[])
 {
 	Q_INIT_RESOURCE(resource);
-	// Needed to ensure appropriate OpenGL context is created for VTK rendering.
-	QSurfaceFormat::setDefaultFormat(QVTKOpenGLNativeWidget::defaultFormat());
 
 	QApplication qapp(argc, argv);
 	qapp.setApplicationName("dxfplotter");

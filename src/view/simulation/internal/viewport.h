@@ -1,23 +1,22 @@
 #pragma once
 
-#include <QVTKOpenGLNativeWidget.h>
-
-#include <view/simulation/internal/tool.h>
-#include <view/simulation/internal/toolpath.h>
+#include <Qt3DExtras/Qt3DWindow>
 
 namespace view::simulation::internal
 {
 
-class Viewport : public QVTKOpenGLNativeWidget
+class Scene;
+
+class Viewport : public Qt3DExtras::Qt3DWindow
 {
 private:
-	Tool m_tool;
-	ToolPath m_toolPath;
 
 public:
-	explicit Viewport(const model::Simulation& simulation);
+	explicit Viewport();
 
-	void setToolPosition(const model::Simulation::ToolPathPoint3D& position);
+	QWidget *container();
+
+	void setScene(Scene *scene);
 };
 
 }

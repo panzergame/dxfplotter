@@ -38,19 +38,13 @@ find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
 
-find_package(VTK COMPONENTS REQUIRED
-	CommonColor
-	CommonCore
-	GUISupportQt
-	RenderingCore
-	RenderingAnnotation
-)
-
 find_package(Qt5 COMPONENTS REQUIRED
 	Core
 	Widgets
 	Gui
 	Svg
+	3DCore
+	3DExtras
 )
 
 #qt_standard_project_setup()
@@ -60,6 +54,7 @@ set(INCLUDE_DIRS
 	thirdparty
 	thirdparty/cereal/include
 	thirdparty/cavaliercontours/include
+	thirdparty/fmt/include
 	thirdparty/nanoflann/include
 	thirdparty/units/include
 	thirdparty/yaml-cpp/include
@@ -68,7 +63,8 @@ set(INCLUDE_DIRS
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
-	${VTK_INCLUDE_DIRS}
+	${Qt53DCore_INCLUDE_DIRS}
+	${Qt53DExtras_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -93,8 +89,9 @@ set(LINK_LIBRARIES
 	fmt::fmt
 	Qt5::Widgets
 	Qt5::Svg
+	Qt5::3DCore
+	Qt5::3DExtras
 	yaml-cpp
-	${VTK_LIBRARIES}
 )
 
 include_directories(${INCLUDE_DIRS})
@@ -110,7 +107,6 @@ endif()
 
 add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
-vtk_module_autoinit(TARGETS dxfplotter MODULES ${VTK_LIBRARIES})
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)
