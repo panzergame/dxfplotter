@@ -6,7 +6,6 @@
 #include <geometry/arc.h>
 #include <geometry/line.h>
 
-#include <config/config.h>
 #include <common/aggregable.h>
 
 namespace model
