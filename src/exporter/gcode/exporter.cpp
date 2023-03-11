@@ -1,4 +1,5 @@
 #include <exporter.h>
+#include <metadata.h>
 #include <postprocessor.h>
 #include <exporter/renderer/renderer.h>
 
@@ -61,6 +62,46 @@ void convertConfigNodeToComments(const Group &group, std::ostream &output)
 	visitor(group);
 }
 
+class RendererVisitor : private PostProcessor
+{
+public:
+	using PostProcessor::PostProcessor;
+
+	void start(const QVector2D& from, float safetyDepth)
+	{
+		retractDepth(safetyDepth);
+	}
+
+	void end(const QVector2D& to, float safetyDepth)
+	{
+		fastPlaneMove(to);
+	}
+
+	void startOperation(const QVector2D& to, float intensity)
+	{
+		// Move to polyline beginning and start tooling
+		fastPlaneMove(to);
+		preCut(intensity);
+	}
+
+	void endOperation(float safetyDepth)
+	{
+		// Retract tool for further operations
+		retractDepth(safetyDepth);
+		postCut();
+	}
+
+	void processPathAtDepth(const geometry::Polyline& polyline, float depth, float planeFeedRate, float depthFeedRate)
+	{
+		depthLinearMove(depth, depthFeedRate);
+
+		polyline.forEachBulge([this, planeFeedRate](const geometry::Bulge &bulge){
+			processBulge(bulge, planeFeedRate);
+		});
+	}
+};
+
+
 Exporter::Exporter(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Options options)
 	:m_tool(tool),
 	m_profile(profile),
@@ -75,8 +116,12 @@ void Exporter::operator()(const model::Document &document, std::ostream &output)
 		convertConfigNodeToComments(m_profile, output);
 	}
 
-	PostProcessor processor(m_profile.gcode(), output);
-	renderer::Renderer renderer(m_tool, m_profile, processor);
+	const config::Profiles::Profile::Gcode& gcode = m_profile.gcode();
+	const Metadata metadata(document, gcode, m_tool.general().retractDepth());
+	output << metadata.toComment();
+
+	RendererVisitor visitor(gcode, output);
+	renderer::Renderer renderer(m_tool, m_profile, visitor);
 	renderer.render(document);
 }
 

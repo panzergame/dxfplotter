@@ -1,8 +1,10 @@
 set(SRC
 	exporter.cpp
+	metadata.cpp
 	postprocessor.cpp
 
 	exporter.h
+	metadata.h
 	postprocessor.h
 )
 

@@ -33,6 +33,7 @@ protected:
 		}
 	}
 
+public:
 	void preCut(float intensity);
 	void postCut();
 	void planeLinearMove(const QVector2D &to, float feedRate);
@@ -45,14 +46,7 @@ protected:
 	void processLine(const geometry::Bulge &bulge, float planeFeedRate);
 	void processArc(const geometry::Bulge &bulge, float planeFeedRate);
 
-public:
 	explicit PostProcessor(const config::Profiles::Profile::Gcode& gcode, std::ostream &stream);
-
-	void start(const QVector2D& from, float safetyDepth);
-	void end(const QVector2D& to, float safetyDepth);
-	void startOperation(const QVector2D& to, float intensity);
-	void endOperation(float safetyDepth);
-	void processPathAtDepth(const geometry::Polyline& polyline, float depth, float planeFeedRate, float depthFeedRate);
 };
 
 }

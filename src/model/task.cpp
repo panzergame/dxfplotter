@@ -145,6 +145,26 @@ geometry::Rect Task::selectionBoundingRect() const
 	return boundingRect;
 }
 
+geometry::Rect Task::visibleBoundingRect() const
+{
+	bool isFirstPath = true;
+	geometry::Rect boundingRect;
+
+	forEachPathInStack([&isFirstPath, &boundingRect](const model::Path &path){
+		if (path.globallyVisible()) {
+			const geometry::Rect pathBoundingRect = path.boundingRect();
+			if (isFirstPath) {
+				boundingRect = pathBoundingRect;
+				isFirstPath = false;
+			}
+			else {
+				boundingRect |= pathBoundingRect;
+			}
+		}
+	});
+
+	return boundingRect;
+}
 
 int Task::layerCount() const
 {

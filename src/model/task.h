@@ -83,6 +83,7 @@ public:
 	void showHidden();
 
 	geometry::Rect selectionBoundingRect() const;
+	geometry::Rect visibleBoundingRect() const;
 
 	int layerCount() const;
 	const Layer &layerAt(int index) const;
