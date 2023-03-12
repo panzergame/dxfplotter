@@ -36,6 +36,7 @@ QJsonArray Metadata::boundingRectGcodes() const
 		fastPlaneMoveGCode(m_boundingRect.bottomRight()),
 		fastPlaneMoveGCode(m_boundingRect.topRight()),
 		fastPlaneMoveGCode(m_boundingRect.topLeft()),
+		fastPlaneMoveGCode(m_boundingRect.bottomLeft()),
 		fastPlaneMoveGCode(QVector2D(0.0f, 0.0f)),
 		fastDepthMoveGCode(0.0f)
 	};
