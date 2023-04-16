@@ -81,7 +81,10 @@ void Path::offset(float margin, float minimumPolylineLength, float minimumArcLen
 	const OffsettedPath::Direction direction = (margin > 0.0f) ?
 			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
 
-	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
+	geometry::Polyline::List cleanedPolylines = cleaner.polylines();
+	if (!cleanedPolylines.empty()) {
+		m_offsettedPath = std::make_unique<OffsettedPath>(std::move(cleanedPolylines), direction);
+	}
 
 	emit offsettedPathChanged();
 }
