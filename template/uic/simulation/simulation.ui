@@ -71,9 +71,34 @@
     </layout>
    </item>
   </layout>
+  <action name="actionPauseResume">
+   <property name="text">
+    <string>PauseResume</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../../resource/resource.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionPauseResume</sender>
+   <signal>triggered()</signal>
+   <receiver>startStopButton</receiver>
+   <slot>click()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>16</x>
+     <y>282</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

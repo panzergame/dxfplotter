@@ -37,6 +37,8 @@ Simulation::Simulation()
 
 	connect(timeSlider, &QSlider::valueChanged, this, &Simulation::moveToolAtTime);
 	connect(startStopButton, &QPushButton::clicked, this, &Simulation::startStopToolAnimation);
+	
+	addAction(actionPauseResume);
 
 	container->addWidget(m_viewport->container());
 
