@@ -17,7 +17,8 @@ public:
 	enum Options
 	{
 		None = 0,
-		ExportConfig = (1 << 0)
+		ExportConfig = (1 << 0),
+		ExportMetadata = (1 << 1)
 	};
 
 private:

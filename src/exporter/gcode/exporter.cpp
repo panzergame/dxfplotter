@@ -117,8 +117,11 @@ void Exporter::operator()(const model::Document &document, std::ostream &output)
 	}
 
 	const config::Profiles::Profile::Gcode& gcode = m_profile.gcode();
-	const Metadata metadata(document, gcode, m_tool.general().retractDepth());
-	output << metadata.toComment();
+
+	if (m_options & ExportMetadata) {
+		const Metadata metadata(document, gcode, m_tool.general().retractDepth());
+		output << metadata.toComment();
+	}
 
 	RendererVisitor visitor(gcode, output);
 	renderer::Renderer renderer(m_tool, m_profile, visitor);
