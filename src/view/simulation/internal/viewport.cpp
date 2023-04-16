@@ -71,11 +71,9 @@ void Viewport::setScene(Scene *scene)
 {
 	setRootEntity(scene);
 
-    camera()->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     camera()->setPosition(QVector3D(0, 0, 40.0f));
 	camera()->viewAll();
 	camera()->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));
-	qInfo() << camera()->viewCenter();
 }
 
 bool Viewport::event(QEvent *e)

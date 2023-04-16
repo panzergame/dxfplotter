@@ -27,9 +27,14 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 * Pocket generation with islands capabilities
 * Multi passes with depth
 * Scale and translate paths
+* 3D path simulation of the file
 
 <p align="center">
 	<img src="doc/pocket.gif" width="80%"/>
+</p>
+
+<p align="center">
+	<img src="doc/simulation.gif" width="80%"/>
 </p>
 
 ## Installation
@@ -124,6 +129,17 @@ Variables provided in formatting are available with {#:nf} where # is one of the
 | J | Relative arc center ordinate |
 
 Properties `S` and `F` are exposed in path settings in UI.
+
+## 3D simulation view
+
+The following controls help you to navigate into the view:
+
+| Keys | Action |
+| Middle click | Rotate around view center|
+| Middle click + Shift | Translate view center |
+| Wheel | Zoom |
+
+Ctrl key can be pressed to slow down motion.
 
 ## Author
 
