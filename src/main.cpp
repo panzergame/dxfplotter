@@ -82,5 +82,7 @@ int main(int argc, char *argv[])
 	const QString fileName = parser.positionalArguments().value(0, "");
 	app.loadFileFromCmd(fileName);
 
+	window.show();
+
 	return qapp.exec();
 }

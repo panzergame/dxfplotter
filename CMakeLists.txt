@@ -38,7 +38,22 @@ find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
 
-find_package(Qt5 COMPONENTS REQUIRED
+ption(BUILD_WASM "Build to WebAssembly" ON)
+
+if (BUILD_WASM)
+	# set(FEATURE_wasm_exceptions ON)
+	# set(QT_FEATURE_wasm_exceptions ON)
+
+	set(QT_HOST_PATH "/home/tristan/Compilation/wasm-test/6.5.0/gcc_64/")
+	set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
+	list(APPEND CMAKE_PREFIX_PATH "/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/")
+	include(/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/lib/cmake/Qt6/QtPublicWasmToolchainHelpers.cmake)
+
+	# add_compile_options(-fwasm-exceptions)
+	# add_link_options(-fwasm-exceptions)
+endif()
+
+find_package(Qt6 COMPONENTS REQUIRED
 	Core
 	Widgets
 	Gui
@@ -47,7 +62,7 @@ find_package(Qt5 COMPONENTS REQUIRED
 	3DExtras
 )
 
-#qt_standard_project_setup()
+qt_standard_project_setup()
 
 set(INCLUDE_DIRS
 	src
@@ -107,6 +122,11 @@ endif()
 
 qt_add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter PRIVATE ${LINK_LIBRARIES})
+
+if (BUILD_WASM)
+	target_link_options(dxfplotter PRIVATE -lidbfs.js)
+endif()
+
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)

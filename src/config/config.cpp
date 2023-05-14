@@ -13,13 +13,13 @@ namespace config
 Config::Config(const std::string &filePath)
 	:m_filePath(filePath)
 {
-	try {
+	/*try {
 		//m_yamlRoot = YAML::LoadFile(filePath);
 		throw YAML::BadFile(filePath);
 	}
 	catch (const YAML::BadFile&) {
 		qInfo() << "Initializing configuration from defaults";
-	}
+	}*/
 
 	// Instantiation of root group
 	m_root = Root(m_yamlRoot);
