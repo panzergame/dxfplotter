@@ -12,7 +12,8 @@ class Document;
 
 }
 
-class QJsonObject;
+class QJsonArray;
+class QJsonDocument;
 
 namespace exporter::gcode
 {

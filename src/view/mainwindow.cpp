@@ -4,7 +4,9 @@
 #include <task/path.h>
 #include <task/task.h>
 #include <view2d/viewport.h>
-#include <simulation/simulation.h>
+#ifdef WITH_3D
+#  include <simulation/simulation.h>
+#endif
 #include <dialogs/settings/settings.h>
 #include <dialogs/transform.h>
 #include <dialogs/mirror.h>
@@ -37,12 +39,16 @@ QWidget *MainWindow::setupLeftPanel()
 QWidget *MainWindow::setupCenterPanel()
 {
 	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
-	m_simulation = new simulation::Simulation();
 	Info *info = new Info(*viewport2d, m_app);
 
 	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
 	splitter->addWidget(viewport2d);
+
+#ifdef WITH_3D
+	m_simulation = new simulation::Simulation();
 	splitter->addWidget(m_simulation);
+#endif
+
 	splitter->setStretchFactor(0, 1);
 	splitter->setStretchFactor(1, 0);
 
@@ -249,7 +255,9 @@ void MainWindow::newDocumentOpened(model::Document *newDocument)
 {
 	setDocumentToolsEnabled((newDocument != nullptr));
 
+#ifdef WITH_3D
 	m_simulation->hide();
+#endif
 }
 
 void MainWindow::displayError(const QString &message)
@@ -260,9 +268,11 @@ void MainWindow::displayError(const QString &message)
 
 void MainWindow::simulate()
 {
+#ifdef WITH_3D
 	model::Simulation simulation = m_app.createSimulation();
 	m_simulation->setSimulation(std::move(simulation));
 	m_simulation->show();
+#endif
 }
 
 void MainWindow::undo()

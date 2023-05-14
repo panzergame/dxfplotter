@@ -25,7 +25,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 private:
 	model::Application &m_app;
 
+#ifdef WITH_3D
 	simulation::Simulation *m_simulation;
+#endif
 
 	QActionGroup m_openedDocumentActions;
 

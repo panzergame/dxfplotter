@@ -34,13 +34,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
+option(BUILD_WASM "Build to WebAssembly" ON)
+
 find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
 
-ption(BUILD_WASM "Build to WebAssembly" ON)
-
 if (BUILD_WASM)
+	add_compile_definitions(BUILD_WASM)
+
+	set(WITH_3D OFF)
 	# set(FEATURE_wasm_exceptions ON)
 	# set(QT_FEATURE_wasm_exceptions ON)
 
@@ -51,6 +54,8 @@ if (BUILD_WASM)
 
 	# add_compile_options(-fwasm-exceptions)
 	# add_link_options(-fwasm-exceptions)
+else()
+	set(WITH_3D ON)
 endif()
 
 find_package(Qt6 COMPONENTS REQUIRED
@@ -58,8 +63,6 @@ find_package(Qt6 COMPONENTS REQUIRED
 	Widgets
 	Gui
 	Svg
-	3DCore
-	3DExtras
 )
 
 qt_standard_project_setup()
@@ -76,10 +79,8 @@ set(INCLUDE_DIRS
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
-	${Qt5Widgets_INCLUDE_DIRS}
-	${Qt5Gui_INCLUDE_DIRS}
-	${Qt53DCore_INCLUDE_DIRS}
-	${Qt53DExtras_INCLUDE_DIRS}
+	${Qt6Widgets_INCLUDE_DIRS}
+	${Qt6Gui_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -89,8 +90,6 @@ set(LINK_LIBRARIES
 	view-dialogs-settings
 	view-task
 	view-view2d
-	view-simulation
-	view-simulation-internal
 	model
 	config
 	importer-dxf
@@ -102,12 +101,31 @@ set(LINK_LIBRARIES
 	geometry-filter
 	libdxfrw
 	fmt::fmt
-	Qt5::Widgets
-	Qt5::Svg
-	Qt5::3DCore
-	Qt5::3DExtras
+	Qt::Widgets
+	Qt::Svg
 	yaml-cpp
 )
+
+if (WITH_3D)
+	add_compile_definitions(WITH_3D)
+
+	find_package(Qt6 COMPONENTS REQUIRED
+		3DCore
+		3DExtras
+	)
+
+	list(APPEND INCLUDE_DIRS
+		${Qt3DCore_INCLUDE_DIRS}
+		${Qt3DExtras_INCLUDE_DIRS}
+	)
+
+	list(APPEND LINK_LIBRARIES
+		view-simulation
+		view-simulation-internal
+		Qt::3DCore
+		Qt::3DExtras
+	)
+endif()
 
 include_directories(${INCLUDE_DIRS})
 

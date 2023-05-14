@@ -1,7 +1,10 @@
 add_subdirectory(dialogs)
 add_subdirectory(task)
 add_subdirectory(view2d)
-add_subdirectory(simulation)
+
+if (WITH_3D)
+	add_subdirectory(simulation)
+endif()
 
 set(SRC
 	info.cpp
