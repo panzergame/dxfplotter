@@ -101,8 +101,9 @@ set(LINK_LIBRARIES
 	geometry-filter
 	libdxfrw
 	fmt::fmt
+	Qt::Core
+	Qt::Gui
 	Qt::Widgets
-	Qt::Svg
 	yaml-cpp
 )
 
@@ -115,8 +116,8 @@ if (WITH_3D)
 	)
 
 	list(APPEND INCLUDE_DIRS
-		${Qt3DCore_INCLUDE_DIRS}
-		${Qt3DExtras_INCLUDE_DIRS}
+		${Qt63DCore_INCLUDE_DIRS}
+		${Qt63DExtras_INCLUDE_DIRS}
 	)
 
 	list(APPEND LINK_LIBRARIES
@@ -127,6 +128,7 @@ if (WITH_3D)
 	)
 endif()
 
+message(STATUS ${INCLUDE_DIRS})
 include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)

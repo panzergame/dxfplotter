@@ -13,12 +13,16 @@
 
 #include <QtPlugin>
 
+#ifdef BUILD_WASM
+
 Q_IMPORT_PLUGIN(QWasmIntegrationPlugin)
 Q_IMPORT_PLUGIN(QSvgIconPlugin)
 Q_IMPORT_PLUGIN(QGifPlugin)
 Q_IMPORT_PLUGIN(QICOPlugin)
 Q_IMPORT_PLUGIN(QJpegPlugin)
 Q_IMPORT_PLUGIN(QSvgPlugin)
+
+#endif
 
 void setDarkPalette(QApplication &qapp)
 {
@@ -43,6 +47,8 @@ void setDarkPalette(QApplication &qapp)
 
 int main(int argc, char *argv[])
 {
+	qputenv("QT3D_RENDERER", "opengl");
+	
 	Q_INIT_RESOURCE(resource);
 
 	QApplication qapp(argc, argv);

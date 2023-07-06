@@ -69,6 +69,13 @@ private:
 		return false;
 	}
 
+	enum class SupportFileType {
+		Dxf,
+		Dxfplot
+	};
+
+	std::optional<SupportFileType> findFileType(const QString &fileName) const;
+
 public:
 	struct FileExtension {
 		inline static const QString Gcode = ".ngc";
@@ -93,7 +100,9 @@ public:
 	const QString &lastSavedGcodeFileName() const;
 	void loadFileFromCmd(const QString &fileName);
 	bool loadFile(const QString &fileName);
-	bool loadFromDxf(const QString &fileName);
+	bool loadFile(const QString &fileName, const QByteArray &fileContent);
+	bool loadFile(const QString &fileName, SupportFileType fileType, const QByteArray &fileContent);
+	bool loadFromDxf(std::istream &fileContent);
 	bool loadFromDxfplot(const QString &fileName);
 
 	bool saveToGcode(const QString &fileName);

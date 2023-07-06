@@ -25,7 +25,9 @@ private:
 	void addLayer(const DRW_Layer &layer);
 
 public:
-	explicit Importer(const std::string &filename, float splineToArcPrecision, float minimumSplineLength, float minimumArcLength);
+	explicit Importer(float splineToArcPrecision, float minimumSplineLength, float minimumArcLength);
+
+	bool import(std::istream &stream);
 
 	Layer::List layers() const;
 

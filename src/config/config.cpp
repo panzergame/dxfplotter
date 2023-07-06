@@ -5,7 +5,9 @@
 
 #include <fstream>
 
-#include <emscripten.h>
+#ifdef BUILD_WASM
+#  include <emscripten.h>
+#endif
 
 namespace config
 {

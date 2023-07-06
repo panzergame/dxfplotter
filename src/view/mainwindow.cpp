@@ -160,10 +160,13 @@ MainWindow::MainWindow(model::Application &app)
 
 void MainWindow::openFile()
 {
-	const QString fileName = QFileDialog::getOpenFileName(this);
-	if (!fileName.isEmpty() && !m_app.loadFile(fileName)) {
-		QMessageBox::critical(this, "Error", "Invalid file type " + fileName);
-	}
+	auto onFileContentReady = [this](const QString &fileName, const QByteArray &fileContent){
+		if (!fileName.isEmpty() && !m_app.loadFile(fileName, fileContent)) {
+			QMessageBox::critical(this, "Error", "Invalid file type " + fileName);
+		}
+	};
+
+	QFileDialog::getOpenFileContent("Text files (*.dxf *.dxfplot)", onFileContentReady);
 }
 
 void MainWindow::saveFile()

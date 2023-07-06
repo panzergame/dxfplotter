@@ -16,16 +16,18 @@ void Importer::addLayer(const DRW_Layer &layer)
 	}
 }
 
-Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength, float minimumArcLength)
+Importer::Importer(float splineToArcPrecision, float minimumSplineLength, float minimumArcLength)
 	:m_entityImporterSettings({splineToArcPrecision, minimumSplineLength, minimumArcLength}),
 	m_ignoreEntities(false)
 {
+}
+
+bool Importer::import(std::istream& stream)
+{
 	Interface interface(*this);
 
-	dxfRW rw(filename.c_str());
-	if (!rw.read(&interface, false)) {
-		throw common::FileCouldNotOpenException();
-	}
+	dxfRW rw("");
+	return rw.read(stream, &interface, false);
 }
 
 Layer::List Importer::layers() const

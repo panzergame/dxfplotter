@@ -62,9 +62,36 @@ void dxfRW::setDebug(DRW::DebugLevel lvl){
     }
 }
 
+bool dxfRW::read(std::istream& stream, DRW_Interface *interface_, bool ext){
+    applyExt = ext;
+
+    char line[22];
+    char line2[22] = "AutoCAD Binary DXF\r\n";
+    line2[20] = (char)26;
+    line2[21] = '\0';
+    stream.read (line, 22);
+    stream.seekg(0);
+    iface = interface_;
+    DRW_DBG("dxfRW::read 2\n");
+    if (strcmp(line, line2) == 0) {
+        binFile = true;
+        reader = new dxfReaderBinary(&stream);
+        DRW_DBG("dxfRW::read binary file\n");
+    } else {
+        binFile = false;
+        reader = new dxfReaderAscii(&stream);
+    }
+
+    bool isOk {processDxf()};
+    version = (DRW::Version) reader->getVersion();
+    delete reader;
+    reader = nullptr;
+    return isOk;
+}
+
+
 bool dxfRW::read(DRW_Interface *interface_, bool ext){
     drw_assert(fileName.empty() == false);
-    applyExt = ext;
     std::ifstream filestr;
     if (nullptr == interface_) {
         return setError(DRW::BAD_UNKNOWN);
@@ -76,32 +103,9 @@ bool dxfRW::read(DRW_Interface *interface_, bool ext){
         return setError(DRW::BAD_OPEN);
     }
 
-    char line[22];
-    char line2[22] = "AutoCAD Binary DXF\r\n";
-    line2[20] = (char)26;
-    line2[21] = '\0';
-    filestr.read (line, 22);
+    const bool isOk = read(filestr, interface_, ext);
     filestr.close();
-    iface = interface_;
-    DRW_DBG("dxfRW::read 2\n");
-    if (strcmp(line, line2) == 0) {
-        filestr.open (fileName.c_str(), std::ios_base::in | std::ios::binary);
-        binFile = true;
-        //skip sentinel
-        filestr.seekg (22, std::ios::beg);
-        reader = new dxfReaderBinary(&filestr);
-        DRW_DBG("dxfRW::read binary file\n");
-    } else {
-        binFile = false;
-        filestr.open (fileName.c_str(), std::ios_base::in);
-        reader = new dxfReaderAscii(&filestr);
-    }
 
-    bool isOk {processDxf()};
-    filestr.close();
-    version = (DRW::Version) reader->getVersion();
-    delete reader;
-    reader = nullptr;
     return isOk;
 }
 

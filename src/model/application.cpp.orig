@@ -355,14 +355,29 @@ bool Application::loadFromDxf(std::istream &fileContent)
 {
 	const config::Import::Dxf &dxf = m_config.root().import().dxf();
 
+<<<<<<< HEAD
+	try {
+		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
+ 
+		setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig));
+	}
+	catch (const common::FileCouldNotOpenException&) {
+		qCritical() << "File not found:" << fileName;
+		return false;
+	}
+
+=======
 	importer::dxf::Importer importer(dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
 	if (!importer.import(fileContent)) {
 		qCritical() << "Failed to import dxf file";
 		return false;
 	}
 
-	setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig));
+	m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
 
+	emit documentChanged(m_openedDocument.get());
+
+>>>>>>> d6f2ed7 (chore: Use qt async open file function to open dxf & dxfplot)
 	return true;
 }
 
