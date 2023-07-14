@@ -51,6 +51,8 @@ protected Q_SLOTS:
 	void saveAsFile();
 	void exportFile();
 	void exportAsFile();
+	void downloadFile();
+	void downloadExportFile();
 	void openSettings();
 	void transformSelection();
 	void mirrorSelection();

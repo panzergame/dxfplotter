@@ -88,10 +88,15 @@ void MainWindow::setupMenuActions()
 {
 	// File actions
 	connect(actionOpenFile, &QAction::triggered, this, &MainWindow::openFile);
+#ifdef BUILD_WASM
+	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::downloadFile);
+	connect(actionExportFile, &QAction::triggered, this, &MainWindow::downloadExportFile);
+#else
 	connect(actionSaveFile, &QAction::triggered, this, &MainWindow::saveFile);
 	connect(actionSaveAsFile, &QAction::triggered, this, &MainWindow::saveAsFile);
 	connect(actionExportFile, &QAction::triggered, this, &MainWindow::exportFile);
 	connect(actionExportAsFile, &QAction::triggered, this, &MainWindow::exportAsFile);
+#endif
 	connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
 	// Edit actions
@@ -111,9 +116,14 @@ void MainWindow::setupMenuActions()
 
 void MainWindow::setupOpenedDocumentActions()
 {
-	m_openedDocumentActions.addAction(actionExportFile);
-	m_openedDocumentActions.addAction(actionExportAsFile);
+#ifndef BUILD_WASM
 	m_openedDocumentActions.addAction(actionSaveFile);
+	m_openedDocumentActions.addAction(actionExportFile);
+#else
+	actionSaveAsFile->setVisible(false);
+	actionExportAsFile->setVisible(false);
+#endif
+	m_openedDocumentActions.addAction(actionExportAsFile);
 	m_openedDocumentActions.addAction(actionSaveAsFile);
 	m_openedDocumentActions.addAction(actionLeftCutterCompensation);
 	m_openedDocumentActions.addAction(actionRightCutterCompensation);
@@ -167,6 +177,18 @@ void MainWindow::openFile()
 	};
 
 	QFileDialog::getOpenFileContent("Text files (*.dxf *.dxfplot)", onFileContentReady);
+}
+
+void MainWindow::downloadFile()
+{
+	const QString fileName = defaultFileName(model::Application::FileExtension::Dxfplot);
+	QFileDialog::saveFileContent(m_app.saveToDxfplot(), fileName);
+}
+
+void MainWindow::downloadExportFile()
+{
+	const QString fileName = defaultFileName(model::Application::FileExtension::Gcode);
+	QFileDialog::saveFileContent(m_app.saveToGcode(), fileName);
 }
 
 void MainWindow::saveFile()

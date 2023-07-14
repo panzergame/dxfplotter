@@ -380,15 +380,15 @@ bool Application::loadFromDxfplot(const QString &fileName)
 	return true;
 }
 
+constexpr exporter::gcode::Exporter::Options gcodeExportOptions = static_cast<exporter::gcode::Exporter::Options>(
+	exporter::gcode::Exporter::ExportConfig |
+	exporter::gcode::Exporter::ExportMetadata
+);
+
 bool Application::saveToGcode(const QString &fileName)
 {
 	try {
-		const exporter::gcode::Exporter::Options options = static_cast<exporter::gcode::Exporter::Options>(
-			exporter::gcode::Exporter::ExportConfig |
-			exporter::gcode::Exporter::ExportMetadata
-		);
-
-		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(),options);
+		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), gcodeExportOptions);
 		const bool saved = saveToFile(exporter, fileName);
 		if (saved) {
 			m_lastSavedGcodeFileName = fileName;
@@ -402,6 +402,13 @@ bool Application::saveToGcode(const QString &fileName)
 	return false;
 }
 
+QByteArray Application::saveToGcode()
+{
+	exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), gcodeExportOptions);
+
+	return saveToBuffer(exporter);
+}
+
 bool Application::saveToDxfplot(const QString &fileName)
 {
 	exporter::dxfplot::Exporter exporter;
@@ -412,6 +419,13 @@ bool Application::saveToDxfplot(const QString &fileName)
 	}
 
 	return saved;
+}
+
+QByteArray Application::saveToDxfplot()
+{
+	exporter::dxfplot::Exporter exporter;
+
+	return saveToBuffer(exporter);
 }
 
 void Application::leftCutterCompensation()

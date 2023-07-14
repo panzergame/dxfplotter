@@ -69,6 +69,16 @@ private:
 		return false;
 	}
 
+	template <class Exporter>
+	QByteArray saveToBuffer(Exporter &&exporter)
+	{
+		std::stringstream outputStream;
+		exporter(*m_openedDocument, outputStream);
+		const std::string output = outputStream.str();
+
+		return QByteArray(output.data(), output.size());
+	}
+
 	enum class SupportFileType {
 		Dxf,
 		Dxfplot
@@ -106,7 +116,9 @@ public:
 	bool loadFromDxfplot(const QString &fileName);
 
 	bool saveToGcode(const QString &fileName);
+	QByteArray saveToGcode();
 	bool saveToDxfplot(const QString &fileName);
+	QByteArray saveToDxfplot();
 
 	void leftCutterCompensation();
 	void rightCutterCompensation();
