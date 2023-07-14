@@ -34,7 +34,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
-option(BUILD_WASM "Build to WebAssembly" ON)
+option(BUILD_WASM "Build to WebAssembly" OFF)
 
 find_package(codecov)
 
@@ -44,16 +44,11 @@ if (BUILD_WASM)
 	add_compile_definitions(BUILD_WASM)
 
 	set(WITH_3D OFF)
-	# set(FEATURE_wasm_exceptions ON)
-	# set(QT_FEATURE_wasm_exceptions ON)
 
 	set(QT_HOST_PATH "/home/tristan/Compilation/wasm-test/6.5.0/gcc_64/")
 	set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
 	list(APPEND CMAKE_PREFIX_PATH "/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/")
 	include(/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/lib/cmake/Qt6/QtPublicWasmToolchainHelpers.cmake)
-
-	# add_compile_options(-fwasm-exceptions)
-	# add_link_options(-fwasm-exceptions)
 else()
 	set(WITH_3D ON)
 endif()
@@ -128,7 +123,6 @@ if (WITH_3D)
 	)
 endif()
 
-message(STATUS ${INCLUDE_DIRS})
 include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
