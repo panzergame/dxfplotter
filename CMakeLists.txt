@@ -60,8 +60,6 @@ find_package(Qt6 COMPONENTS REQUIRED
 	Svg
 )
 
-qt_standard_project_setup()
-
 set(INCLUDE_DIRS
 	src
 	thirdparty
