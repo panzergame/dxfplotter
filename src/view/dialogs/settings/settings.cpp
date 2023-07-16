@@ -62,13 +62,11 @@ void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 	NodeVisitor visitor;
 	m_model->visit(current, visitor);
 
-	// Replace old center widget
+	// Replace old properties widget
 	QWidget *newWidget = visitor.newWidget();
-	QLayoutItem *item = gridLayout->replaceWidget(center, newWidget);
-	center = newWidget;
-
-	// Delete old center widget
-	delete item->widget();
+	QWidget *oldWidget = center->findChild<QWidget *>(QString(), Qt::FindDirectChildrenOnly);
+	center->layout()->replaceWidget(oldWidget, newWidget);
+	delete oldWidget;
 
 	const bool isList = m_model->isList(current);
 	addButton->disconnect();
