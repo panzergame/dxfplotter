@@ -96,6 +96,7 @@ set(LINK_LIBRARIES
 	fmt::fmt
 	Qt::Core
 	Qt::Gui
+	Qt::Svg
 	Qt::Widgets
 	yaml-cpp
 )
