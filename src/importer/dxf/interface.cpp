@@ -103,6 +103,7 @@ void Interface::addCircle(const DRW_Circle& data)
 void Interface::addEllipse(const DRW_Ellipse& data)
 {
 	PRINT_FUNC;
+	m_importer.processEntity(data);
 }
 
 void Interface::addLWPolyline(const DRW_LWPolyline& data)
