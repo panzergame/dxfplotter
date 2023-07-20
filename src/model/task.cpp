@@ -14,19 +14,16 @@ void Task::initPathsFromLayers()
 	// Register selection/deselection on all paths.
 	forEachPath([this](Path &path) {
 		connect(&path, &Path::selectedChanged, this, [this, &path](bool selected){
-			const auto &pathIt = std::find(m_selectedPaths.begin(), m_selectedPaths.end(), &path);
-			const bool exists = (pathIt != m_selectedPaths.end());
-
-			if (selected && !exists) {
-				m_selectedPaths.push_back(&path);
-			}
-			else if (exists) {
-				m_selectedPaths.erase(pathIt);
-			}
-
 			emit pathSelectedChanged(path, selected);
-			emit selectionChanged(m_selectedPaths.size());
+			emit selectionChanged(pathSelectionEmpty());
 		});
+	});
+}
+
+bool Task::pathSelectionEmpty() const
+{
+	return !std::any_of(m_paths.begin(), m_paths.end(), [](const Path *path) {
+		return path->selected();
 	});
 }
 
@@ -89,12 +86,21 @@ void Task::cutterCompensationSelection(float scaledRadius, float minimumPolyline
 
 void Task::pocketSelection(float radius, float minimumPolylineLength, float minimumArcLength)
 {
-	if (m_selectedPaths.empty()) {
+	const Path::ListPtr::iterator it = m_paths.begin();
+	const Path::ListPtr::iterator end = m_paths.end();
+
+	const auto isSelectedPred = [](const Path* path){ return path->selected(); };
+
+	const Path::ListPtr::iterator borderIt = std::find_if(it, end, isSelectedPred);
+	if (borderIt == end) {
+		// No selected path found
 		return;
 	}
 
-	Path *border = m_selectedPaths.front();
-	const Path::ListCPtr islands(m_selectedPaths.begin() + 1, m_selectedPaths.end());
+	Path::ListCPtr islands;
+	std::copy_if(borderIt + 1, end, std::back_inserter(islands), isSelectedPred);
+
+	Path *border = *borderIt;
 	border->pocket(islands, radius, minimumPolylineLength, minimumArcLength);
 }
 
@@ -139,6 +145,26 @@ geometry::Rect Task::selectionBoundingRect() const
 	return boundingRect;
 }
 
+geometry::Rect Task::visibleBoundingRect() const
+{
+	bool isFirstPath = true;
+	geometry::Rect boundingRect;
+
+	forEachPathInStack([&isFirstPath, &boundingRect](const model::Path &path){
+		if (path.globallyVisible()) {
+			const geometry::Rect pathBoundingRect = path.boundingRect();
+			if (isFirstPath) {
+				boundingRect = pathBoundingRect;
+				isFirstPath = false;
+			}
+			else {
+				boundingRect |= pathBoundingRect;
+			}
+		}
+	});
+
+	return boundingRect;
+}
 
 int Task::layerCount() const
 {

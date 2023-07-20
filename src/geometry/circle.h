@@ -20,4 +20,4 @@ public:
 	Orientation orientation() const;
 };
 
-};
+}

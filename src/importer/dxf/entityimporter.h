@@ -256,4 +256,31 @@ inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
 	addPolyline(polyline);
 }
 
+inline geometry::Polyline ellipseQuadrantToPolyline(const QVector2D &center, const QVector2D &axisStart, const QVector2D& axisEnd, const BaseEntityImporter::Settings &settings)
+{
+	const QVector2D quadrantStart = center + axisStart;
+	const QVector2D quadrantEnd = center + axisEnd;
+	constexpr float magicNumber = 0.55228475f;
+	const geometry::Bezier quadrantBezier(quadrantStart, quadrantStart + axisEnd * magicNumber, quadrantEnd + axisStart * magicNumber, quadrantEnd);
+
+	return bezierToPolyline(quadrantBezier, settings);
+}
+
+template <>
+inline void EntityImporter<DRW_Ellipse>::operator()(const DRW_Ellipse &ellipse)
+{
+	const QVector2D center(toVector2D(ellipse.basePoint));
+	const QVector2D axisMajor(toVector2D(ellipse.secPoint));
+	const QVector2D axisMinor = geometry::PerpendicularLine(axisMajor) * ellipse.ratio;
+
+	const QVector2D quadrantAxes[4] = {axisMajor, axisMinor, -axisMajor, -axisMinor};
+
+	geometry::Polyline polyline;
+	for (int i = 3, j = 0; j < 4; i = j, ++j) {
+		polyline += ellipseQuadrantToPolyline(center, quadrantAxes[i], quadrantAxes[j], m_settings);
+	}
+
+	addPolyline(polyline);
+}
+
 }

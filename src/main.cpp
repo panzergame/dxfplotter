@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QStyleFactory>
+#include <QSurfaceFormat>
 
 void setDarkPalette(QApplication &qapp)
 {

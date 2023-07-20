@@ -19,9 +19,9 @@ private:
 	Layer::ListUPtr m_layers;
 
 	Path::ListPtr m_stack;
-	Path::ListPtr m_selectedPaths;
 
 	void initPathsFromLayers();
+	bool pathSelectionEmpty() const;
 
 public:
 	enum class MoveDirection
@@ -67,9 +67,11 @@ public:
 	template <class Functor>
 	void forEachSelectedPath(Functor &&functor) const
 	{
-		const Path::ListPtr selectedPaths(m_selectedPaths);
-		for (Path *path : selectedPaths) {
-			functor(*path);
+		const Path::ListPtr paths(m_paths);
+		for (Path *path : paths) {
+			if (path->selected()) {
+				functor(*path);
+			}
 		}
 	}
 
@@ -81,6 +83,7 @@ public:
 	void showHidden();
 
 	geometry::Rect selectionBoundingRect() const;
+	geometry::Rect visibleBoundingRect() const;
 
 	int layerCount() const;
 	const Layer &layerAt(int index) const;
@@ -90,7 +93,7 @@ public:
 
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);
-	void selectionChanged(int size);
+	void selectionChanged(bool empty);
 };
 
 template <typename T>

@@ -1,11 +1,11 @@
 set(SRC
 	exporter.cpp
+	metadata.cpp
 	postprocessor.cpp
-	pathpostprocessor.cpp
 
 	exporter.h
+	metadata.h
 	postprocessor.h
-	pathpostprocessor.h
 )
 
 add_library(exporter-gcode ${SRC})

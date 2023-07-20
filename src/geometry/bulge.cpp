@@ -43,13 +43,15 @@ QVector2D Bulge::relativeArcCenter() const
 
 Point2DList Bulge::arcBoundingPoints() const
 {
+	using QVector2D4 = std::array<QVector2D, 4>;
+
 	Point2DList points;
 
 	const QVector2D relativeCenter = relativeArcCenter();
 	const QVector2D line = m_end - m_start;
 	const float radius = arcRadius();
 
-	static const QVector2D quadrantPointsUnit[4] = {
+	static const QVector2D4 quadrantPointsUnit = {
 		QVector2D(1, 0),
 		QVector2D(0, 1),
 		QVector2D(-1, 0),
@@ -58,12 +60,12 @@ Point2DList Bulge::arcBoundingPoints() const
 
 	const bool centerLineSide = std::signbit(CrossProduct(line, relativeCenter));
 
-	QVector2D quadrantPoints[4];
-	std::transform(quadrantPointsUnit, quadrantPointsUnit + 4, quadrantPoints, [&relativeCenter, radius](const QVector2D& pointUnit){
+	QVector2D4 quadrantPoints;
+	std::transform(quadrantPointsUnit.begin(), quadrantPointsUnit.end(), quadrantPoints.begin(), [&relativeCenter, radius](const QVector2D& pointUnit){
 		return relativeCenter + pointUnit * radius;
 	});
 
-	std::copy_if(quadrantPoints, quadrantPoints + 4, std::back_inserter(points),
+	std::copy_if(quadrantPoints.begin(), quadrantPoints.end(), std::back_inserter(points),
 		[centerLineSide, &line](const QVector2D &point){
 			const bool pointLineSide = std::signbit(CrossProduct(line, point));
 			const bool oppositeSideToCenter = (pointLineSide != centerLineSide);
@@ -135,7 +137,7 @@ float Bulge::length() const
 	return radius * angle;
 }
 
-const Rect boundingRectPoints(const Point2DList &points)
+Rect boundingRectPoints(const Point2DList &points)
 {
 	Point2DList::const_iterator it = points.begin();
 	const QVector2D firstPoint = *(it++);
@@ -214,6 +216,11 @@ Arc Bulge::toArc() const
 	const float endAngle = LineAngle(m_end - center);
 
 	return Arc(circle, m_start, m_end, startAngle, endAngle);
+}
+
+Line Bulge::toLine() const
+{
+	return Line(m_start, m_end);
 }
 
 inline QVector2D mapVector2D(const QVector2D &vect, const QTransform &matrix)

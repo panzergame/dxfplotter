@@ -36,13 +36,15 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
 
-find_package(PythonInterp)
+find_package(PythonInterp REQUIRED)
 
 find_package(Qt5 COMPONENTS REQUIRED
 	Core
 	Widgets
 	Gui
 	Svg
+	3DCore
+	3DExtras
 )
 
 #qt_standard_project_setup()
@@ -54,12 +56,15 @@ set(INCLUDE_DIRS
 	thirdparty/cavaliercontours/include
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
+	thirdparty/units/include
 	thirdparty/yaml-cpp/include
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
 	${Qt5Widgets_INCLUDE_DIRS}
 	${Qt5Gui_INCLUDE_DIRS}
+	${Qt53DCore_INCLUDE_DIRS}
+	${Qt53DExtras_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -69,18 +74,23 @@ set(LINK_LIBRARIES
 	view-dialogs-settings
 	view-task
 	view-view2d
+	view-simulation
+	view-simulation-internal
 	model
 	config
 	importer-dxf
 	importer-dxfplot
 	exporter-gcode
 	exporter-dxfplot
+	exporter-renderer
 	geometry
 	geometry-filter
 	libdxfrw
 	fmt::fmt
 	Qt5::Widgets
 	Qt5::Svg
+	Qt5::3DCore
+	Qt5::3DExtras
 	yaml-cpp
 )
 

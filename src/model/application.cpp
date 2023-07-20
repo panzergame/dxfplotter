@@ -1,4 +1,5 @@
 #include <application.h>
+#include <simulation.h>
 
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
@@ -282,7 +283,12 @@ bool Application::loadFromDxfplot(const QString &fileName)
 bool Application::saveToGcode(const QString &fileName)
 {
 	try {
-		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), exporter::gcode::Exporter::ExportConfig);
+		const exporter::gcode::Exporter::Options options = static_cast<exporter::gcode::Exporter::Options>(
+			exporter::gcode::Exporter::ExportConfig |
+			exporter::gcode::Exporter::ExportMetadata
+		);
+
+		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(),options);
 		const bool saved = saveToFile(exporter, fileName);
 		if (saved) {
 			m_lastSavedGcodeFileName = fileName;
@@ -355,6 +361,12 @@ void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
 	task.showHidden();
+}
+
+Simulation Application::createSimulation()
+{
+	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();
+	return Simulation(*m_openedDocument, fastMoveFeedRate);
 }
 
 }

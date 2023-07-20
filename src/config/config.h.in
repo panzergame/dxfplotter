@@ -104,6 +104,8 @@ public:
 	Config(const Config &other);
 	~Config();
 
+	Config& operator=(Config &&) = default;
+
 	Root& root();
 	const Root& root() const;
 

@@ -21,10 +21,13 @@
 		<file>icons/list-remove.svg</file>
 		<file>icons/path-inset.svg</file>
 		<file>icons/path-outset.svg</file>
+		<file>icons/playback-pause.svg</file>
+		<file>icons/playback-start.svg</file>
 		<file>icons/pocket-shape.svg</file>
 		<file>icons/resizecol.svg</file>
 		<file>icons/set-origin.svg</file>
 		<file>icons/show-path-outline.svg</file>
+		<file>icons/simulate.svg</file>
 		<file>icons/transform-rotate.svg</file>
 		<file>icons/zoom-in.svg</file>
     </qresource>
