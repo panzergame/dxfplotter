@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>532</width>
     <height>300</height>
    </rect>
   </property>
@@ -30,13 +30,27 @@
     <layout class="QVBoxLayout" name="container"/>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,1">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1,0,0">
      <property name="leftMargin">
       <number>0</number>
      </property>
      <property name="topMargin">
       <number>0</number>
      </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Speed:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="speedSpinBox">
+       <property name="minimum">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
      <item>
       <widget class="QPushButton" name="startStopButton">
        <property name="text">
@@ -45,13 +59,6 @@
        <property name="icon">
         <iconset resource="../../../resource/resource.qrc">
          <normaloff>:/icons/playback-start.svg</normaloff>:/icons/playback-start.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="timeLabel">
-       <property name="text">
-        <string>0.000</string>
        </property>
       </widget>
      </item>
@@ -65,6 +72,20 @@
        </property>
        <property name="tickPosition">
         <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="timeLabel">
+       <property name="text">
+        <string>00:00:00:000</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="totalTimeLabel">
+       <property name="text">
+        <string>00:00:00:000</string>
        </property>
       </widget>
      </item>

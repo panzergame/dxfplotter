@@ -43,7 +43,7 @@ void Viewport::wheelEvent(QWheelEvent *e)
 	const QPoint numPixels = e->pixelDelta();
 	
 	const bool slowMotion = e->modifiers() & Qt::ControlModifier;
-	const float factor = slowMotion ? 0.001f : 0.01f;
+	const float factor = slowMotion ? 0.001f : 0.1f;
 
 	const QVector3D translation(0.0f, 0.0f, numPixels.y() * factor);
 	camera()->translate(translation, Qt3DRender::QCamera::DontTranslateViewCenter);

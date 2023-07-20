@@ -7,10 +7,15 @@
 namespace view::simulation
 {
 
-void Simulation::moveToolAtTime(int ms)
+static void setLabelTimeText(QLabel *label, int ms)
 {
 	const QString timeText = QTime::fromMSecsSinceStartOfDay(ms).toString("hh:mm:ss:zzz");
-	timeLabel->setText(timeText);
+	label->setText(timeText);
+}
+
+void Simulation::moveToolAtTime(int ms)
+{
+	setLabelTimeText(timeLabel, ms);
 
 	const float seconds = float(ms) / 1e3;
 	const model::Simulation::ToolPathPoint3D toolPosition = m_simulation.toolPositionAtTime(seconds);
@@ -42,9 +47,10 @@ Simulation::Simulation()
 
 	container->addWidget(m_viewport->container());
 
-	static const int timerIntervalMs = 30;
-	m_timer.setInterval(timerIntervalMs);
+	static const int timerBaseIntervalMs = 30;
+	m_timer.setInterval(timerBaseIntervalMs);
 	m_timer.callOnTimeout([this](){
+		const int timerIntervalMs = timerBaseIntervalMs * speedSpinBox->value();
 		timeSlider->setSliderPosition(timeSlider->sliderPosition() + timerIntervalMs);
 	});
 }
@@ -60,7 +66,10 @@ void Simulation::setSimulation(model::Simulation && simulation)
 	m_scene.reset(newScene);
 
 	const float secondDuration = m_simulation.duration();
-	timeSlider->setMaximum(secondDuration * 1e3);
+	const int durationMs = secondDuration * 1e3;
+	timeSlider->setMaximum(durationMs);
+
+	setLabelTimeText(totalTimeLabel, durationMs);
 }
 
 }
