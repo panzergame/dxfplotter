@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Install package
+        run: |
+          sudo apt-get update
+          sudo apt-get -y install freeglut3-dev cmake python3-jinja2
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          aqtversion: '==3.1.*'
+          version: '6.3.0'
+          host: 'linux'
+          target: 'desktop'
+          arch: 'wasm_32'
