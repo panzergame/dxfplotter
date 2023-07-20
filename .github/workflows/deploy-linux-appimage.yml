@@ -16,7 +16,7 @@ jobs:
       - name: Install package
         run: |
           sudo apt-get update
-          sudo apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev
+          sudo apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev libfuse2
       - name: Build and test
         run: ci/buildappimage.sh
       - name: Create Release
