@@ -37,11 +37,16 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 	<img src="doc/simulation.gif" width="80%"/>
 </p>
 
-## Installation
+## Execution
 
-Currently only linux distributions are supported, windows will come in futur.
+Linux and Windows systems are supported.
 
-### Installation from AppImage
+### Running from exe (Windows)
+
+Download latest ![zip](https://github.com/panzergame/dxfplotter/releases), extract it and run `dxfplotter.exe`
+
+
+### Running from AppImage (Linux)
 
 Download latest ![AppImage](https://github.com/panzergame/dxfplotter/releases) and run:
 
@@ -50,7 +55,7 @@ chmod +x dxfplotter-*.AppImage
 ./dxfplotter-*.AppImage
 ```
 
-### 🏗 Manual installation from source
+### 🏗 Manual installation from source (Linux)
 
 This project depends on Qt5, for debian like distribution following command install all dependencies:
 
