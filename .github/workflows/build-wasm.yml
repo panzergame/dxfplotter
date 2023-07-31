@@ -3,7 +3,9 @@ on:
   push:
     branches:
       - "**"
-
+env:
+  QT_VERSION: '6.3.0'
+      
 jobs:
   build-wasm:
     runs-on: ubuntu-latest
@@ -16,19 +18,21 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -y install freeglut3-dev cmake python3-jinja2
-      - name: Install Qt
+      - name: Install Qt desktop
         uses: jurplel/install-qt-action@v3
         with:
           aqtversion: '==3.1.*'
-          version: '6.3.0'
+          version: ${{ env.QT_VERSION }}
           host: 'linux'
           target: 'desktop'
           arch: 'gcc_64'
-      - name: Install Qt
+      - name: Install Qt wasm
         uses: jurplel/install-qt-action@v3
         with:
           aqtversion: '==3.1.*'
-          version: '6.3.0'
+          version: ${{ env.QT_VERSION }}
           host: 'linux'
           target: 'desktop'
           arch: 'wasm_32'
+      - name: Build and scan
+        run: ci/buildwasm.sh

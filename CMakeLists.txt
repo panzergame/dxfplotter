@@ -45,10 +45,10 @@ if (BUILD_WASM)
 
 	set(WITH_3D OFF)
 
-	set(QT_HOST_PATH "/home/tristan/Compilation/wasm-test/6.5.0/gcc_64/")
+	# set(QT_HOST_PATH "/home/tristan/Compilation/wasm-test/6.5.0/gcc_64/")
 	set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
-	list(APPEND CMAKE_PREFIX_PATH "/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/")
-	include(/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/lib/cmake/Qt6/QtPublicWasmToolchainHelpers.cmake)
+	# list(APPEND CMAKE_PREFIX_PATH "/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/")
+	# include(/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/lib/cmake/Qt6/QtPublicWasmToolchainHelpers.cmake)
 else()
 	set(WITH_3D ON)
 endif()

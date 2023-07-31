@@ -35,7 +35,7 @@ pushd "$BUILD_DIR"
 
 # configure build files with CMake
 # we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
-cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
+cmake "$REPO_ROOT" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
 
 # build project and install files into AppDir
 make -j$(nproc)
