@@ -41,6 +41,8 @@ find_package(codecov)
 find_package(PythonInterp REQUIRED)
 
 if (BUILD_WASM)
+	message(STATUS "Building to WebAssembly")
+
 	add_compile_definitions(BUILD_WASM)
 
 	set(WITH_3D OFF)
