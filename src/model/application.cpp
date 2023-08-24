@@ -4,7 +4,6 @@
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
 #include <geometry/filter/removeexactduplicate.h>
-#include <geometry/filter/sorter.h>
 
 #include <importer/dxf/importer.h>
 #include <importer/dxfplot/importer.h>

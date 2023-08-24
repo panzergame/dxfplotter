@@ -7,7 +7,7 @@ void Path::setupModel()
 {
 	m_groupSettings.reset(new model::PathGroupSettings(task()));
 
-	hide();
+	stackedWidget->setCurrentWidget(pageNoSelection);
 
 	connect(&task(), &model::Task::selectionChanged, this, &Path::selectionChanged);
 
@@ -32,15 +32,15 @@ Path::Path(model::Application &app)
 void Path::selectionChanged(bool empty)
 {
 	if (empty) {
-		hide();
+		stackedWidget->setCurrentWidget(pageNoSelection);
 	}
 	else {
-		show();
-
 		updateFieldValue(planeFeedRate, m_groupSettings->planeFeedRate());
 		updateFieldValue(depthFeedRate, m_groupSettings->depthFeedRate());
 		updateFieldValue(intensity, m_groupSettings->intensity());
 		updateFieldValue(Ui::Path::depth, m_groupSettings->depth());
+
+		stackedWidget->setCurrentWidget(pagePathSelected);
 	}
 }
 
