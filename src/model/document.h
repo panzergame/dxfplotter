@@ -16,9 +16,10 @@ private:
 public:
 	explicit Document(Task::UPtr&& task, const config::Tools::Tool &toolConfig, const config::Profiles::Profile &profileConfig);
 	Document() = default;
-	explicit Document(const Document &other);
+	Document(const Document &other);
 
-	Document &operator=(Document &&) = default;
+	Document &operator=(Document &&other) = default;
+	Document &operator=(const Document &other);
 
 	Task& task();
 	const Task& task() const;

@@ -17,6 +17,13 @@ Document::Document(const Document &other)
 {
 }
 
+Document &Document::operator=(const Document &other)
+{
+	m_task = std::make_unique<Task>(other.task());
+	m_toolConfig = &other.toolConfig();
+	m_profileConfig = &other.profileConfig();
+}
+
 Task &Document::task()
 {
 	return *m_task;
