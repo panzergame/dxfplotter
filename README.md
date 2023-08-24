@@ -140,9 +140,11 @@ Properties `S` and `F` are exposed in path settings in UI.
 The following controls help you to navigate into the view:
 
 | Keys | Action |
-| Middle click | Rotate around view center|
+| - | - |
+| Middle click | Rotate around view center |
 | Middle click + Shift | Translate view center |
 | Wheel | Zoom |
+
 
 Ctrl key can be pressed to slow down motion.
 
