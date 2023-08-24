@@ -25,7 +25,7 @@ private:
 	{
 		disconnect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), nullptr, nullptr);
 
-		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), [this, field, func](ValueType value){
+		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), [this, func](ValueType value){
 			func(value);
 
 			m_app.takeDocumentSnapshot();
