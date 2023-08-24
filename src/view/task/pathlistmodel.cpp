@@ -96,6 +96,23 @@ QModelIndex PathListModel::movePath(const QModelIndex &index, model::Task::MoveD
 	return index;
 }
 
+QModelIndex PathListModel::movePathToTip(const QModelIndex &index, model::Task::MoveTip tip)
+{
+	const int row = index.row();
+	const int newRow = (tip == model::Task::MoveTip::Top) ? 0 : (rowCount(index) - 1);
+
+	if (index.isValid()) {
+		m_task.movePathToTip(row, tip);
+
+		const QModelIndex newIndex = this->index(newRow);
+		emit dataChanged(index, newIndex);
+
+		return newIndex;
+	}
+
+	return index;
+}
+
 void PathListModel::itemClicked(const QModelIndex& index)
 {
 	if ((index.flags() & Qt::ItemIsEnabled) == 0) {

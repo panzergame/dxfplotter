@@ -26,6 +26,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 	QModelIndex movePath(const QModelIndex &index, model::Task::MoveDirection direction);
+	QModelIndex movePathToTip(const QModelIndex &index, model::Task::MoveTip tip);
 	void itemClicked(const QModelIndex &index);
 
 	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel);

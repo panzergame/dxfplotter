@@ -33,6 +33,8 @@ void Task::setupController()
 
 	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::UP); });
 	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::DOWN); });
+	connect(moveTop, &QPushButton::pressed, [this](){ moveCurrentPathToTip(model::Task::MoveTip::Top); });
+	connect(moveBottom, &QPushButton::pressed, [this](){ moveCurrentPathToTip(model::Task::MoveTip::Bottom); });
 }
 
 void Task::updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag)
@@ -58,6 +60,14 @@ void Task::moveCurrentPath(model::Task::MoveDirection direction)
 	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
 	const QModelIndex newSelectedIndex = m_pathListModel->movePath(currentSelectedIndex, direction);
+	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+}
+
+void Task::moveCurrentPathToTip(model::Task::MoveTip tip)
+{
+	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
+	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
+	const QModelIndex newSelectedIndex = m_pathListModel->movePathToTip(currentSelectedIndex, tip);
 	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
 }
 

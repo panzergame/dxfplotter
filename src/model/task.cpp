@@ -72,6 +72,27 @@ void Task::movePath(int index, MoveDirection direction)
 	}
 }
 
+void Task::movePathToTip(int index, MoveTip tip)
+{
+	assert(0 <= index && index < pathCount());
+
+	Path *path = m_stack[index];
+	m_stack.erase(m_stack.begin() + index);
+
+	switch (tip) {
+		case MoveTip::Bottom:
+		{
+			m_stack.push_back(path);
+			break;
+		}
+		case MoveTip::Top:
+		{
+			m_stack.insert(m_stack.begin(), path);
+			break;
+		}
+	}
+}
+
 void Task::resetCutterCompensationSelection()
 {
 	forEachSelectedPath([](model::Path &path){ path.resetOffset(); });

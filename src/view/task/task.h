@@ -49,6 +49,9 @@ private:
 
 	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag);
 
+	void moveCurrentPath(model::Task::MoveDirection direction);
+	void moveCurrentPathToTip(model::Task::MoveTip tip);
+
 public:
 	explicit Task(model::Application &app);
 
@@ -58,7 +61,6 @@ protected:
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void pathSelectedChanged(model::Path &path, bool selected);
-	void moveCurrentPath(model::Task::MoveDirection direction);
 };
 
 }

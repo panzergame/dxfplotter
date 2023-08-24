@@ -30,6 +30,12 @@ public:
 		DOWN = 1
 	};
 
+	enum class MoveTip
+	{
+		Top,
+		Bottom
+	};
+
 	explicit Task() = default;
 	explicit Task(Layer::ListUPtr &&layers);
 
@@ -39,6 +45,7 @@ public:
 	int pathIndexFor(const Path &path) const;
 
 	void movePath(int index, MoveDirection direction);
+	void movePathToTip(int index, MoveTip tip);
 
 	template <class Functor>
 	void forEachPathInStack(Functor &&functor) const
