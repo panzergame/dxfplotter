@@ -115,10 +115,6 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 	// Remove small bulges
 	geometry::filter::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-	if (dxf.sortPathByLength()) { // TODO sort between all paths
-		geometry::filter::Sorter sorter(cleaner.polylines());
-		return sorter.polylines();
-	}
 	return cleaner.polylines();
 }
 
@@ -135,7 +131,14 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 		layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
 	}
 
-	return std::make_unique<Task>(std::move(layers));
+	Task::UPtr task = std::make_unique<Task>(std::move(layers));
+
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	if (dxf.sortPathByLength()) {
+		task->sortPathsByLength();
+	}
+
+	return task;
 }
 
 Application::Application()

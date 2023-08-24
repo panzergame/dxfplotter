@@ -48,6 +48,8 @@ public:
 	void movePath(int index, MoveDirection direction);
 	void movePathToTip(int index, MoveTip tip);
 
+	void sortPathsByLength();
+
 	template <class Functor>
 	void forEachPathInStack(Functor &&functor) const
 	{

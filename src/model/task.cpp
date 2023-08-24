@@ -112,6 +112,37 @@ void Task::movePathToTip(int index, MoveTip tip)
 	}
 }
 
+void Task::sortPathsByLength()
+{
+	struct PathLength
+	{
+		Path *path;
+		float length;
+
+		PathLength() = default;
+
+		explicit PathLength(Path *path)
+			:path(path),
+			length(path->basePolyline().length())
+		{
+		}
+
+		bool operator<(const PathLength& other) const
+		{
+			return length < other.length;
+		}
+	};
+
+	std::vector<PathLength> pathsLength(m_paths.size());
+	std::transform(m_paths.begin(), m_paths.end(), pathsLength.begin(),
+		   [](Path *path){ return PathLength(path); });
+
+	std::sort(pathsLength.begin(), pathsLength.end());
+
+	std::transform(pathsLength.begin(), pathsLength.end(), m_stack.begin(),
+		   [](PathLength& pathLength){ return pathLength.path; });
+}
+
 void Task::resetCutterCompensationSelection()
 {
 	forEachSelectedPath([](model::Path &path){ path.resetOffset(); });
