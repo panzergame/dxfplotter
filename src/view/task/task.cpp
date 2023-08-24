@@ -77,6 +77,8 @@ void Task::moveCurrentPathToTip(model::Task::MoveTip tip)
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
 	const QModelIndex newSelectedIndex = m_pathListModel->movePathToTip(currentSelectedIndex, tip);
 	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+
+	m_app.takeDocumentSnapshot();
 }
 
 }
