@@ -41,7 +41,7 @@ find_package(codecov)
 find_package(PythonInterp REQUIRED)
 
 if (BUILD_WASM)
-	message(STATUS "Building to WebAssembly")
+	message(STATUS "Building to WebAssembly (Qt6_DIR ${Qt6_DIR} QT_HOST_PATH ${QT_HOST_PATH})")
 
 	add_compile_definitions(BUILD_WASM)
 
@@ -49,7 +49,7 @@ if (BUILD_WASM)
 
 	# set(QT_HOST_PATH "/home/tristan/Compilation/wasm-test/6.5.0/gcc_64/")
 	set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE BOTH)
-	# list(APPEND CMAKE_PREFIX_PATH "/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/")
+	list(APPEND CMAKE_PREFIX_PATH ${Qt6_DIR})
 	# include(/home/tristan/Compilation/wasm-test/6.5.0/wasm_singlethread/lib/cmake/Qt6/QtPublicWasmToolchainHelpers.cmake)
 else()
 	set(WITH_3D ON)
