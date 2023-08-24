@@ -1,6 +1,7 @@
 set(SRC
 	application.cpp
 	document.cpp
+	documenthistory.cpp
 	layer.cpp
 	offsettedpath.cpp
 	path.cpp
@@ -12,6 +13,7 @@ set(SRC
 
 	application.h
 	document.h
+	documenthistory.h
 	layer.h
 	path.h
 	offsettedpath.h

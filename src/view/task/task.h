@@ -17,6 +17,8 @@ class LayerTreeModel;
 class Task : public model::DocumentModelObserver<QWidget>, private Ui::Task
 {
 private:
+	model::Application &m_app;
+
 	std::unique_ptr<PathListModel> m_pathListModel;
 	std::unique_ptr<LayerTreeModel> m_layerTreeModel;
 
@@ -42,6 +44,8 @@ private:
 		connect(selectionModel, &QItemSelectionModel::selectionChanged, model.get(), &Model::selectionChanged);
 
 		connect(treeView, &QTreeView::clicked, model.get(), &Model::itemClicked);
+
+		connect(model.get(), &Model::documentVisibilityChanged, this, &Task::documentVisibilityChanged);
 	}
 
 	void setupModel();
@@ -61,6 +65,7 @@ protected:
 protected Q_SLOTS:
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void pathSelectedChanged(model::Path &path, bool selected);
+	void documentVisibilityChanged();
 };
 
 }

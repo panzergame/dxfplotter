@@ -10,6 +10,14 @@ Renderable::Renderable(const std::string &name)
 {
 }
 
+Renderable::Renderable(const Renderable &other)
+	:QObject(),
+	m_name(other.name()),
+	m_selected(false),
+	m_visible(other.visible())
+{
+}
+
 const std::string &Renderable::name() const
 {
 	return m_name;

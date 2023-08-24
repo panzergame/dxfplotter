@@ -30,6 +30,7 @@ private:
 public:
 	explicit Renderable(const std::string &name);
 	explicit Renderable() = default;
+	explicit Renderable(const Renderable &other);
 
 	const std::string &name() const;
 

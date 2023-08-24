@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>230</width>
-    <height>168</height>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,9 @@
      </item>
      <item row="0" column="1">
       <widget class="QDoubleSpinBox" name="planeFeedRate">
+       <property name="keyboardTracking">
+        <bool>false</bool>
+       </property>
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>
@@ -48,6 +51,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QDoubleSpinBox" name="intensity">
+       <property name="keyboardTracking">
+        <bool>false</bool>
+       </property>
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>
@@ -62,6 +68,9 @@
      </item>
      <item row="3" column="1">
       <widget class="QDoubleSpinBox" name="depth">
+       <property name="keyboardTracking">
+        <bool>false</bool>
+       </property>
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>
@@ -79,6 +88,9 @@
      </item>
      <item row="1" column="1">
       <widget class="QDoubleSpinBox" name="depthFeedRate">
+       <property name="keyboardTracking">
+        <bool>false</bool>
+       </property>
        <property name="maximum">
         <double>9999.989999999999782</double>
        </property>

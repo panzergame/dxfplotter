@@ -40,6 +40,21 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
+void Application::setOpenedDocument(Document::UPtr &&document)
+{
+	m_openedDocument = std::move(document);
+	m_documentHistory = std::make_unique<DocumentHistory>(*m_openedDocument);
+
+	emit newDocumentOpened(m_openedDocument.get());
+}
+
+void Application::setRestoredDocument(const Document &documentVersion)
+{
+	m_openedDocument = std::make_unique<Document>(documentVersion);
+	emit documentRestoredFromHistory(m_openedDocument.get());
+}
+
+
 QString Application::baseName(const QString& fileName)
 {
 	const QFileInfo fileInfo(fileName);
@@ -100,7 +115,7 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 	// Remove small bulges
 	geometry::filter::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-	if (dxf.sortPathByLength()) {
+	if (dxf.sortPathByLength()) { // TODO sort between all paths
 		geometry::filter::Sorter sorter(cleaner.polylines());
 		return sorter.polylines();
 	}
@@ -252,14 +267,12 @@ bool Application::loadFromDxf(const QString &fileName)
 	try {
 		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
  
-		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
+		setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig));
 	}
 	catch (const common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
-
-	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
@@ -269,13 +282,11 @@ bool Application::loadFromDxfplot(const QString &fileName)
 	try {
 		importer::dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
  
-		m_openedDocument = importer(fileName.toStdString());
+		setOpenedDocument(importer(fileName.toStdString()));
 	}
 	catch (const common::FileCouldNotOpenException&) {
 		return false;
 	}
-
-	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
@@ -317,17 +328,23 @@ bool Application::saveToDxfplot(const QString &fileName)
 void Application::leftCutterCompensation()
 {
 	cutterCompensation(1.0f);
+
+	takeDocumentSnapshot();
 }
 
 void Application::rightCutterCompensation()
 {
 	cutterCompensation(-1.0f);
+
+	takeDocumentSnapshot();
 }
 
 void Application::resetCutterCompensation()
 {
 	Task &task = m_openedDocument->task();
 	task.resetCutterCompensationSelection();
+
+	takeDocumentSnapshot();
 }
 
 void Application::pocketSelection()
@@ -337,6 +354,8 @@ void Application::pocketSelection()
 
 	Task &task = m_openedDocument->task();
 	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+
+	takeDocumentSnapshot();
 }
 
 geometry::Rect Application::selectionBoundingRect() const
@@ -349,24 +368,45 @@ void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();
 	task.transformSelection(matrix);
+
+	takeDocumentSnapshot();
 }
 
 void Application::hideSelection()
 {
 	Task &task = m_openedDocument->task();
 	task.hideSelection();
+
+	takeDocumentSnapshot();
 }
 
 void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
 	task.showHidden();
+
+	takeDocumentSnapshot();
 }
 
 Simulation Application::createSimulation()
 {
 	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();
 	return Simulation(*m_openedDocument, fastMoveFeedRate);
+}
+
+void Application::takeDocumentSnapshot()
+{
+	m_documentHistory->takeSnapshot(*m_openedDocument);
+}
+
+void Application::undoDocumentChanges()
+{
+	setRestoredDocument(m_documentHistory->undo());
+}
+
+void Application::redoDocumentChanges()
+{
+	setRestoredDocument(m_documentHistory->redo());
 }
 
 }

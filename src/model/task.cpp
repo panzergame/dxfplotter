@@ -1,6 +1,7 @@
 #include <task.h>
 
 #include <iterator>
+#include <common/copy.h>
 
 namespace model
 {
@@ -33,6 +34,24 @@ Task::Task(Layer::ListUPtr &&layers)
 	initPathsFromLayers();
 
 	m_stack = m_paths;
+}
+
+Task::Task(const Task &other)
+	:QObject(),
+	m_layers(common::deepcopy<Layer>(other.m_layers)),
+	m_stack(other.m_stack.size())
+{
+	initPathsFromLayers();
+
+	// Remap pointers of path on stack
+	std::unordered_map<Path *, Path *> pathRemapping;
+	for (Path::ListPtr::const_iterator ito = other.m_paths.begin(), it = m_paths.begin(), end = m_paths.end(); it != end; ++it, ++ito) {
+		pathRemapping.insert({*ito, *it});
+	}
+
+	std::transform(other.m_stack.begin(), other.m_stack.end(), m_stack.begin(), [&pathRemapping](Path *path){
+		return pathRemapping.find(path)->second;
+	});
 }
 
 int Task::pathCount() const

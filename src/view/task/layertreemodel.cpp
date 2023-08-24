@@ -117,6 +117,8 @@ void LayerTreeModel::itemClicked(const QModelIndex& index)
 			model::Renderable *item = static_cast<model::Renderable *>(index.internalPointer());
 			item->toggleVisible();
 
+			emit documentVisibilityChanged();
+
 			emit dataChanged(index, index);
 		}
 	}

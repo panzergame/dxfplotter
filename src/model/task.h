@@ -38,6 +38,7 @@ public:
 
 	explicit Task() = default;
 	explicit Task(Layer::ListUPtr &&layers);
+	explicit Task(const Task &other);
 
 	int pathCount() const;
 	const Path &pathAt(int index) const;

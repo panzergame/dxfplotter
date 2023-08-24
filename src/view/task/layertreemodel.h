@@ -30,6 +30,9 @@ public:
 	void itemClicked(const QModelIndex &index);
 	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel);
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+signals:
+	void documentVisibilityChanged();
 };
 
 }

@@ -26,6 +26,16 @@ private:
 	 */
 	virtual void documentChanged() = 0;
 
+	/// Notify the document was changed after an undo or redo operation
+	virtual void documentRestoredFromHistory()
+	{
+	}
+
+	/// Notify the document was changed after an opening operation
+	virtual void newDocumentOpened()
+	{
+	}
+
 protected:
 	Document *document() const
 	{
@@ -46,11 +56,24 @@ private Q_SLOTS:
 		documentChanged();
 	}
 
+	void internalDocumentRestoredFromHistory(Document *newDocument)
+	{
+		internalDocumentChanged(newDocument);
+		documentRestoredFromHistory();
+	}
+
+	void internalNewDocumentOpened(Document *newDocument)
+	{
+		internalDocumentChanged(newDocument);
+		newDocumentOpened();
+	}
+
 public:
 	explicit DocumentModelObserver(Application &app)
 		:m_document(nullptr)
 	{
-		QObject::connect(&app, &Application::documentChanged, this, &DocumentModelObserver::internalDocumentChanged);
+		QObject::connect(&app, &Application::documentRestoredFromHistory, this, &DocumentModelObserver::internalDocumentRestoredFromHistory);
+		QObject::connect(&app, &Application::newDocumentOpened, this, &DocumentModelObserver::internalNewDocumentOpened);
 	}
 
 };

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <model/document.h>
+#include <model/documenthistory.h>
 #include <model/simulation.h>
 #include <config/config.h>
 
@@ -35,6 +36,10 @@ private:
 	QString m_lastSavedDxfplotFileName;
 
 	Document::UPtr m_openedDocument;
+	DocumentHistory::UPtr m_documentHistory;
+
+	void setOpenedDocument(Document::UPtr &&document);
+	void setRestoredDocument(const Document &documentVersion);
 
 	static QString baseName(const QString& fileName);	
 	void resetLastSavedFileNames();
@@ -107,8 +112,13 @@ public:
 
 	Simulation createSimulation();
 
+	void takeDocumentSnapshot();
+	void undoDocumentChanges();
+	void redoDocumentChanges();
+
 Q_SIGNALS:
-	void documentChanged(Document *newDocument);
+	void newDocumentOpened(Document *newDocument);
+	void documentRestoredFromHistory(Document *newDocument);
 	void titleChanged(QString title);
 	void configChanged(config::Config &config);
 	void errorRaised(const QString& message) const;

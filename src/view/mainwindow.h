@@ -53,11 +53,11 @@ protected Q_SLOTS:
 	void transformSelection();
 	void mirrorSelection();
 	void setSelectionOrigin();
-	void documentChanged(model::Document *newDocument);
+	void newDocumentOpened(model::Document *newDocument);
 	void displayError(const QString &message);
-
-signals:
 	void simulate();
+	void undo();
+	void redo();
 };
 
 }

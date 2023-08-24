@@ -1,5 +1,7 @@
 #include <layer.h>
 
+#include <common/copy.h>
+
 namespace model
 {
 
@@ -15,6 +17,15 @@ Layer::Layer(const std::string &name, Path::ListUPtr &&children)
 	m_children(std::move(children))
 {
 	assignSelfToChildren();
+}
+
+Layer::Layer(const Layer& other)
+	:Renderable(other),
+	m_children(common::deepcopy<Path>(other.m_children))
+{
+	for (Path::UPtr &child : m_children) {
+		child->setLayer(*this);
+	}
 }
 
 int Layer::childrenCount() const

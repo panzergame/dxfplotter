@@ -33,6 +33,7 @@ private:
 
 public:
 	explicit OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Direction direction);
+	explicit OffsettedPath(const OffsettedPath& other);
 	explicit OffsettedPath() = default;
 
 	const geometry::Polyline::List &polylines() const;

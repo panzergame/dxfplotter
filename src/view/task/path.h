@@ -14,6 +14,8 @@ namespace view::task
 class Path : public model::DocumentModelObserver<QWidget>, private Ui::Path
 {
 private:
+	model::Application &m_app;
+
 	std::unique_ptr<model::PathGroupSettings> m_groupSettings;
 
 	void selectionChanged(bool empty);
@@ -21,7 +23,13 @@ private:
 	template <typename ValueType, class Field>
 	void connectOnFieldChanged(Field *field, std::function<void (ValueType)> &&func)
 	{
-		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), this, func);
+		disconnect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), nullptr, nullptr);
+
+		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), [this, field, func](ValueType value){
+			func(value);
+
+			m_app.takeDocumentSnapshot();
+		});
 	}
 
 	template <class Field, typename T>

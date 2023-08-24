@@ -9,6 +9,13 @@ OffsettedPath::OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Dire
 {
 }
 
+OffsettedPath::OffsettedPath(const OffsettedPath& other)
+	:QObject(),
+	m_polylines(other.m_polylines),
+	m_direction(other.m_direction)
+{
+}
+
 const geometry::Polyline::List &OffsettedPath::polylines() const
 {
 	return m_polylines;

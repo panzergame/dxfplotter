@@ -23,7 +23,8 @@ void Path::documentChanged()
 }
 
 Path::Path(model::Application &app)
-	:DocumentModelObserver(app)
+	:DocumentModelObserver(app),
+	m_app(app)
 {
 	setupUi(this);
 }

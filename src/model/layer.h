@@ -21,6 +21,7 @@ private:
 public:
 	explicit Layer(const std::string &name, Path::ListUPtr &&children);
 	explicit Layer() = default;
+	explicit Layer(const Layer& other);;
 
 	int childrenCount() const;
 	Path& childrenAt(int index);

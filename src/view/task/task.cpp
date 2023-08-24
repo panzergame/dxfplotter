@@ -10,7 +10,8 @@ namespace view::task
 {
 
 Task::Task(model::Application &app)
-	:DocumentModelObserver(app)
+	:DocumentModelObserver(app),
+	m_app(app)
 {
 	setupUi(this);
 }
@@ -61,6 +62,13 @@ void Task::moveCurrentPath(model::Task::MoveDirection direction)
 	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
 	const QModelIndex newSelectedIndex = m_pathListModel->movePath(currentSelectedIndex, direction);
 	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+
+	m_app.takeDocumentSnapshot();
+}
+
+void Task::documentVisibilityChanged()
+{
+	m_app.takeDocumentSnapshot();
 }
 
 void Task::moveCurrentPathToTip(model::Task::MoveTip tip)

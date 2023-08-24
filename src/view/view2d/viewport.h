@@ -42,6 +42,7 @@ private:
 
 protected:
 	void documentChanged() override;
+	void newDocumentOpened() override;
 
 	void wheelEvent(QWheelEvent *event) override;
 	void mousePressEvent(QMouseEvent *event) override;
