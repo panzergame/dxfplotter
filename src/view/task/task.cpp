@@ -32,8 +32,8 @@ void Task::setupController()
 	setupTreeViewController(m_pathListModel, pathsTreeView);
 	setupTreeViewController(m_layerTreeModel, layersTreeView);
 
-	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::UP); });
-	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPath(model::Task::MoveDirection::DOWN); });
+	connect(moveUp, &QPushButton::pressed, [this](){ moveCurrentPathToDirection(model::Task::MoveDirection::UP); });
+	connect(moveDown, &QPushButton::pressed, [this](){ moveCurrentPathToDirection(model::Task::MoveDirection::DOWN); });
 	connect(moveTop, &QPushButton::pressed, [this](){ moveCurrentPathToTip(model::Task::MoveTip::Top); });
 	connect(moveBottom, &QPushButton::pressed, [this](){ moveCurrentPathToTip(model::Task::MoveTip::Bottom); });
 }
@@ -56,14 +56,11 @@ void Task::pathSelectedChanged(model::Path &path, bool selected)
 			selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
 }
 
-void Task::moveCurrentPath(model::Task::MoveDirection direction)
+void Task::moveCurrentPathToDirection(model::Task::MoveDirection direction)
 {
-	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
-	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
-	const QModelIndex newSelectedIndex = m_pathListModel->movePath(currentSelectedIndex, direction);
-	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
-
-	m_app.takeDocumentSnapshot();
+	moveCurrentPath([this, direction](const QModelIndex& index){
+		m_pathListModel->movePathToDirection(index, direction);
+	});
 }
 
 void Task::documentVisibilityChanged()
@@ -73,12 +70,25 @@ void Task::documentVisibilityChanged()
 
 void Task::moveCurrentPathToTip(model::Task::MoveTip tip)
 {
-	QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
-	const QModelIndex currentSelectedIndex = selectionModel->currentIndex();
-	const QModelIndex newSelectedIndex = m_pathListModel->movePathToTip(currentSelectedIndex, tip);
-	selectionModel->setCurrentIndex(newSelectedIndex, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Current);
+	moveCurrentPath([this, tip](const QModelIndex& index){
+		m_pathListModel->movePathToTip(index, tip);
+	});
+}
 
-	m_app.takeDocumentSnapshot();
+void Task::rebuildSelectionFromTask()
+{
+	QItemSelectionModel *pathsTreeSelectionModel = pathsTreeView->selectionModel();
+	QItemSelectionModel *layersTreeSelectionModel = layersTreeView->selectionModel();
+
+	m_pathListModel->clearSelection(pathsTreeSelectionModel);
+	m_layerTreeModel->clearSelection(layersTreeSelectionModel);
+
+	task().forEachSelectedPath([this, pathsTreeSelectionModel, layersTreeSelectionModel](const model::Path& path){
+		constexpr QItemSelectionModel::SelectionFlag flag = QItemSelectionModel::Select;
+
+		m_pathListModel->updateItemSelection(path, flag, pathsTreeSelectionModel);
+		m_layerTreeModel->updateItemSelection(path, flag, layersTreeSelectionModel);
+	});
 }
 
 }

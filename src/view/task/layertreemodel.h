@@ -16,6 +16,7 @@ class LayerTreeModel: public QAbstractItemModel
 
 private:
 	model::Task &m_task;
+	bool m_ignoreSelectionChanged;
 
 public:
 	explicit LayerTreeModel(model::Task &task, QObject *parent);
@@ -28,6 +29,7 @@ public:
 	Qt::ItemFlags flags(const QModelIndex &index) const override;
 
 	void itemClicked(const QModelIndex &index);
+	void clearSelection(QItemSelectionModel *selectionModel);
 	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel);
 	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 

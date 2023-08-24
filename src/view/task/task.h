@@ -53,8 +53,25 @@ private:
 
 	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag);
 
-	void moveCurrentPath(model::Task::MoveDirection direction);
+	void moveCurrentPathToDirection(model::Task::MoveDirection direction);
 	void moveCurrentPathToTip(model::Task::MoveTip tip);
+
+	template <class Func>
+	void moveCurrentPath(Func &&movement)
+	{
+		QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
+
+		const QModelIndexList selectedItems = selectionModel->selectedIndexes();
+		for (const QModelIndex& selectedIndex : selectedItems) {
+			movement(selectedIndex);
+		}
+
+		rebuildSelectionFromTask();
+
+		m_app.takeDocumentSnapshot();
+	}
+
+	void rebuildSelectionFromTask();
 
 public:
 	explicit Task(model::Application &app);
@@ -63,7 +80,6 @@ protected:
 	void documentChanged();
 
 protected Q_SLOTS:
-	void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 	void pathSelectedChanged(model::Path &path, bool selected);
 	void documentVisibilityChanged();
 };
