@@ -212,6 +212,7 @@ void MainWindow::openSettings()
 	}();
 
 	if (accepted) {
+		newConfig.save();
 		m_app.setConfig(std::move(newConfig));
 	}
 }
