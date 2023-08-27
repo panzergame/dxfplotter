@@ -9,6 +9,11 @@
 			<property name="sort path by length" type="bool" default="false"/>
 		</group>
 	</group>
+	<group name="optimize">
+		<property name="maintain path length order" type="bool" default="false"/>
+		<property name="length precision" type="float" default="0.1"/>
+		<property name="distance precision" type="float" default="0.01"/>
+	</group>
 	<list name="profiles">
 		<group name="profile">
 			<group name="gcode">

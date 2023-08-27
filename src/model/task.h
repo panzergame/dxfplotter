@@ -91,6 +91,7 @@ public:
 	void transformSelection(const QTransform& matrix);
 	void hideSelection();
 	void showHidden();
+	void optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, float distancePrecision);
 
 	geometry::Rect selectionBoundingRect() const;
 	geometry::Rect visibleBoundingRect() const;
@@ -104,6 +105,7 @@ public:
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);
 	void selectionChanged(bool empty);
+	void pathOrderChanged();
 };
 
 template <typename T>

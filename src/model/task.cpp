@@ -2,6 +2,7 @@
 
 #include <iterator>
 #include <common/copy.h>
+#include <geometry/orderoptimizer.h>
 
 namespace model
 {
@@ -195,6 +196,83 @@ void Task::showHidden()
 			path.setSelected(true);
 		}
 	});
+}
+
+geometry::OrderOptimizer::NodesPerGroup generateNodesSingleGroup(const Path::ListPtr &paths)
+{
+	geometry::OrderOptimizer::Node::List group(paths.size());
+
+	for (int i = 0; i < paths.size(); ++i) {
+		group[i] = {{}, i, paths[i]->basePolyline().start()};
+	}
+
+	return {group};
+}
+
+geometry::OrderOptimizer::NodesPerGroup generateNodesPerGroupOfLength(const Path::ListPtr &paths, float lengthPrecision)
+{
+	struct PathRoundedLength : common::Aggregable<PathRoundedLength>
+	{
+		int id;
+		Path *path;
+		int roundedLength;
+
+		PathRoundedLength() = default;
+
+		explicit PathRoundedLength(Path *path, int id, float lengthPrecision)
+			:id(id),
+			path(path),
+			roundedLength(path->basePolyline().length() / lengthPrecision)
+		{
+		}
+
+		bool operator<(const PathRoundedLength& other) const
+		{
+			return roundedLength < other.roundedLength;
+		}
+	};
+
+	PathRoundedLength::List sortedPathsRoundedLength(paths.size());
+	for (int pathId = 0, nbPaths = paths.size(); pathId < nbPaths; ++pathId) {
+		Path *path = paths[pathId];
+		const float length = path->basePolyline().length();
+		sortedPathsRoundedLength[pathId] = PathRoundedLength(path, pathId, lengthPrecision);
+	}
+
+	std::sort(sortedPathsRoundedLength.begin(), sortedPathsRoundedLength.end());
+
+	geometry::OrderOptimizer::NodesPerGroup nodesPerGroup;
+	float currentGroupLength = -1.0f;
+	for (const PathRoundedLength& pathRoundedLength : sortedPathsRoundedLength) {
+		if (pathRoundedLength.roundedLength != currentGroupLength) {
+			// Create new group
+			nodesPerGroup.push_back({});
+			currentGroupLength = pathRoundedLength.roundedLength;
+		}
+
+		nodesPerGroup.back().push_back({{}, pathRoundedLength.id, pathRoundedLength.path->basePolyline().start()});
+	}
+
+	return nodesPerGroup;
+}
+
+void Task::optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, float distancePrecision)
+{
+	const geometry::OrderOptimizer::NodesPerGroup nodesPerGroup = maintainPathLengthOrder ?
+		 generateNodesPerGroupOfLength(m_paths, lengthPrecision) :
+		 generateNodesSingleGroup(m_paths);
+
+	const int nbPath = pathCount();
+	geometry::OrderOptimizer optimizer(nodesPerGroup, nbPath);
+	const std::vector<int> order = optimizer.order();
+
+	Path::ListPtr newPaths(m_paths.size());
+	for (int i = 0; i < nbPath; ++i) {
+		newPaths[i] = m_paths[order[i]];
+	}
+
+	std::swap(m_stack, newPaths);
+	emit pathOrderChanged();
 }
 
 geometry::Rect Task::selectionBoundingRect() const

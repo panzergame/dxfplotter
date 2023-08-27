@@ -32,7 +32,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 if(MSVC)
 	add_compile_options(/W4)
 else()
-	add_compile_options(-fPIC -Wall -Wextra)
+	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)

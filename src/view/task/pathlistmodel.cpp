@@ -11,6 +11,9 @@ PathListModel::PathListModel(model::Task &task, QObject *parent)
 	m_task(task),
 	m_ignoreSelectionChanged(false)
 {
+	connect(&m_task, &model::Task::pathOrderChanged, [this]{
+		emit layoutChanged();
+	});
 }
 
 QVariant PathListModel::data(const QModelIndex &index, int role) const

@@ -110,6 +110,8 @@ public:
 	void hideSelection();
 	void showHidden();
 
+	void optimizeOrder();
+
 	Simulation createSimulation();
 
 	void takeDocumentSnapshot();
