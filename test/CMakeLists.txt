@@ -21,6 +21,7 @@ set(SRC
 	dxfplotimporter.cpp
 	exporterfixture.cpp
 	gcodeexporter.cpp
+	orderoptimizer.cpp
 	path.cpp
 	pathsettings.cpp
 	pocketer.cpp
