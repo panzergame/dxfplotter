@@ -12,9 +12,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QSplitter>
 #include <QComboBox>
 #include <QErrorMessage>
+#include <QThread>
 #include <QDebug>
 
 namespace view
@@ -99,8 +101,9 @@ void MainWindow::setupMenuActions()
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 	connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
 	connect(actionSimulate, &QAction::triggered, this, &MainWindow::simulate);
-	connect(actionUndo, &QAction::triggered, this, &MainWindow::undo);
-	connect(actionRedo, &QAction::triggered, this, &MainWindow::redo);
+	connect(actionUndo, &QAction::triggered, &m_app, &model::Application::undoDocumentChanges);
+	connect(actionRedo, &QAction::triggered, &m_app, &model::Application::redoDocumentChanges);
+	connect(actionOptimizeOrder, &QAction::triggered, this, &MainWindow::optimizeOrder);
 }
 
 void MainWindow::setupOpenedDocumentActions()
@@ -121,6 +124,7 @@ void MainWindow::setupOpenedDocumentActions()
 	m_openedDocumentActions.addAction(actionSimulate);
 	m_openedDocumentActions.addAction(actionUndo);
 	m_openedDocumentActions.addAction(actionRedo);
+	m_openedDocumentActions.addAction(actionOptimizeOrder);
 
 	m_openedDocumentActions.setExclusive(true);
 }
@@ -266,15 +270,9 @@ void MainWindow::simulate()
 	m_simulation->show();
 }
 
-void MainWindow::undo()
+void MainWindow::optimizeOrder()
 {
-	m_app.undoDocumentChanges();
+	m_app.optimizeOrder();
 }
-
-void MainWindow::redo()
-{
-	m_app.redoDocumentChanges();
-}
-
 
 }

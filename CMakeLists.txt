@@ -18,6 +18,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 set(BUILD_TESTS OFF)
+set(BUILD_SAMPLES OFF)
+set(BUILD_EXAMPLES OFF)
+set(USE_SCIP OFF)
+set(USE_COINOR OFF)
+set(BUILD_FLATZINC OFF)
+set(USE_HIGHS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
@@ -26,7 +32,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 if(MSVC)
 	add_compile_options(/W4)
 else()
-	add_compile_options(-fPIC -Wall -Wextra)
+	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -58,6 +64,7 @@ set(INCLUDE_DIRS
 	thirdparty/nanoflann/include
 	thirdparty/units/include
 	thirdparty/yaml-cpp/include
+	thirdparty/or-tools
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template

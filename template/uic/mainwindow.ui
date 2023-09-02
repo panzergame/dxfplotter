@@ -92,6 +92,8 @@
    <addaction name="actionResetCutterCompensation"/>
    <addaction name="actionPocketSelection"/>
    <addaction name="separator"/>
+   <addaction name="actionOptimizeOrder"/>
+   <addaction name="separator"/>
    <addaction name="actionTransformSelection"/>
    <addaction name="actionMirrorSelection"/>
    <addaction name="actionSetSelectionOrigin"/>
@@ -327,6 +329,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionOptimizeOrder">
+   <property name="icon">
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/optimize-order.svg</normaloff>:/icons/optimize-order.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Optimize Order</string>
+   </property>
+   <property name="toolTip">
+    <string>Optimize Order</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
    </property>
   </action>
  </widget>

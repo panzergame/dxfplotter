@@ -56,8 +56,7 @@ protected Q_SLOTS:
 	void newDocumentOpened(model::Document *newDocument);
 	void displayError(const QString &message);
 	void simulate();
-	void undo();
-	void redo();
+	void optimizeOrder();
 };
 
 }

@@ -390,6 +390,14 @@ void Application::showHidden()
 	takeDocumentSnapshot();
 }
 
+void Application::optimizeOrder()
+{
+	const config::Optimize &optimize = m_config.root().optimize();
+
+	Task &task = m_openedDocument->task();
+	task.optimizeOrder(optimize.maintainPathLengthOrder(), optimize.lengthPrecision(), optimize.distancePrecision());
+}
+
 Simulation Application::createSimulation()
 {
 	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();

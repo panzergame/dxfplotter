@@ -22,6 +22,7 @@ set(SRC
 	exporterfixture.cpp
 	exporterrenderer.cpp
 	gcodeexporter.cpp
+	orderoptimizer.cpp
 	path.cpp
 	pathsettings.cpp
 	pocketer.cpp

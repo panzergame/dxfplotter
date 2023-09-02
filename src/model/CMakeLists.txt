@@ -27,4 +27,5 @@ set(SRC
 
 add_library(model ${SRC})
 add_dependencies(model generate-config)
+target_link_libraries(model PUBLIC geometry)
 add_coverage(model)
