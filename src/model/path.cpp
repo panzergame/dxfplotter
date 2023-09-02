@@ -40,6 +40,11 @@ Path::Path(const Path& other)
 	}
 }
 
+Path::Path()
+{
+	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
+}
+
 Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
 {
 	const int size = polylines.size();

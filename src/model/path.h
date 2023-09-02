@@ -35,7 +35,7 @@ private:
 public:
 	explicit Path(geometry::Polyline &&basePolyline, const std::string &name, const PathSettings& settings);
 	explicit Path(const Path& other);
-	explicit Path() = default;
+	explicit Path();
 
 	static ListUPtr FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName);
 
