@@ -20,6 +20,7 @@ set(SRC
 	dxfplotexporter.cpp
 	dxfplotimporter.cpp
 	exporterfixture.cpp
+	exporterrenderer.cpp
 	gcodeexporter.cpp
 	path.cpp
 	pathsettings.cpp

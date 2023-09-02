@@ -23,6 +23,7 @@
 			</group>
 			<group name="cut">
 				<property name="direction" type="geometry::CuttingDirection" default="geometry::CuttingDirection::FORWARD"/>
+				<property name="pass at zero depth" type="bool" default="false"/>
 			</group>
 			<group name="default path">
 				<property name="plane feed rate" type="float" default="40"/>

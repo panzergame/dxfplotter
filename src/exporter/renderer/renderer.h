@@ -13,6 +13,7 @@ private:
 	const config::Tools::Tool &m_tool;
 	const config::Profiles::Profile &m_profile;
 	const float m_depthPerCut;
+	const float m_maximumStartDepth;
 	const float m_depthToRetract;
 	Visitor &m_visitor;
 
@@ -58,7 +59,8 @@ private:
 
 		m_visitor.startOperation((*iterator).start(), intensity);
 
-		for (float depth = 0.0f; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
+		const float startDepth = std::min(m_maximumStartDepth, maxDepth);
+		for (float depth = startDepth; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
 			const float boundDepth = std::fminf(depth, maxDepth);
 
 			m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
@@ -72,6 +74,7 @@ public:
 		:m_tool(tool),
 		m_profile(profile),
 		m_depthPerCut(m_tool.general().depthPerCut()),
+		m_maximumStartDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut),
 		m_depthToRetract(m_tool.general().retractDepth()),
 		m_visitor(visitor)
 	{
