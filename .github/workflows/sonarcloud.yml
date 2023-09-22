@@ -13,7 +13,7 @@ jobs:
       - name: Install package
         run: |
           apt-get update
-          apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev libabsl-dev lcov git
+          apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev lcov git
       - name: Install build wrapper
         run: |
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
