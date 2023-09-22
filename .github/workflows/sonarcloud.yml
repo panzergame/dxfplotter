@@ -7,7 +7,9 @@ on:
 jobs:
   static_analysis:
     runs-on: ubuntu-latest
-    steps:
+    container:
+      image: ubuntu:focal
+    steps:      
       - name: Checkout
         uses: actions/checkout@v2
         with:
