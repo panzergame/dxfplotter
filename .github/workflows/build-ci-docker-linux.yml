@@ -25,4 +25,4 @@ jobs:
           context: ci/docker/linux/
           file: ci/docker/linux/Dockerfile
           push: true
-          tags: dxfplotter/linux-ci:latest
+          tags: ghcr.io/${{ github.repository }}/linux-ci:latest
