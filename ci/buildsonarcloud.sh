@@ -25,6 +25,8 @@ trap cleanup EXIT
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
 OLD_CWD=$(readlink -f .)
 
+git config --global --add safe.directory $REPO_ROOT
+
 # switch to build dir
 pushd "$BUILD_DIR"
 

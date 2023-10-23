@@ -39,7 +39,7 @@ public:
 		m_property(property)
 	{
 		setMaximum(1e8);
-		setDecimals(4);
+		setDecimals(8);
 		setValue((float)m_property);
 	}
 

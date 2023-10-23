@@ -44,6 +44,8 @@ find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
 
+find_package(ortools REQUIRED CONFIG)
+
 find_package(Qt5 COMPONENTS REQUIRED
 	Core
 	Widgets
