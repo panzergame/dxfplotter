@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository }}/linux-ci:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
