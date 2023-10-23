@@ -8,7 +8,7 @@ jobs:
   static_analysis:
     runs-on: ubuntu-latest
     container:
-      image: ubuntu:focal
+      image: ghcr.io/${{ github.repository }}/linux-ci:latest
     steps:      
       - name: Install package
         run: |
