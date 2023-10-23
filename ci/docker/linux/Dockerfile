@@ -3,7 +3,7 @@ FROM ubuntu:jammy
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && \
-	apt-get -y install lcov git wget cmake build-essential python3-pip && \
+	apt-get -y install lcov git zip wget cmake build-essential python3-pip && \
 	apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev
 
 RUN pip install jinja2

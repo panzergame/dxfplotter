@@ -10,10 +10,6 @@ jobs:
     container:
       image: ghcr.io/${{ github.repository }}/linux-ci:latest
     steps:      
-      - name: Install package
-        run: |
-          apt-get update
-          apt-get -y install lcov
       - name: Install build wrapper
         run: |
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
