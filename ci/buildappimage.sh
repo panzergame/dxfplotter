@@ -25,6 +25,8 @@ trap cleanup EXIT
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
 OLD_CWD=$(readlink -f .)
 
+git config --global --add safe.directory $REPO_ROOT
+
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
 TAG=$(git describe --tags)
