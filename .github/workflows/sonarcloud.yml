@@ -10,6 +10,10 @@ jobs:
     container:
       image: ghcr.io/${{ github.repository }}/linux-ci:latest
     steps:      
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
       - name: Install build wrapper
         run: |
           wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
@@ -18,10 +22,6 @@ jobs:
         run: |
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
           unzip sonar-scanner-cli-4.6.2.2472-linux.zip
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          submodules: true
       - name: Build and scan
         run: ci/buildsonarcloud.sh
         env:

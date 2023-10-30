@@ -36,7 +36,7 @@ cmake "$REPO_ROOT" -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
 
 # Wraps the compilation with the Build Wrapper to generate configuration (used
 # later by the SonarQube Scanner) into the "bw-output" folder
-/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
+"$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
 	--out-dir bw-output cmake \
 	--build .
 # Test project
@@ -46,6 +46,6 @@ ctest -VV
 make gcov
 
 # Scan project
-/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
+"$REPO_ROOT"/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
 
 
