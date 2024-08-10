@@ -41,6 +41,7 @@
 	<list name="tools">
 		<group name="tool">
 			<group name="general">
+				<property name="laser" type="bool" default="false"/>
 				<property name="radius" type="float" default="0.5"/>
 				<property name="depth per cut" type="float" default="1"/>
 				<property name="retract depth" type="float" default="1"/>
