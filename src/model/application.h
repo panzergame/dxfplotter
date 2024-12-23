@@ -123,6 +123,7 @@ Q_SIGNALS:
 	void documentRestoredFromHistory(Document *newDocument);
 	void titleChanged(QString title);
 	void configChanged(config::Config &config);
+	void toolChanged();
 	void errorRaised(const QString& message) const;
 	void fileSaved(const QString &fileName);
 };

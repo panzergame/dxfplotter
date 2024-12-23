@@ -82,7 +82,7 @@
           </widget>
          </item>
          <item row="3" column="0">
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="depthLabel">
            <property name="text">
             <string>Depth</string>
            </property>

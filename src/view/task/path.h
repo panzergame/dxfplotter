@@ -19,6 +19,10 @@ private:
 	std::unique_ptr<model::PathGroupSettings> m_groupSettings;
 
 	void selectionChanged(bool empty);
+	void toolChanged();
+	void configChanged();
+
+	void updateFieldVisibility(const config::Tools::Tool& tool);
 
 	template <typename ValueType, class Field>
 	void connectOnFieldChanged(Field *field, std::function<void (ValueType)> &&func)

@@ -168,6 +168,7 @@ bool Application::selectTool(const QString &toolName)
 	if (tool) {
 		if (m_openedDocument) {
 			m_openedDocument->setToolConfig(*tool);
+			emit toolChanged();
 		}
 		m_defaultToolConfig = tool;
 

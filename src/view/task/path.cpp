@@ -1,3 +1,4 @@
+#include "model/application.h"
 #include <path.h>
 
 namespace view::task
@@ -27,6 +28,8 @@ Path::Path(model::Application &app)
 	m_app(app)
 {
 	setupUi(this);
+	connect(&m_app, &model::Application::toolChanged, this, &Path::toolChanged);
+	connect(&m_app, &model::Application::configChanged, this, &Path::configChanged);
 }
 
 void Path::selectionChanged(bool empty)
@@ -42,6 +45,23 @@ void Path::selectionChanged(bool empty)
 
 		stackedWidget->setCurrentWidget(pagePathSelected);
 	}
+}
+
+void Path::toolChanged()
+{
+	updateFieldVisibility(document()->toolConfig());
+}
+
+void Path::configChanged()
+{
+	updateFieldVisibility(document()->toolConfig());
+}
+
+void Path::updateFieldVisibility(const config::Tools::Tool& tool)
+{
+	const bool toolHasDepth = !tool.general().laser();
+	Ui::Path::depth->setVisible(toolHasDepth);
+	depthLabel->setVisible(toolHasDepth);
 }
 
 }
