@@ -43,6 +43,7 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
+find_package(ortools CONFIG REQUIRED)
 
 find_package(Qt5 COMPONENTS REQUIRED
 	Core

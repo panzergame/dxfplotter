@@ -4,26 +4,20 @@ on:
     branches:
       - "**"
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}/ubuntu:fix-ci
+
 jobs:
   static_analysis:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository }}/ubuntu:fix-ci
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Install package
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev libabsl-dev libprotobuf-dev libre2-dev libeigen3-dev lcov
-      - name: Install build wrapper
-        run: |
-          wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-          unzip build-wrapper-linux-x86.zip
-      - name: Install sonar scanner
-        run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-          unzip sonar-scanner-cli-4.6.2.2472-linux.zip
       - name: Build and scan
         run: ci/buildsonarcloud.sh
         env:
