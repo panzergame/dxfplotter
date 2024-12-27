@@ -44,6 +44,6 @@ ctest -VV
 make gcov
 
 # Scan project
-/opt/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
+/opt/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
 
 
