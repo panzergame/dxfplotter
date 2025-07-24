@@ -4,15 +4,11 @@ on:
     branches:
       - "**"
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/ubuntu:fix-ci
-
 jobs:
   static_analysis:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ github.repository }}/ubuntu:fix-ci
+      image: ghcr.io/${{ github.repository }}/ubuntu:develop
     steps:
       - name: Checkout
         uses: actions/checkout@v2
