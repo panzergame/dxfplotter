@@ -8,17 +8,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ github.repository }}/ubuntu:feature-docker_build_appimage
+      options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           submodules: true
-      - name: Install package
-        run: |
-          sudo apt-get update
-          sudo apt-get -y install qtbase5-dev qt3d5-dev libqt5svg5-dev freeglut3-dev libabsl-dev
+          fetch-depth: 0
       - name: Build and test
         run: ci/buildappimage.sh
+        env:
+          LD_LIBRARY_PATH: /opt/lib
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
