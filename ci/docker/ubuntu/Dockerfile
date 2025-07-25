@@ -1,6 +1,6 @@
 FROM ubuntu:noble
 
-RUN apt update && apt install -y \
+RUN apt update && apt install -y libglib2.0-bin libxkbcommon0 libdbus-1-3 \
     freeglut3-dev lcov \
     build-essential cmake \
     fuse
