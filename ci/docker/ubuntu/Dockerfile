@@ -5,7 +5,10 @@ RUN apt update && apt install -y \
     build-essential cmake \
     fuse
 
-RUN apt update && apt install -y wget unzip git python3-jinja2
+RUN apt update && apt install -y wget unzip git python3-jinja2 python3-pip
+RUN pip install aqtinstall --break-system-packages
+
+RUN aqt install-qt -O /opt/qt linux desktop 6.8.2 -m qt3d
 
 RUN wget http://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
 RUN unzip build-wrapper-linux-x86.zip -d /opt
