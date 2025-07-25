@@ -1,9 +1,9 @@
 #include <toolpath.h>
 
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QAttribute> 
-#include <Qt3DRender/QBuffer> 
+#include <QGeometry>
+#include <QGeometryRenderer>
+#include <QAttribute> 
+#include <QBuffer> 
 
 #include <Qt3DExtras/QPerVertexColorMaterial>
 
@@ -51,28 +51,28 @@ void ToolPath::createPolylineFromPoints(const model::Simulation::ToolPathPoint3D
 		m_indices[i] = i;
 	}
 
-    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(this);
+    Qt3DCore::QGeometry *geometry = new Qt3DCore::QGeometry(this);
 
 	const QByteArray vertexData = QByteArray::fromRawData((const char *)m_packedPoints.get(), sizeof(PackedVector3D) * nbPoints);
-	Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer(geometry);
+	Qt3DCore::QBuffer *vertexBuffer = new Qt3DCore::QBuffer(geometry);
 	vertexBuffer->setData(vertexData);
 
 	const QByteArray colorData = QByteArray::fromRawData((const char *)m_colors.get(), sizeof(uint32_t) * nbPoints);
-	Qt3DRender::QBuffer *colorBuffer = new Qt3DRender::QBuffer(geometry);
+	Qt3DCore::QBuffer *colorBuffer = new Qt3DCore::QBuffer(geometry);
 	colorBuffer->setData(colorData);
 
 	const QByteArray indexData = QByteArray::fromRawData((const char *)m_indices.get(), sizeof(uint32_t) * nbPoints);
-	Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer(geometry);
+	Qt3DCore::QBuffer *indexBuffer = new Qt3DCore::QBuffer(geometry);
 	indexBuffer->setData(indexData);
 
-	Qt3DRender::QAttribute *vertexAttribute = new Qt3DRender::QAttribute(vertexBuffer, Qt3DRender::QAttribute::defaultPositionAttributeName(), Qt3DRender::QAttribute::Float, 3, nbPoints);
-	vertexAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+	Qt3DCore::QAttribute *vertexAttribute = new Qt3DCore::QAttribute(vertexBuffer, Qt3DCore::QAttribute::defaultPositionAttributeName(), Qt3DCore::QAttribute::Float, 3, nbPoints);
+	vertexAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
 
-	Qt3DRender::QAttribute *colorAttribute = new Qt3DRender::QAttribute(colorBuffer, Qt3DRender::QAttribute::defaultColorAttributeName(), Qt3DRender::QAttribute::UnsignedByte, 4, nbPoints);
-	colorAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+	Qt3DCore::QAttribute *colorAttribute = new Qt3DCore::QAttribute(colorBuffer, Qt3DCore::QAttribute::defaultColorAttributeName(), Qt3DCore::QAttribute::UnsignedByte, 4, nbPoints);
+	colorAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
 
-	Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute(indexBuffer, Qt3DRender::QAttribute::UnsignedInt, 3, nbPoints);
-	indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+	Qt3DCore::QAttribute *indexAttribute = new Qt3DCore::QAttribute(indexBuffer, Qt3DCore::QAttribute::UnsignedInt, 3, nbPoints);
+	indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
 
 	geometry->addAttribute(vertexAttribute);
 	geometry->addAttribute(colorAttribute);

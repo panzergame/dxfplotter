@@ -1,8 +1,9 @@
 FROM ubuntu:noble
 
-RUN apt update && apt install -y qtbase5-dev qt3d5-dev libqt5svg5-dev \
+RUN apt update && apt install -y \
     freeglut3-dev lcov \
-    build-essential cmake
+    build-essential cmake \
+    fuse
 
 RUN apt update && apt install -y wget unzip git python3-jinja2
 

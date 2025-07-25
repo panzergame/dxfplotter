@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Qt3DCore/QEntity>
+#include <QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QGoochMaterial>
 
