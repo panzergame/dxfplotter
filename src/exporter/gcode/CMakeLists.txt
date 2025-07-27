@@ -9,5 +9,5 @@ set(SRC
 )
 
 add_library(exporter-gcode ${SRC})
-add_dependencies(exporter-gcode generate-config)
+target_link_libraries(exporter-gcode PRIVATE config)
 add_coverage(exporter-gcode)

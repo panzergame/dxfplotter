@@ -1,4 +1,6 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.15)
+set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(dxfplotter)
 
@@ -15,7 +17,6 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 set(BUILD_TESTS OFF)
 set(BUILD_SAMPLES OFF)
@@ -26,16 +27,16 @@ set(BUILD_FLATZINC OFF)
 set(USE_HIGHS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4)
+	add_compile_options(/W4 /Zc:__cplusplus)
 else()
 	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
@@ -56,6 +57,8 @@ find_package(Qt6 COMPONENTS REQUIRED
 
 qt_standard_project_setup()
 
+add_definitions(${Qt6Core_DEFINITIONS})
+
 set(INCLUDE_DIRS
 	src
 	thirdparty
@@ -64,7 +67,6 @@ set(INCLUDE_DIRS
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
 	thirdparty/units/include
-	thirdparty/yaml-cpp/include
 	thirdparty/or-tools
 	template
 	${CMAKE_BINARY_DIR}/src
@@ -99,7 +101,6 @@ set(LINK_LIBRARIES
 	Qt6::Svg
 	Qt6::3DCore
 	Qt6::3DExtras
-	yaml-cpp
 )
 
 include_directories(${INCLUDE_DIRS})

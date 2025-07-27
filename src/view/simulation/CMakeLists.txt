@@ -7,4 +7,5 @@ set(SRC
 )
 
 add_library(view-simulation ${SRC})
-add_dependencies(view-simulation generate-config uic)
+target_link_libraries(view-simulation PRIVATE config)
+add_dependencies(view-simulation uic)
