@@ -7,5 +7,5 @@ set(SRC
 )
 
 add_library(exporter-renderer ${SRC})
-add_dependencies(exporter-renderer generate-config)
+target_link_libraries(exporter-renderer PRIVATE config)
 add_coverage(exporter-renderer)

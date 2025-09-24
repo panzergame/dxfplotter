@@ -5,4 +5,4 @@ set(SRC
 )
 
 add_library(importer-dxfplot ${SRC})
-add_dependencies(importer-dxfplot generate-config)
+target_link_libraries(importer-dxfplot PRIVATE config)
