@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ github.repository }}/ubuntu:feature-docker_build_appimage
+      image: ghcr.io/${{ github.repository }}/ubuntu:master
       options: --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
     steps:
       - name: Checkout code
