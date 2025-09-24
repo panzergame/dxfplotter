@@ -12,7 +12,9 @@ class Renderer
 private:
 	const config::Tools::Tool &m_tool;
 	const config::Profiles::Profile &m_profile;
+	const bool m_laser;
 	const float m_depthPerCut;
+	const float m_maximumStartDepth;
 	const float m_depthToRetract;
 	Visitor &m_visitor;
 
@@ -49,7 +51,6 @@ private:
 
 	void render(const geometry::Polyline &polyline, const model::PathSettings &settings, geometry::CuttingDirection cuttingDirection) const
 	{
-		const float maxDepth = settings.depth();
 		const float intensity = settings.intensity();
 		const float planeFeedRate = settings.planeFeedRate();
 		const float depthFeedRate = settings.depthFeedRate();
@@ -58,10 +59,17 @@ private:
 
 		m_visitor.startOperation((*iterator).start(), intensity);
 
-		for (float depth = 0.0f; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
-			const float boundDepth = std::fminf(depth, maxDepth);
+		if (m_laser) {
+			m_visitor.processPathAtDepth(*iterator, 0.0f, planeFeedRate, depthFeedRate);
+		}
+		else {
+			const float maxDepth = settings.depth();
+			const float startDepth = std::min(m_maximumStartDepth, maxDepth);
+			for (float depth = startDepth; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
+				const float boundDepth = std::fminf(depth, maxDepth);
 
-			m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
+				m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
+			}
 		}
 
 		m_visitor.endOperation(m_depthToRetract);
@@ -71,8 +79,10 @@ public:
 	explicit Renderer(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Visitor& visitor)
 		:m_tool(tool),
 		m_profile(profile),
+		m_laser(m_tool.general().laser()),
 		m_depthPerCut(m_tool.general().depthPerCut()),
-		m_depthToRetract(m_tool.general().retractDepth()),
+		m_maximumStartDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut),
+		m_depthToRetract(m_laser ? 0.0f : m_tool.general().retractDepth()),
 		m_visitor(visitor)
 	{
 	}

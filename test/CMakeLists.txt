@@ -9,7 +9,7 @@ FetchContent_MakeAvailable(googletest)
 
 include(GoogleTest)
 
-find_package(Qt5 COMPONENTS REQUIRED
+find_package(Qt6 COMPONENTS REQUIRED
 	Test
 )
 
@@ -20,7 +20,9 @@ set(SRC
 	dxfplotexporter.cpp
 	dxfplotimporter.cpp
 	exporterfixture.cpp
+	exporterrenderer.cpp
 	gcodeexporter.cpp
+	orderoptimizer.cpp
 	path.cpp
 	pathsettings.cpp
 	pocketer.cpp
@@ -38,7 +40,7 @@ set(SRC
 add_executable(dxfplotter-test ${SRC} main.cpp)
 
 target_include_directories(dxfplotter-test PRIVATE ${Qt5Test_INCLUDE_DIRS})
-target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} Qt5::Test gtest_main)
+target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} Qt6::Test gtest_main)
 
 add_coverage(dxfplotter-test)
 

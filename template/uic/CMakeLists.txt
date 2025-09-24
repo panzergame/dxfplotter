@@ -1,7 +1,7 @@
 add_subdirectory(dialogs)
 add_subdirectory(simulation)
 
-qt5_wrap_ui(UIC_HEADERS
+qt_wrap_ui(UIC_HEADERS
 	info.ui
 	mainwindow.ui
 	path.ui

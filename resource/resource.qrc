@@ -13,12 +13,15 @@
 		<file>icons/edit-copy.svg</file>
 		<file>icons/go-down.svg</file>
 		<file>icons/go-up.svg</file>
+		<file>icons/layer-bottom.svg</file>
 		<file>icons/layer-lower.svg</file>
 		<file>icons/layer-raise.svg</file>
+		<file>icons/layer-top.svg</file>
 		<file>icons/layer-visible-off.svg</file>
 		<file>icons/layer-visible-on.svg</file>
 		<file>icons/list-add.svg</file>
 		<file>icons/list-remove.svg</file>
+		<file>icons/optimize-order.svg</file>
 		<file>icons/path-inset.svg</file>
 		<file>icons/path-outset.svg</file>
 		<file>icons/playback-pause.svg</file>

@@ -25,6 +25,8 @@ trap cleanup EXIT
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
 OLD_CWD=$(readlink -f .)
 
+git config --global --add safe.directory $REPO_ROOT
+
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
 TAG=$(git describe --tags)
@@ -35,7 +37,7 @@ pushd "$BUILD_DIR"
 
 # configure build files with CMake
 # we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
-cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF
+cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF -DQt6_DIR=/opt/qt/6.8.2/gcc_64/lib/cmake/Qt6
 
 # build project and install files into AppDir
 make -j$(nproc)

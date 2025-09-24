@@ -12,9 +12,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QSplitter>
 #include <QComboBox>
 #include <QErrorMessage>
+#include <QThread>
 #include <QDebug>
 
 namespace view
@@ -99,6 +101,9 @@ void MainWindow::setupMenuActions()
 	connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 	connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
 	connect(actionSimulate, &QAction::triggered, this, &MainWindow::simulate);
+	connect(actionUndo, &QAction::triggered, &m_app, &model::Application::undoDocumentChanges);
+	connect(actionRedo, &QAction::triggered, &m_app, &model::Application::redoDocumentChanges);
+	connect(actionOptimizeOrder, &QAction::triggered, this, &MainWindow::optimizeOrder);
 }
 
 void MainWindow::setupOpenedDocumentActions()
@@ -117,6 +122,9 @@ void MainWindow::setupOpenedDocumentActions()
 	m_openedDocumentActions.addAction(actionMirrorSelection);
 	m_openedDocumentActions.addAction(actionSetSelectionOrigin);
 	m_openedDocumentActions.addAction(actionSimulate);
+	m_openedDocumentActions.addAction(actionUndo);
+	m_openedDocumentActions.addAction(actionRedo);
+	m_openedDocumentActions.addAction(actionOptimizeOrder);
 
 	m_openedDocumentActions.setExclusive(true);
 }
@@ -144,7 +152,7 @@ MainWindow::MainWindow(model::Application &app)
 	setDocumentToolsEnabled(false);
 
 	connect(&m_app, &model::Application::titleChanged, this, &MainWindow::setWindowTitle);
-	connect(&m_app, &model::Application::documentChanged, this, &MainWindow::documentChanged);
+	connect(&m_app, &model::Application::newDocumentOpened, this, &MainWindow::newDocumentOpened);
 	connect(&m_app, &model::Application::errorRaised, this, &MainWindow::displayError);
 }
 
@@ -208,6 +216,7 @@ void MainWindow::openSettings()
 	}();
 
 	if (accepted) {
+		newConfig.save();
 		m_app.setConfig(std::move(newConfig));
 	}
 }
@@ -216,6 +225,7 @@ void MainWindow::transformSelection()
 {
 	dialogs::Transform transform;
 	if (transform.exec() == QDialog::Accepted) {
+		m_app.takeDocumentSnapshot();
 		m_app.transformSelection(transform.matrix());
 	}
 }
@@ -224,6 +234,7 @@ void MainWindow::mirrorSelection()
 {
 	dialogs::Mirror mirror;
 	if (mirror.exec() == QDialog::Accepted) {
+		m_app.takeDocumentSnapshot();
 		m_app.transformSelection(mirror.matrix());
 	}
 }
@@ -234,11 +245,12 @@ void MainWindow::setSelectionOrigin()
 
 	dialogs::SetOrigin setOrigin(selectionBoundingRect);
 	if (setOrigin.exec() == QDialog::Accepted) {
+		m_app.takeDocumentSnapshot();
 		m_app.transformSelection(setOrigin.matrix()); // TODO common function
 	}
 }
 
-void MainWindow::documentChanged(model::Document *newDocument)
+void MainWindow::newDocumentOpened(model::Document *newDocument)
 {
 	setDocumentToolsEnabled((newDocument != nullptr));
 
@@ -256,6 +268,11 @@ void MainWindow::simulate()
 	model::Simulation simulation = m_app.createSimulation();
 	m_simulation->setSimulation(std::move(simulation));
 	m_simulation->show();
+}
+
+void MainWindow::optimizeOrder()
+{
+	m_app.optimizeOrder();
 }
 
 }

@@ -4,7 +4,6 @@
 #include <geometry/filter/assembler.h>
 #include <geometry/filter/cleaner.h>
 #include <geometry/filter/removeexactduplicate.h>
-#include <geometry/filter/sorter.h>
 
 #include <importer/dxf/importer.h>
 #include <importer/dxfplot/importer.h>
@@ -39,6 +38,21 @@ static std::string configFilePath()
 
 	return path.toStdString();
 }
+
+void Application::setOpenedDocument(Document::UPtr &&document)
+{
+	m_openedDocument = std::move(document);
+	m_documentHistory = std::make_unique<DocumentHistory>(*m_openedDocument);
+
+	emit newDocumentOpened(m_openedDocument.get());
+}
+
+void Application::setRestoredDocument(const Document &documentVersion)
+{
+	m_openedDocument = std::make_unique<Document>(documentVersion);
+	emit documentRestoredFromHistory(m_openedDocument.get());
+}
+
 
 QString Application::baseName(const QString& fileName)
 {
@@ -100,10 +114,6 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 	// Remove small bulges
 	geometry::filter::Cleaner cleaner(assembler.polylines(), dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
-	if (dxf.sortPathByLength()) {
-		geometry::filter::Sorter sorter(cleaner.polylines());
-		return sorter.polylines();
-	}
 	return cleaner.polylines();
 }
 
@@ -120,7 +130,14 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 		layers.emplace_back(std::make_unique<Layer>(layerName, std::move(children)));
 	}
 
-	return std::make_unique<Task>(std::move(layers));
+	Task::UPtr task = std::make_unique<Task>(std::move(layers));
+
+	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	if (dxf.sortPathByLength()) {
+		task->sortPathsByLength();
+	}
+
+	return task;
 }
 
 Application::Application()
@@ -151,6 +168,7 @@ bool Application::selectTool(const QString &toolName)
 	if (tool) {
 		if (m_openedDocument) {
 			m_openedDocument->setToolConfig(*tool);
+			emit toolChanged();
 		}
 		m_defaultToolConfig = tool;
 
@@ -252,14 +270,12 @@ bool Application::loadFromDxf(const QString &fileName)
 	try {
 		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
  
-		m_openedDocument = std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig);
+		setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig));
 	}
 	catch (const common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
-
-	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
@@ -269,13 +285,11 @@ bool Application::loadFromDxfplot(const QString &fileName)
 	try {
 		importer::dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
  
-		m_openedDocument = importer(fileName.toStdString());
+		setOpenedDocument(importer(fileName.toStdString()));
 	}
 	catch (const common::FileCouldNotOpenException&) {
 		return false;
 	}
-
-	emit documentChanged(m_openedDocument.get());
 
 	return true;
 }
@@ -317,17 +331,23 @@ bool Application::saveToDxfplot(const QString &fileName)
 void Application::leftCutterCompensation()
 {
 	cutterCompensation(1.0f);
+
+	takeDocumentSnapshot();
 }
 
 void Application::rightCutterCompensation()
 {
 	cutterCompensation(-1.0f);
+
+	takeDocumentSnapshot();
 }
 
 void Application::resetCutterCompensation()
 {
 	Task &task = m_openedDocument->task();
 	task.resetCutterCompensationSelection();
+
+	takeDocumentSnapshot();
 }
 
 void Application::pocketSelection()
@@ -337,6 +357,8 @@ void Application::pocketSelection()
 
 	Task &task = m_openedDocument->task();
 	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+
+	takeDocumentSnapshot();
 }
 
 geometry::Rect Application::selectionBoundingRect() const
@@ -349,24 +371,53 @@ void Application::transformSelection(const QTransform& matrix)
 {
 	Task &task = m_openedDocument->task();
 	task.transformSelection(matrix);
+
+	takeDocumentSnapshot();
 }
 
 void Application::hideSelection()
 {
 	Task &task = m_openedDocument->task();
 	task.hideSelection();
+
+	takeDocumentSnapshot();
 }
 
 void Application::showHidden()
 {
 	Task &task = m_openedDocument->task();
 	task.showHidden();
+
+	takeDocumentSnapshot();
+}
+
+void Application::optimizeOrder()
+{
+	const config::Optimize &optimize = m_config.root().optimize();
+
+	Task &task = m_openedDocument->task();
+	task.optimizeOrder(optimize.maintainPathLengthOrder(), optimize.lengthPrecision(), optimize.distancePrecision());
 }
 
 Simulation Application::createSimulation()
 {
 	const float fastMoveFeedRate = m_config.root().simulation().fastMoveFeedRate();
 	return Simulation(*m_openedDocument, fastMoveFeedRate);
+}
+
+void Application::takeDocumentSnapshot()
+{
+	m_documentHistory->takeSnapshot(*m_openedDocument);
+}
+
+void Application::undoDocumentChanges()
+{
+	setRestoredDocument(m_documentHistory->undo());
+}
+
+void Application::redoDocumentChanges()
+{
+	setRestoredDocument(m_documentHistory->redo());
 }
 
 }

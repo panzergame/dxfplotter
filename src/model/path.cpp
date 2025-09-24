@@ -27,6 +27,24 @@ Path::Path(geometry::Polyline &&basePolyline, const std::string &name, const Pat
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
+Path::Path(const Path& other)
+	:Renderable(other),
+	m_basePolyline(other.m_basePolyline),
+	m_settings(other.m_settings),
+	m_globallyVisible(other.m_globallyVisible)
+{
+	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
+
+	if (other.m_offsettedPath) {
+		m_offsettedPath = std::make_unique<OffsettedPath>(*other.m_offsettedPath);
+	}
+}
+
+Path::Path()
+{
+	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
+}
+
 Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
 {
 	const int size = polylines.size();

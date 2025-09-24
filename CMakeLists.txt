@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.15)
+set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(dxfplotter)
 
@@ -15,21 +17,26 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 set(BUILD_TESTS OFF)
+set(BUILD_SAMPLES OFF)
+set(BUILD_EXAMPLES OFF)
+set(USE_SCIP OFF)
+set(USE_COINOR OFF)
+set(BUILD_FLATZINC OFF)
+set(USE_HIGHS OFF)
 set(JUST_INSTALL_CEREAL ON)
 
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4)
+	add_compile_options(/W4 /Zc:__cplusplus)
 else()
-	add_compile_options(-fPIC -Wall -Wextra)
+	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
@@ -37,8 +44,9 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
+find_package(ortools CONFIG REQUIRED)
 
-find_package(Qt5 COMPONENTS REQUIRED
+find_package(Qt6 COMPONENTS REQUIRED
 	Core
 	Widgets
 	Gui
@@ -47,7 +55,9 @@ find_package(Qt5 COMPONENTS REQUIRED
 	3DExtras
 )
 
-#qt_standard_project_setup()
+qt_standard_project_setup()
+
+add_definitions(${Qt6Core_DEFINITIONS})
 
 set(INCLUDE_DIRS
 	src
@@ -57,14 +67,14 @@ set(INCLUDE_DIRS
 	thirdparty/fmt/include
 	thirdparty/nanoflann/include
 	thirdparty/units/include
-	thirdparty/yaml-cpp/include
+	thirdparty/or-tools
 	template
 	${CMAKE_BINARY_DIR}/src
 	${CMAKE_BINARY_DIR}/template
-	${Qt5Widgets_INCLUDE_DIRS}
-	${Qt5Gui_INCLUDE_DIRS}
-	${Qt53DCore_INCLUDE_DIRS}
-	${Qt53DExtras_INCLUDE_DIRS}
+	${Qt6Widgets_INCLUDE_DIRS}
+	${Qt6Gui_INCLUDE_DIRS}
+	${Qt63DCore_INCLUDE_DIRS}
+	${Qt63DExtras_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -87,11 +97,10 @@ set(LINK_LIBRARIES
 	geometry-filter
 	libdxfrw
 	fmt::fmt
-	Qt5::Widgets
-	Qt5::Svg
-	Qt5::3DCore
-	Qt5::3DExtras
-	yaml-cpp
+	Qt6::Widgets
+	Qt6::Svg
+	Qt6::3DCore
+	Qt6::3DExtras
 )
 
 include_directories(${INCLUDE_DIRS})

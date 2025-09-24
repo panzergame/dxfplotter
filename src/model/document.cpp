@@ -8,7 +8,13 @@ Document::Document(Task::UPtr&& task, const config::Tools::Tool &toolConfig, con
 	m_toolConfig(&toolConfig),
 	m_profileConfig(&profileConfig)
 {
+}
 
+Document::Document(const Document &other)
+	:m_task(std::make_unique<Task>(other.task())),
+	m_toolConfig(&other.toolConfig()),
+	m_profileConfig(&other.profileConfig())
+{
 }
 
 Task &Document::task()
@@ -34,13 +40,11 @@ const config::Profiles::Profile &Document::profileConfig() const
 void Document::setToolConfig(const config::Tools::Tool &tool)
 {
 	m_toolConfig = &tool;
-	emit toolConfigChanged(tool);
 }
 
 void Document::setProfileConfig(const config::Profiles::Profile &profile)
 {
 	m_profileConfig = &profile;
-	emit profileConfigChanged(profile);
 }
 
 }

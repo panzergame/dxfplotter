@@ -1,6 +1,7 @@
 set(SRC
 	application.cpp
 	document.cpp
+	documenthistory.cpp
 	layer.cpp
 	offsettedpath.cpp
 	path.cpp
@@ -12,6 +13,7 @@ set(SRC
 
 	application.h
 	document.h
+	documenthistory.h
 	layer.h
 	path.h
 	offsettedpath.h
@@ -24,5 +26,5 @@ set(SRC
 )
 
 add_library(model ${SRC})
-add_dependencies(model generate-config)
+target_link_libraries(model PUBLIC geometry PRIVATE config)
 add_coverage(model)

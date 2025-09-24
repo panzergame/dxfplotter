@@ -8,8 +8,12 @@ namespace view::task
 
 PathListModel::PathListModel(model::Task &task, QObject *parent)
 	:QAbstractListModel(parent),
-	m_task(task)
+	m_task(task),
+	m_ignoreSelectionChanged(false)
 {
+	connect(&m_task, &model::Task::pathOrderChanged, [this]{
+		emit layoutChanged();
+	});
 }
 
 QVariant PathListModel::data(const QModelIndex &index, int role) const
@@ -74,7 +78,7 @@ Qt::ItemFlags PathListModel::flags(const QModelIndex &index) const
 	return (path.layer().visible()) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
 }
 
-QModelIndex PathListModel::movePath(const QModelIndex &index, model::Task::MoveDirection direction)
+QModelIndex PathListModel::movePathToDirection(const QModelIndex &index, model::Task::MoveDirection direction)
 {
 	const int row = index.row();
 	const int newRow = row + direction;
@@ -91,6 +95,23 @@ QModelIndex PathListModel::movePath(const QModelIndex &index, model::Task::MoveD
 
 			return this->index(newRow);
 		}
+	}
+
+	return index;
+}
+
+QModelIndex PathListModel::movePathToTip(const QModelIndex &index, model::Task::MoveTip tip)
+{
+	const int row = index.row();
+	const int newRow = (tip == model::Task::MoveTip::Top) ? 0 : (rowCount(index) - 1);
+
+	if (index.isValid()) {
+		m_task.movePathToTip(row, tip);
+
+		const QModelIndex newIndex = this->index(newRow);
+		emit dataChanged(index, newIndex);
+
+		return newIndex;
 	}
 
 	return index;
@@ -113,14 +134,31 @@ void PathListModel::itemClicked(const QModelIndex& index)
 	}
 }
 
+void PathListModel::clearSelection(QItemSelectionModel *selectionModel)
+{
+	m_ignoreSelectionChanged = true;
+
+	selectionModel->clear();
+
+	m_ignoreSelectionChanged = false;
+}
+
 void PathListModel::updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
 {
+	m_ignoreSelectionChanged = true;
+
 	const int row = m_task.pathIndexFor(path);
 	selectionModel->select(index(row, 0), flag);
+
+	m_ignoreSelectionChanged = false;
 }
 
 void PathListModel::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
+	if (m_ignoreSelectionChanged) {
+		return;
+	}
+
 	for (const QModelIndex &index : selected.indexes()) {
 		model::Path &path = m_task.pathAt(index.row());
 		path.setSelected(true);

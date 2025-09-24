@@ -4,6 +4,9 @@ on:
     # Sequence of patterns matched against refs/tags
     tags:
      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      
+env:
+  Qt_ROOT: ../Qt/6.8.2/msvc2022_64/
 
 jobs:
   build:
@@ -11,39 +14,38 @@ jobs:
     steps:
       - name: Cache Qt
         id: cache-qt
-        uses: actions/cache@v1  # not v2!
+        uses: actions/cache@v4
         with:
           path: ../Qt
-          key: ${{ runner.os }}-QtCache
-      
-      - name: Install Qt
-        uses: jurplel/install-qt-action@v2
-        with:
-          cached: ${{ steps.cache-qt.outputs.cache-hit }}
-      - uses: lukka/get-cmake@latest
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-      - name: Install jinja2
+          key: ${{ runner.os }}-QtCache      
+      - name: Install python packages
         shell: bash
-        run: python -m pip install jinja2
+        run: python -m pip install jinja2 aqtinstall
+      - name: Install Qt
+        shell: bash
+        run: aqt install-qt -O ../Qt windows desktop 6.8.2 win64_msvc2022_64 -m qt3d qtshadertools
       - name: Install zip
         shell: bash
         run: choco install -y zip
+      - name: Install ortools
+        shell: bash
+        run: | 
+          C:/msys64/usr/bin/wget.exe https://github.com/google/or-tools/releases/download/v9.10/or-tools_x64_VisualStudio2022_cpp_v9.10.4067.zip
+          unzip or-tools_x64_VisualStudio2022_cpp_v9.10.4067.zip -d ../
       - name: Checkout
         uses: actions/checkout@v2
         with:
           submodules: true
+          fetch-depth: 0
       - name: CMake
         shell: bash
         run: |
-          mkdir build
-          cd build
-          cmake -DBUILD_TESTING=OFF ..
+          cmake -B build -DBUILD_TESTING=OFF -DQt6_DIR=${Qt_ROOT}/lib/cmake/Qt6 -DCMAKE_PREFIX_PATH=../or-tools_x64_VisualStudio2022_cpp_v9.10.4067
       - name: Build
-        run: msbuild build\dxfplotter.sln /property:Configuration=Release
+        run: cmake --build build --config Release
       - name: Deploy Qt
         shell: bash
-        run: ci/deploywindows.sh
+        run: PATH=$PATH:${Qt_ROOT}/bin ci/deploywindows.sh
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:

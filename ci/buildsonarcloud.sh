@@ -30,11 +30,11 @@ pushd "$BUILD_DIR"
 
 # configure build files with CMake
 # we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
-cmake "$REPO_ROOT" -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+cmake "$REPO_ROOT" -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON -DQt6_DIR=/opt/qt/6.8.2/gcc_64/lib/cmake/Qt6
 
 # Wraps the compilation with the Build Wrapper to generate configuration (used
 # later by the SonarQube Scanner) into the "bw-output" folder
-"$REPO_ROOT"/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
+/opt/build-wrapper-linux-x86/build-wrapper-linux-x86-64 \
 	--out-dir bw-output cmake \
 	--build .
 # Test project
@@ -44,6 +44,6 @@ ctest -VV
 make gcov
 
 # Scan project
-"$REPO_ROOT"/sonar-scanner-4.6.2.2472-linux/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
+/opt/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io -Dproject.settings="$REPO_ROOT"/sonar-project.properties -Dsonar.projectBaseDir="$REPO_ROOT" -Dsonar.cfamily.gcov.reportsPath="$BUILD_DIR"
 
 

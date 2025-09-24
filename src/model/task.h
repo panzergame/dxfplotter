@@ -30,8 +30,15 @@ public:
 		DOWN = 1
 	};
 
+	enum class MoveTip
+	{
+		Top,
+		Bottom
+	};
+
 	explicit Task() = default;
 	explicit Task(Layer::ListUPtr &&layers);
+	explicit Task(const Task &other);
 
 	int pathCount() const;
 	const Path &pathAt(int index) const;
@@ -39,6 +46,9 @@ public:
 	int pathIndexFor(const Path &path) const;
 
 	void movePath(int index, MoveDirection direction);
+	void movePathToTip(int index, MoveTip tip);
+
+	void sortPathsByLength();
 
 	template <class Functor>
 	void forEachPathInStack(Functor &&functor) const
@@ -81,6 +91,7 @@ public:
 	void transformSelection(const QTransform& matrix);
 	void hideSelection();
 	void showHidden();
+	void optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, float distancePrecision);
 
 	geometry::Rect selectionBoundingRect() const;
 	geometry::Rect visibleBoundingRect() const;
@@ -94,6 +105,7 @@ public:
 Q_SIGNALS:
 	void pathSelectedChanged(Path &path, bool selected);
 	void selectionChanged(bool empty);
+	void pathOrderChanged();
 };
 
 template <typename T>

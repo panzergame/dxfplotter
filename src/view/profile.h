@@ -13,9 +13,6 @@ class Profile : public model::DocumentModelObserver<QWidget>, public Ui::Profile
 private:
 	model::Application &m_app;
 
-	bool m_outsideToolChangeBlocked;
-	bool m_outsideProfileChangeBlocked;
-
 	template <typename ConfigList>
 	void updateComboBoxItems(const ConfigList &list, QComboBox *comboBox)
 	{
@@ -43,9 +40,7 @@ protected:
 
 public Q_SLOTS:
 	void configChanged(const config::Config &config);
-	void toolConfigChanged(const config::Tools::Tool &tool);
 	void currentToolTextChanged(const QString &toolName);
-	void profileConfigChanged(const config::Profiles::Profile &profile);
 	void currentProfileTextChanged(const QString &profileName);
 };
 

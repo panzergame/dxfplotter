@@ -92,7 +92,7 @@ private:
 				const float coord[2] = {tip.point.x(), tip.point.y()};
 
 				// Nearest neighbour with distance.
-				std::array<size_t, 2> matchIndices;
+				std::array<std::uint32_t, 2> matchIndices;
 				std::array<float, 2> matchDistances;
 
 				// Search for the nearest neighbours.

@@ -30,7 +30,6 @@ Config::Config(const Config &other)
 
 Config::~Config()
 {
-	save();
 }
 
 Root &Config::root()

@@ -7,7 +7,8 @@ namespace view::task
 
 LayerTreeModel::LayerTreeModel(model::Task &task, QObject *parent)
 	:QAbstractItemModel(parent),
-	m_task(task)
+	m_task(task),
+	m_ignoreSelectionChanged(false)
 {
 }
 
@@ -117,21 +118,40 @@ void LayerTreeModel::itemClicked(const QModelIndex& index)
 			model::Renderable *item = static_cast<model::Renderable *>(index.internalPointer());
 			item->toggleVisible();
 
+			emit documentVisibilityChanged();
+
 			emit dataChanged(index, index);
 		}
 	}
 }
 
+void LayerTreeModel::clearSelection(QItemSelectionModel *selectionModel)
+{
+	m_ignoreSelectionChanged = true;
+
+	selectionModel->clear();
+
+	m_ignoreSelectionChanged = false;
+}
+
 void LayerTreeModel::updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag, QItemSelectionModel *selectionModel)
 {
+	m_ignoreSelectionChanged = true;
+
 	const std::pair<int, int> indices = m_task.layerAndPathIndexFor(path);
 	const QModelIndex parentIndex = index(indices.first, 0);
 	const QModelIndex childIndex = index(indices.second, 0, parentIndex);
 	selectionModel->select(childIndex, flag);
+
+	m_ignoreSelectionChanged = false;
 }
 
 void LayerTreeModel::selectionChanged(const QItemSelection &selected, const QItemSelection &deselected)
 {
+	if (m_ignoreSelectionChanged) {
+		return;
+	}
+
 	for (const QModelIndex &index : selected.indexes()) {
 		model::Renderable &renderable = *static_cast<model::Renderable *>(index.internalPointer());
 		renderable.setSelected(true);

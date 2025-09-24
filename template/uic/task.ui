@@ -92,6 +92,28 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="moveTop">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resource/resource.qrc">
+          <normaloff>:/icons/layer-top.svg</normaloff>:/icons/layer-top.svg</iconset>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="moveBottom">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../resource/resource.qrc">
+          <normaloff>:/icons/layer-bottom.svg</normaloff>:/icons/layer-bottom.svg</iconset>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

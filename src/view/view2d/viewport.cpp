@@ -250,7 +250,11 @@ public:
 void Viewport::documentChanged()
 {
 	setupModel();
-	fitItemsInView();
+}
+
+void Viewport::newDocumentOpened()
+{
+	fitItemsInView(); // TODO delay after UI update
 }
 
 void Viewport::wheelEvent(QWheelEvent *event)

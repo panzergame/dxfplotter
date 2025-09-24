@@ -63,6 +63,9 @@
     <addaction name="actionSetSelectionOrigin"/>
     <addaction name="separator"/>
     <addaction name="actionSimulate"/>
+    <addaction name="separator"/>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
    </widget>
    <addaction name="menusrgd"/>
    <addaction name="menuEdit"/>
@@ -88,6 +91,8 @@
    <addaction name="actionRightCutterCompensation"/>
    <addaction name="actionResetCutterCompensation"/>
    <addaction name="actionPocketSelection"/>
+   <addaction name="separator"/>
+   <addaction name="actionOptimizeOrder"/>
    <addaction name="separator"/>
    <addaction name="actionTransformSelection"/>
    <addaction name="actionMirrorSelection"/>
@@ -308,6 +313,37 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionOptimizeOrder">
+   <property name="icon">
+    <iconset resource="../../resource/resource.qrc">
+     <normaloff>:/icons/optimize-order.svg</normaloff>:/icons/optimize-order.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Optimize Order</string>
+   </property>
+   <property name="toolTip">
+    <string>Optimize Order</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
    </property>
   </action>
  </widget>

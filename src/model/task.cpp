@@ -1,6 +1,8 @@
 #include <task.h>
 
 #include <iterator>
+#include <common/copy.h>
+#include <geometry/orderoptimizer.h>
 
 namespace model
 {
@@ -33,6 +35,24 @@ Task::Task(Layer::ListUPtr &&layers)
 	initPathsFromLayers();
 
 	m_stack = m_paths;
+}
+
+Task::Task(const Task &other)
+	:QObject(),
+	m_layers(common::deepcopy<Layer>(other.m_layers)),
+	m_stack(other.m_stack.size())
+{
+	initPathsFromLayers();
+
+	// Remap pointers of path on stack
+	std::unordered_map<Path *, Path *> pathRemapping;
+	for (Path::ListPtr::const_iterator ito = other.m_paths.begin(), it = m_paths.begin(), end = m_paths.end(); it != end; ++it, ++ito) {
+		pathRemapping.insert({*ito, *it});
+	}
+
+	std::transform(other.m_stack.begin(), other.m_stack.end(), m_stack.begin(), [&pathRemapping](Path *path){
+		return pathRemapping.find(path)->second;
+	});
 }
 
 int Task::pathCount() const
@@ -70,6 +90,58 @@ void Task::movePath(int index, MoveDirection direction)
 	if (0 <= newIndex && newIndex < pathCount()) {
 		std::swap(m_stack[index], m_stack[newIndex]);
 	}
+}
+
+void Task::movePathToTip(int index, MoveTip tip)
+{
+	assert(0 <= index && index < pathCount());
+
+	Path *path = m_stack[index];
+	m_stack.erase(m_stack.begin() + index);
+
+	switch (tip) {
+		case MoveTip::Bottom:
+		{
+			m_stack.push_back(path);
+			break;
+		}
+		case MoveTip::Top:
+		{
+			m_stack.insert(m_stack.begin(), path);
+			break;
+		}
+	}
+}
+
+void Task::sortPathsByLength()
+{
+	struct PathLength
+	{
+		Path *path;
+		float length;
+
+		PathLength() = default;
+
+		explicit PathLength(Path *path)
+			:path(path),
+			length(path->basePolyline().length())
+		{
+		}
+
+		bool operator<(const PathLength& other) const
+		{
+			return length < other.length;
+		}
+	};
+
+	std::vector<PathLength> pathsLength(m_paths.size());
+	std::transform(m_paths.begin(), m_paths.end(), pathsLength.begin(),
+		   [](Path *path){ return PathLength(path); });
+
+	std::sort(pathsLength.begin(), pathsLength.end());
+
+	std::transform(pathsLength.begin(), pathsLength.end(), m_stack.begin(),
+		   [](PathLength& pathLength){ return pathLength.path; });
 }
 
 void Task::resetCutterCompensationSelection()
@@ -124,6 +196,83 @@ void Task::showHidden()
 			path.setSelected(true);
 		}
 	});
+}
+
+geometry::OrderOptimizer::NodesPerGroup generateNodesSingleGroup(const Path::ListPtr &paths)
+{
+	geometry::OrderOptimizer::Node::List group(paths.size());
+
+	for (int i = 0; i < paths.size(); ++i) {
+		group[i] = {{}, i, paths[i]->basePolyline().start()};
+	}
+
+	return {group};
+}
+
+geometry::OrderOptimizer::NodesPerGroup generateNodesPerGroupOfLength(const Path::ListPtr &paths, float lengthPrecision)
+{
+	struct PathRoundedLength : common::Aggregable<PathRoundedLength>
+	{
+		int id;
+		Path *path;
+		int roundedLength;
+
+		PathRoundedLength() = default;
+
+		explicit PathRoundedLength(Path *path, int id, float lengthPrecision)
+			:id(id),
+			path(path),
+			roundedLength(path->basePolyline().length() / lengthPrecision)
+		{
+		}
+
+		bool operator<(const PathRoundedLength& other) const
+		{
+			return roundedLength < other.roundedLength;
+		}
+	};
+
+	PathRoundedLength::List sortedPathsRoundedLength(paths.size());
+	for (int pathId = 0, nbPaths = paths.size(); pathId < nbPaths; ++pathId) {
+		Path *path = paths[pathId];
+		const float length = path->basePolyline().length();
+		sortedPathsRoundedLength[pathId] = PathRoundedLength(path, pathId, lengthPrecision);
+	}
+
+	std::sort(sortedPathsRoundedLength.begin(), sortedPathsRoundedLength.end());
+
+	geometry::OrderOptimizer::NodesPerGroup nodesPerGroup;
+	float currentGroupLength = -1.0f;
+	for (const PathRoundedLength& pathRoundedLength : sortedPathsRoundedLength) {
+		if (pathRoundedLength.roundedLength != currentGroupLength) {
+			// Create new group
+			nodesPerGroup.push_back({});
+			currentGroupLength = pathRoundedLength.roundedLength;
+		}
+
+		nodesPerGroup.back().push_back({{}, pathRoundedLength.id, pathRoundedLength.path->basePolyline().start()});
+	}
+
+	return nodesPerGroup;
+}
+
+void Task::optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, float distancePrecision)
+{
+	const geometry::OrderOptimizer::NodesPerGroup nodesPerGroup = maintainPathLengthOrder ?
+		 generateNodesPerGroupOfLength(m_paths, lengthPrecision) :
+		 generateNodesSingleGroup(m_paths);
+
+	const int nbPath = pathCount();
+	geometry::OrderOptimizer optimizer(nodesPerGroup, nbPath);
+	const std::vector<int> order = optimizer.order();
+
+	Path::ListPtr newPaths(m_paths.size());
+	for (int i = 0; i < nbPath; ++i) {
+		newPaths[i] = m_paths[order[i]];
+	}
+
+	std::swap(m_stack, newPaths);
+	emit pathOrderChanged();
 }
 
 geometry::Rect Task::selectionBoundingRect() const

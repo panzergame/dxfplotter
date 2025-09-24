@@ -37,7 +37,7 @@ TEST(SimulationTest, shouldHasMultiLayerDepth)
 	const geometry::Bulge bulge(QVector2D(1, 0), QVector2D(1, 1), 0);
 	geometry::Polyline polyline({bulge});
 
-	const model::PathSettings settings{10, 10, 10, nbCut - 1};
+	const model::PathSettings settings{10, 10, 10, nbCut};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document, 100.0f);

@@ -14,5 +14,6 @@ set(SRC
 )
 
 add_library(view ${SRC})
-add_dependencies(view generate-config uic)
+target_link_libraries(view PRIVATE config)
+add_dependencies(view uic)
 
