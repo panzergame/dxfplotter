@@ -51,7 +51,7 @@ Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const P
 	Path::ListUPtr paths(size);
 
 	for (int i = 0; i < size; ++i) {
-		static const char *pathNameFormat = "({}) {}";
+		static constexpr char pathNameFormat[] = "({}) {}";
 		const std::string pathName = fmt::format(pathNameFormat, layerName, i);
 		paths[i].reset(new Path(std::move(polylines[i]), pathName, settings));
 	}

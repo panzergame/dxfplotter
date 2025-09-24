@@ -26,7 +26,7 @@ protected:
 	void print(const std::string &format, Args&& ...args)
 	{
 		try {
-			m_stream << fmt::format(format, std::forward<Args>(args)...) << "\n";
+			m_stream << fmt::format(fmt::runtime(format), std::forward<Args>(args)...) << "\n";
 		}
 		catch (const fmt::format_error &exception) {
 			throw common::GCodeFormatException(format, exception.what(), fmt::to_string(args.name)...);
