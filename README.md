@@ -57,12 +57,17 @@ chmod +x dxfplotter-*.AppImage
 
 ### 🏗 Manual installation from source (Linux)
 
-This project depends on Qt5, for debian like distribution following command install all dependencies:
+This project depends on Qt6, jinja2 and ortools, for debian like distribution following command install all dependencies:
 
 ```sh
-sudo apt-get install qtbase5-dev
+sudo apt-get install qtbase6-dev qt6-svg-dev qt6-shadertools-dev qt6-3d-dev python3-jinja2
 ```
 
+Then install ortools, it is recommended to use one of their ![prebuilt archive](https://github.com/google/or-tools/releases/)
+On linux the archive have to be decompressed into `/opt`
+
+
+Finally load source and build:
 ```sh
 git submodule init
 git submodule update
@@ -70,6 +75,8 @@ git submodule update
 cmake -B build
 cmake --build build -j $(nproc)
 ```
+
+Otherwise a working docker can be build from [ci/docker/ubuntu/Dockerfile](./ci/docker/ubuntu/Dockerfile)
 
 ## Usage example
 
