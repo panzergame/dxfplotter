@@ -21,6 +21,7 @@ void Path::setupModel()
 void Path::documentChanged()
 {
 	setupModel();
+	updateFieldVisibility(document()->toolConfig());
 }
 
 Path::Path(model::Application &app)
@@ -49,12 +50,16 @@ void Path::selectionChanged(bool empty)
 
 void Path::toolChanged()
 {
-	updateFieldVisibility(document()->toolConfig());
+	if (document()) {
+		updateFieldVisibility(document()->toolConfig());
+	}
 }
 
 void Path::configChanged()
 {
-	updateFieldVisibility(document()->toolConfig());
+	if (document()) {
+		updateFieldVisibility(document()->toolConfig());
+	}
 }
 
 void Path::updateFieldVisibility(const config::Tools::Tool& tool)
