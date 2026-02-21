@@ -40,7 +40,7 @@ jobs:
       - name: CMake
         shell: bash
         run: |
-          cmake -B build -DBUILD_TESTING=OFF -DQt6_DIR=${Qt_ROOT}/lib/cmake/Qt6 -DCMAKE_PREFIX_PATH=../or-tools_x64_VisualStudio2022_cpp_v9.10.4067
+          cmake -B build -DBUILD_TESTING=OFF -DWITH_ORTOOLS=ON -DQt6_DIR=${Qt_ROOT}/lib/cmake/Qt6 -DCMAKE_PREFIX_PATH=../or-tools_x64_VisualStudio2022_cpp_v9.10.4067
       - name: Build
         run: cmake --build build --config Release
       - name: Deploy Qt

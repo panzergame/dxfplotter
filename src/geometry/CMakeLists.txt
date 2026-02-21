@@ -8,7 +8,6 @@ set(SRC
 	circle.cpp
 	cubicspline.cpp
 	line.cpp
-	orderoptimizer.cpp
 	pocketer.cpp
 	polyline.cpp
 	quadraticspline.cpp
@@ -22,7 +21,6 @@ set(SRC
 	circle.h
 	cubicspline.h
 	line.h
-	orderoptimizer.h
 	polyline.h
 	quadraticspline.h
 	spline.h
@@ -30,6 +28,19 @@ set(SRC
 	utils.h
 )
 
+if (WITH_ORTOOLS)
+	list(APPEND SRC
+		orderoptimizer.cpp
+
+		orderoptimizer.h
+	)
+endif()
+
 add_library(geometry ${SRC})
-target_link_libraries(geometry PUBLIC ortools::ortools)
+if (WITH_ORTOOLS)
+	target_link_libraries(geometry PUBLIC ortools::ortools)
+	target_compile_definitions(geometry PUBLIC WITH_ORTOOLS)
+endif()
+
+
 add_coverage(geometry)

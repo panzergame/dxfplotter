@@ -4,6 +4,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 
 project(dxfplotter)
 
+option(WITH_ORTOOLS OFF "Enable ortools support for path optimization")
+
 include(CTest)
 include(CPack)
 
@@ -44,7 +46,9 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 find_package(codecov)
 
 find_package(PythonInterp REQUIRED)
-find_package(ortools CONFIG REQUIRED)
+if (WITH_ORTOOLS)
+	find_package(ortools CONFIG REQUIRED)
+endif()
 
 find_package(Qt6 COMPONENTS REQUIRED
 	Core

@@ -2,7 +2,10 @@
 
 #include <iterator>
 #include <common/copy.h>
+
+#ifdef WITH_ORTOOLS
 #include <geometry/orderoptimizer.h>
+#endif
 
 namespace model
 {
@@ -198,6 +201,7 @@ void Task::showHidden()
 	});
 }
 
+#ifdef WITH_ORTOOLS
 geometry::OrderOptimizer::NodesPerGroup generateNodesSingleGroup(const Path::ListPtr &paths)
 {
 	geometry::OrderOptimizer::Node::List group(paths.size());
@@ -255,9 +259,11 @@ geometry::OrderOptimizer::NodesPerGroup generateNodesPerGroupOfLength(const Path
 
 	return nodesPerGroup;
 }
+#endif
 
 void Task::optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, float distancePrecision)
 {
+#ifdef WITH_ORTOOLS
 	const geometry::OrderOptimizer::NodesPerGroup nodesPerGroup = maintainPathLengthOrder ?
 		 generateNodesPerGroupOfLength(m_paths, lengthPrecision) :
 		 generateNodesSingleGroup(m_paths);
@@ -273,6 +279,7 @@ void Task::optimizeOrder(bool maintainPathLengthOrder, float lengthPrecision, fl
 
 	std::swap(m_stack, newPaths);
 	emit pathOrderChanged();
+#endif
 }
 
 geometry::Rect Task::selectionBoundingRect() const

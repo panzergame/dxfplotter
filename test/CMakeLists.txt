@@ -22,7 +22,6 @@ set(SRC
 	exporterfixture.cpp
 	exporterrenderer.cpp
 	gcodeexporter.cpp
-	orderoptimizer.cpp
 	path.cpp
 	pathsettings.cpp
 	pocketer.cpp
@@ -36,6 +35,12 @@ set(SRC
 	exporterfixture.h
 	polylineutils.h
 )
+
+if (WITH_ORTOOLS)
+	list(APPEND SRC
+		orderoptimizer.cpp
+	)
+endif()
 
 add_executable(dxfplotter-test ${SRC} main.cpp)
 
