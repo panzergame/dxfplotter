@@ -1,4 +1,52 @@
-*.kdev4
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Cmake
 build/
-data/
+build-*/
+CMakeUserPresets.json
+
+# Clion
+.idea/
+cmake-build*
+
+# Python
+__pycache__/
+
+# Vscode
 .cache/
+.vscode/*
+!.vscode/settings.default.json
+
+# Sonarqube
+.scannerwork/
