@@ -5,7 +5,7 @@
 namespace view
 {
 
-void Info::showTimedMessage(const QString &content)
+void Info::showTimedMessage(const QString& content)
 {
 	message->setText(content);
 	stackedWidget->setCurrentWidget(messagePage);
@@ -14,7 +14,7 @@ void Info::showTimedMessage(const QString &content)
 	m_timer.start(showMessageDelay);
 }
 
-Info::Info(const view2d::Viewport &viewport, const model::Application &app)
+Info::Info(const view2d::Viewport& viewport, const model::Application& app)
 {
 	setupUi(this);
 
@@ -23,13 +23,13 @@ Info::Info(const view2d::Viewport &viewport, const model::Application &app)
 	connect(&m_timer, &QTimer::timeout, this, &Info::hideMessage);
 }
 
-void Info::cursorMoved(const QPointF &position)
+void Info::cursorMoved(const QPointF& position)
 {
 	cursorX->setText(QString::number(position.x()));
 	cursorY->setText(QString::number(position.y()));
 }
 
-void Info::fileSaved(const QString &fileName)
+void Info::fileSaved(const QString& fileName)
 {
 	showTimedMessage(QString("Saved %1").arg(fileName));
 }

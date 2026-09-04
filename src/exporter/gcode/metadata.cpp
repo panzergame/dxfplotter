@@ -12,7 +12,7 @@
 namespace exporter::gcode
 {
 
-std::string Metadata::fastPlaneMoveGCode(const QVector2D &to) const
+std::string Metadata::fastPlaneMoveGCode(const QVector2D& to) const
 {
 	std::ostringstream output;
 	PostProcessor postprocessor(m_gcode, output);
@@ -30,19 +30,17 @@ std::string Metadata::fastDepthMoveGCode(float to) const
 
 QJsonArray Metadata::boundingRectGcodes() const
 {
-	std::initializer_list<std::string> gcodes{
-		fastDepthMoveGCode(m_retractDepth),
-		fastPlaneMoveGCode(m_boundingRect.bottomLeft()),
-		fastPlaneMoveGCode(m_boundingRect.bottomRight()),
-		fastPlaneMoveGCode(m_boundingRect.topRight()),
-		fastPlaneMoveGCode(m_boundingRect.topLeft()),
-		fastPlaneMoveGCode(m_boundingRect.bottomLeft()),
-		fastPlaneMoveGCode(QVector2D(0.0f, 0.0f)),
-		fastDepthMoveGCode(0.0f)
-	};
+	std::initializer_list<std::string> gcodes { fastDepthMoveGCode(m_retractDepth),
+												fastPlaneMoveGCode(m_boundingRect.bottomLeft()),
+												fastPlaneMoveGCode(m_boundingRect.bottomRight()),
+												fastPlaneMoveGCode(m_boundingRect.topRight()),
+												fastPlaneMoveGCode(m_boundingRect.topLeft()),
+												fastPlaneMoveGCode(m_boundingRect.bottomLeft()),
+												fastPlaneMoveGCode(QVector2D(0.0f, 0.0f)),
+												fastDepthMoveGCode(0.0f) };
 
 	QJsonArray jsonGcodes;
-	for (const std::string &gcode : gcodes) {
+	for (const std::string& gcode : gcodes) {
 		jsonGcodes.push_back(QString::fromStdString(gcode));
 	}
 
@@ -59,9 +57,9 @@ QJsonDocument Metadata::toJson() const
 }
 
 Metadata::Metadata(const model::Document& document, const config::Profiles::Profile::Gcode& gcode, float retractDepth)
-	:m_boundingRect(document.task().visibleBoundingRect()),
-	m_gcode(gcode),
-	m_retractDepth((retractDepth))
+	: m_boundingRect(document.task().visibleBoundingRect())
+	, m_gcode(gcode)
+	, m_retractDepth((retractDepth))
 {
 }
 

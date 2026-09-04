@@ -3,22 +3,22 @@
 namespace model
 {
 
-Renderable::Renderable(const std::string &name)
-	:m_name(name),
-	m_selected(false),
-	m_visible(true)
+Renderable::Renderable(const std::string& name)
+	: m_name(name)
+	, m_selected(false)
+	, m_visible(true)
 {
 }
 
-Renderable::Renderable(const Renderable &other)
-	:QObject(),
-	m_name(other.name()),
-	m_selected(false),
-	m_visible(other.visible())
+Renderable::Renderable(const Renderable& other)
+	: QObject()
+	, m_name(other.name())
+	, m_selected(false)
+	, m_visible(other.visible())
 {
 }
 
-const std::string &Renderable::name() const
+const std::string& Renderable::name() const
 {
 	return m_name;
 }
@@ -62,4 +62,3 @@ void Renderable::toggleSelect()
 }
 
 }
-

@@ -22,103 +22,91 @@ public:
 	virtual ~IEntry() = default;
 };
 
-template <class PropertyType, typename = void>
+template<class PropertyType, typename = void>
 class Entry : public IEntry
 {
 };
 
-template <>
-class Entry<float> final: public QDoubleSpinBox, public IEntry
+template<>
+class Entry<float> final : public QDoubleSpinBox, public IEntry
 {
 private:
-	config::Property<float> &m_property;
+	config::Property<float>& m_property;
 
 public:
-	explicit Entry(config::Property<float> &property, QWidget *parent)
-		:QDoubleSpinBox(parent),
-		m_property(property)
+	explicit Entry(config::Property<float>& property, QWidget* parent)
+		: QDoubleSpinBox(parent)
+		, m_property(property)
 	{
 		setMaximum(1e8);
 		setDecimals(4);
 		setValue((float)m_property);
 	}
 
-	~Entry()
-	{
-		m_property = (float)value();
-	}
+	~Entry() { m_property = (float)value(); }
 };
 
-template <>
-class Entry<int> final: public QSpinBox, public IEntry
+template<>
+class Entry<int> final : public QSpinBox, public IEntry
 {
 private:
-	config::Property<int> &m_property;
+	config::Property<int>& m_property;
 
 public:
-	explicit Entry(config::Property<int> &property, QWidget *parent)
-		:QSpinBox(parent),
-		m_property(property)
+	explicit Entry(config::Property<int>& property, QWidget* parent)
+		: QSpinBox(parent)
+		, m_property(property)
 	{
 		setValue(m_property);
 	}
 
-	~Entry()
-	{
-		m_property = value();
-	}
+	~Entry() { m_property = value(); }
 };
 
-template <>
-class Entry<std::string> final: public QLineEdit, public IEntry
+template<>
+class Entry<std::string> final : public QLineEdit, public IEntry
 {
 private:
-	config::Property<std::string> &m_property;
+	config::Property<std::string>& m_property;
 
 public:
-	explicit Entry(config::Property<std::string> &property, QWidget *parent)
-		:QLineEdit(parent),
-		m_property(property)
+	explicit Entry(config::Property<std::string>& property, QWidget* parent)
+		: QLineEdit(parent)
+		, m_property(property)
 	{
 		setText(QString::fromStdString(m_property));
 	}
 
-	~Entry()
-	{
-		m_property = text().toStdString();
-	}
+	~Entry() { m_property = text().toStdString(); }
 };
 
-template <>
-class Entry<bool> final: public QCheckBox, public IEntry
+template<>
+class Entry<bool> final : public QCheckBox, public IEntry
 {
 private:
-	config::Property<bool> &m_property;
+	config::Property<bool>& m_property;
 
 public:
-	explicit Entry(config::Property<bool> &property, QWidget *parent)
-		:QCheckBox(parent),
-		m_property(property)
+	explicit Entry(config::Property<bool>& property, QWidget* parent)
+		: QCheckBox(parent)
+		, m_property(property)
 	{
 		setChecked(m_property);
 	}
 
-	~Entry()
-	{
-		m_property = isChecked();
-	}
+	~Entry() { m_property = isChecked(); }
 };
 
-template <class EnumType>
-class Entry<EnumType, std::enable_if_t<std::is_enum_v<EnumType>>> final: public QComboBox, public IEntry
+template<class EnumType>
+class Entry<EnumType, std::enable_if_t<std::is_enum_v<EnumType>>> final : public QComboBox, public IEntry
 {
 private:
-	config::Property<EnumType> &m_property;
+	config::Property<EnumType>& m_property;
 
 public:
-	explicit Entry(config::Property<EnumType> &property, QWidget *parent)
-		:QComboBox(parent),
-		m_property(property)
+	explicit Entry(config::Property<EnumType>& property, QWidget* parent)
+		: QComboBox(parent)
+		, m_property(property)
 	{
 		for (EnumType item : common::enumerate::All<EnumType>()) {
 			const QString name = QString::fromStdString(common::enumerate::toString(item));
@@ -126,14 +114,12 @@ public:
 			addItem(name, value);
 		}
 
-		const QString selectedName = QString::fromStdString(common::enumerate::toString(static_cast<EnumType>(m_property)));
+		const QString selectedName
+			= QString::fromStdString(common::enumerate::toString(static_cast<EnumType>(m_property)));
 		setCurrentText(selectedName);
 	}
 
-	~Entry()
-	{
-		m_property = static_cast<EnumType>(currentData().template value<int>());
-	}
+	~Entry() { m_property = static_cast<EnumType>(currentData().template value<int>()); }
 };
 
 }

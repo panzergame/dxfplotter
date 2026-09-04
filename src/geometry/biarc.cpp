@@ -10,26 +10,26 @@ namespace geometry
 
 Orientation Biarc::orientation() const
 {
-	const float det = (m_middle.x() - m_point1.x()) * (m_middle.y() + m_point1.y()) +
-			(m_point2.x() - m_middle.x()) * (m_point2.y() + m_middle.y()) +
-			(m_point1.x() - m_point2.x()) * (m_point1.y() + m_point2.y());
+	const float det = (m_middle.x() - m_point1.x()) * (m_middle.y() + m_point1.y())
+		+ (m_point2.x() - m_middle.x()) * (m_point2.y() + m_middle.y())
+		+ (m_point1.x() - m_point2.x()) * (m_point1.y() + m_point2.y());
 
 	return (det < 0.0f) ? Orientation::CW : Orientation::CCW;
 }
 
-Biarc::Biarc(const QVector2D& point1, const QVector2D& middle, const QVector2D& point2,
-		const QVector2D& tangent1, const QVector2D& tangent2)
-	:m_point1(point1),
-	m_point2(point2),
-	m_middle(middle),
-	m_tangent1(tangent1),
-	m_tangent2(tangent2),
-	m_line1(middle - point1),
-	m_line2(middle - point2)
+Biarc::Biarc(const QVector2D& point1, const QVector2D& middle, const QVector2D& point2, const QVector2D& tangent1,
+			 const QVector2D& tangent2)
+	: m_point1(point1)
+	, m_point2(point2)
+	, m_middle(middle)
+	, m_tangent1(tangent1)
+	, m_tangent2(tangent2)
+	, m_line1(middle - point1)
+	, m_line2(middle - point2)
 {
 }
 
-const QVector2D &Biarc::middle() const
+const QVector2D& Biarc::middle() const
 {
 	return m_middle;
 }
@@ -52,7 +52,7 @@ float Biarc::approximateLength() const
 Polyline Biarc::toLinePolyline() const
 {
 	const Bulge bulge(m_point1, m_point2, 0.0f);
-	return Polyline({bulge});
+	return Polyline({ bulge });
 }
 
 Polyline Biarc::toPolyline() const
@@ -69,8 +69,7 @@ Polyline Biarc::toPolyline() const
 	const Bulge b1(m_point1, m_middle, std::tan(thetab1));
 	const Bulge b2(m_middle, m_point2, std::tan(thetab2));
 
-	return Polyline({b1, b2});
+	return Polyline({ b1, b2 });
 }
 
 }
-

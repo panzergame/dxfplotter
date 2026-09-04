@@ -12,12 +12,11 @@
 
 namespace importer::dxf
 {
-	class Importer;
+class Importer;
 }
 
 namespace model
 {
-
 
 class Application : public QObject
 {
@@ -27,8 +26,8 @@ private:
 	/// Global configuration
 	config::Config m_config;
 
-	const config::Tools::Tool *m_defaultToolConfig;
-	const config::Profiles::Profile *m_defaultProfileConfig;
+	const config::Tools::Tool* m_defaultToolConfig;
+	const config::Profiles::Profile* m_defaultProfileConfig;
 
 	// Last opened or saved file base name.
 	QString m_lastHandledFileBaseName;
@@ -38,24 +37,24 @@ private:
 	Document::UPtr m_openedDocument;
 	DocumentHistory::UPtr m_documentHistory;
 
-	void setOpenedDocument(Document::UPtr &&document);
-	void setRestoredDocument(const Document &documentVersion);
+	void setOpenedDocument(Document::UPtr&& document);
+	void setRestoredDocument(const Document& documentVersion);
 
-	static QString baseName(const QString& fileName);	
+	static QString baseName(const QString& fileName);
 	void resetLastSavedFileNames();
 
 	PathSettings defaultPathSettings() const;
 
-	const config::Tools::Tool *findTool(const std::string &name) const;
-	const config::Profiles::Profile *findProfile(const std::string &name) const;
+	const config::Tools::Tool* findTool(const std::string& name) const;
+	const config::Profiles::Profile* findProfile(const std::string& name) const;
 
 	void cutterCompensation(float scale);
 
-	geometry::Polyline::List postProcessImportedPolylines(geometry::Polyline::List &&rawPolylines) const;
+	geometry::Polyline::List postProcessImportedPolylines(geometry::Polyline::List&& rawPolylines) const;
 	Task::UPtr createTaskFromDxfImporter(const importer::dxf::Importer& importer);
 
-	template <class Exporter>
-	bool saveToFile(Exporter &&exporter, const QString &fileName)
+	template<class Exporter>
+	bool saveToFile(Exporter&& exporter, const QString& fileName)
 	{
 		qInfo() << "Saving to " << fileName;
 		std::ofstream output(fileName.toStdString());
@@ -70,34 +69,35 @@ private:
 	}
 
 public:
-	struct FileExtension {
+	struct FileExtension
+	{
 		inline static const QString Gcode = ".ngc";
 		inline static const QString Dxfplot = ".dxfplot";
 	};
 
 	explicit Application();
 
-	config::Config &config();
-	void setConfig(config::Config &&config);
+	config::Config& config();
+	void setConfig(config::Config&& config);
 
 	/// Select tool used as configuration for further operations
-	bool selectTool(const QString &toolName);
-	void defaultToolFromCmd(const QString &toolName);
+	bool selectTool(const QString& toolName);
+	void defaultToolFromCmd(const QString& toolName);
 
 	/// Select profile used as configuration for further operations
-	bool selectProfile(const QString &profileName);
-	void defaultProfileFromCmd(const QString &profileName);
+	bool selectProfile(const QString& profileName);
+	void defaultProfileFromCmd(const QString& profileName);
 
-	const QString &lastHandledFileBaseName() const;
-	const QString &lastSavedDxfplotFileName() const;
-	const QString &lastSavedGcodeFileName() const;
-	void loadFileFromCmd(const QString &fileName);
-	bool loadFile(const QString &fileName);
-	bool loadFromDxf(const QString &fileName);
-	bool loadFromDxfplot(const QString &fileName);
+	const QString& lastHandledFileBaseName() const;
+	const QString& lastSavedDxfplotFileName() const;
+	const QString& lastSavedGcodeFileName() const;
+	void loadFileFromCmd(const QString& fileName);
+	bool loadFile(const QString& fileName);
+	bool loadFromDxf(const QString& fileName);
+	bool loadFromDxfplot(const QString& fileName);
 
-	bool saveToGcode(const QString &fileName);
-	bool saveToDxfplot(const QString &fileName);
+	bool saveToGcode(const QString& fileName);
+	bool saveToDxfplot(const QString& fileName);
 
 	void leftCutterCompensation();
 	void rightCutterCompensation();
@@ -119,13 +119,13 @@ public:
 	void redoDocumentChanges();
 
 Q_SIGNALS:
-	void newDocumentOpened(Document *newDocument);
-	void documentRestoredFromHistory(Document *newDocument);
+	void newDocumentOpened(Document* newDocument);
+	void documentRestoredFromHistory(Document* newDocument);
 	void titleChanged(QString title);
-	void configChanged(config::Config &config);
+	void configChanged(config::Config& config);
 	void toolChanged();
 	void errorRaised(const QString& message) const;
-	void fileSaved(const QString &fileName);
+	void fileSaved(const QString& fileName);
 };
 
 }

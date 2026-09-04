@@ -10,7 +10,7 @@ class Importer;
 class Interface : public DRW_Interface
 {
 private:
-	Importer &m_importer;
+	Importer& m_importer;
 
 	void addHeader(const DRW_Header* data) override;
 	void addLType(const DRW_LType& data) override;
@@ -39,20 +39,20 @@ private:
 	void addSolid(const DRW_Solid& data) override;
 	void addMText(const DRW_MText& data) override;
 	void addText(const DRW_Text& data) override;
-	void addDimAlign(const DRW_DimAligned *data) override;
-	void addDimLinear(const DRW_DimLinear *data) override;
-	void addDimRadial(const DRW_DimRadial *data) override;
-	void addDimDiametric(const DRW_DimDiametric *data) override;
-	void addDimAngular(const DRW_DimAngular *data) override;
-	void addDimAngular3P(const DRW_DimAngular3p *data) override;
-	void addDimOrdinate(const DRW_DimOrdinate *data) override;
-	void addLeader(const DRW_Leader *data) override;
-	void addHatch(const DRW_Hatch *data) override;	
+	void addDimAlign(const DRW_DimAligned* data) override;
+	void addDimLinear(const DRW_DimLinear* data) override;
+	void addDimRadial(const DRW_DimRadial* data) override;
+	void addDimDiametric(const DRW_DimDiametric* data) override;
+	void addDimAngular(const DRW_DimAngular* data) override;
+	void addDimAngular3P(const DRW_DimAngular3p* data) override;
+	void addDimOrdinate(const DRW_DimOrdinate* data) override;
+	void addLeader(const DRW_Leader* data) override;
+	void addHatch(const DRW_Hatch* data) override;
 	void addViewport(const DRW_Viewport& data) override;
-	void addImage(const DRW_Image *data) override;
-	void linkImage(const DRW_ImageDef *data) override;
+	void addImage(const DRW_Image* data) override;
+	void linkImage(const DRW_ImageDef* data) override;
 	void addComment(const char* comment) override;
-    void addPlotSettings(const DRW_PlotSettings *data) override;
+	void addPlotSettings(const DRW_PlotSettings* data) override;
 
 	void writeHeader(DRW_Header& data) override;
 	void writeBlocks() override;
@@ -63,11 +63,11 @@ private:
 	void writeTextstyles() override;
 	void writeVports() override;
 	void writeDimstyles() override;
-    void writeObjects() override;
+	void writeObjects() override;
 	void writeAppId() override;
 
 public:
-	explicit Interface(Importer &importer);
+	explicit Interface(Importer& importer);
 };
 
 }

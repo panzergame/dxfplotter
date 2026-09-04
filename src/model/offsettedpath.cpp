@@ -3,20 +3,20 @@
 namespace model
 {
 
-OffsettedPath::OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Direction direction)
-	:m_polylines(offsettedPolylines),
-	m_direction(direction)
+OffsettedPath::OffsettedPath(geometry::Polyline::List&& offsettedPolylines, Direction direction)
+	: m_polylines(offsettedPolylines)
+	, m_direction(direction)
 {
 }
 
 OffsettedPath::OffsettedPath(const OffsettedPath& other)
-	:QObject(),
-	m_polylines(other.m_polylines),
-	m_direction(other.m_direction)
+	: QObject()
+	, m_polylines(other.m_polylines)
+	, m_direction(other.m_direction)
 {
 }
 
-const geometry::Polyline::List &OffsettedPath::polylines() const
+const geometry::Polyline::List& OffsettedPath::polylines() const
 {
 	return m_polylines;
 }
@@ -31,9 +31,9 @@ geometry::CuttingDirection OffsettedPath::cuttingDirection() const
 	return offsetDirectionToCuttingDirection[static_cast<int>(m_direction)];
 }
 
-void OffsettedPath::transform(const QTransform &matrix)
+void OffsettedPath::transform(const QTransform& matrix)
 {
-	for (geometry::Polyline &polyline : m_polylines) {
+	for (geometry::Polyline& polyline : m_polylines) {
 		polyline.transform(matrix);
 	}
 
@@ -46,9 +46,9 @@ geometry::Rect OffsettedPath::boundingRect() const
 	const geometry::Rect firstBoundingRest = (it++)->boundingRect();
 
 	return std::transform_reduce(it, m_polylines.end(), firstBoundingRest, std::bit_or(),
-		[](const geometry::Polyline& polyline){
-			return polyline.boundingRect();
-		});
+								 [](const geometry::Polyline& polyline) {
+									 return polyline.boundingRect();
+								 });
 }
 
 }

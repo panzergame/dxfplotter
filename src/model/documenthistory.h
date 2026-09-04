@@ -20,8 +20,8 @@ public:
 	explicit DocumentHistory(const Document& initialDocument);
 
 	void takeSnapshot(const Document& currentDocument);
-	const Document &undo();
-	const Document &redo();
+	const Document& undo();
+	const Document& redo();
 };
 
 }

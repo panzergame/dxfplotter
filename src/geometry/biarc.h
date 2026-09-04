@@ -29,10 +29,10 @@ private:
 	Orientation orientation() const;
 
 public:
-	explicit Biarc(const QVector2D &point1, const QVector2D &middle, const QVector2D &point2,
-		const QVector2D &tangent1, const QVector2D &tangent2);
+	explicit Biarc(const QVector2D& point1, const QVector2D& middle, const QVector2D& point2, const QVector2D& tangent1,
+				   const QVector2D& tangent2);
 
-	const QVector2D &middle() const;
+	const QVector2D& middle() const;
 	QVector2D tangentAtMiddle() const;
 
 	float approximateLength() const;

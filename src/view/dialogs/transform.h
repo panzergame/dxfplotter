@@ -4,7 +4,6 @@
 
 #include <QDialog>
 
-
 namespace view::dialogs
 {
 
@@ -16,7 +15,7 @@ private:
 public:
 	explicit Transform();
 
-	const QTransform &matrix() const;
+	const QTransform& matrix() const;
 
 	void accept() override;
 };

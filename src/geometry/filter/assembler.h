@@ -22,10 +22,7 @@ private:
 		// Original point from polyline.
 		QVector2D point;
 
-		enum class Type {
-			START = 0,
-			END
-		} type;
+		enum class Type { START = 0, END } type;
 	};
 
 	static inline TipIndex tipIndexFromPolylineSide(PolylineIndex index, Tip::Type side)
@@ -36,16 +33,16 @@ private:
 	class TipAdaptor
 	{
 	private:
-		const Tip::List &m_tips;
+		const Tip::List& m_tips;
 
 	public:
-		explicit TipAdaptor(const Tip::List &tips);
+		explicit TipAdaptor(const Tip::List& tips);
 
 		size_t kdtree_get_point_count() const;
 		float kdtree_get_pt(const size_t idx, const size_t dim) const;
 
-		template <class BBOX>
-		bool kdtree_get_bbox([[maybe_unused]] BBOX &bb) const
+		template<class BBOX>
+		bool kdtree_get_bbox([[maybe_unused]] BBOX& bb) const
 		{
 			return false;
 		}
@@ -59,8 +56,7 @@ private:
 		struct Item
 		{
 			PolylineIndex polylineIndex;
-			enum class Direction
-			{
+			enum class Direction {
 				NORMAL = 0,
 				INVERT ///< Inverted with previous polyline
 			} dir;
@@ -69,14 +65,14 @@ private:
 		using List = std::list<Item>;
 
 		List m_chain;
-		const Tip::List &m_tips;
-		std::set<PolylineIndex> &m_unconnectedPolylines;
-		const KDTree &m_tree;
+		const Tip::List& m_tips;
+		std::set<PolylineIndex>& m_unconnectedPolylines;
+		const KDTree& m_tree;
 		const PolylineIndex m_startIndex;
 		const float m_closeTolerance;
 		bool m_closed;
 
-		template <class Inserter>
+		template<class Inserter>
 		bool expandSide(Inserter inserter, Tip::Type side)
 		{
 			// Direction of polyline, at first normal direction.
@@ -86,10 +82,10 @@ private:
 			while (index != -1) {
 				const size_t tipIndex = tipIndexFromPolylineSide(index, side);
 				// Tips of the current polyline at the right side.
-				const Tip &tip = m_tips[tipIndex];
+				const Tip& tip = m_tips[tipIndex];
 
 				// Coordinate of search point.
-				const float coord[2] = {tip.point.x(), tip.point.y()};
+				const float coord[2] = { tip.point.x(), tip.point.y() };
 
 				// Nearest neighbour with distance.
 				std::array<std::uint32_t, 2> matchIndices;
@@ -103,7 +99,7 @@ private:
 					const TipIndex neighbourTipIndex = matchIndices[neighbourMatchIndex];
 					// Check if neighbour is not further than tolerance
 					if (matchDistances[neighbourMatchIndex] <= m_closeTolerance) {
-						const Tip &neighbour = m_tips[neighbourTipIndex];
+						const Tip& neighbour = m_tips[neighbourTipIndex];
 
 						assert(&tip != &neighbour);
 
@@ -113,19 +109,19 @@ private:
 							return false;
 						}
 						/* If polyline is already connected (in case of circular shape
-						* one side can already connect all polylines) we discard.
-						*/
+						 * one side can already connect all polylines) we discard.
+						 */
 						else if (m_unconnectedPolylines.find(neighbourIndex) == m_unconnectedPolylines.end()) {
 							// The chain might be closed
 							return true;
-						}
-						else {
+						} else {
 							// If end matchs start then polylines are in same direction, otherwise they are opposed.
 							const bool isOpposed = (tip.type == neighbour.type);
-							Item::Direction neighbourDirection = static_cast<Item::Direction>((static_cast<int>(direction) + isOpposed) % 2);
+							Item::Direction neighbourDirection
+								= static_cast<Item::Direction>((static_cast<int>(direction) + isOpposed) % 2);
 
 							// Insert the polyline.
-							*inserter = {neighbourIndex, neighbourDirection};
+							*inserter = { neighbourIndex, neighbourDirection };
 
 							// Remove polyline from unconnected list.
 							m_unconnectedPolylines.erase(neighbourIndex);
@@ -137,13 +133,11 @@ private:
 							// Update direction
 							direction = neighbourDirection;
 						}
-					}
-					else {
+					} else {
 						// Neighbour too far
 						index = -1;
 					}
-				}
-				else {
+				} else {
 					// None or too many neighbour
 					index = -1;
 				}
@@ -154,9 +148,10 @@ private:
 		}
 
 	public:
-		explicit ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance);
+		explicit ChainBuilder(const Tip::List& tips, std::set<PolylineIndex>& unconnectedPolylines, const KDTree& tree,
+							  PolylineIndex index, float closeTolerance);
 
-		Polyline mergedPolyline(const Polyline::List &polylines) const;
+		Polyline mergedPolyline(const Polyline::List& polylines) const;
 	};
 
 	Polyline::List m_unmergedPolylines;
@@ -166,12 +161,12 @@ private:
 
 	Tip::List constructTips();
 
-	Polyline::List connectTips(const Tip::List &tips, const KDTree &tree) const;
+	Polyline::List connectTips(const Tip::List& tips, const KDTree& tree) const;
 
 public:
-	explicit Assembler(Polyline::List &&polylines, float closeTolerance);
+	explicit Assembler(Polyline::List&& polylines, float closeTolerance);
 
-	Polyline::List &&polylines();
+	Polyline::List&& polylines();
 };
 
 }

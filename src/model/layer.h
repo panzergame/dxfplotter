@@ -19,19 +19,20 @@ private:
 	void assignSelfToChildren();
 
 public:
-	explicit Layer(const std::string &name, Path::ListUPtr &&children);
+	explicit Layer(const std::string& name, Path::ListUPtr&& children);
 	explicit Layer() = default;
-	explicit Layer(const Layer& other);;
+	explicit Layer(const Layer& other);
+	;
 
 	int childrenCount() const;
 	Path& childrenAt(int index);
 	const Path& childrenAt(int index) const;
 	int childIndexFor(const Path& child) const;
 
-	template <class Functor>
-	void forEachChild(Functor &&functor)
+	template<class Functor>
+	void forEachChild(Functor&& functor)
 	{
-		for (Path::UPtr &child : m_children) {
+		for (Path::UPtr& child : m_children) {
 			functor(*child);
 		}
 	}

@@ -21,7 +21,7 @@ QPainterPath OffsettedPolylinePathItem::paintPath() const
 
 	QPainterPath rootPainter;
 
-	for (const geometry::Polyline &polyline : polylines) {
+	for (const geometry::Polyline& polyline : polylines) {
 		QPainterPath painter(polyline.start().toPointF());
 
 		BulgePainter functor(painter);
@@ -44,14 +44,15 @@ void OffsettedPolylinePathItem::setupPaths()
 	setPath(m_paintPath);
 }
 
-OffsettedPolylinePathItem::OffsettedPolylinePathItem(const model::OffsettedPath &offsettedPath)
-	:QGraphicsPathItem(QPainterPath()),
-	m_offsettedPath(offsettedPath)
+OffsettedPolylinePathItem::OffsettedPolylinePathItem(const model::OffsettedPath& offsettedPath)
+	: QGraphicsPathItem(QPainterPath())
+	, m_offsettedPath(offsettedPath)
 {
 	setupPaths();
 	setPen(normalPen);
 
-	connect(&offsettedPath, &model::OffsettedPath::polylinesTransformed, this, &OffsettedPolylinePathItem::polylinesTransformed);
+	connect(&offsettedPath, &model::OffsettedPath::polylinesTransformed, this,
+			&OffsettedPolylinePathItem::polylinesTransformed);
 }
 
 void OffsettedPolylinePathItem::selected()

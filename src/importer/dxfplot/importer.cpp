@@ -12,13 +12,13 @@
 namespace importer::dxfplot
 {
 
-Importer::Importer(const config::Tools &tools, const config::Profiles &profiles)
-	:m_tools(tools),
-	m_profiles(profiles)
+Importer::Importer(const config::Tools& tools, const config::Profiles& profiles)
+	: m_tools(tools)
+	, m_profiles(profiles)
 {
 }
 
-model::Document::UPtr Importer::operator()(const std::string &fileName) const
+model::Document::UPtr Importer::operator()(const std::string& fileName) const
 {
 	std::ifstream input(fileName);
 
@@ -38,8 +38,8 @@ model::Document::UPtr Importer::operator()(std::istream& input) const
 	std::string toolName;
 	archive(cereal::make_nvp("tool_name", toolName));
 
-	const config::Tools::Tool *tool = m_tools.get(toolName);
-	const config::Profiles::Profile *profile = m_profiles.get(profileName);
+	const config::Tools::Tool* tool = m_tools.get(toolName);
+	const config::Profiles::Profile* profile = m_profiles.get(profileName);
 
 	if (!tool) {
 		throw common::ImportCouldNotFindToolConfigException();

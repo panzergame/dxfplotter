@@ -18,10 +18,7 @@ public:
 		int id;
 		QVector2D position;
 
-		inline bool operator==(const Node& other) const
-		{
-			return id == other.id;
-		}
+		inline bool operator==(const Node& other) const { return id == other.id; }
 	};
 
 	using NodesPerGroup = std::vector<Node::List>;
@@ -66,7 +63,7 @@ private:
 public:
 	explicit OrderOptimizer(const NodesPerGroup& nodesPerGroup, int nbNodes);
 
-	const std::vector<int> &order() const;
+	const std::vector<int>& order() const;
 };
 
 }

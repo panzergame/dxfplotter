@@ -8,9 +8,9 @@ namespace geometry::filter
 {
 
 template<typename T>
-typename std::vector<T>::iterator insertSortedReverse(std::vector<T> &vec, const T &item)
+typename std::vector<T>::iterator insertSortedReverse(std::vector<T>& vec, const T& item)
 {
-    return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, std::greater<T>()), item);
+	return vec.insert(std::upper_bound(vec.begin(), vec.end(), item, std::greater<T>()), item);
 }
 
 class PolylineLengthCleaner
@@ -24,18 +24,15 @@ private:
 		float length;
 
 		explicit Item(BulgeLinkedList::iterator _it, float _length)
-			:it(_it),
-			length(_length)
+			: it(_it)
+			, length(_length)
 		{
 		}
 
-		bool operator>(const Item &other) const
-		{
-			return length > other.length;
-		}
+		bool operator>(const Item& other) const { return length > other.length; }
 	};
 
-	const Polyline &m_polyline;
+	const Polyline& m_polyline;
 	const float m_minimumPolylineLength;
 
 	BulgeLinkedList m_bulges;
@@ -43,7 +40,7 @@ private:
 
 	void constructLinkedList()
 	{
-		m_polyline.forEachBulge([this](const Bulge &bulge){
+		m_polyline.forEachBulge([this](const Bulge& bulge) {
 			m_bulges.push_back(bulge);
 		});
 	}
@@ -62,7 +59,7 @@ private:
 		std::sort(m_itemsToMerge.begin(), m_itemsToMerge.end(), std::greater<Item>());
 	}
 
-	BulgeLinkedList::iterator extendNeighbourBulge(const BulgeLinkedList::iterator &it)
+	BulgeLinkedList::iterator extendNeighbourBulge(const BulgeLinkedList::iterator& it)
 	{
 		BulgeLinkedList::iterator neighbourIt;
 
@@ -71,8 +68,7 @@ private:
 			neighbourIt = std::next(it);
 			// Replace neighbour bulge with its extended version
 			*neighbourIt = neighbourIt->extendStart(it->start());
-		}
-		else {
+		} else {
 			neighbourIt = std::prev(it);
 			// Replace neighbour bulge with its extended version
 			*neighbourIt = neighbourIt->extendEnd(it->end());
@@ -81,11 +77,13 @@ private:
 		return neighbourIt;
 	}
 
-	void removeAssociatedItem(const BulgeLinkedList::iterator &it)
+	void removeAssociatedItem(const BulgeLinkedList::iterator& it)
 	{
 		// Look for item associated to neighbour bulge
-		Item::List::iterator itemIt = std::find_if(m_itemsToMerge.begin(), m_itemsToMerge.end(),
-				[&it](const Item &item) { return item.it == it; });
+		Item::List::iterator itemIt
+			= std::find_if(m_itemsToMerge.begin(), m_itemsToMerge.end(), [&it](const Item& item) {
+				  return item.it == it;
+			  });
 
 		// Remove this item.
 		if (itemIt != m_itemsToMerge.end()) {
@@ -93,9 +91,9 @@ private:
 		}
 	}
 
-	void mergeItem(const Item &item)
+	void mergeItem(const Item& item)
 	{
-		const BulgeLinkedList::iterator &it = item.it;
+		const BulgeLinkedList::iterator& it = item.it;
 		// Extend neighbour to overlap and retrieve its position
 		const BulgeLinkedList::iterator neighbourIt = extendNeighbourBulge(it);
 
@@ -113,9 +111,9 @@ private:
 	}
 
 public:
-	explicit PolylineLengthCleaner(const Polyline &polyline, float minimumPolylineLength)
-		:m_polyline(polyline),
-		m_minimumPolylineLength(minimumPolylineLength)
+	explicit PolylineLengthCleaner(const Polyline& polyline, float minimumPolylineLength)
+		: m_polyline(polyline)
+		, m_minimumPolylineLength(minimumPolylineLength)
 	{
 		constructLinkedList();
 
@@ -130,10 +128,7 @@ public:
 		}
 	}
 
-	Polyline polyline() const
-	{
-		return Polyline(Bulge::List(m_bulges.begin(), m_bulges.end()));
-	}
+	Polyline polyline() const { return Polyline(Bulge::List(m_bulges.begin(), m_bulges.end())); }
 };
 
 class ArcLengthCleaner
@@ -142,25 +137,22 @@ private:
 	Polyline m_polyline;
 
 public:
-	explicit ArcLengthCleaner(Polyline &&polyline, float minimumArcLength)
-		:m_polyline(polyline)
+	explicit ArcLengthCleaner(Polyline&& polyline, float minimumArcLength)
+		: m_polyline(polyline)
 	{
-		m_polyline.transformBulge([minimumArcLength](Bulge &bulge){
+		m_polyline.transformBulge([minimumArcLength](Bulge& bulge) {
 			if (bulge.isArc() && bulge.length() < minimumArcLength) {
 				bulge.linify();
 			}
 		});
 	}
 
-	Polyline &&polyline()
-	{
-		return std::move(m_polyline);
-	}
+	Polyline&& polyline() { return std::move(m_polyline); }
 };
 
-Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength)
+Cleaner::Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength)
 {
-	for (const Polyline &polyline : polylines) {
+	for (const Polyline& polyline : polylines) {
 		// Prune small polyline length
 		PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
 
@@ -171,7 +163,7 @@ Cleaner::Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float 
 	}
 }
 
-Polyline::List &&Cleaner::polylines()
+Polyline::List&& Cleaner::polylines()
 {
 	return std::move(m_polylines);
 }

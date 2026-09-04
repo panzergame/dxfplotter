@@ -18,10 +18,9 @@ private:
 	void setupPosition();
 
 public:
-	explicit PointPathItem(model::Path &path);
+	explicit PointPathItem(model::Path& path);
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
-
+	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 protected:
 	void basePolylineTransformed() override;

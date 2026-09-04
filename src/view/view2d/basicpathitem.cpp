@@ -12,9 +12,9 @@ static const QBrush selectBrush(QColor(80, 0, 255));
 static const QPen normalPen(normalBrush, 0.0f);
 static const QPen selectPen(selectBrush, 0.0f);
 
-BasicPathItem::BasicPathItem(model::Path &path)
-	:m_path(path),
-	m_outsideSelectionBlocked(false)
+BasicPathItem::BasicPathItem(model::Path& path)
+	: m_path(path)
+	, m_outsideSelectionBlocked(false)
 {
 	setPen(normalPen);
 	setFlag(ItemIsSelectable);
@@ -23,18 +23,16 @@ BasicPathItem::BasicPathItem(model::Path &path)
 	connect(&m_path, &model::Path::selectedChanged, this, &BasicPathItem::selectedChanged);
 	connect(&m_path, &model::Path::globalVisibilityChanged, this, &BasicPathItem::visibilityChanged);
 	connect(&m_path, &model::Path::basePolylineTransformed, this, &BasicPathItem::basePolylineTransformed);
-
 }
 
-void BasicPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
+void BasicPathItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, [[maybe_unused]] QWidget* widget)
 {
 	QStyleOptionGraphicsItem fixedOption(*option);
 
 	if (fixedOption.state & QStyle::State_Selected) {
 		fixedOption.state &= ~QStyle::State_Selected;
 		setPen(selectPen);
-	}
-	else {
+	} else {
 		setPen(normalPen);
 	}
 
@@ -51,7 +49,7 @@ void BasicPathItem::setSelected(bool selected)
 	QAbstractGraphicsShapeItem::setSelected(selected);
 }
 
-QVariant BasicPathItem::itemChange(GraphicsItemChange change, const QVariant &value)
+QVariant BasicPathItem::itemChange(GraphicsItemChange change, const QVariant& value)
 {
 	if (change & ItemSelectedChange) {
 		m_outsideSelectionBlocked = true;
@@ -73,6 +71,5 @@ void BasicPathItem::visibilityChanged(bool visible)
 {
 	setVisible(visible);
 }
-
 
 }

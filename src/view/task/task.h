@@ -17,18 +17,18 @@ class LayerTreeModel;
 class Task : public model::DocumentModelObserver<QWidget>, private Ui::Task
 {
 private:
-	model::Application &m_app;
+	model::Application& m_app;
 
 	std::unique_ptr<PathListModel> m_pathListModel;
 	std::unique_ptr<LayerTreeModel> m_layerTreeModel;
 
-	template <class Model>
-	std::unique_ptr<Model> setupTreeViewModel(QTreeView *treeView)
+	template<class Model>
+	std::unique_ptr<Model> setupTreeViewModel(QTreeView* treeView)
 	{
 		std::unique_ptr<Model> model = std::make_unique<Model>(task(), this);
 		treeView->setModel(model.get());
 
-		QHeaderView *header = treeView->header();
+		QHeaderView* header = treeView->header();
 		header->setStretchLastSection(false);
 		header->setSectionResizeMode(0, QHeaderView::Stretch);
 		header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
@@ -36,11 +36,11 @@ private:
 		return model;
 	}
 
-	template <class Model>
-	void setupTreeViewController(std::unique_ptr<Model>& model, QTreeView *treeView)
+	template<class Model>
+	void setupTreeViewController(std::unique_ptr<Model>& model, QTreeView* treeView)
 	{
 		// Synchronize selection in 2D view
-		QItemSelectionModel *selectionModel = treeView->selectionModel();
+		QItemSelectionModel* selectionModel = treeView->selectionModel();
 		connect(selectionModel, &QItemSelectionModel::selectionChanged, model.get(), &Model::selectionChanged);
 
 		connect(treeView, &QTreeView::clicked, model.get(), &Model::itemClicked);
@@ -51,15 +51,15 @@ private:
 	void setupModel();
 	void setupController();
 
-	void updateItemSelection(const model::Path &path, QItemSelectionModel::SelectionFlag flag);
+	void updateItemSelection(const model::Path& path, QItemSelectionModel::SelectionFlag flag);
 
 	void moveCurrentPathToDirection(model::Task::MoveDirection direction);
 	void moveCurrentPathToTip(model::Task::MoveTip tip);
 
-	template <class Func>
-	void moveCurrentPath(Func &&movement)
+	template<class Func>
+	void moveCurrentPath(Func&& movement)
 	{
-		QItemSelectionModel *selectionModel = pathsTreeView->selectionModel();
+		QItemSelectionModel* selectionModel = pathsTreeView->selectionModel();
 
 		const QModelIndexList selectedItems = selectionModel->selectedIndexes();
 		for (const QModelIndex& selectedIndex : selectedItems) {
@@ -74,13 +74,13 @@ private:
 	void rebuildSelectionFromTask();
 
 public:
-	explicit Task(model::Application &app);
+	explicit Task(model::Application& app);
 
 protected:
 	void documentChanged();
 
 protected Q_SLOTS:
-	void pathSelectedChanged(model::Path &path, bool selected);
+	void pathSelectedChanged(model::Path& path, bool selected);
 	void documentVisibilityChanged();
 };
 

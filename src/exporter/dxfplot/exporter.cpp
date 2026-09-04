@@ -7,13 +7,13 @@
 namespace exporter::dxfplot
 {
 
-void Exporter::operator()(const model::Document& document, std::ostream &output)  const
+void Exporter::operator()(const model::Document& document, std::ostream& output) const
 {
 	Archive archive(output);
 	save(archive, document);
 }
 
-void Exporter::save(Archive &archive, const model::Document& document) const
+void Exporter::save(Archive& archive, const model::Document& document) const
 {
 	archive(cereal::make_nvp("task", document.task()));
 	archive(cereal::make_nvp("profile_name", document.profileConfig().name()));

@@ -4,10 +4,10 @@ namespace model
 {
 
 PathSettings::PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)
-	:m_planeFeedRate(planeFeedRate),
-	m_depthFeedRate(depthFeedRate),
-	m_intensity(intensity),
-	m_depth(depth)
+	: m_planeFeedRate(planeFeedRate)
+	, m_depthFeedRate(depthFeedRate)
+	, m_intensity(intensity)
+	, m_depth(depth)
 {
 }
 

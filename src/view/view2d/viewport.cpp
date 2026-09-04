@@ -13,26 +13,23 @@ constexpr QPoint pointSelectionRectExtend(10, 10);
 
 void Viewport::setupPathItems()
 {
-	task().forEachPath(
-		[scene = scene()](model::Path &path) {
-			BasicPathItem *item;
-			if (path.isPoint()) {
-				item = new PointPathItem(path);
-			}
-			else {
-				item = new PolylinePathItem(path);
-			}
-			scene->addItem(item);
+	task().forEachPath([scene = scene()](model::Path& path) {
+		BasicPathItem* item;
+		if (path.isPoint()) {
+			item = new PointPathItem(path);
+		} else {
+			item = new PolylinePathItem(path);
 		}
-	);
+		scene->addItem(item);
+	});
 }
 
-void Viewport::startMovement(const QPoint &mousePos)
+void Viewport::startMovement(const QPoint& mousePos)
 {
 	m_lastMousePosition = mousePos;
 }
 
-void Viewport::updateMovement(const QPoint &mousePos)
+void Viewport::updateMovement(const QPoint& mousePos)
 {
 	const QPointF delta = mapToScene(mousePos) - mapToScene(m_lastMousePosition);
 
@@ -47,17 +44,17 @@ void Viewport::updateMovement(const QPoint &mousePos)
 	m_lastMousePosition = mousePos;
 }
 
-void Viewport::startRubberBand(const QPoint &mousePos)
+void Viewport::startRubberBand(const QPoint& mousePos)
 {
 	m_rubberBand.start(mousePos, mapToScene(mousePos));
 }
 
-void Viewport::updateRubberBand(const QPoint &mousePos)
+void Viewport::updateRubberBand(const QPoint& mousePos)
 {
 	m_rubberBand.update(mousePos, mapToScene(mousePos));
 }
 
-void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
+void Viewport::endRubberBand(const QPoint& mousePos, bool addToSelection)
 {
 	m_rubberBand.end(mousePos, mapToScene(mousePos));
 
@@ -67,17 +64,16 @@ void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 		const QRect rect(mousePos - pointSelectionRectExtend, mousePos + pointSelectionRectExtend);
 
 		// Find items in fake selection area
-		const QList<QGraphicsItem *> items = QGraphicsView::items(rect);
+		const QList<QGraphicsItem*> items = QGraphicsView::items(rect);
 		if (!items.empty()) {
 			// Obtain only the first item.
-			QGraphicsItem *item = items.front();
+			QGraphicsItem* item = items.front();
 
 			if (!addToSelection) {
 				// Clear all and select one in replacive selection
 				scene()->clearSelection();
 				item->setSelected(true);
-			}
-			else {
+			} else {
 				// Toggle selection in additive selection
 				item->setSelected(!item->isSelected());
 			}
@@ -95,14 +91,14 @@ void Viewport::endRubberBand(const QPoint &mousePos, bool addToSelection)
 
 void Viewport::selectAllItems()
 {
-	for (QGraphicsItem *item : scene()->items()) {
+	for (QGraphicsItem* item : scene()->items()) {
 		item->setSelected(true);
 	}
 }
 
 void Viewport::deselecteAllItems()
 {
-	for (QGraphicsItem *item : scene()->selectedItems()) {
+	for (QGraphicsItem* item : scene()->selectedItems()) {
 		item->setSelected(false);
 	}
 }
@@ -137,8 +133,8 @@ void Viewport::fitItemsInView()
 class BackgroundPainter
 {
 private:
-	QPainter *m_painter;
-	const QRectF &m_sceneRect;
+	QPainter* m_painter;
+	const QRectF& m_sceneRect;
 	float m_pixelRatio;
 
 	// Draw grid using dashed lines
@@ -205,7 +201,7 @@ private:
 		drawLineGrid(step * 10.0f);
 	}
 
-	void drawOriginAxis(const QPointF &dir, float scale, const QPen &pen)
+	void drawOriginAxis(const QPointF& dir, float scale, const QPen& pen)
 	{
 		static const QPointF center(0.0f, 0.0f);
 
@@ -237,10 +233,10 @@ private:
 	}
 
 public:
-	explicit BackgroundPainter(QPainter *painter, const QRectF &sceneRect, float pixelRatio)
-		:m_painter(painter),
-		m_sceneRect(sceneRect),
-		m_pixelRatio(pixelRatio)
+	explicit BackgroundPainter(QPainter* painter, const QRectF& sceneRect, float pixelRatio)
+		: m_painter(painter)
+		, m_sceneRect(sceneRect)
+		, m_pixelRatio(pixelRatio)
 	{
 		drawGrid();
 		drawOrigin();
@@ -257,7 +253,7 @@ void Viewport::newDocumentOpened()
 	fitItemsInView(); // TODO delay after UI update
 }
 
-void Viewport::wheelEvent(QWheelEvent *event)
+void Viewport::wheelEvent(QWheelEvent* event)
 {
 	constexpr float SCALE_STEP = 0.2f;
 
@@ -268,23 +264,20 @@ void Viewport::wheelEvent(QWheelEvent *event)
 	event->accept();
 }
 
-void Viewport::mousePressEvent(QMouseEvent *event)
+void Viewport::mousePressEvent(QMouseEvent* event)
 {
-	const QPoint &mousePos = event->pos();
+	const QPoint& mousePos = event->pos();
 
 	switch (event->button()) {
-		case Qt::MiddleButton:
-		{
+		case Qt::MiddleButton: {
 			startMovement(mousePos);
 			break;
 		}
-		case Qt::LeftButton:
-		{
+		case Qt::LeftButton: {
 			startRubberBand(mousePos);
 			break;
 		}
-		default:
-		{
+		default: {
 			break;
 		}
 	}
@@ -292,19 +285,17 @@ void Viewport::mousePressEvent(QMouseEvent *event)
 	event->accept();
 }
 
-void Viewport::mouseReleaseEvent(QMouseEvent *event)
+void Viewport::mouseReleaseEvent(QMouseEvent* event)
 {
-	const QPoint &mousePos = event->pos();
+	const QPoint& mousePos = event->pos();
 
 	switch (event->button()) {
-		case Qt::LeftButton:
-		{
+		case Qt::LeftButton: {
 			const bool addToSelection = event->modifiers() & Qt::ControlModifier;
 			endRubberBand(mousePos, addToSelection);
 			break;
 		}
-		default:
-		{
+		default: {
 			break;
 		}
 	}
@@ -312,9 +303,9 @@ void Viewport::mouseReleaseEvent(QMouseEvent *event)
 	event->accept();
 }
 
-void Viewport::mouseMoveEvent(QMouseEvent *event)
+void Viewport::mouseMoveEvent(QMouseEvent* event)
 {
-	const QPoint &mousePos = event->pos();
+	const QPoint& mousePos = event->pos();
 	const Qt::MouseButtons buttons = event->buttons();
 
 	if (buttons & Qt::MiddleButton) {
@@ -330,20 +321,19 @@ void Viewport::mouseMoveEvent(QMouseEvent *event)
 	emit cursorMoved(mapToScene(mousePos));
 }
 
-void Viewport::keyPressEvent(QKeyEvent *event)
+void Viewport::keyPressEvent(QKeyEvent* event)
 {
 	const int key = event->key();
 	const int modifier = event->modifiers();
 
 	if (key == Qt::Key_A && modifier & Qt::ControlModifier) {
 		selectAllItems();
-	}
-	else if (key == Qt::Key_Escape) {
+	} else if (key == Qt::Key_Escape) {
 		deselecteAllItems();
 	}
 }
 
-void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
+void Viewport::drawBackground(QPainter* painter, const QRectF& updatedRect)
 {
 
 	const QRect screenRect = rect();
@@ -358,8 +348,8 @@ void Viewport::drawBackground(QPainter *painter, const QRectF &updatedRect)
 	BackgroundPainter backgroundPainter(painter, sceneRect, pixelRatio);
 }
 
-Viewport::Viewport(model::Application &app)
-	:DocumentModelObserver(app)
+Viewport::Viewport(model::Application& app)
+	: DocumentModelObserver(app)
 {
 	// Setup default empty scene
 	setScene(new QGraphicsScene());

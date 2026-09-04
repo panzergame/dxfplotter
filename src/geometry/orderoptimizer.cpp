@@ -16,9 +16,9 @@ static int homeNodeId(int nbNodes)
 }
 
 OrderOptimizer::ModelBuilder::ModelBuilder(int nbNodes)
-	:circuit(builder.AddCircuitConstraint()),
-	arcsByNodes(nbNodes + 1),
-	nbNodes(nbNodes)
+	: circuit(builder.AddCircuitConstraint())
+	, arcsByNodes(nbNodes + 1)
+	, nbNodes(nbNodes)
 {
 }
 
@@ -30,14 +30,14 @@ void OrderOptimizer::ModelBuilder::addArc(const Node& n1, const Node& n2)
 	const int distance = nodeDistance(n1, n2);
 	pathLength += literal * distance;
 
-	arcsByNodes[n1.id].push_back({{}, n2.id, literal});
+	arcsByNodes[n1.id].push_back({ {}, n2.id, literal });
 }
 
 geometry::OrderOptimizer::Model OrderOptimizer::ModelBuilder::build()
 {
 	builder.Minimize(pathLength);
 
-	return {builder.Build(), arcsByNodes, nbNodes};
+	return { builder.Build(), arcsByNodes, nbNodes };
 }
 
 OrderOptimizer::Model OrderOptimizer::buildModel(const NodesPerGroup& nodesPerGroup, int nbNodes) const
@@ -62,8 +62,8 @@ OrderOptimizer::Model OrderOptimizer::buildModel(const NodesPerGroup& nodesPerGr
 
 	// Group inter connections with group of id + 1
 	for (int groupId = 0; groupId < lastGroupId; ++groupId) {
-		const Node::List &curNodes = nodesPerGroup[groupId];
-		const Node::List &nextNodes = nodesPerGroup[groupId + 1];
+		const Node::List& curNodes = nodesPerGroup[groupId];
+		const Node::List& nextNodes = nodesPerGroup[groupId + 1];
 
 		for (const Node& n1 : curNodes) {
 			for (const Node& n2 : nextNodes) {
@@ -72,16 +72,16 @@ OrderOptimizer::Model OrderOptimizer::buildModel(const NodesPerGroup& nodesPerGr
 		}
 	}
 
-	const Node home{{}, homeNodeId(nbNodes), {0.0f, 0.0f}};
+	const Node home { {}, homeNodeId(nbNodes), { 0.0f, 0.0f } };
 
 	// Home to first group nodes
-	const Node::List &firstGroupsNodes = nodesPerGroup.front();
+	const Node::List& firstGroupsNodes = nodesPerGroup.front();
 	for (const Node& node : firstGroupsNodes) {
 		modelBuilder.addArc(home, node);
 	}
 
 	// Last group nodes to home
-	const Node::List &lastGroupsNodes = nodesPerGroup.back();
+	const Node::List& lastGroupsNodes = nodesPerGroup.back();
 	for (const Node& node : lastGroupsNodes) {
 		modelBuilder.addArc(node, home);
 	}
@@ -93,7 +93,8 @@ std::vector<int> OrderOptimizer::solveAndExtractOrder(const Model& model)
 {
 	const ortools::CpSolverResponse response = ortools::Solve(model.proto);
 
-	if (response.status() != ortools::CpSolverStatus::OPTIMAL && response.status() != ortools::CpSolverStatus::FEASIBLE) {
+	if (response.status() != ortools::CpSolverStatus::OPTIMAL
+		&& response.status() != ortools::CpSolverStatus::FEASIBLE) {
 		return {};
 	}
 
@@ -122,10 +123,9 @@ OrderOptimizer::OrderOptimizer(const NodesPerGroup& nodesPerGroup, int nbNodes)
 	m_order = solveAndExtractOrder(model);
 }
 
-const std::vector<int> &OrderOptimizer::order() const
+const std::vector<int>& OrderOptimizer::order() const
 {
 	return m_order;
 }
-
 
 }

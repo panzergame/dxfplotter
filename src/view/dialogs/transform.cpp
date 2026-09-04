@@ -1,6 +1,5 @@
 #include <transform.h>
 
-
 namespace view::dialogs
 {
 
@@ -9,7 +8,7 @@ Transform::Transform()
 	setupUi(this);
 }
 
-const QTransform &Transform::matrix() const
+const QTransform& Transform::matrix() const
 {
 	return m_matrix;
 }

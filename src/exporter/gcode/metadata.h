@@ -26,13 +26,14 @@ private:
 	const config::Profiles::Profile::Gcode& m_gcode;
 	const float m_retractDepth;
 
-	std::string fastPlaneMoveGCode(const QVector2D &to) const;
+	std::string fastPlaneMoveGCode(const QVector2D& to) const;
 	std::string fastDepthMoveGCode(float to) const;
 	QJsonArray boundingRectGcodes() const;
 	QJsonDocument toJson() const;
 
 public:
-	explicit Metadata(const model::Document& document, const config::Profiles::Profile::Gcode& gcode, float retractDepth);
+	explicit Metadata(const model::Document& document, const config::Profiles::Profile::Gcode& gcode,
+					  float retractDepth);
 
 	std::string toComment() const;
 };

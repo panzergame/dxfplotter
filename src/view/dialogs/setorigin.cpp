@@ -1,6 +1,5 @@
 #include <setorigin.h>
 
-
 namespace view::dialogs
 {
 
@@ -27,15 +26,15 @@ QVector2D SetOrigin::boundingRectCornerPosition(Corner corner) const
 	}
 }
 
-SetOrigin::SetOrigin(const geometry::Rect &selectionBoundingRect)
-	:m_selectionBoundingRect(selectionBoundingRect)
+SetOrigin::SetOrigin(const geometry::Rect& selectionBoundingRect)
+	: m_selectionBoundingRect(selectionBoundingRect)
 {
 	setupUi(this);
 
 	setupButtonGroup();
 }
 
-const QTransform &SetOrigin::matrix() const
+const QTransform& SetOrigin::matrix() const
 {
 	return m_matrix;
 }

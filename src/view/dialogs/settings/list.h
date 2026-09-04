@@ -11,8 +11,8 @@ namespace view::settings
 class List : public QGroupBox, private Ui::List
 {
 public:
-	template <class Node>
-	explicit List(Node &node)
+	template<class Node>
+	explicit List(Node& node)
 	{
 		setupUi(this);
 

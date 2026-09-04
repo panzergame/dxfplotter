@@ -18,11 +18,11 @@ private:
 	std::unique_ptr<uint32_t[]> m_colors;
 	std::unique_ptr<uint32_t[]> m_indices;
 
-	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List &points);
+	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List& points);
 
 public:
 	ToolPath() = default;
-	explicit ToolPath(Qt3DCore::QEntity *parent, const model::Simulation::ToolPathPoint3D::List &points);
+	explicit ToolPath(Qt3DCore::QEntity* parent, const model::Simulation::ToolPathPoint3D::List& points);
 	~ToolPath();
 
 	const double (&boundingBox() const)[6];

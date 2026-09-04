@@ -16,24 +16,24 @@ class PathGroupSettings : public QObject
 	Q_OBJECT;
 
 private:
-	const model::Task &m_task;
+	const model::Task& m_task;
 
 	/** Return value of a path settings property if all path have
 	 * the same value for the given property.
-	 * 
+	 *
 	 * @tparam T The returned value type
 	 * @tparam Getter The member function used to acces the poperty.
 	 */
-	template <typename Getter, typename Return = typename common::MemberFunctionTraits<Getter>::Return>
-	std::optional<Return> valueIfAllEqual(Getter &&getter) const
+	template<typename Getter, typename Return = typename common::MemberFunctionTraits<Getter>::Return>
+	std::optional<Return> valueIfAllEqual(Getter&& getter) const
 	{
 		// Reference value of last path to compare with.
 		Return lastValue;
 		bool firstValue = true;
 		bool allEqual = true;
 
-		m_task.forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const model::Path &path){
-			const Return &value = (path.settings().*getter)();
+		m_task.forEachSelectedPath([&lastValue, &firstValue, &allEqual, &getter](const model::Path& path) {
+			const Return& value = (path.settings().*getter)();
 			if (!firstValue && lastValue != value) {
 				allEqual = false;
 			}
@@ -47,16 +47,16 @@ private:
 		return std::nullopt;
 	}
 
-	template <typename Setter, typename T>
-	void setValue(Setter &&setter, T value)
+	template<typename Setter, typename T>
+	void setValue(Setter&& setter, T value)
 	{
-		m_task.forEachSelectedPath([value, &setter](model::Path &path){
+		m_task.forEachSelectedPath([value, &setter](model::Path& path) {
 			(path.settings().*(std::forward<Setter>(setter)))(value);
 		});
 	}
 
 public:
-	explicit PathGroupSettings(const Task &task);
+	explicit PathGroupSettings(const Task& task);
 
 	std::optional<float> planeFeedRate() const;
 	void setPlaneFeedRate(float planeFeedRate);

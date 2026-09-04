@@ -12,10 +12,10 @@ private:
 	QVector2D m_end;
 
 public:
-	explicit Line(const QVector2D &start, const QVector2D& end);
+	explicit Line(const QVector2D& start, const QVector2D& end);
 
-	const QVector2D &start() const;
-	const QVector2D &end() const;
+	const QVector2D& start() const;
+	const QVector2D& end() const;
 
 	bool lengthNonZero() const;
 	float length() const;

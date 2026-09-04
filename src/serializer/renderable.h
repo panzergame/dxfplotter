@@ -12,8 +12,8 @@ namespace serializer
 template<>
 struct Access<model::Renderable>
 {
-	template <class Archive>
-	void save(Archive &archive, const model::Renderable &renderable, [[maybe_unused]] std::uint32_t const version) const
+	template<class Archive>
+	void save(Archive& archive, const model::Renderable& renderable, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 
@@ -21,8 +21,8 @@ struct Access<model::Renderable>
 		archive(cereal::make_nvp("visible", visible));
 	}
 
-	template <class Archive>
-	void load(Archive &archive, model::Renderable &renderable, [[maybe_unused]] std::uint32_t const version) const
+	template<class Archive>
+	void load(Archive& archive, model::Renderable& renderable, [[maybe_unused]] std::uint32_t const version) const
 	{
 		archive(cereal::make_nvp("name", renderable.m_name));
 
@@ -33,4 +33,3 @@ struct Access<model::Renderable>
 };
 
 }
-

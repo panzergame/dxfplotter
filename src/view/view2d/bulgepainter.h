@@ -10,14 +10,14 @@ namespace view::view2d
 class BulgePainter
 {
 private:
-	QPainterPath &m_painter;
+	QPainterPath& m_painter;
 
-	void lineToArcPoint(const QVector2D &center, float radius, float angle);
+	void lineToArcPoint(const QVector2D& center, float radius, float angle);
 
 public:
-	explicit BulgePainter(QPainterPath &painter);
+	explicit BulgePainter(QPainterPath& painter);
 
-	void operator()(const geometry::Bulge &bulge);
+	void operator()(const geometry::Bulge& bulge);
 };
 
 }
