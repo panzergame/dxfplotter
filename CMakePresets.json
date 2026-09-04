@@ -1,0 +1,19 @@
+{
+    "version": 8,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 23,
+        "patch": 0
+    },
+    "configurePresets": [
+        {
+            "name": "common",
+            "binaryDir": "build",
+            "generator": "Ninja",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "/home/tps/dev/qt/6.10.0/gcc_64/lib/cmake/",
+                "CMAKE_POLICY_VERSION_MINIMUM": "3.5"
+            }
+        }
+    ]
+}
