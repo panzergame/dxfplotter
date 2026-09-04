@@ -1,6 +1,30 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 4.0)
 set(CMAKE_POLICY_DEFAULT_CMP0091 NEW)
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
+
+set(CMAKE_CXX_MODULE_DYNDEP ON)
+
+# Enable module scanning in version 3.28 and above
+set(CMAKE_CXX_SCAN_FOR_MODULES ${CMAKE_CXX_MODULE_DYNDEP})
+
+# Enable module scanning in version 3.26 and 3.27 using extension key
+set(CMAKE_EXPERIMENTAL_CXX_MODULE_DYNDEP ${CMAKE_CXX_MODULE_DYNDEP})
+if (CMAKE_MAJOR_VERSION STREQUAL "3" AND CMAKE_MINOR_VERSION STREQUAL "26")
+    set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "2182bf5c-ef0d-489a-91da-49dbc3090d2a")
+elseif (CMAKE_MAJOR_VERSION STREQUAL "3" AND CMAKE_MINOR_VERSION STREQUAL "27")
+    set(CMAKE_EXPERIMENTAL_CXX_MODULE_CMAKE_API "aa1f7df0-828a-4fcd-9afc-2dc80491aca7")
+endif()
+
+# Allow cmake std module for stdlibc++ or msvc
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "4.3.0")
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
+elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.3")
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
+elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.0")
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "a9e1cf81-9932-4810-974b-6eccaf14e457")
+else()
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "0e5b6991-d74f-4b3d-a41c-cf096e0b2508")
+endif()
 
 project(dxfplotter)
 
@@ -45,7 +69,7 @@ set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
 find_package(codecov)
 
-find_package(PythonInterp REQUIRED)
+find_package(Python 3.10 REQUIRED)
 if (WITH_ORTOOLS)
 	find_package(ortools CONFIG REQUIRED)
 endif()
@@ -111,6 +135,10 @@ include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
 add_subdirectory(thirdparty EXCLUDE_FROM_ALL)
+
+include(cmake/modules.cmake)
+
+
 add_subdirectory(resource)
 add_subdirectory(src)
 
