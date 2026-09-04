@@ -16,31 +16,31 @@ private:
 	class PropertyVisitor
 	{
 	private:
-		Group &m_parent;
+		Group& m_parent;
 
 	public:
-		explicit PropertyVisitor(Group &parent)
-			:m_parent(parent)
+		explicit PropertyVisitor(Group& parent)
+			: m_parent(parent)
 		{
 		}
 
-		template <class ValueType>
-		void operator()(config::Property<ValueType> &property)
+		template<class ValueType>
+		void operator()(config::Property<ValueType>& property)
 		{
-			Entry<ValueType> *entry = new Entry<ValueType>(property, &m_parent);
+			Entry<ValueType>* entry = new Entry<ValueType>(property, &m_parent);
 
 			m_parent.formLayout->addRow(QString::fromStdString(property.name()), entry);
 		}
 
-		template <class Node>
-		void operator()(Node &)
+		template<class Node>
+		void operator()(Node&)
 		{
 		}
 	};
 
 public:
-	template <class Node>
-	explicit Group(Node &node)
+	template<class Node>
+	explicit Group(Node& node)
 	{
 		setupUi(this);
 

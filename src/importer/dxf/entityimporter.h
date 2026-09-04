@@ -24,43 +24,43 @@ public:
 	};
 
 protected:
-	Layer &m_layer;
-	const Settings &m_settings;
+	Layer& m_layer;
+	const Settings& m_settings;
 
-	void addPolyline(const geometry::Polyline &polyline);
+	void addPolyline(const geometry::Polyline& polyline);
 
 public:
-	explicit BaseEntityImporter(Layer &layer, const Settings &settings);
+	explicit BaseEntityImporter(Layer& layer, const Settings& settings);
 };
 
-template <typename Entity>
+template<typename Entity>
 class EntityImporter : public BaseEntityImporter
 {
 public:
 	using BaseEntityImporter::BaseEntityImporter;
 
-	void operator()(const Entity &entity);
+	void operator()(const Entity& entity);
 };
 
-template <>
-inline void EntityImporter<DRW_Point>::operator()(const DRW_Point &point)
+template<>
+inline void EntityImporter<DRW_Point>::operator()(const DRW_Point& point)
 {
 	const QVector2D pos(toVector2D(point.basePoint));
 	const geometry::Bulge bulge(pos, pos, 0.0f);
 
-	addPolyline(geometry::Polyline({bulge}));
+	addPolyline(geometry::Polyline({ bulge }));
 }
 
-template <>
-inline void EntityImporter<DRW_Line>::operator()(const DRW_Line &line)
+template<>
+inline void EntityImporter<DRW_Line>::operator()(const DRW_Line& line)
 {
 	const geometry::Bulge bulge(toVector2D(line.basePoint), toVector2D(line.secPoint), 0.0f);
 
-	addPolyline(geometry::Polyline({bulge}));
+	addPolyline(geometry::Polyline({ bulge }));
 }
 
-template <>
-inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwpolyline)
+template<>
+inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline& lwpolyline)
 {
 	const int size = lwpolyline.vertlist.size();
 	if (size <= 1) {
@@ -96,8 +96,8 @@ inline void EntityImporter<DRW_LWPolyline>::operator()(const DRW_LWPolyline &lwp
 	addPolyline(geometry::Polyline(std::move(bulges)));
 }
 
-template <>
-inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle &circle)
+template<>
+inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle& circle)
 {
 	const float radius = circle.radious;
 	const QVector2D center(toVector2D(circle.basePoint));
@@ -108,11 +108,11 @@ inline void EntityImporter<DRW_Circle>::operator()(const DRW_Circle &circle)
 	const geometry::Bulge b1(startPoint, endPoint, 1.0f);
 	const geometry::Bulge b2(endPoint, startPoint, 1.0f);
 
-	addPolyline(geometry::Polyline({b1, b2}));
+	addPolyline(geometry::Polyline({ b1, b2 }));
 }
 
-template <>
-inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
+template<>
+inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc& arc)
 {
 	const float radius = arc.radious;
 
@@ -128,7 +128,7 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 		const QVector2D end = relativeEnd + center;
 
 		const float theta = geometry::DeltaAngle(startAngle, endAngle);
-	    
+
 		// Dxf arcs are CCW
 		assert(theta > 0.0f);
 
@@ -145,26 +145,26 @@ inline void EntityImporter<DRW_Arc>::operator()(const DRW_Arc &arc)
 			const geometry::Bulge bulge1(start, middle, tangent);
 			const geometry::Bulge bulge2(middle, end, tangent);
 
-			addPolyline(geometry::Polyline({bulge1, bulge2}));
-		}
-		else {
+			addPolyline(geometry::Polyline({ bulge1, bulge2 }));
+		} else {
 			const float theta4 = theta / 4.0f;
 			const float tangent = std::tan(theta4);
 
 			const geometry::Bulge bulge(start, end, tangent);
 
-			addPolyline(geometry::Polyline({bulge}));
+			addPolyline(geometry::Polyline({ bulge }));
 		}
 	}
 }
 
-inline std::optional<geometry::Polyline> biarcToPolylineIfCloseEnough(const geometry::Biarc & biarc, const geometry::Bezier &bezier, const BaseEntityImporter::Settings &settings)
+inline std::optional<geometry::Polyline> biarcToPolylineIfCloseEnough(const geometry::Biarc& biarc,
+																	  const geometry::Bezier& bezier,
+																	  const BaseEntityImporter::Settings& settings)
 {
 	const float approximateBiarcLength = biarc.approximateLength();
 	if (approximateBiarcLength < settings.minimumArcLength) {
 		return std::make_optional(biarc.toLinePolyline());
-	}
-	else {
+	} else {
 		const float error = bezier.maxError(biarc);
 		if (error < settings.splineToArcPrecision) {
 			// The approximation is close enough.
@@ -175,10 +175,11 @@ inline std::optional<geometry::Polyline> biarcToPolylineIfCloseEnough(const geom
 	return std::nullopt;
 }
 
-inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, const BaseEntityImporter::Settings &settings)
+inline geometry::Polyline bezierToPolyline(const geometry::Bezier& rootBezier,
+										   const BaseEntityImporter::Settings& settings)
 {
 	// Queue of bezier to convert to biarc
-	std::stack<geometry::Bezier, geometry::Bezier::List> bezierStack({rootBezier});
+	std::stack<geometry::Bezier, geometry::Bezier::List> bezierStack({ rootBezier });
 
 	geometry::Polyline polyline;
 
@@ -191,10 +192,10 @@ inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, c
 				polyline += bezier.toLine();
 			}
 			continue;
-		}
-		else {
+		} else {
 			if (const std::optional<geometry::Biarc> optBiarc = bezier.toBiarc()) {
-				if (const std::optional<geometry::Polyline> optBiarcPolyline = biarcToPolylineIfCloseEnough(*optBiarc, bezier, settings)) {
+				if (const std::optional<geometry::Polyline> optBiarcPolyline
+					= biarcToPolylineIfCloseEnough(*optBiarc, bezier, settings)) {
 					polyline += *optBiarcPolyline;
 					continue;
 				}
@@ -210,70 +211,72 @@ inline geometry::Polyline bezierToPolyline(const geometry::Bezier &rootBezier, c
 	return polyline;
 }
 
-template <>
-inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline &spline)
+template<>
+inline void EntityImporter<DRW_Spline>::operator()(const DRW_Spline& spline)
 {
 	const bool closed = spline.flags & (1 << 0);
 
 	geometry::Point2DList controlPoints(spline.ncontrol);
-	std::transform(spline.controllist.begin(), spline.controllist.end(),
-		controlPoints.begin(), [](const std::shared_ptr<DRW_Coord>& coord){ return toVector2D(*coord); });
+	std::transform(spline.controllist.begin(), spline.controllist.end(), controlPoints.begin(),
+				   [](const std::shared_ptr<DRW_Coord>& coord) {
+					   return toVector2D(*coord);
+				   });
 
 	geometry::Bezier::List beziers;
 	const int degree = spline.degree;
 	switch (degree) {
-		case 2:
-		{
+		case 2: {
 			geometry::QuadraticSpline spline(std::move(controlPoints), closed);
 			beziers = spline.toBeziers();
 			break;
 		}
-		case 3:
-		{
+		case 3: {
 			geometry::CubicSpline spline(std::move(controlPoints), closed);
 			beziers = spline.toBeziers();
 			break;
 		}
-		default:
-		{
+		default: {
 			throw std::logic_error(fmt::format("Conversion of {}d spline not implemented", degree));
 			break;
 		}
 	}
 
 	geometry::Bezier::List convexBeziers;
-	for (const geometry::Bezier &bezier : beziers) {
+	for (const geometry::Bezier& bezier : beziers) {
 		geometry::Bezier::List splitted = bezier.splitToConvex();
 		convexBeziers.insert(convexBeziers.end(), splitted.begin(), splitted.end());
 	}
 
 	// Full spline polyline
 	geometry::Polyline polyline;
-	for (const geometry::Bezier &bezier : convexBeziers) {
+	for (const geometry::Bezier& bezier : convexBeziers) {
 		polyline += bezierToPolyline(bezier, m_settings);
 	}
 
 	addPolyline(polyline);
 }
 
-inline geometry::Polyline ellipseQuadrantToPolyline(const QVector2D &center, const QVector2D &axisStart, const QVector2D& axisEnd, const BaseEntityImporter::Settings &settings)
+inline geometry::Polyline ellipseQuadrantToPolyline(const QVector2D& center, const QVector2D& axisStart,
+													const QVector2D& axisEnd,
+													const BaseEntityImporter::Settings& settings)
 {
 	const QVector2D quadrantStart = center + axisStart;
 	const QVector2D quadrantEnd = center + axisEnd;
 	constexpr float magicNumber = 0.55228475f;
-	const geometry::Bezier quadrantBezier(quadrantStart, quadrantStart + axisEnd * magicNumber, quadrantEnd + axisStart * magicNumber, quadrantEnd);
+	const geometry::Bezier quadrantBezier(quadrantStart, quadrantStart + axisEnd * magicNumber,
+										  quadrantEnd + axisStart * magicNumber, quadrantEnd);
 
 	return bezierToPolyline(quadrantBezier, settings);
 }
 
-template <>
-inline void EntityImporter<DRW_Ellipse>::operator()(const DRW_Ellipse &ellipse)
+template<>
+inline void EntityImporter<DRW_Ellipse>::operator()(const DRW_Ellipse& ellipse)
 {
 	const QVector2D center(toVector2D(ellipse.basePoint));
 	const QVector2D axisMajor(toVector2D(ellipse.secPoint));
 	const QVector2D axisMinor = geometry::PerpendicularLine(axisMajor) * ellipse.ratio;
 
-	const QVector2D quadrantAxes[4] = {axisMajor, axisMinor, -axisMajor, -axisMinor};
+	const QVector2D quadrantAxes[4] = { axisMajor, axisMinor, -axisMajor, -axisMinor };
 
 	geometry::Polyline polyline;
 	for (int i = 3, j = 0; j < 4; i = j, ++j) {

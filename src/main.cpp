@@ -1,15 +1,17 @@
-#include <view/mainwindow.h>
 #include <model/application.h>
+#include <view/mainwindow.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QFontDatabase>
-#include <QFile>
 #include <QDebug>
+#include <QFile>
+#include <QFontDatabase>
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
-void setDarkPalette(QApplication &qapp)
+import model.module;
+
+void setDarkPalette(QApplication& qapp)
 {
 	QPalette palette;
 	palette.setColor(QPalette::Window, QColor(53, 53, 53));
@@ -26,11 +28,11 @@ void setDarkPalette(QApplication &qapp)
 	palette.setColor(QPalette::Highlight, QColor(42, 130, 218));
 	palette.setColor(QPalette::HighlightedText, Qt::black);
 
-    qapp.setStyle(QStyleFactory::create("fusion"));
+	qapp.setStyle(QStyleFactory::create("fusion"));
 	qapp.setPalette(palette);
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 	Q_INIT_RESOURCE(resource);
 
@@ -45,11 +47,11 @@ int main(int argc, char *argv[])
 	parser.addPositionalArgument("file", "input file");
 
 	QCommandLineOption toolOption("t", QCoreApplication::translate("main", "Select tool"),
-		QCoreApplication::translate("main", "tool"));
+								  QCoreApplication::translate("main", "tool"));
 	parser.addOption(toolOption);
 
 	QCommandLineOption profileOption("p", QCoreApplication::translate("main", "Select profile"),
-		QCoreApplication::translate("main", "profile"));
+									 QCoreApplication::translate("main", "profile"));
 	parser.addOption(profileOption);
 
 	parser.process(qapp);

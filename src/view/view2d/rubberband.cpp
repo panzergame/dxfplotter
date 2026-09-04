@@ -10,7 +10,8 @@ static const QBrush borderBrush(QColor(0, 0, 255, 255));
 static const QBrush fillBrush(QColor(0, 0, 255, 100));
 static const QPen borderPen(borderBrush, 0.0f);
 
-void RubberBand::paint(QPainter *painter, [[maybe_unused]] const QStyleOptionGraphicsItem *option, [[maybe_unused]] QWidget *widget)
+void RubberBand::paint(QPainter* painter, [[maybe_unused]] const QStyleOptionGraphicsItem* option,
+					   [[maybe_unused]] QWidget* widget)
 {
 	painter->setPen(borderPen);
 	painter->drawRect(m_rectf);
@@ -33,7 +34,7 @@ bool RubberBand::empty(int tolerance) const
 	return (normalizedRect.width() < tolerance) && (normalizedRect.height() < tolerance);
 }
 
-void RubberBand::start(const QPoint& screenStartCorner, const QPointF &sceneStartCorner)
+void RubberBand::start(const QPoint& screenStartCorner, const QPointF& sceneStartCorner)
 {
 	setVisible(true);
 	prepareGeometryChange();
@@ -42,7 +43,7 @@ void RubberBand::start(const QPoint& screenStartCorner, const QPointF &sceneStar
 	m_rectf = QRectF(sceneStartCorner, sceneStartCorner);
 }
 
-void RubberBand::update(const QPoint& screenEndCorner, const QPointF &sceneEndCorner)
+void RubberBand::update(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
 {
 	prepareGeometryChange();
 
@@ -50,7 +51,7 @@ void RubberBand::update(const QPoint& screenEndCorner, const QPointF &sceneEndCo
 	m_rectf.setBottomRight(sceneEndCorner);
 }
 
-void RubberBand::end(const QPoint& screenEndCorner, const QPointF &sceneEndCorner)
+void RubberBand::end(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
 {
 	update(screenEndCorner, sceneEndCorner);
 

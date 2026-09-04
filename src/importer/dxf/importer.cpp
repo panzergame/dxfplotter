@@ -8,17 +8,18 @@
 namespace importer::dxf
 {
 
-void Importer::addLayer(const DRW_Layer &layer)
+void Importer::addLayer(const DRW_Layer& layer)
 {
 	if (layer.plotF) {
-		const std::string &name = layer.name;
+		const std::string& name = layer.name;
 		m_nameToLayers.emplace(name, Layer(name));
 	}
 }
 
-Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength, float minimumArcLength)
-	:m_entityImporterSettings({splineToArcPrecision, minimumSplineLength, minimumArcLength}),
-	m_ignoreEntities(false)
+Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength,
+				   float minimumArcLength)
+	: m_entityImporterSettings({ splineToArcPrecision, minimumSplineLength, minimumArcLength })
+	, m_ignoreEntities(false)
 {
 	Interface interface(*this);
 
@@ -31,8 +32,9 @@ Importer::Importer(const std::string& filename, float splineToArcPrecision, floa
 Layer::List Importer::layers() const
 {
 	Layer::List layers(m_nameToLayers.size());
-	std::transform(m_nameToLayers.begin(), m_nameToLayers.end(), layers.begin(),
-		[](const auto& pair){ return pair.second; });
+	std::transform(m_nameToLayers.begin(), m_nameToLayers.end(), layers.begin(), [](const auto& pair) {
+		return pair.second;
+	});
 
 	return layers;
 }
@@ -47,8 +49,8 @@ void Importer::endBlock()
 	m_ignoreEntities = false;
 }
 
-template <>
-void Importer::processEntity(const DRW_Layer &layer)
+template<>
+void Importer::processEntity(const DRW_Layer& layer)
 {
 	addLayer(layer);
 }

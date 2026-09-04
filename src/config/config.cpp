@@ -7,13 +7,12 @@
 namespace config
 {
 
-Config::Config(const std::string &filePath)
-	:m_filePath(filePath)
+Config::Config(const std::string& filePath)
+	: m_filePath(filePath)
 {
 	try {
 		m_yamlRoot = YAML::LoadFile(filePath);
-	}
-	catch (const YAML::BadFile&) {
+	} catch (const YAML::BadFile&) {
 		qInfo() << "Initializing configuration from defaults";
 	}
 
@@ -21,23 +20,21 @@ Config::Config(const std::string &filePath)
 	m_root = Root(m_yamlRoot);
 }
 
-Config::Config(const Config &other)
-	:m_filePath(other.m_filePath),
-	m_yamlRoot(Clone(other.m_yamlRoot)),
-	m_root(m_yamlRoot)
+Config::Config(const Config& other)
+	: m_filePath(other.m_filePath)
+	, m_yamlRoot(Clone(other.m_yamlRoot))
+	, m_root(m_yamlRoot)
 {
 }
 
-Config::~Config()
-{
-}
+Config::~Config() { }
 
-Root &Config::root()
+Root& Config::root()
 {
 	return m_root;
 }
 
-const Root &Config::root() const
+const Root& Config::root() const
 {
 	return m_root;
 }

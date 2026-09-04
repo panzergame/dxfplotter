@@ -18,7 +18,7 @@ namespace view
 namespace view2d
 {
 
-class Viewport;
+	class Viewport;
 
 }
 
@@ -27,14 +27,14 @@ class Info : public QWidget, private Ui::Info
 private:
 	QTimer m_timer;
 
-	void showTimedMessage(const QString &content);
+	void showTimedMessage(const QString& content);
 
 public:
-	explicit Info(const view2d::Viewport &viewport, const model::Application &app);
+	explicit Info(const view2d::Viewport& viewport, const model::Application& app);
 
 protected Q_SLOTS:
-	void cursorMoved(const QPointF &position);
-	void fileSaved(const QString &fileName);
+	void cursorMoved(const QPointF& position);
+	void fileSaved(const QString& fileName);
 	void hideMessage();
 };
 

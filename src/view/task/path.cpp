@@ -12,10 +12,18 @@ void Path::setupModel()
 
 	connect(&task(), &model::Task::selectionChanged, this, &Path::selectionChanged);
 
-	connectOnFieldChanged<double>(planeFeedRate, [this](double value) { m_groupSettings->setPlaneFeedRate(value); });
-	connectOnFieldChanged<double>(depthFeedRate, [this](double value) { m_groupSettings->setDepthFeedRate(value); });
-	connectOnFieldChanged<double>(intensity, [this](double value) { m_groupSettings->setIntensity(value); });
-	connectOnFieldChanged<double>(Ui::Path::depth, [this](double value) { m_groupSettings->setDepth(value); });
+	connectOnFieldChanged<double>(planeFeedRate, [this](double value) {
+		m_groupSettings->setPlaneFeedRate(value);
+	});
+	connectOnFieldChanged<double>(depthFeedRate, [this](double value) {
+		m_groupSettings->setDepthFeedRate(value);
+	});
+	connectOnFieldChanged<double>(intensity, [this](double value) {
+		m_groupSettings->setIntensity(value);
+	});
+	connectOnFieldChanged<double>(Ui::Path::depth, [this](double value) {
+		m_groupSettings->setDepth(value);
+	});
 }
 
 void Path::documentChanged()
@@ -24,9 +32,9 @@ void Path::documentChanged()
 	updateFieldVisibility(document()->toolConfig());
 }
 
-Path::Path(model::Application &app)
-	:DocumentModelObserver(app),
-	m_app(app)
+Path::Path(model::Application& app)
+	: DocumentModelObserver(app)
+	, m_app(app)
 {
 	setupUi(this);
 	connect(&m_app, &model::Application::toolChanged, this, &Path::toolChanged);
@@ -37,8 +45,7 @@ void Path::selectionChanged(bool empty)
 {
 	if (empty) {
 		stackedWidget->setCurrentWidget(pageNoSelection);
-	}
-	else {
+	} else {
 		updateFieldValue(planeFeedRate, m_groupSettings->planeFeedRate());
 		updateFieldValue(depthFeedRate, m_groupSettings->depthFeedRate());
 		updateFieldValue(intensity, m_groupSettings->intensity());

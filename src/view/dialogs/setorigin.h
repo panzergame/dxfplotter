@@ -13,25 +13,20 @@ namespace view::dialogs
 class SetOrigin : public QDialog, private Ui::SetOrigin
 {
 private:
-	const geometry::Rect &m_selectionBoundingRect;
+	const geometry::Rect& m_selectionBoundingRect;
 	QTransform m_matrix;
 
 	QButtonGroup m_buttonGroup;
 
-	enum class Corner {
-		BottomLeft = 0,
-		TopLeft,
-		BottomRight,
-		TopRight
-	};
+	enum class Corner { BottomLeft = 0, TopLeft, BottomRight, TopRight };
 
 	void setupButtonGroup();
 	QVector2D boundingRectCornerPosition(Corner corner) const;
 
 public:
-	explicit SetOrigin(const geometry::Rect &selectionBoundingRect);
+	explicit SetOrigin(const geometry::Rect& selectionBoundingRect);
 
-	const QTransform &matrix() const;
+	const QTransform& matrix() const;
 
 	void accept() override;
 };

@@ -1,6 +1,5 @@
 #include <mirror.h>
 
-
 namespace view::dialogs
 {
 
@@ -9,7 +8,7 @@ Mirror::Mirror()
 	setupUi(this);
 }
 
-const QTransform &Mirror::matrix() const
+const QTransform& Mirror::matrix() const
 {
 	return m_matrix;
 }

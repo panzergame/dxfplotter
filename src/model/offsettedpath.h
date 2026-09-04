@@ -21,25 +21,21 @@ class OffsettedPath : public QObject
 	friend serializer::Access<OffsettedPath>;
 
 public:
-	enum class Direction
-	{
-		LEFT = 0,
-		RIGHT
-	};
+	enum class Direction { LEFT = 0, RIGHT };
 
 private:
 	geometry::Polyline::List m_polylines;
 	Direction m_direction;
 
 public:
-	explicit OffsettedPath(geometry::Polyline::List &&offsettedPolylines, Direction direction);
+	explicit OffsettedPath(geometry::Polyline::List&& offsettedPolylines, Direction direction);
 	explicit OffsettedPath(const OffsettedPath& other);
 	explicit OffsettedPath() = default;
 
-	const geometry::Polyline::List &polylines() const;
+	const geometry::Polyline::List& polylines() const;
 	geometry::CuttingDirection cuttingDirection() const;
 
-	void transform(const QTransform &matrix);
+	void transform(const QTransform& matrix);
 
 	geometry::Rect boundingRect() const;
 

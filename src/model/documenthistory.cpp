@@ -16,7 +16,7 @@ bool DocumentHistory::isCurrentDocumentFirstOfHistory() const
 }
 
 DocumentHistory::DocumentHistory(const Document& initialDocument)
-	:m_currentDocumentIt(m_documentHistory.insert(m_documentHistory.end(), initialDocument))
+	: m_currentDocumentIt(m_documentHistory.insert(m_documentHistory.end(), initialDocument))
 {
 }
 
@@ -34,7 +34,7 @@ void DocumentHistory::takeSnapshot(const Document& currentDocument)
 	m_currentDocumentIt = m_documentHistory.insert(m_documentHistory.end(), currentDocument);
 }
 
-const Document &DocumentHistory::undo()
+const Document& DocumentHistory::undo()
 {
 	if (!isCurrentDocumentFirstOfHistory()) {
 		--m_currentDocumentIt;
@@ -43,7 +43,7 @@ const Document &DocumentHistory::undo()
 	return *m_currentDocumentIt;
 }
 
-const Document &DocumentHistory::redo()
+const Document& DocumentHistory::redo()
 {
 	if (!isCurrentDocumentLastOfHistory()) {
 		++m_currentDocumentIt;

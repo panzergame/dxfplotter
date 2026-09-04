@@ -17,7 +17,7 @@ protected:
 	bool closed() const;
 
 public:
-	explicit Spline(Point2DList &&points, bool closed);
+	explicit Spline(Point2DList&& points, bool closed);
 };
 
 }

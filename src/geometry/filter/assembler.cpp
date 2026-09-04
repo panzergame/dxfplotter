@@ -5,20 +5,23 @@
 namespace geometry::filter
 {
 
-Assembler::ChainBuilder::ChainBuilder(const Tip::List &tips, std::set<PolylineIndex> &unconnectedPolylines, const KDTree &tree, PolylineIndex index, float closeTolerance)
-	:m_chain{{index, Item::Direction::NORMAL}},
-	m_tips(tips),
-	m_unconnectedPolylines(unconnectedPolylines),
-	m_tree(tree),
-	m_startIndex(index),
-	m_closeTolerance(closeTolerance),
+Assembler::ChainBuilder::ChainBuilder(const Tip::List& tips, std::set<PolylineIndex>& unconnectedPolylines,
+									  const KDTree& tree, PolylineIndex index, float closeTolerance)
+	: m_chain { { index, Item::Direction::NORMAL } }
+	, m_tips(tips)
+	, m_unconnectedPolylines(unconnectedPolylines)
+	, m_tree(tree)
+	, m_startIndex(index)
+	, m_closeTolerance(closeTolerance)
+	,
 	// Expand chain before polyline
-	m_closed(expandSide(std::front_inserter(m_chain), Tip::Type::START) || expandSide(std::back_inserter(m_chain), Tip::Type::END))
+	m_closed(expandSide(std::front_inserter(m_chain), Tip::Type::START)
+			 || expandSide(std::back_inserter(m_chain), Tip::Type::END))
 {
 }
 
 /// Average point at p1 end and p2 start and assign middle point to both
-static void averageStartEndPolyline(Polyline &first, Polyline &second)
+static void averageStartEndPolyline(Polyline& first, Polyline& second)
 {
 	const QVector2D middlePoint = (first.end() + second.start()) / 2.0f;
 	first.end() = middlePoint;
@@ -28,7 +31,7 @@ static void averageStartEndPolyline(Polyline &first, Polyline &second)
 Polyline Assembler::ChainBuilder::mergedPolyline(const Polyline::List& polylines) const
 {
 	// Initialise with first polyline
-	const Item &firstItem = m_chain.front();
+	const Item& firstItem = m_chain.front();
 	Polyline mergedPolyline = polylines[firstItem.polylineIndex];
 	if (firstItem.dir == Item::Direction::INVERT) {
 		mergedPolyline.invert();
@@ -52,8 +55,8 @@ Polyline Assembler::ChainBuilder::mergedPolyline(const Polyline::List& polylines
 	return mergedPolyline;
 }
 
-Assembler::TipAdaptor::TipAdaptor(const Tip::List &tips)
-	:m_tips(tips)
+Assembler::TipAdaptor::TipAdaptor(const Tip::List& tips)
+	: m_tips(tips)
 {
 }
 
@@ -72,15 +75,15 @@ Assembler::Tip::List Assembler::constructTips()
 	Tip::List tips; // TODO reserve and std::transform
 
 	for (int i = 0, size = m_unmergedPolylines.size(); i < size; ++i) {
-		const Polyline &polyline = m_unmergedPolylines[i];
-		tips.push_back({{}, i, polyline.start(), Tip::Type::START});
-		tips.push_back({{}, i, polyline.end(), Tip::Type::END});
+		const Polyline& polyline = m_unmergedPolylines[i];
+		tips.push_back({ {}, i, polyline.start(), Tip::Type::START });
+		tips.push_back({ {}, i, polyline.end(), Tip::Type::END });
 	}
 
 	return tips;
 }
 
-Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree) const
+Polyline::List Assembler::connectTips(const Tip::List& tips, const KDTree& tree) const
 {
 	// Generate all unconnected polyline index.
 	std::set<PolylineIndex> unconnectedPolylines;
@@ -102,16 +105,15 @@ Polyline::List Assembler::connectTips(const Tip::List &tips, const KDTree &tree)
 	return mergedPolylines;
 }
 
-Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
-	:m_closeTolerance(closeTolerance)
+Assembler::Assembler(Polyline::List&& polylines, float closeTolerance)
+	: m_closeTolerance(closeTolerance)
 {
 	// Dispatch polylines to already merged or not merged.
 	for (Polyline& polyline : polylines) {
 		// Point polylines cannot be merged to others and so are ignored.
 		if (polyline.isPoint()) {
 			m_mergedPolylines.emplace_back(std::move(polyline));
-		}
-		else {
+		} else {
 			m_unmergedPolylines.emplace_back(std::move(polyline));
 		}
 	}
@@ -127,10 +129,11 @@ Assembler::Assembler(Polyline::List &&polylines, float closeTolerance)
 	// Merge all unmerged polylines.
 	const Polyline::List mergedPolylines = connectTips(tips, tree);
 	// Concat all merged polylines.
-    m_mergedPolylines.insert(m_mergedPolylines.end(), std::move_iterator(mergedPolylines.begin()), std::move_iterator(mergedPolylines.end()));
+	m_mergedPolylines.insert(m_mergedPolylines.end(), std::move_iterator(mergedPolylines.begin()),
+							 std::move_iterator(mergedPolylines.end()));
 }
 
-Polyline::List &&Assembler::polylines()
+Polyline::List&& Assembler::polylines()
 {
 	return std::move(m_mergedPolylines);
 }

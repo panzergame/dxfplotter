@@ -22,17 +22,18 @@ class Renderable : public QObject
 private:
 	std::string m_name;
 
-	struct {
+	struct
+	{
 		bool m_selected : 1;
 		bool m_visible : 1;
 	};
 
 public:
-	explicit Renderable(const std::string &name);
+	explicit Renderable(const std::string& name);
 	explicit Renderable() = default;
-	explicit Renderable(const Renderable &other);
+	explicit Renderable(const Renderable& other);
 
-	const std::string &name() const;
+	const std::string& name() const;
 
 	bool visible() const;
 	void setVisible(bool visible);

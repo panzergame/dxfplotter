@@ -9,28 +9,27 @@
 
 class QComboBox;
 
-
 namespace view
 {
 
 namespace simulation
 {
 
-class Simulation;
+	class Simulation;
 
 }
 
 class MainWindow : public QMainWindow, private Ui::MainWindow
 {
 private:
-	model::Application &m_app;
+	model::Application& m_app;
 
-	simulation::Simulation *m_simulation;
+	simulation::Simulation* m_simulation;
 
 	QActionGroup m_openedDocumentActions;
 
-	QWidget *setupLeftPanel();
-	QWidget *setupCenterPanel();
+	QWidget* setupLeftPanel();
+	QWidget* setupCenterPanel();
 	void setupToolBar();
 	void setupUi();
 	void setupMenuActions();
@@ -38,10 +37,10 @@ private:
 
 	void setDocumentToolsEnabled(bool enabled);
 
-	QString defaultFileName(const QString &extension) const;
+	QString defaultFileName(const QString& extension) const;
 
 public:
-	explicit MainWindow(model::Application &app);
+	explicit MainWindow(model::Application& app);
 
 protected Q_SLOTS:
 	void openFile();
@@ -53,8 +52,8 @@ protected Q_SLOTS:
 	void transformSelection();
 	void mirrorSelection();
 	void setSelectionOrigin();
-	void newDocumentOpened(model::Document *newDocument);
-	void displayError(const QString &message);
+	void newDocumentOpened(model::Document* newDocument);
+	void displayError(const QString& message);
 	void simulate();
 	void optimizeOrder();
 };

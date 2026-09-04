@@ -39,7 +39,7 @@ static std::string configFilePath()
 	return path.toStdString();
 }
 
-void Application::setOpenedDocument(Document::UPtr &&document)
+void Application::setOpenedDocument(Document::UPtr&& document)
 {
 	m_openedDocument = std::move(document);
 	m_documentHistory = std::make_unique<DocumentHistory>(*m_openedDocument);
@@ -47,12 +47,11 @@ void Application::setOpenedDocument(Document::UPtr &&document)
 	emit newDocumentOpened(m_openedDocument.get());
 }
 
-void Application::setRestoredDocument(const Document &documentVersion)
+void Application::setRestoredDocument(const Document& documentVersion)
 {
 	m_openedDocument = std::make_unique<Document>(documentVersion);
 	emit documentRestoredFromHistory(m_openedDocument.get());
 }
-
 
 QString Application::baseName(const QString& fileName)
 {
@@ -68,13 +67,14 @@ void Application::resetLastSavedFileNames()
 
 PathSettings Application::defaultPathSettings() const
 {
-	const config::Profiles::Profile::DefaultPath &defaultPath = m_defaultProfileConfig->defaultPath();
-	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(), defaultPath.depth());
+	const config::Profiles::Profile::DefaultPath& defaultPath = m_defaultProfileConfig->defaultPath();
+	return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(),
+						defaultPath.depth());
 }
 
-const config::Tools::Tool *Application::findTool(const std::string &name) const
+const config::Tools::Tool* Application::findTool(const std::string& name) const
 {
-	const config::Tools &tools = m_config.root().tools();
+	const config::Tools& tools = m_config.root().tools();
 	if (tools.has(name)) {
 		return &tools[name];
 	}
@@ -82,9 +82,9 @@ const config::Tools::Tool *Application::findTool(const std::string &name) const
 	return nullptr;
 }
 
-const config::Profiles::Profile *Application::findProfile(const std::string &name) const
+const config::Profiles::Profile* Application::findProfile(const std::string& name) const
 {
-	const config::Profiles &profiles = m_config.root().profiles();
+	const config::Profiles& profiles = m_config.root().profiles();
 	if (profiles.has(name)) {
 		return &profiles[name];
 	}
@@ -94,18 +94,18 @@ const config::Profiles::Profile *Application::findProfile(const std::string &nam
 
 void Application::cutterCompensation(float scale)
 {
-	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf& dxf = m_config.root().import().dxf();
 
 	const float radius = m_openedDocument->toolConfig().general().radius();
 	const float scaledRadius = radius * scale;
 
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.cutterCompensationSelection(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 }
 
-geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Polyline::List &&rawPolylines) const
+geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Polyline::List&& rawPolylines) const
 {
-	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf& dxf = m_config.root().import().dxf();
 
 	geometry::filter::RemoveExactDuplicate removeExactDuplicate(std::move(rawPolylines));
 
@@ -120,8 +120,8 @@ geometry::Polyline::List Application::postProcessImportedPolylines(geometry::Pol
 Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer& importer)
 {
 	Layer::ListUPtr layers;
-	for (importer::dxf::Layer &importerLayer : importer.layers()) {
-		const std::string &layerName = importerLayer.name();
+	for (importer::dxf::Layer& importerLayer : importer.layers()) {
+		const std::string& layerName = importerLayer.name();
 		geometry::Polyline::List polylines = postProcessImportedPolylines(importerLayer.polylines());
 
 		// Create paths from merged and cleaned polylines of one layer
@@ -132,7 +132,7 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 
 	Task::UPtr task = std::make_unique<Task>(std::move(layers));
 
-	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf& dxf = m_config.root().import().dxf();
 	if (dxf.sortPathByLength()) {
 		task->sortPathsByLength();
 	}
@@ -141,29 +141,31 @@ Task::UPtr Application::createTaskFromDxfImporter(const importer::dxf::Importer&
 }
 
 Application::Application()
-	:m_config(configFilePath()),
+	: m_config(configFilePath())
+	,
 	// Default select first tool
-	m_defaultToolConfig(&m_config.root().tools().first()),
+	m_defaultToolConfig(&m_config.root().tools().first())
+	,
 	// Default select first profile
 	m_defaultProfileConfig(&m_config.root().profiles().first())
 {
 }
 
-config::Config &Application::config()
+config::Config& Application::config()
 {
 	return m_config;
 }
 
-void Application::setConfig(config::Config &&config)
+void Application::setConfig(config::Config&& config)
 {
 	m_config = std::move(config);
 	emit configChanged(m_config);
 }
 
-bool Application::selectTool(const QString &toolName)
+bool Application::selectTool(const QString& toolName)
 {
 	const std::string name = toolName.toStdString();
-	const config::Tools::Tool *tool = findTool(name);
+	const config::Tools::Tool* tool = findTool(name);
 
 	if (tool) {
 		if (m_openedDocument) {
@@ -178,17 +180,17 @@ bool Application::selectTool(const QString &toolName)
 	return false;
 }
 
-void Application::defaultToolFromCmd(const QString &toolName)
+void Application::defaultToolFromCmd(const QString& toolName)
 {
 	if (!selectTool(toolName)) {
 		qCritical() << "Invalid tool name " << toolName;
 	}
 }
 
-bool Application::selectProfile(const QString &profileName)
+bool Application::selectProfile(const QString& profileName)
 {
 	const std::string name = profileName.toStdString();
-	const config::Profiles::Profile *profile = findProfile(name);
+	const config::Profiles::Profile* profile = findProfile(name);
 
 	if (profile) {
 		if (m_openedDocument) {
@@ -202,36 +204,36 @@ bool Application::selectProfile(const QString &profileName)
 	return false;
 }
 
-void Application::defaultProfileFromCmd(const QString &profileName)
+void Application::defaultProfileFromCmd(const QString& profileName)
 {
 	if (!selectProfile(profileName)) {
 		qCritical() << "Invalid profile name " << profileName;
 	}
 }
 
-const QString &Application::lastHandledFileBaseName() const
+const QString& Application::lastHandledFileBaseName() const
 {
 	return m_lastHandledFileBaseName;
 }
 
-const QString &Application::lastSavedDxfplotFileName() const
+const QString& Application::lastSavedDxfplotFileName() const
 {
 	return m_lastSavedDxfplotFileName;
 }
 
-const QString &Application::lastSavedGcodeFileName() const
+const QString& Application::lastSavedGcodeFileName() const
 {
 	return m_lastSavedGcodeFileName;
 }
 
-void Application::loadFileFromCmd(const QString &fileName)
+void Application::loadFileFromCmd(const QString& fileName)
 {
 	if (!fileName.isEmpty()) {
 		loadFile(fileName);
 	}
 }
 
-bool Application::loadFile(const QString &fileName)
+bool Application::loadFile(const QString& fileName)
 {
 	qInfo() << "Opening " << fileName;
 
@@ -243,11 +245,9 @@ bool Application::loadFile(const QString &fileName)
 		if (!loadFromDxf(fileName)) {
 			return false;
 		}
-	}
-	else if (mineName == "text/plain") {
+	} else if (mineName == "text/plain") {
 		loadFromDxfplot(fileName);
-	}
-	else {
+	} else {
 		qCritical() << "Invalid file type: " << fileName;
 		return false;
 	}
@@ -263,16 +263,17 @@ bool Application::loadFile(const QString &fileName)
 	return true;
 }
 
-bool Application::loadFromDxf(const QString &fileName)
+bool Application::loadFromDxf(const QString& fileName)
 {
-	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf& dxf = m_config.root().import().dxf();
 
 	try {
-		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(), dxf.minimumArcLength());
- 
-		setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig, *m_defaultProfileConfig));
-	}
-	catch (const common::FileCouldNotOpenException&) {
+		importer::dxf::Importer importer(fileName.toStdString(), dxf.splineToArcPrecision(), dxf.minimumSplineLength(),
+										 dxf.minimumArcLength());
+
+		setOpenedDocument(std::make_unique<Document>(createTaskFromDxfImporter(importer), *m_defaultToolConfig,
+													 *m_defaultProfileConfig));
+	} catch (const common::FileCouldNotOpenException&) {
 		qCritical() << "File not found:" << fileName;
 		return false;
 	}
@@ -280,43 +281,39 @@ bool Application::loadFromDxf(const QString &fileName)
 	return true;
 }
 
-bool Application::loadFromDxfplot(const QString &fileName)
+bool Application::loadFromDxfplot(const QString& fileName)
 {
 	try {
 		importer::dxfplot::Importer importer(m_config.root().tools(), m_config.root().profiles());
- 
+
 		setOpenedDocument(importer(fileName.toStdString()));
-	}
-	catch (const common::FileCouldNotOpenException&) {
+	} catch (const common::FileCouldNotOpenException&) {
 		return false;
 	}
 
 	return true;
 }
 
-bool Application::saveToGcode(const QString &fileName)
+bool Application::saveToGcode(const QString& fileName)
 {
 	try {
 		const exporter::gcode::Exporter::Options options = static_cast<exporter::gcode::Exporter::Options>(
-			exporter::gcode::Exporter::ExportConfig |
-			exporter::gcode::Exporter::ExportMetadata
-		);
+			exporter::gcode::Exporter::ExportConfig | exporter::gcode::Exporter::ExportMetadata);
 
-		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(),options);
+		exporter::gcode::Exporter exporter(m_openedDocument->toolConfig(), m_openedDocument->profileConfig(), options);
 		const bool saved = saveToFile(exporter, fileName);
 		if (saved) {
 			m_lastSavedGcodeFileName = fileName;
 		}
 		return saved;
-	}
-	catch (const std::exception &exception) {
+	} catch (const std::exception& exception) {
 		emit errorRaised(exception.what());
 	}
 
 	return false;
 }
 
-bool Application::saveToDxfplot(const QString &fileName)
+bool Application::saveToDxfplot(const QString& fileName)
 {
 	exporter::dxfplot::Exporter exporter;
 
@@ -344,7 +341,7 @@ void Application::rightCutterCompensation()
 
 void Application::resetCutterCompensation()
 {
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.resetCutterCompensationSelection();
 
 	takeDocumentSnapshot();
@@ -352,10 +349,10 @@ void Application::resetCutterCompensation()
 
 void Application::pocketSelection()
 {
-	const config::Import::Dxf &dxf = m_config.root().import().dxf();
+	const config::Import::Dxf& dxf = m_config.root().import().dxf();
 	const float radius = m_openedDocument->toolConfig().general().radius();
 
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.pocketSelection(radius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 
 	takeDocumentSnapshot();
@@ -363,13 +360,13 @@ void Application::pocketSelection()
 
 geometry::Rect Application::selectionBoundingRect() const
 {
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	return task.selectionBoundingRect();
 }
 
 void Application::transformSelection(const QTransform& matrix)
 {
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.transformSelection(matrix);
 
 	takeDocumentSnapshot();
@@ -377,7 +374,7 @@ void Application::transformSelection(const QTransform& matrix)
 
 void Application::hideSelection()
 {
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.hideSelection();
 
 	takeDocumentSnapshot();
@@ -385,7 +382,7 @@ void Application::hideSelection()
 
 void Application::showHidden()
 {
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.showHidden();
 
 	takeDocumentSnapshot();
@@ -393,9 +390,9 @@ void Application::showHidden()
 
 void Application::optimizeOrder()
 {
-	const config::Optimize &optimize = m_config.root().optimize();
+	const config::Optimize& optimize = m_config.root().optimize();
 
-	Task &task = m_openedDocument->task();
+	Task& task = m_openedDocument->task();
 	task.optimizeOrder(optimize.maintainPathLengthOrder(), optimize.lengthPrecision(), optimize.distancePrecision());
 }
 

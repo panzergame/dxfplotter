@@ -20,19 +20,19 @@ class Polyline : public common::Aggregable<Polyline>
 private:
 	Bulge::List m_bulges;
 
-	explicit Polyline(const cavc::Polyline<double> &polyline);
+	explicit Polyline(const cavc::Polyline<double>& polyline);
 	cavc::Polyline<double> toCavc() const;
 	cavc::Polyline<double> toCavc(Orientation expectedOrientation) const;
 	cavc::Polyline<double> toCavc(bool inverse) const;
 
 public:
 	explicit Polyline() = default;
-	explicit Polyline(Bulge::List &&bulges);
+	explicit Polyline(Bulge::List&& bulges);
 
-	const QVector2D &start() const;
-	QVector2D &start();
-	const QVector2D &end() const;
-	QVector2D &end();
+	const QVector2D& start() const;
+	QVector2D& start();
+	const QVector2D& end() const;
+	QVector2D& end();
 
 	bool isClosed() const;
 	bool isPoint() const;
@@ -44,34 +44,34 @@ public:
 
 	Rect boundingRect() const;
 
-	Polyline &invert();
+	Polyline& invert();
 	Polyline inverse() const;
 
-	Polyline& operator+=(const Polyline &other);
+	Polyline& operator+=(const Polyline& other);
 
-	template <class Functor>
-	void forEachBulge(Functor &&functor) const
+	template<class Functor>
+	void forEachBulge(Functor&& functor) const
 	{
-		for (const Bulge &bulge : m_bulges) {
+		for (const Bulge& bulge : m_bulges) {
 			functor(bulge);
 		}
 	}
 
-	template <class Functor>
-	void transformBulge(Functor &&functor)
+	template<class Functor>
+	void transformBulge(Functor&& functor)
 	{
-		for (Bulge &bulge : m_bulges) {
+		for (Bulge& bulge : m_bulges) {
 			functor(bulge);
 		}
 	}
 
 	Polyline::List offsetted(float margin) const;
 
-	void transform(const QTransform &matrix);
+	void transform(const QTransform& matrix);
 
-	bool operator==(const Polyline &other) const;
+	bool operator==(const Polyline& other) const;
 
-	bool equals(const Polyline &other, bool inverse) const;
+	bool equals(const Polyline& other, bool inverse) const;
 };
 
 }

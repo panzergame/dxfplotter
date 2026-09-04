@@ -14,7 +14,7 @@ namespace view::task
 class Path : public model::DocumentModelObserver<QWidget>, private Ui::Path
 {
 private:
-	model::Application &m_app;
+	model::Application& m_app;
 
 	std::unique_ptr<model::PathGroupSettings> m_groupSettings;
 
@@ -24,25 +24,24 @@ private:
 
 	void updateFieldVisibility(const config::Tools::Tool& tool);
 
-	template <typename ValueType, class Field>
-	void connectOnFieldChanged(Field *field, std::function<void (ValueType)> &&func)
+	template<typename ValueType, class Field>
+	void connectOnFieldChanged(Field* field, std::function<void(ValueType)>&& func)
 	{
 		disconnect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), nullptr, nullptr);
 
-		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), [this, func](ValueType value){
+		connect(field, static_cast<void (Field::*)(ValueType)>(&Field::valueChanged), [this, func](ValueType value) {
 			func(value);
 
 			m_app.takeDocumentSnapshot();
 		});
 	}
 
-	template <class Field, typename T>
-	void updateFieldValue(Field *field, std::optional<T> &&valueOpt)
+	template<class Field, typename T>
+	void updateFieldValue(Field* field, std::optional<T>&& valueOpt)
 	{
 		if (valueOpt) {
 			field->setValue(*valueOpt);
-		}
-		else {
+		} else {
 			field->clear();
 		}
 	}
@@ -53,8 +52,7 @@ protected:
 	void documentChanged() override;
 
 public:
-	explicit Path(model::Application &app);
-
+	explicit Path(model::Application& app);
 };
 
 }

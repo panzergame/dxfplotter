@@ -2,7 +2,6 @@
 
 #include <config/config.h>
 
-
 namespace view
 {
 
@@ -13,8 +12,8 @@ void Profile::updateAllComboBoxesItems()
 }
 
 Profile::Profile(model::Application& app)
-	:DocumentModelObserver(app),
-	m_app(app)
+	: DocumentModelObserver(app)
+	, m_app(app)
 {
 	setupUi(this);
 
@@ -28,10 +27,11 @@ Profile::Profile(model::Application& app)
 void Profile::documentChanged()
 {
 	toolComboBox->setCurrentText(QString::fromStdString(document()->toolConfig().name()));
-	profileComboBox->setCurrentText(QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
+	profileComboBox->setCurrentText(
+		QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
 }
 
-void Profile::configChanged([[maybe_unused]] const config::Config &config)
+void Profile::configChanged([[maybe_unused]] const config::Config& config)
 {
 	updateAllComboBoxesItems();
 }

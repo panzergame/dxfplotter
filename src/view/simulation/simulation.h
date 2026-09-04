@@ -13,8 +13,8 @@ namespace view::simulation
 namespace internal
 {
 
-class Scene;
-class Viewport;
+	class Scene;
+	class Viewport;
 
 }
 

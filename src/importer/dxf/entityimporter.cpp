@@ -4,8 +4,8 @@ namespace importer::dxf
 {
 
 BaseEntityImporter::BaseEntityImporter(Layer& layer, const Settings& settings)
-	:m_layer(layer),
-	m_settings(settings)
+	: m_layer(layer)
+	, m_settings(settings)
 {
 }
 

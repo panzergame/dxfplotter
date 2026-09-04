@@ -22,12 +22,12 @@
 namespace view
 {
 
-QWidget *MainWindow::setupLeftPanel()
+QWidget* MainWindow::setupLeftPanel()
 {
-	task::Task *task = new task::Task(m_app);
-	task::Path *path = new task::Path(m_app);
+	task::Task* task = new task::Task(m_app);
+	task::Path* path = new task::Path(m_app);
 
-	QSplitter *vertSplitter = new QSplitter(Qt::Vertical, this);
+	QSplitter* vertSplitter = new QSplitter(Qt::Vertical, this);
 	vertSplitter->addWidget(task);
 	vertSplitter->addWidget(path);
 	vertSplitter->setStretchFactor(0, 1);
@@ -36,24 +36,24 @@ QWidget *MainWindow::setupLeftPanel()
 	return vertSplitter;
 }
 
-QWidget *MainWindow::setupCenterPanel()
+QWidget* MainWindow::setupCenterPanel()
 {
-	view2d::Viewport *viewport2d = new view2d::Viewport(m_app);
+	view2d::Viewport* viewport2d = new view2d::Viewport(m_app);
 	m_simulation = new simulation::Simulation();
-	Info *info = new Info(*viewport2d, m_app);
+	Info* info = new Info(*viewport2d, m_app);
 
-	QSplitter *splitter = new QSplitter(Qt::Horizontal, this);
+	QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
 	splitter->addWidget(viewport2d);
 	splitter->addWidget(m_simulation);
 	splitter->setStretchFactor(0, 1);
 	splitter->setStretchFactor(1, 0);
 
-	QVBoxLayout *layout = new QVBoxLayout();
+	QVBoxLayout* layout = new QVBoxLayout();
 	layout->addWidget(splitter);
 	layout->addWidget(info);
 	layout->setStretch(0, 1);
 
-	QWidget *container = new QWidget(this);
+	QWidget* container = new QWidget(this);
 	container->setLayout(layout);
 
 	return container;
@@ -61,7 +61,7 @@ QWidget *MainWindow::setupCenterPanel()
 
 void MainWindow::setupToolBar()
 {
-	Profile *profileBar = new Profile(m_app);
+	Profile* profileBar = new Profile(m_app);
 	toolBar->addWidget(profileBar);
 }
 
@@ -69,7 +69,7 @@ void MainWindow::setupUi()
 {
 	Ui::MainWindow::setupUi(this);
 
-	QSplitter *horiSplitter = new QSplitter(Qt::Horizontal, this);
+	QSplitter* horiSplitter = new QSplitter(Qt::Horizontal, this);
 	horiSplitter->addWidget(setupLeftPanel());
 	horiSplitter->addWidget(setupCenterPanel());
 	horiSplitter->setStretchFactor(0, 0);
@@ -134,15 +134,14 @@ void MainWindow::setDocumentToolsEnabled(bool enabled)
 	m_openedDocumentActions.setEnabled(enabled);
 }
 
-QString MainWindow::defaultFileName(const QString &extension) const
+QString MainWindow::defaultFileName(const QString& extension) const
 {
 	return m_app.lastHandledFileBaseName() + extension;
 }
 
-
-MainWindow::MainWindow(model::Application &app)
-	:m_app(app),
-	m_openedDocumentActions(this)
+MainWindow::MainWindow(model::Application& app)
+	: m_app(app)
+	, m_openedDocumentActions(this)
 {
 	setupUi();
 	setupMenuActions();
@@ -169,8 +168,8 @@ void MainWindow::saveFile()
 	const QString lastFileName = m_app.lastSavedDxfplotFileName();
 	if (lastFileName.isEmpty()) {
 		saveAsFile();
-	}
-	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Dxfplot); !m_app.saveToDxfplot(fileName)) {
+	} else if (const QString fileName = defaultFileName(model::Application::FileExtension::Dxfplot);
+			   !m_app.saveToDxfplot(fileName)) {
 		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
@@ -190,8 +189,8 @@ void MainWindow::exportFile()
 	const QString lastFileName = m_app.lastSavedGcodeFileName();
 	if (lastFileName.isEmpty()) {
 		exportAsFile();
-	}
-	else if (const QString fileName = defaultFileName(model::Application::FileExtension::Gcode); !m_app.saveToGcode(fileName)) {
+	} else if (const QString fileName = defaultFileName(model::Application::FileExtension::Gcode);
+			   !m_app.saveToGcode(fileName)) {
 		QMessageBox::critical(this, "Error", "Couldn't save " + fileName);
 	}
 }
@@ -210,7 +209,7 @@ void MainWindow::openSettings()
 {
 	config::Config newConfig = m_app.config();
 
-	const bool accepted = [&newConfig]{
+	const bool accepted = [&newConfig] {
 		settings::Settings settings(newConfig);
 		return (settings.exec() == QDialog::Accepted);
 	}();
@@ -250,14 +249,14 @@ void MainWindow::setSelectionOrigin()
 	}
 }
 
-void MainWindow::newDocumentOpened(model::Document *newDocument)
+void MainWindow::newDocumentOpened(model::Document* newDocument)
 {
 	setDocumentToolsEnabled((newDocument != nullptr));
 
 	m_simulation->hide();
 }
 
-void MainWindow::displayError(const QString &message)
+void MainWindow::displayError(const QString& message)
 {
 	QMessageBox messageBox;
 	messageBox.critical(this, "Error", message);

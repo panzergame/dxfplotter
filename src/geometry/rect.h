@@ -14,11 +14,11 @@ private:
 
 public:
 	Rect() = default;
-	explicit Rect(const QVector2D &v);
-	explicit Rect(const QVector2D &v1, const QVector2D& v2);
+	explicit Rect(const QVector2D& v);
+	explicit Rect(const QVector2D& v1, const QVector2D& v2);
 
-	const QVector2D &min() const;
-	const QVector2D &max() const;
+	const QVector2D& min() const;
+	const QVector2D& max() const;
 
 	QVector2D bottomLeft() const;
 	QVector2D topLeft() const;
@@ -28,8 +28,8 @@ public:
 	QRectF toQt() const;
 
 	Rect operator|(const Rect& other) const;
-	Rect &operator|=(const Rect& other);
-	Rect operator+(const QVector2D &v);
+	Rect& operator|=(const Rect& other);
+	Rect operator+(const QVector2D& v);
 };
 
 }

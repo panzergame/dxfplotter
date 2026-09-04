@@ -5,14 +5,14 @@
 namespace geometry
 {
 
-CubicSpline::CubicSpline(Point2DList &&points, bool closed)
-	:Spline(std::move(points), closed)
+CubicSpline::CubicSpline(Point2DList&& points, bool closed)
+	: Spline(std::move(points), closed)
 {
 }
 
 Point2DList CubicSpline::convertClosedToCubicBezierPoints() const
 {
-	const Point2DList &allControlPoints = controlPoints();
+	const Point2DList& allControlPoints = controlPoints();
 	const int nbcontrol = allControlPoints.size();
 
 	const int size = nbcontrol * 3 + 1;
@@ -42,7 +42,7 @@ Point2DList CubicSpline::convertClosedToCubicBezierPoints() const
 	return bezierPoints;
 }
 
-Bezier::List CubicSpline::pointsToBeziers(const Point2DList &bezierPoints) const
+Bezier::List CubicSpline::pointsToBeziers(const Point2DList& bezierPoints) const
 {
 	const int size = bezierPoints.size();
 	Bezier::List beziers(size / 3);
@@ -56,7 +56,7 @@ Bezier::List CubicSpline::pointsToBeziers(const Point2DList &bezierPoints) const
 
 Point2DList CubicSpline::convertOpenedToCubicBezierPoints() const
 {
-	const Point2DList &allControlPoints = controlPoints();
+	const Point2DList& allControlPoints = controlPoints();
 	const int nbcontrol = allControlPoints.size();
 	const int lastcontrol = nbcontrol - 1;
 
@@ -80,7 +80,8 @@ Point2DList CubicSpline::convertOpenedToCubicBezierPoints() const
 		bezierPoints[last - src] = allControlPoints[lastcontrol - src];
 	}
 
-	// Copy of remaining raw points from 2 ... -3 to 3 6 9 ... -10 -7 -4 (every 3 with 6 point distance from begin and end).
+	// Copy of remaining raw points from 2 ... -3 to 3 6 9 ... -10 -7 -4 (every 3 with 6 point distance from begin and
+	// end).
 	for (int src = 2, dst = 3; src < (nbcontrol - 2); ++src, dst += 3) {
 		bezierPoints[dst] = allControlPoints[src];
 	}
@@ -110,6 +111,5 @@ Bezier::List CubicSpline::toBeziers() const
 
 	return pointsToBeziers(bezierPoints);
 }
-
 
 }

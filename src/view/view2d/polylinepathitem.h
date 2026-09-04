@@ -20,7 +20,7 @@ private:
 	std::unique_ptr<OffsettedPolylinePathItem> m_offsettedPath;
 
 	QPainterPath paintPath() const;
-	static QPainterPath shapePath(const QPainterPath &basePath);
+	static QPainterPath shapePath(const QPainterPath& basePath);
 
 	void setupPaths();
 
@@ -30,9 +30,9 @@ private:
 	void setSelected(bool selected) override;
 
 public:
-	explicit PolylinePathItem(model::Path &path);
+	explicit PolylinePathItem(model::Path& path);
 
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) override;
+	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
 
 	QPainterPath shape() const override;
 

@@ -22,20 +22,21 @@ private:
 	std::unordered_map<std::string, Layer> m_nameToLayers;
 	bool m_ignoreEntities;
 
-	void addLayer(const DRW_Layer &layer);
+	void addLayer(const DRW_Layer& layer);
 
 public:
-	explicit Importer(const std::string &filename, float splineToArcPrecision, float minimumSplineLength, float minimumArcLength);
+	explicit Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength,
+					  float minimumArcLength);
 
 	Layer::List layers() const;
 
-	template <class Entity>
-	void processEntity(const Entity &entity)
+	template<class Entity>
+	void processEntity(const Entity& entity)
 	{
 		if (!m_ignoreEntities) {
 			auto it = m_nameToLayers.find(entity.layer);
 			if (it != m_nameToLayers.end()) {
-				Layer &layer = it->second;
+				Layer& layer = it->second;
 
 				EntityImporter<Entity> entityImporter(layer, m_entityImporterSettings);
 				entityImporter(entity);
@@ -47,7 +48,7 @@ public:
 	void endBlock();
 };
 
-template <>
-void Importer::processEntity(const DRW_Layer &layer);
+template<>
+void Importer::processEntity(const DRW_Layer& layer);
 
 }

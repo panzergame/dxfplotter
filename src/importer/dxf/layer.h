@@ -20,10 +20,9 @@ public:
 
 	void addPolyline(const geometry::Polyline& polyline);
 
-	geometry::Polyline::List &&polylines();
+	geometry::Polyline::List&& polylines();
 
 	const std::string& name() const;
 };
 
 }
-

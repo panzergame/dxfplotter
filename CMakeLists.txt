@@ -147,7 +147,7 @@ if (BUILD_TESTING)
 endif()
 
 add_executable(dxfplotter src/main.cpp)
-target_link_libraries(dxfplotter ${LINK_LIBRARIES})
+target_link_libraries(dxfplotter ${LINK_LIBRARIES} model_module)
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)

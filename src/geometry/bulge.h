@@ -40,16 +40,16 @@ public:
 	 * Negative tangent means the arc goes clockwise from start to end,
 	 * otherwise anti clockwise from start to end.
 	 */
-	explicit Bulge(const QVector2D &start, const QVector2D &end, float tangent);
-	explicit Bulge(const cavc::PlineVertex<double> &v1, const cavc::PlineVertex<double> &v2);
+	explicit Bulge(const QVector2D& start, const QVector2D& end, float tangent);
+	explicit Bulge(const cavc::PlineVertex<double>& v1, const cavc::PlineVertex<double>& v2);
 	explicit Bulge() = default;
 
-	const QVector2D &start() const;
-	QVector2D &start();
-	const QVector2D &end() const;
-	QVector2D &end();
+	const QVector2D& start() const;
+	QVector2D& start();
+	const QVector2D& end() const;
+	QVector2D& end();
 	float tangent() const;
-	float &tangent();
+	float& tangent();
 
 	float length() const;
 
@@ -61,9 +61,9 @@ public:
 	void linify();
 
 	// Extend bulge start point
-	Bulge extendStart(const QVector2D &start) const;
+	Bulge extendStart(const QVector2D& start) const;
 	// Extend bulge end point
-	Bulge extendEnd(const QVector2D &end) const;
+	Bulge extendEnd(const QVector2D& end) const;
 
 	bool isLine() const;
 	bool isArc() const;
@@ -73,7 +73,7 @@ public:
 	Arc toArc() const;
 	Line toLine() const;
 
-	void transform(const QTransform &matrix);
+	void transform(const QTransform& matrix);
 
 	bool operator==(const Bulge& other) const;
 

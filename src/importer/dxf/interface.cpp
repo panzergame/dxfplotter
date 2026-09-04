@@ -6,12 +6,12 @@
 namespace importer::dxf
 {
 
-Interface::Interface(Importer &importer)
-	:m_importer(importer)
+Interface::Interface(Importer& importer)
+	: m_importer(importer)
 {
 }
 
-#define PRINT_FUNC //std::cout << __func__ << std::endl;
+#define PRINT_FUNC // std::cout << __func__ << std::endl;
 
 void Interface::addHeader(const DRW_Header* data)
 {
@@ -158,62 +158,62 @@ void Interface::addText(const DRW_Text& data)
 	PRINT_FUNC;
 }
 
-void Interface::addDimAlign(const DRW_DimAligned *data)
+void Interface::addDimAlign(const DRW_DimAligned* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimLinear(const DRW_DimLinear *data)
+void Interface::addDimLinear(const DRW_DimLinear* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimRadial(const DRW_DimRadial *data)
+void Interface::addDimRadial(const DRW_DimRadial* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimDiametric(const DRW_DimDiametric *data)
+void Interface::addDimDiametric(const DRW_DimDiametric* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimAngular(const DRW_DimAngular *data)
+void Interface::addDimAngular(const DRW_DimAngular* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimAngular3P(const DRW_DimAngular3p *data)
+void Interface::addDimAngular3P(const DRW_DimAngular3p* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addDimOrdinate(const DRW_DimOrdinate *data)
+void Interface::addDimOrdinate(const DRW_DimOrdinate* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addLeader(const DRW_Leader *data)
+void Interface::addLeader(const DRW_Leader* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addHatch(const DRW_Hatch *data)
+void Interface::addHatch(const DRW_Hatch* data)
 {
 	PRINT_FUNC;
 }
-	
+
 void Interface::addViewport(const DRW_Viewport& data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::addImage(const DRW_Image *data)
+void Interface::addImage(const DRW_Image* data)
 {
 	PRINT_FUNC;
 }
 
-void Interface::linkImage(const DRW_ImageDef *data)
+void Interface::linkImage(const DRW_ImageDef* data)
 {
 	PRINT_FUNC;
 }
@@ -223,7 +223,7 @@ void Interface::addComment(const char* comment)
 	PRINT_FUNC;
 }
 
-void Interface::addPlotSettings(const DRW_PlotSettings *data)
+void Interface::addPlotSettings(const DRW_PlotSettings* data)
 {
 	PRINT_FUNC;
 }
@@ -284,4 +284,3 @@ void Interface::writeAppId()
 }
 
 }
-

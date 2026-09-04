@@ -13,13 +13,12 @@ private:
 	const geometry::Polyline m_polylineInverse;
 
 	bool needPolylineInverse() const;
-	const geometry::Polyline &polylineForward() const;
-	const geometry::Polyline &polylineBackward() const;
+	const geometry::Polyline& polylineForward() const;
+	const geometry::Polyline& polylineBackward() const;
 
 public:
-	explicit PassesIterator(const geometry::Polyline &polyline, geometry::CuttingDirection direction);
+	explicit PassesIterator(const geometry::Polyline& polyline, geometry::CuttingDirection direction);
 
-	const geometry::Polyline &operator*() const;
-	PassesIterator &operator++();
+	const geometry::Polyline& operator*() const;
+	PassesIterator& operator++();
 };
-

@@ -22,7 +22,7 @@ void PointPathItem::setupPosition()
 }
 
 PointPathItem::PointPathItem(model::Path& path)
-	:BasicPathItem(path)
+	: BasicPathItem(path)
 {
 	setPath(shapePath());
 	setFlag(QGraphicsItem::ItemIgnoresTransformations);
@@ -30,7 +30,7 @@ PointPathItem::PointPathItem(model::Path& path)
 	setupPosition();
 }
 
-void PointPathItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void PointPathItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
 {
 	BasicPathItem::paint(painter, option, widget);
 

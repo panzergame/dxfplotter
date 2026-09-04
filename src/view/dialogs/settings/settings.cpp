@@ -15,25 +15,22 @@ namespace view::settings
 class Settings::NodeVisitor
 {
 private:
-	QWidget *m_newWidget;
+	QWidget* m_newWidget;
 
 public:
-	template <class ... Child>
-	void operator()(config::Group<Child ...> &node)
+	template<class... Child>
+	void operator()(config::Group<Child...>& node)
 	{
 		m_newWidget = new Group(node);
 	}
 
-	template <class Child>
-	void operator()(config::List<Child> &node)
+	template<class Child>
+	void operator()(config::List<Child>& node)
 	{
 		m_newWidget = new List(node);
 	}
 
-	QWidget *newWidget() const
-	{
-		return m_newWidget;
-	}
+	QWidget* newWidget() const { return m_newWidget; }
 };
 
 void Settings::setupUi()
@@ -45,9 +42,9 @@ void Settings::setupUi()
 	treeView->resizeColumnToContents(0);
 }
 
-Settings::Settings(config::Config &newConfig)
-	:m_newConfig(newConfig),
-	m_model(new TreeModel(m_newConfig.root(), this))
+Settings::Settings(config::Config& newConfig)
+	: m_newConfig(newConfig)
+	, m_model(new TreeModel(m_newConfig.root(), this))
 {
 	setupUi();
 
@@ -56,15 +53,15 @@ Settings::Settings(config::Config &newConfig)
 
 Settings::~Settings() = default;
 
-void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
+void Settings::currentChanged(const QModelIndex& current, const QModelIndex&)
 {
 	// Create new widget to be displayed at center
 	NodeVisitor visitor;
 	m_model->visit(current, visitor);
 
 	// Replace old center widget
-	QWidget *newWidget = visitor.newWidget();
-	QLayoutItem *item = gridLayout->replaceWidget(center, newWidget);
+	QWidget* newWidget = visitor.newWidget();
+	QLayoutItem* item = gridLayout->replaceWidget(center, newWidget);
 	center = newWidget;
 
 	// Delete old center widget
@@ -75,7 +72,9 @@ void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 	addButton->setEnabled(isList);
 
 	if (isList) {
-		connect(addButton, &QPushButton::pressed, this, [current, this](){ addItem(current); });
+		connect(addButton, &QPushButton::pressed, this, [current, this]() {
+			addItem(current);
+		});
 	}
 
 	const bool isItem = m_model->isItem(current);
@@ -85,45 +84,47 @@ void Settings::currentChanged(const QModelIndex &current, const QModelIndex &)
 	copyButton->setEnabled(isItem);
 
 	if (isItem) {
-		connect(removeButton, &QPushButton::pressed, this, [current, this](){ removeItem(current); });
-		connect(copyButton, &QPushButton::pressed, this, [current, this](){ copyItem(current); });
+		connect(removeButton, &QPushButton::pressed, this, [current, this]() {
+			removeItem(current);
+		});
+		connect(copyButton, &QPushButton::pressed, this, [current, this]() {
+			copyItem(current);
+		});
 	}
 }
 
-void Settings::addItem(const QModelIndex &index)
+void Settings::addItem(const QModelIndex& index)
 {
 	bool ok;
-	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-		tr("New name:"), QLineEdit::Normal, "", &ok);
+	const QString text
+		= QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"), QLineEdit::Normal, "", &ok);
 
 	if (ok) {
 		if (text.isEmpty()) {
 			QMessageBox::critical(this, "Error", "Invalid name");
-		}
-		else {
+		} else {
 			m_model->addItem(index, text);
 		}
 	}
 }
 
-void Settings::removeItem(const QModelIndex &index)
+void Settings::removeItem(const QModelIndex& index)
 {
 	m_model->removeItem(index);
 }
 
-void Settings::copyItem(const QModelIndex &index)
+void Settings::copyItem(const QModelIndex& index)
 {
 	const QString sourceName = m_model->data(index).toString();
 
 	bool ok;
-	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"),
-		tr("New name:"), QLineEdit::Normal, sourceName, &ok);
+	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"), QLineEdit::Normal,
+											   sourceName, &ok);
 
 	if (ok) {
 		if (text.isEmpty() || text == sourceName) {
 			QMessageBox::critical(this, "Error", "Invalid name");
-		}
-		else {
+		} else {
 			m_model->copyItem(index, text);
 		}
 	}

@@ -18,20 +18,20 @@ void Path::updateGlobalVisibility()
 	}
 }
 
-Path::Path(geometry::Polyline &&basePolyline, const std::string &name, const PathSettings &settings)
-	:Renderable(name),
-	m_basePolyline(basePolyline),
-	m_settings(settings),
-	m_globallyVisible(true)
+Path::Path(geometry::Polyline&& basePolyline, const std::string& name, const PathSettings& settings)
+	: Renderable(name)
+	, m_basePolyline(basePolyline)
+	, m_settings(settings)
+	, m_globallyVisible(true)
 {
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
 Path::Path(const Path& other)
-	:Renderable(other),
-	m_basePolyline(other.m_basePolyline),
-	m_settings(other.m_settings),
-	m_globallyVisible(other.m_globallyVisible)
+	: Renderable(other)
+	, m_basePolyline(other.m_basePolyline)
+	, m_settings(other.m_settings)
+	, m_globallyVisible(other.m_globallyVisible)
 {
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 
@@ -45,7 +45,8 @@ Path::Path()
 	connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
-Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const PathSettings &settings, const std::string &layerName)
+Path::ListUPtr Path::FromPolylines(geometry::Polyline::List&& polylines, const PathSettings& settings,
+								   const std::string& layerName)
 {
 	const int size = polylines.size();
 	Path::ListUPtr paths(size);
@@ -59,34 +60,34 @@ Path::ListUPtr Path::FromPolylines(geometry::Polyline::List &&polylines, const P
 	return paths;
 }
 
-Layer &Path::layer()
+Layer& Path::layer()
 {
 	return *m_layer;
 }
 
-const Layer &Path::layer() const
+const Layer& Path::layer() const
 {
 	return *m_layer;
 }
 
-void Path::setLayer(Layer &layer)
+void Path::setLayer(Layer& layer)
 {
 	m_layer = &layer;
 	updateGlobalVisibility();
 	connect(m_layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
 }
 
-const geometry::Polyline &Path::basePolyline() const
+const geometry::Polyline& Path::basePolyline() const
 {
 	return m_basePolyline;
 }
 
 geometry::Polyline::List Path::finalPolylines() const
 {
-	return m_offsettedPath ? m_offsettedPath->polylines() : geometry::Polyline::List{m_basePolyline};
+	return m_offsettedPath ? m_offsettedPath->polylines() : geometry::Polyline::List { m_basePolyline };
 }
 
-model::OffsettedPath *Path::offsettedPath() const
+model::OffsettedPath* Path::offsettedPath() const
 {
 	return m_offsettedPath.get();
 }
@@ -96,8 +97,8 @@ void Path::offset(float margin, float minimumPolylineLength, float minimumArcLen
 	geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
 	geometry::filter::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
 
-	const OffsettedPath::Direction direction = (margin > 0.0f) ?
-			OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
+	const OffsettedPath::Direction direction
+		= (margin > 0.0f) ? OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
 
 	geometry::Polyline::List cleanedPolylines = cleaner.polylines();
 	if (!cleanedPolylines.empty()) {
@@ -114,10 +115,11 @@ void Path::resetOffset()
 	emit offsettedPathChanged();
 }
 
-void Path::pocket(const Path::ListCPtr &islands, float scaledRadius, float minimumPolylineLength, float minimumArcLength)
+void Path::pocket(const Path::ListCPtr& islands, float scaledRadius, float minimumPolylineLength,
+				  float minimumArcLength)
 {
 	geometry::Polyline::ListCPtr polylineIslands(islands.size());
-	std::transform(islands.begin(), islands.end(), polylineIslands.begin(), [](const Path *path){
+	std::transform(islands.begin(), islands.end(), polylineIslands.begin(), [](const Path* path) {
 		return &path->basePolyline();
 	});
 
@@ -129,15 +131,15 @@ void Path::pocket(const Path::ListCPtr &islands, float scaledRadius, float minim
 		OffsettedPath::Direction::RIGHT, // Orientation::CW
 		OffsettedPath::Direction::LEFT // Orientation::CCW
 	};
-	const OffsettedPath::Direction direction = basePolylineOrientationToPocketDirection[static_cast<int>(pocketer.borderOrientation())];
+	const OffsettedPath::Direction direction
+		= basePolylineOrientationToPocketDirection[static_cast<int>(pocketer.borderOrientation())];
 
 	m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
 
 	emit offsettedPathChanged();
 }
 
-
-void Path::transform(const QTransform &matrix)
+void Path::transform(const QTransform& matrix)
 {
 	m_basePolyline.transform(matrix);
 	emit basePolylineTransformed();
@@ -149,8 +151,7 @@ void Path::transform(const QTransform &matrix)
 
 geometry::Rect Path::boundingRect() const
 {
-	return (m_offsettedPath) ? m_offsettedPath->boundingRect() :
-			 m_basePolyline.boundingRect();
+	return (m_offsettedPath) ? m_offsettedPath->boundingRect() : m_basePolyline.boundingRect();
 }
 
 bool Path::isPoint() const
@@ -158,20 +159,19 @@ bool Path::isPoint() const
 	return m_basePolyline.isPoint();
 }
 
-const model::PathSettings &Path::settings() const
+const model::PathSettings& Path::settings() const
 {
 	return m_settings;
 }
 
-model::PathSettings &Path::settings()
+model::PathSettings& Path::settings()
 {
 	return m_settings;
 }
 
 geometry::CuttingDirection Path::cuttingDirection() const
 {
-	return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() :
-			 geometry::CuttingDirection::FORWARD;
+	return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() : geometry::CuttingDirection::FORWARD;
 }
 
 bool Path::globallyVisible() const
@@ -180,4 +180,3 @@ bool Path::globallyVisible() const
 }
 
 }
-

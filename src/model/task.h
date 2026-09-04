@@ -24,61 +24,53 @@ private:
 	bool pathSelectionEmpty() const;
 
 public:
-	enum class MoveDirection
-	{
-		UP = -1,
-		DOWN = 1
-	};
+	enum class MoveDirection { UP = -1, DOWN = 1 };
 
-	enum class MoveTip
-	{
-		Top,
-		Bottom
-	};
+	enum class MoveTip { Top, Bottom };
 
 	explicit Task() = default;
-	explicit Task(Layer::ListUPtr &&layers);
-	explicit Task(const Task &other);
+	explicit Task(Layer::ListUPtr&& layers);
+	explicit Task(const Task& other);
 
 	int pathCount() const;
-	const Path &pathAt(int index) const;
-	Path &pathAt(int index);
-	int pathIndexFor(const Path &path) const;
+	const Path& pathAt(int index) const;
+	Path& pathAt(int index);
+	int pathIndexFor(const Path& path) const;
 
 	void movePath(int index, MoveDirection direction);
 	void movePathToTip(int index, MoveTip tip);
 
 	void sortPathsByLength();
 
-	template <class Functor>
-	void forEachPathInStack(Functor &&functor) const
+	template<class Functor>
+	void forEachPathInStack(Functor&& functor) const
 	{
-		for (const Path *path : m_stack) {
-			functor(*path);
-		}
-	}
-	
-	template <class Functor>
-	void forEachPath(Functor &&functor)
-	{
-		for (Path *path : m_paths) {
+		for (const Path* path : m_stack) {
 			functor(*path);
 		}
 	}
 
-	template <class Functor>
-	void forEachPath(Functor &&functor) const
+	template<class Functor>
+	void forEachPath(Functor&& functor)
 	{
-		for (const Path *path : m_paths) {
-			functor(static_cast<const Path &>(*path));
+		for (Path* path : m_paths) {
+			functor(*path);
 		}
 	}
 
-	template <class Functor>
-	void forEachSelectedPath(Functor &&functor) const
+	template<class Functor>
+	void forEachPath(Functor&& functor) const
+	{
+		for (const Path* path : m_paths) {
+			functor(static_cast<const Path&>(*path));
+		}
+	}
+
+	template<class Functor>
+	void forEachSelectedPath(Functor&& functor) const
 	{
 		const Path::ListPtr paths(m_paths);
-		for (Path *path : paths) {
+		for (Path* path : paths) {
 			if (path->selected()) {
 				functor(*path);
 			}
@@ -97,22 +89,21 @@ public:
 	geometry::Rect visibleBoundingRect() const;
 
 	int layerCount() const;
-	const Layer &layerAt(int index) const;
-	Layer &layerAt(int index);
-	int layerIndexFor(const Layer &layer) const;
-	std::pair<int, int> layerAndPathIndexFor(const Path &path) const;
+	const Layer& layerAt(int index) const;
+	Layer& layerAt(int index);
+	int layerIndexFor(const Layer& layer) const;
+	std::pair<int, int> layerAndPathIndexFor(const Path& path) const;
 
 Q_SIGNALS:
-	void pathSelectedChanged(Path &path, bool selected);
+	void pathSelectedChanged(Path& path, bool selected);
 	void selectionChanged(bool empty);
 	void pathOrderChanged();
 };
 
-template <typename T>
-inline T operator+(const T &a, const Task::MoveDirection& direction)
+template<typename T>
+inline T operator+(const T& a, const Task::MoveDirection& direction)
 {
 	return a + static_cast<int>(direction);
 }
 
 }
-

@@ -13,9 +13,9 @@ private:
 	Polyline::List m_polylines;
 
 public:
-	explicit Cleaner(Polyline::List &&polylines, float minimumPolylineLength, float minimumArcLength);
+	explicit Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength);
 
-	Polyline::List &&polylines();
+	Polyline::List&& polylines();
 };
 
 }
