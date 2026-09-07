@@ -1,16 +1,43 @@
-#include <toolpath.h>
+module;
 
+#include <Qt3DCore/QEntity>
 #include <QGeometry>
 #include <QGeometryRenderer>
 #include <QAttribute>
 #include <QBuffer>
-
 #include <Qt3DExtras/QPerVertexColorMaterial>
-
 #include <QByteArray>
-#include <QBuffer>
+#include <QDebug>
 
-#include <QDebug> // TODO
+export module view.simulation.internal.toolpath;
+
+import model.simulation;
+
+export namespace view::simulation::internal
+{
+
+struct PackedVector3D;
+
+class ToolPath : public Qt3DCore::QEntity
+{
+private:
+	double m_boundingBox[6];
+
+	std::unique_ptr<PackedVector3D[]> m_packedPoints;
+	std::unique_ptr<uint32_t[]> m_colors;
+	std::unique_ptr<uint32_t[]> m_indices;
+
+	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List& points);
+
+public:
+	ToolPath() = default;
+	explicit ToolPath(Qt3DCore::QEntity* parent, const model::Simulation::ToolPathPoint3D::List& points);
+	~ToolPath();
+
+	const double (&boundingBox() const)[6];
+};
+
+}
 
 namespace view::simulation::internal
 {

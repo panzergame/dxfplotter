@@ -117,6 +117,7 @@ set(LINK_LIBRARIES
 	view-simulation
 	view-simulation-internal
 	model
+	model-application
 	config
 	importer-dxf
 	importer-dxfplot
@@ -126,6 +127,7 @@ set(LINK_LIBRARIES
 	geometry
 	geometry-filter
 	common
+	serializer
 	libdxfrw
 	fmt::fmt
 	Qt6::Widgets

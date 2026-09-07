@@ -1,7 +1,11 @@
-#include <layer.h>
+module;
 
-import common.copy;
+#include <cstdint>
+#include <serializer/access.h>
+#include <QObject>
+#include <QtCore/qtmochelpers.h>
 
+module model.path;
 namespace model
 {
 
@@ -60,5 +64,3 @@ int Layer::childIndexFor(const Path& child) const
 }
 
 }
-
-#include "moc_layer.cpp"

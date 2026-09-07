@@ -1,9 +1,10 @@
-#include <model/application.h>
 
 #include <QStandardPaths>
 #include <QDebug>
 #include <QApplication>
 #include <QDir>
+
+import model.application;
 
 int main(int argc, char *argv[])
 {

@@ -1,19 +1,60 @@
-#include <offsettedpolylinepathitem.h>
-#include <bulgepainter.h>
+module;
 
+#include <QGraphicsPathItem>
 #include <QStyleOptionGraphicsItem>
 #include <QPen>
 #include <QDebug>
+#include <QtCore/qtmochelpers.h>
+
+export module view.view2d.offsettedpolylinepathitem;
+import view.view2d.bulgepainter;
 
 import geometry.arc;
+import model.path;
+import geometry.polyline;
+import model.offsettedpath;
+
+export namespace view::view2d
+{
+
+class OffsettedPolylinePathItem : public QObject, public QGraphicsPathItem
+{
+	Q_OBJECT;
+
+private:
+	const model::OffsettedPath& m_offsettedPath;
+	QPainterPath m_paintPath;
+
+	QPainterPath paintPath() const;
+
+	QPainterPath shape() const override;
+
+	void setupPaths();
+
+public:
+	explicit OffsettedPolylinePathItem(const model::OffsettedPath& offsettedPath);
+
+	void selected();
+	void deselected();
+
+protected Q_SLOTS:
+	void polylinesTransformed();
+};
+
+}
 
 namespace view::view2d
 {
 
-static const QBrush normalBrush(Qt::magenta);
-static const QBrush selectBrush(Qt::red);
-static const QPen normalPen(normalBrush, 0.0f);
-static const QPen selectPen(selectBrush, 0.0f);
+namespace
+{
+
+	const QBrush normalBrush(Qt::magenta);
+	const QBrush selectBrush(Qt::red);
+	const QPen normalPen(normalBrush, 0.0f);
+	const QPen selectPen(selectBrush, 0.0f);
+
+}
 
 QPainterPath OffsettedPolylinePathItem::paintPath() const
 {
@@ -74,4 +115,4 @@ void OffsettedPolylinePathItem::polylinesTransformed()
 
 }
 
-#include "moc_offsettedpolylinepathitem.cpp"
+#include "offsettedpolylinepathitem.moc"

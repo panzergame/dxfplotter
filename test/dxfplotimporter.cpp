@@ -1,12 +1,18 @@
-#include <exporterfixture.h>
-
-#include <exporter/dxfplot/exporter.h>
-#include <importer/dxfplot/importer.h>
 
 #include <sstream>
 
+#include <yaml-cpp/yaml.h>
+
+#include <QVector2D>
+#include <exporterfixture.h>
+
 import common.exception;
+import exporter.dxfplot.exporter;
 import geometry.bulge;
+import geometry.polyline;
+import importer.dxfplot.importer;
+import model.document;
+import model.task;
 
 TEST_F(ExporterFixture, shouldThrowExceptionWhenToolNotFound)
 {

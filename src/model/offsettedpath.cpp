@@ -1,4 +1,51 @@
-#include <offsettedpath.h>
+module;
+
+#include <cstdint>
+#include <serializer/access.h>
+#include <QObject>
+#include <QtCore/qtmochelpers.h>
+
+export module model.offsettedpath;
+
+import common.aggregable;
+import geometry.polyline;
+import geometry.rect;
+import geometry.utils;
+import model.pathsettings;
+import model.renderable;
+export namespace model
+{
+
+class OffsettedPath : public QObject
+{
+	Q_OBJECT
+
+	friend serializer::Access<OffsettedPath>;
+
+public:
+	enum class Direction { LEFT = 0, RIGHT };
+
+private:
+	geometry::Polyline::List m_polylines;
+	Direction m_direction;
+
+public:
+	explicit OffsettedPath(geometry::Polyline::List&& offsettedPolylines, Direction direction);
+	explicit OffsettedPath(const OffsettedPath& other);
+	explicit OffsettedPath() = default;
+
+	const geometry::Polyline::List& polylines() const;
+	geometry::CuttingDirection cuttingDirection() const;
+
+	void transform(const QTransform& matrix);
+
+	geometry::Rect boundingRect() const;
+
+Q_SIGNALS:
+	void polylinesTransformed();
+};
+
+}
 
 namespace model
 {
@@ -53,4 +100,4 @@ geometry::Rect OffsettedPath::boundingRect() const
 
 }
 
-#include "moc_offsettedpath.cpp"
+#include "offsettedpath.moc"

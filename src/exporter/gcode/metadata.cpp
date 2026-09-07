@@ -1,13 +1,42 @@
-#include <metadata.h>
-#include <postprocessor.h>
+module;
 
-#include <model/document.h>
-
+#include <string>
+#include <sstream>
+#include <QVector2D>
+#include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QJsonArray>
 
-#include <sstream>
+export module exporter.gcode.metadata;
+
+import config.config;
+import geometry.rect;
+import exporter.gcode.postprocessor;
+import model.document;
+
+export namespace exporter::gcode
+{
+
+class Metadata
+{
+private:
+	const geometry::Rect m_boundingRect;
+	const config::Profiles::Profile::Gcode& m_gcode;
+	const float m_retractDepth;
+
+	std::string fastPlaneMoveGCode(const QVector2D& to) const;
+	std::string fastDepthMoveGCode(float to) const;
+	QJsonArray boundingRectGcodes() const;
+	QJsonDocument toJson() const;
+
+public:
+	explicit Metadata(const model::Document& document, const config::Profiles::Profile::Gcode& gcode,
+					  float retractDepth);
+
+	std::string toComment() const;
+};
+
+}
 
 namespace exporter::gcode
 {

@@ -1,10 +1,13 @@
-#include <exporterfixture.h>
-
-#include <exporter/gcode/exporter.h>
 
 #include <sstream>
 
+#include <QVector2D>
+#include <exporterfixture.h>
+
+import exporter.gcode.exporter;
 import geometry.bulge;
+import geometry.polyline;
+import model.path;
 
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {

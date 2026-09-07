@@ -2,6 +2,7 @@
 #include <polylineutils.h>
 
 import geometry.pocketer;
+import geometry.polyline;
 import geometry.utils;
 
 TEST(PocketerTest, ShouldKeepBorderOrientationWhenBorderCcw)

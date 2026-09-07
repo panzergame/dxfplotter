@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <QtMath>
 
+#include <QVector2D>
+
 import geometry.bulge;
 import geometry.utils;
 

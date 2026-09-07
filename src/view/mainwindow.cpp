@@ -1,15 +1,8 @@
-#include <mainwindow.h>
-#include <info.h>
-#include <profile.h>
-#include <task/path.h>
-#include <task/task.h>
-#include <view2d/viewport.h>
-#include <simulation/simulation.h>
-#include <dialogs/settings/settings.h>
-#include <dialogs/transform.h>
-#include <dialogs/mirror.h>
-#include <dialogs/setorigin.h>
+module;
 
+#include <uic/ui_mainwindow.h>
+#include <QMainWindow>
+#include <QActionGroup>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -18,6 +11,69 @@
 #include <QErrorMessage>
 #include <QThread>
 #include <QDebug>
+
+export module view.mainwindow;
+import view.dialogs.mirror;
+import view.dialogs.setorigin;
+import view.dialogs.settings.settings;
+import view.dialogs.transform;
+import view.info;
+import view.profile;
+import view.simulation.simulation;
+import view.task.path;
+import view.task.task;
+import view.view2d.viewport;
+
+import model.simulation;
+import geometry.utils;
+import geometry.rect;
+import model.application;
+import config.config;
+import model.document;
+
+export namespace view
+{
+
+class MainWindow : public QMainWindow, private Ui::MainWindow
+{
+private:
+	model::Application& m_app;
+
+	simulation::Simulation* m_simulation;
+
+	QActionGroup m_openedDocumentActions;
+
+	QWidget* setupLeftPanel();
+	QWidget* setupCenterPanel();
+	void setupToolBar();
+	void setupUi();
+	void setupMenuActions();
+	void setupOpenedDocumentActions();
+
+	void setDocumentToolsEnabled(bool enabled);
+
+	QString defaultFileName(const QString& extension) const;
+
+public:
+	explicit MainWindow(model::Application& app);
+
+protected Q_SLOTS:
+	void openFile();
+	void saveFile();
+	void saveAsFile();
+	void exportFile();
+	void exportAsFile();
+	void openSettings();
+	void transformSelection();
+	void mirrorSelection();
+	void setSelectionOrigin();
+	void newDocumentOpened(model::Document* newDocument);
+	void displayError(const QString& message);
+	void simulate();
+	void optimizeOrder();
+};
+
+}
 
 namespace view
 {

@@ -1,12 +1,48 @@
-#include <settings.h>
-#include <treemodel.h>
-#include <group.h>
-#include <list.h>
+module;
 
+#include <uic/dialogs/settings/ui_settings.h>
+#include <QDialog>
 #include <QVBoxLayout>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QDebug> // TODO
+#include <QDebug>
+
+export module view.dialogs.settings.settings;
+import view.dialogs.settings.group;
+import view.dialogs.settings.list;
+import view.dialogs.settings.treemodel;
+
+import config.config;
+import view.dialogs.settings.entry;
+import config.group;
+import config.list;
+
+export namespace view::settings
+{
+
+class Settings : public QDialog, private Ui::Settings
+{
+private:
+	class NodeVisitor;
+
+	void setupUi();
+
+	// Modified config
+	config::Config& m_newConfig;
+	std::unique_ptr<TreeModel> m_model;
+
+public:
+	explicit Settings(config::Config& newConfig);
+	~Settings();
+
+protected Q_SLOTS:
+	void currentChanged(const QModelIndex& index, const QModelIndex& previous);
+	void addItem(const QModelIndex& index);
+	void removeItem(const QModelIndex& index);
+	void copyItem(const QModelIndex& index);
+};
+
+}
 
 namespace view::settings
 {

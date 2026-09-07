@@ -1,4 +1,56 @@
-#include <renderable.h>
+module;
+
+#include <string>
+#include <cstdint>
+#include <serializer/access.h>
+#include <QObject>
+#include <QtCore/qtmochelpers.h>
+
+export module model.renderable;
+
+import common.aggregable;
+import geometry.polyline;
+import model.pathsettings;
+export namespace model
+{
+
+class Renderable : public QObject
+{
+	Q_OBJECT;
+
+	friend serializer::Access<Renderable>;
+
+private:
+	std::string m_name;
+
+	struct
+	{
+		bool m_selected : 1;
+		bool m_visible : 1;
+	};
+
+public:
+	explicit Renderable(const std::string& name);
+	explicit Renderable() = default;
+	explicit Renderable(const Renderable& other);
+
+	const std::string& name() const;
+
+	bool visible() const;
+	void setVisible(bool visible);
+	void toggleVisible();
+
+	bool selected() const;
+	void setSelected(bool selected);
+	void deselect();
+	void toggleSelect();
+
+Q_SIGNALS:
+	void selectedChanged(bool selected);
+	void visibilityChanged(bool visible);
+};
+
+}
 
 namespace model
 {
@@ -63,4 +115,4 @@ void Renderable::toggleSelect()
 
 }
 
-#include "moc_renderable.cpp"
+#include "renderable.moc"

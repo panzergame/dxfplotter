@@ -1,6 +1,8 @@
 
 #include <QDebug>
 
+#include <QVector2D>
+
 import geometry.bezier;
 import geometry.utils;
 

@@ -1,6 +1,31 @@
-#include <bulgepainter.h>
+module;
+
+#include <QPainterPath>
+#include <QVector2D>
+
+export module view.view2d.bulgepainter;
 
 import geometry.arc;
+import geometry.bulge;
+import model.path;
+
+export namespace view::view2d
+{
+
+class BulgePainter
+{
+private:
+	QPainterPath& m_painter;
+
+	void lineToArcPoint(const QVector2D& center, float radius, float angle);
+
+public:
+	explicit BulgePainter(QPainterPath& painter);
+
+	void operator()(const geometry::Bulge& bulge);
+};
+
+}
 
 namespace view::view2d
 {
