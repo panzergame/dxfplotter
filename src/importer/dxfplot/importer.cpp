@@ -1,13 +1,37 @@
-#include <importer.h>
+module;
+
+#include <serializer/access.h>
 
 #include <fstream>
-
 #include <cereal/archives/json.hpp>
-#include <cereal/types/memory.hpp>
 
-#include <serializer/task.h>
+export module importer.dxfplot.importer;
 
 import common.exception;
+import config.config;
+import model.document;
+import serializer.task;
+import model.task;
+
+export namespace importer::dxfplot
+{
+
+class Importer
+{
+private:
+	using Archive = cereal::JSONInputArchive;
+
+	const config::Tools& m_tools;
+	const config::Profiles& m_profiles;
+
+public:
+	explicit Importer(const config::Tools& tools, const config::Profiles& profiles);
+
+	model::Document::UPtr operator()(const std::string& fileName) const;
+	model::Document::UPtr operator()(std::istream& input) const;
+};
+
+}
 
 namespace importer::dxfplot
 {

@@ -1,6 +1,33 @@
-#include <documenthistory.h>
+module;
 
 #include <QDebug>
+#include <QObject>
+
+export module model.documenthistory;
+
+import model.document;
+import common.aggregable;
+export namespace model
+{
+
+class DocumentHistory : public common::Aggregable<DocumentHistory>
+{
+private:
+	Document::List m_documentHistory;
+	Document::List::iterator m_currentDocumentIt;
+
+	bool isCurrentDocumentLastOfHistory() const;
+	bool isCurrentDocumentFirstOfHistory() const;
+
+public:
+	explicit DocumentHistory(const Document& initialDocument);
+
+	void takeSnapshot(const Document& currentDocument);
+	const Document& undo();
+	const Document& redo();
+};
+
+}
 
 namespace model
 {

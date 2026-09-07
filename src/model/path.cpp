@@ -1,9 +1,116 @@
-#include <path.h>
-#include <layer.h>
-#include <fmt/format.h>
+module;
 
+#include <cstdint>
+#include <serializer/access.h>
+#include <fmt/format.h>
+#include <QObject>
+#include <QTransform>
+#include <QtCore/qtmochelpers.h>
+
+export module model.path;
+
+import common.aggregable;
+import geometry.bulge;
 import geometry.filter.cleaner;
 import geometry.pocketer;
+import geometry.polyline;
+import geometry.rect;
+import geometry.utils;
+import model.offsettedpath;
+import model.pathsettings;
+import model.renderable;
+import common.copy;
+export namespace model
+{
+
+class Layer;
+
+class Path : public Renderable, public common::Aggregable<Path>
+{
+	Q_OBJECT;
+
+	friend serializer::Access<Path>;
+
+private:
+	geometry::Polyline m_basePolyline;
+	std::unique_ptr<model::OffsettedPath> m_offsettedPath;
+	PathSettings m_settings;
+	Layer* m_layer;
+	bool m_globallyVisible;
+
+	void updateGlobalVisibility();
+
+public:
+	explicit Path(geometry::Polyline&& basePolyline, const std::string& name, const PathSettings& settings);
+	explicit Path(const Path& other);
+	explicit Path();
+
+	static ListUPtr FromPolylines(geometry::Polyline::List&& polylines, const PathSettings& settings,
+								  const std::string& layerName);
+
+	Layer& layer();
+	const Layer& layer() const;
+	void setLayer(Layer& layer);
+
+	const geometry::Polyline& basePolyline() const;
+	geometry::Polyline::List finalPolylines() const;
+
+	model::OffsettedPath* offsettedPath() const;
+	void offset(float margin, float minimumPolylineLength, float minimumArcLength);
+	void resetOffset();
+	void pocket(const Path::ListCPtr& islands, float scaledRadius, float minimumPolylineLength, float minimumArcLength);
+
+	void transform(const QTransform& matrix);
+
+	geometry::Rect boundingRect() const;
+
+	bool isPoint() const;
+
+	const PathSettings& settings() const;
+	PathSettings& settings();
+
+	geometry::CuttingDirection cuttingDirection() const;
+
+	bool globallyVisible() const;
+
+Q_SIGNALS:
+	void globalVisibilityChanged(bool globallyVisible);
+	void offsettedPathChanged();
+	void basePolylineTransformed();
+};
+
+class Layer : public Renderable, public common::Aggregable<Layer>
+{
+	Q_OBJECT;
+
+	friend serializer::Access<Layer>;
+
+private:
+	Path::ListUPtr m_children;
+
+	void assignSelfToChildren();
+
+public:
+	explicit Layer(const std::string& name, Path::ListUPtr&& children);
+	explicit Layer() = default;
+	explicit Layer(const Layer& other);
+	;
+
+	int childrenCount() const;
+	Path& childrenAt(int index);
+	const Path& childrenAt(int index) const;
+	int childIndexFor(const Path& child) const;
+
+	template<class Functor>
+	void forEachChild(Functor&& functor)
+	{
+		for (Path::UPtr& child : m_children) {
+			functor(*child);
+		}
+	}
+};
+
+}
 
 namespace model
 {
@@ -181,4 +288,4 @@ bool Path::globallyVisible() const
 
 }
 
-#include "moc_path.cpp"
+#include "path.moc"

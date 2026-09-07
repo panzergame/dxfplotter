@@ -1,58 +1,57 @@
-#include <importer.h>
-#include <interface.h>
+module;
 
-#include <libdxfrw/libdxfrw.h>
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <libdxfrw/drw_entities.h>
+#include <libdxfrw/drw_objects.h>
+
+export module importer.dxf.importer;
 
 import common.exception;
+import geometry.polyline;
+import importer.dxf.entityimporter;
+import importer.dxf.layer;
+import importer.dxf.utils;
 
-namespace importer::dxf
+export namespace importer::dxf
 {
 
-void Importer::addLayer(const DRW_Layer& layer)
+class Importer
 {
-	if (layer.plotF) {
-		const std::string& name = layer.name;
-		m_nameToLayers.emplace(name, Layer(name));
+private:
+	const BaseEntityImporter::Settings m_entityImporterSettings;
+
+	std::unordered_map<std::string, Layer> m_nameToLayers;
+	bool m_ignoreEntities;
+
+	void addLayer(const DRW_Layer& layer);
+
+public:
+	explicit Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength,
+					  float minimumArcLength);
+
+	Layer::List layers() const;
+
+	template<class Entity>
+	void processEntity(const Entity& entity)
+	{
+		if (!m_ignoreEntities) {
+			auto it = m_nameToLayers.find(entity.layer);
+			if (it != m_nameToLayers.end()) {
+				Layer& layer = it->second;
+
+				EntityImporter<Entity> entityImporter(layer, m_entityImporterSettings);
+				entityImporter(entity);
+			}
+		}
 	}
-}
 
-Importer::Importer(const std::string& filename, float splineToArcPrecision, float minimumSplineLength,
-				   float minimumArcLength)
-	: m_entityImporterSettings({ splineToArcPrecision, minimumSplineLength, minimumArcLength })
-	, m_ignoreEntities(false)
-{
-	Interface interface(*this);
-
-	dxfRW rw(filename.c_str());
-	if (!rw.read(&interface, false)) {
-		throw common::FileCouldNotOpenException();
-	}
-}
-
-Layer::List Importer::layers() const
-{
-	Layer::List layers(m_nameToLayers.size());
-	std::transform(m_nameToLayers.begin(), m_nameToLayers.end(), layers.begin(), [](const auto& pair) {
-		return pair.second;
-	});
-
-	return layers;
-}
-
-void Importer::startBlock()
-{
-	m_ignoreEntities = true;
-}
-
-void Importer::endBlock()
-{
-	m_ignoreEntities = false;
-}
+	void startBlock();
+	void endBlock();
+};
 
 template<>
-void Importer::processEntity(const DRW_Layer& layer)
-{
-	addLayer(layer);
-}
+void Importer::processEntity(const DRW_Layer& layer);
 
 }

@@ -1,4 +1,38 @@
-#include <setorigin.h>
+module;
+
+#include <uic/dialogs/ui_setorigin.h>
+#include <QDialog>
+#include <QButtonGroup>
+
+export module view.dialogs.setorigin;
+
+import geometry.rect;
+
+export namespace view::dialogs
+{
+
+class SetOrigin : public QDialog, private Ui::SetOrigin
+{
+private:
+	const geometry::Rect& m_selectionBoundingRect;
+	QTransform m_matrix;
+
+	QButtonGroup m_buttonGroup;
+
+	enum class Corner { BottomLeft = 0, TopLeft, BottomRight, TopRight };
+
+	void setupButtonGroup();
+	QVector2D boundingRectCornerPosition(Corner corner) const;
+
+public:
+	explicit SetOrigin(const geometry::Rect& selectionBoundingRect);
+
+	const QTransform& matrix() const;
+
+	void accept() override;
+};
+
+}
 
 namespace view::dialogs
 {

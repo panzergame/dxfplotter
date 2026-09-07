@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <polylineutils.h>
 
 #include <QVector2D>
+#include <polylineutils.h>
 
 import geometry.bulge;
 import geometry.polyline;

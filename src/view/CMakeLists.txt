@@ -7,13 +7,13 @@ set(SRC
 	info.cpp
 	mainwindow.cpp
 	profile.cpp
-
-	info.h
-	mainwindow.h
-	profile.h
+	transform.cpp
 )
 
-add_library(view ${SRC})
-target_link_libraries(view PRIVATE config geometry)
+add_module_library(view ${SRC})
+target_link_libraries(view
+	PUBLIC model model-application
+	PRIVATE config geometry
+		view-dialogs view-dialogs-settings view-task view-view2d view-simulation)
 add_dependencies(view uic)
 

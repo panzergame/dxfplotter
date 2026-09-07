@@ -6,16 +6,8 @@ set(SRC
 	polylinepathitem.cpp
 	rubberband.cpp
 	viewport.cpp
-
-	basicpathitem.h
-	bulgepainter.h
-	offsettedpolylinepathitem.h
-	pointpathitem.h
-	polylinepathitem.h
-	rubberband.h
-	viewport.h
 )
 
-add_library(view-view2d ${SRC})
-target_link_libraries(view-view2d PRIVATE config geometry)
+add_module_library(view-view2d ${SRC})
+target_link_libraries(view-view2d PUBLIC model model-application PRIVATE config geometry)
 add_dependencies(view-view2d uic)

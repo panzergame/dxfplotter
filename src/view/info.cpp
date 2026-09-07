@@ -1,6 +1,34 @@
-#include <info.h>
-#include <view2d/viewport.h>
+module;
+
+#include <uic/ui_info.h>
+#include <QWidget>
+#include <QTimer>
 #include <QDebug>
+
+export module view.info;
+import model.application;
+import view.view2d.viewport;
+
+export namespace view
+{
+
+class Info : public QWidget, private Ui::Info
+{
+private:
+	QTimer m_timer;
+
+	void showTimedMessage(const QString& content);
+
+public:
+	explicit Info(const view2d::Viewport& viewport, const model::Application& app);
+
+protected Q_SLOTS:
+	void cursorMoved(const QPointF& position);
+	void fileSaved(const QString& fileName);
+	void hideMessage();
+};
+
+}
 
 namespace view
 {

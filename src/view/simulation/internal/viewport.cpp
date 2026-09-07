@@ -1,13 +1,40 @@
-#include <viewport.h>
-#include <scene.h>
+module;
 
+#include <Qt3DExtras/Qt3DWindow>
 #include <Qt3DExtras/QOrbitCameraController>
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QCamera>
-
 #include <QWidget>
 #include <QMouseEvent>
 #include <QWheelEvent>
+
+export module view.simulation.internal.viewport;
+import view.simulation.internal.scene;
+
+export namespace view::simulation::internal
+{
+
+class Viewport : public Qt3DExtras::Qt3DWindow
+{
+private:
+	void mousePressEvent(QMouseEvent* e) final;
+	void mouseMoveEvent(QMouseEvent* e) final;
+	void wheelEvent(QWheelEvent* e) final;
+
+	QPoint m_lastMousePos;
+	QPoint computeMouseDelta(const QPoint& pos);
+
+public:
+	explicit Viewport();
+
+	QWidget* container();
+
+	void setScene(Scene* scene);
+
+	bool event(QEvent* e) override;
+};
+
+}
 
 namespace view::simulation::internal
 {

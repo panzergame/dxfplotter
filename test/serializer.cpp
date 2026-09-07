@@ -1,11 +1,15 @@
-#include <exporterfixture.h>
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/json.hpp>
 
-#include <serializer/bulge.h>
-
 #include <sstream>
+
+#include <QVector2D>
+#include <exporterfixture.h>
+#include <serializer/access.h>
+
+import geometry.bulge;
+import serializer.bulge;
 
 TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
 {

@@ -1,4 +1,27 @@
-#include <mirror.h>
+module;
+
+#include <uic/dialogs/ui_mirror.h>
+#include <QDialog>
+
+export module view.dialogs.mirror;
+
+export namespace view::dialogs
+{
+
+class Mirror : public QDialog, private Ui::Mirror
+{
+private:
+	QTransform m_matrix;
+
+public:
+	explicit Mirror();
+
+	const QTransform& matrix() const;
+
+	void accept() override;
+};
+
+}
 
 namespace view::dialogs
 {

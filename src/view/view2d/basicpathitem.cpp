@@ -1,16 +1,55 @@
-#include <basicpathitem.h>
+module;
 
+#include <QGraphicsPathItem>
 #include <QStyleOptionGraphicsItem>
 #include <QPen>
 #include <QPainter>
+#include <QtCore/qtmochelpers.h>
+
+export module view.view2d.basicpathitem;
+
+import model.path;
+
+export namespace view::view2d
+{
+
+class BasicPathItem : public QObject, public QGraphicsPathItem
+{
+	Q_OBJECT;
+
+private:
+	model::Path& m_path;
+	bool m_outsideSelectionBlocked;
+
+public:
+	explicit BasicPathItem(model::Path& path);
+
+	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override;
+
+	const model::Path& path() const;
+	virtual void setSelected(bool selected);
+
+protected Q_SLOTS:
+	QVariant itemChange(GraphicsItemChange change, const QVariant& value) override;
+	void selectedChanged(bool selected);
+	void visibilityChanged(bool visible);
+	virtual void basePolylineTransformed() = 0;
+};
+
+}
 
 namespace view::view2d
 {
 
-static const QBrush normalBrush(Qt::white);
-static const QBrush selectBrush(QColor(80, 0, 255));
-static const QPen normalPen(normalBrush, 0.0f);
-static const QPen selectPen(selectBrush, 0.0f);
+namespace
+{
+
+	const QBrush normalBrush(Qt::white);
+	const QBrush selectBrush(QColor(80, 0, 255));
+	const QPen normalPen(normalBrush, 0.0f);
+	const QPen selectPen(selectBrush, 0.0f);
+
+}
 
 BasicPathItem::BasicPathItem(model::Path& path)
 	: m_path(path)
@@ -74,4 +113,4 @@ void BasicPathItem::visibilityChanged(bool visible)
 
 }
 
-#include "moc_basicpathitem.cpp"
+#include "basicpathitem.moc"

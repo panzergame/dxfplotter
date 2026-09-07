@@ -1,8 +1,41 @@
-#include <simulation.h>
-#include <internal/scene.h>
-#include <internal/viewport.h>
+module;
 
+#include "uic/simulation/ui_simulation.h"
+#include <QWidget>
+#include <QTimer>
 #include <QDate>
+
+export module view.simulation.simulation;
+import view.simulation.internal.scene;
+import view.simulation.internal.viewport;
+
+import model.simulation;
+
+export namespace view::simulation
+{
+
+class Simulation : private Ui::Simulation, public QWidget
+{
+private:
+	model::Simulation m_simulation;
+
+	std::unique_ptr<internal::Viewport> m_viewport;
+	std::unique_ptr<internal::Scene> m_scene;
+
+	QTimer m_timer;
+
+protected slots:
+	void moveToolAtTime(int ms);
+	void startStopToolAnimation();
+
+public:
+	explicit Simulation();
+	~Simulation();
+
+	void setSimulation(model::Simulation&& simulation);
+};
+
+}
 
 namespace view::simulation
 {

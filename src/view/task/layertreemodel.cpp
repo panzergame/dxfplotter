@@ -1,6 +1,49 @@
-#include <layertreemodel.h>
+module;
 
+#include <cassert>
+#include <QAbstractItemModel>
+#include <QItemSelectionModel>
 #include <QIcon>
+#include <QtCore/qtmochelpers.h>
+
+export module view.task.layertreemodel;
+
+import model.task;
+import model.path;
+import model.renderable;
+
+export namespace view::task
+{
+
+class LayerTreeModel : public QAbstractItemModel
+{
+	Q_OBJECT
+
+private:
+	model::Task& m_task;
+	bool m_ignoreSelectionChanged;
+
+public:
+	explicit LayerTreeModel(model::Task& task, QObject* parent);
+
+	QVariant data(const QModelIndex& index, int role) const override;
+	QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+	QModelIndex parent(const QModelIndex& index) const override;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const override;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+	Qt::ItemFlags flags(const QModelIndex& index) const override;
+
+	void itemClicked(const QModelIndex& index);
+	void clearSelection(QItemSelectionModel* selectionModel);
+	void updateItemSelection(const model::Path& path, QItemSelectionModel::SelectionFlag flag,
+							 QItemSelectionModel* selectionModel);
+	void selectionChanged(const QItemSelection& selected, const QItemSelection& deselected);
+
+signals:
+	void documentVisibilityChanged();
+};
+
+}
 
 namespace view::task
 {
@@ -157,4 +200,4 @@ void LayerTreeModel::selectionChanged(const QItemSelection& selected, const QIte
 
 }
 
-#include "moc_layertreemodel.cpp"
+#include "layertreemodel.moc"

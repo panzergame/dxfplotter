@@ -1,7 +1,11 @@
 #include <gtest/gtest.h>
-#include <model/pathgroupsettings.h>
 
 #include <QSignalSpy>
+
+import geometry.polyline;
+import model.path;
+import model.pathgroupsettings;
+import model.pathsettings;
 
 TEST(PathTest, ShouldEmitSignalsWhenSelected)
 {

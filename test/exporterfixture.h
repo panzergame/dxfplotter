@@ -2,7 +2,13 @@
 
 #include <gtest/gtest.h>
 
-#include <model/document.h>
+#include <yaml-cpp/yaml.h>
+
+import config.config;
+import geometry.polyline;
+import model.document;
+import model.pathsettings;
+import model.task;
 
 class ExporterFixture : public ::testing::Test
 {
