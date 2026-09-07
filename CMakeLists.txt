@@ -16,7 +16,9 @@ elseif (CMAKE_MAJOR_VERSION STREQUAL "3" AND CMAKE_MINOR_VERSION STREQUAL "27")
 endif()
 
 # Allow cmake std module for stdlibc++ or msvc
-if (CMAKE_VERSION VERSION_GREATER_EQUAL "4.3.0")
+if (CMAKE_VERSION VERSION_GREATER_EQUAL "4.4.0")
+    set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "f35a9ac6-8463-4d38-8eec-5d6008153e7d")
+elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.3.0")
     set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "451f2fe2-a8a2-47c3-bc32-94786d8fc91b")
 elseif (CMAKE_VERSION VERSION_GREATER_EQUAL "4.0.3")
     set(CMAKE_EXPERIMENTAL_CXX_IMPORT_STD "d0edc3af-4c50-42ea-a356-e2862fe7a444")
@@ -62,7 +64,7 @@ else()
 	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
@@ -123,6 +125,7 @@ set(LINK_LIBRARIES
 	exporter-renderer
 	geometry
 	geometry-filter
+	common
 	libdxfrw
 	fmt::fmt
 	Qt6::Widgets
@@ -134,7 +137,10 @@ set(LINK_LIBRARIES
 include_directories(${INCLUDE_DIRS})
 
 add_subdirectory(template)
+# Third party sources are plain headers and sources, scanning them for modules only costs build time.
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 add_subdirectory(thirdparty EXCLUDE_FROM_ALL)
+set(CMAKE_CXX_SCAN_FOR_MODULES ${CMAKE_CXX_MODULE_DYNDEP})
 
 include(cmake/modules.cmake)
 
@@ -147,7 +153,7 @@ if (BUILD_TESTING)
 endif()
 
 add_executable(dxfplotter src/main.cpp)
-target_link_libraries(dxfplotter ${LINK_LIBRARIES} model_module)
+target_link_libraries(dxfplotter ${LINK_LIBRARIES})
 add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)

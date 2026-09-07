@@ -86,3 +86,5 @@ void PolylinePathItem::basePolylineTransformed()
 }
 
 }
+
+#include "moc_polylinepathitem.cpp"

@@ -1,9 +1,52 @@
-#include <biarc.h>
-#include <utils.h>
-#include <bulge.h>
+module;
 
+#include <cmath>
+#include <QVector2D>
 #include <QDebug>
 #include <QtMath>
+
+export module geometry.biarc;
+
+import common.aggregable;
+import geometry.bulge;
+import geometry.polyline;
+import geometry.utils;
+
+export namespace geometry
+{
+
+class Biarc : public common::Aggregable<Biarc>
+{
+private:
+	QVector2D m_point1;
+	QVector2D m_point2;
+	/// Intersection point of the arcs
+	QVector2D m_middle;
+	/// Tangent at point1
+	QVector2D m_tangent1;
+	/// Tangent at point1
+	QVector2D m_tangent2;
+	/// Line from point1 to middle
+	QVector2D m_line1;
+	/// Line from point2 to middle
+	QVector2D m_line2;
+
+	Orientation orientation() const;
+
+public:
+	explicit Biarc(const QVector2D& point1, const QVector2D& middle, const QVector2D& point2, const QVector2D& tangent1,
+				   const QVector2D& tangent2);
+
+	const QVector2D& middle() const;
+	QVector2D tangentAtMiddle() const;
+
+	float approximateLength() const;
+
+	Polyline toLinePolyline() const;
+	Polyline toPolyline() const;
+};
+
+}
 
 namespace geometry
 {

@@ -9,8 +9,6 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
-import model.module;
-
 void setDarkPalette(QApplication& qapp)
 {
 	QPalette palette;

@@ -5,7 +5,7 @@
 
 #include <cereal/cereal.hpp>
 
-#include <geometry/polyline.h>
+import geometry.polyline;
 
 namespace serializer
 {

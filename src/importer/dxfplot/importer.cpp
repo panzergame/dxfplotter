@@ -7,7 +7,7 @@
 
 #include <serializer/task.h>
 
-#include <common/exception.h>
+import common.exception;
 
 namespace importer::dxfplot
 {

@@ -3,7 +3,9 @@
 #include <string>
 
 #include <config/config.h>
-#include <geometry/rect.h>
+#include <QVector2D>
+
+import geometry.rect;
 
 namespace model
 {

@@ -2,7 +2,8 @@
 
 #include <yaml-cpp/yaml.h>
 
-#include <geometry/utils.h>
+import common.enumerate;
+import geometry.utils;
 
 namespace config
 {

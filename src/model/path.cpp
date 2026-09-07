@@ -2,8 +2,8 @@
 #include <layer.h>
 #include <fmt/format.h>
 
-#include <geometry/filter/cleaner.h>
-#include <geometry/pocketer.h>
+import geometry.filter.cleaner;
+import geometry.pocketer;
 
 namespace model
 {
@@ -180,3 +180,5 @@ bool Path::globallyVisible() const
 }
 
 }
+
+#include "moc_path.cpp"

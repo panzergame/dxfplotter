@@ -1,6 +1,32 @@
-#include <cubicspline.h>
+module;
 
+#include <utility>
 #include <QDebug>
+
+export module geometry.cubicspline;
+
+import geometry.bezier;
+import geometry.spline;
+import geometry.utils;
+
+export namespace geometry
+{
+
+class CubicSpline : public Spline
+{
+private:
+	Point2DList convertClosedToCubicBezierPoints() const;
+	Point2DList convertOpenedToCubicBezierPoints() const;
+
+	Bezier::List pointsToBeziers(const Point2DList& bezierPoints) const;
+
+public:
+	explicit CubicSpline(Point2DList&& points, bool closed);
+
+	Bezier::List toBeziers() const;
+};
+
+}
 
 namespace geometry
 {

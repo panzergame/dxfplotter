@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include <geometry/orderoptimizer.h>
-
 #include <QDebug>
+
+import geometry.orderoptimizer;
 
 TEST(OrderOptimizer, shouldRespectGroups)
 {
@@ -42,7 +42,6 @@ TEST(OrderOptimizer, shouldRespectGroups)
 		EXPECT_LE(group1, group2);
 	}
 }
-
 
 TEST(OrderOptimizer, shouldOrderSingleGroup)
 {

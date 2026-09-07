@@ -1,46 +1,32 @@
 add_subdirectory(filter)
 
 set(SRC
-	arc.cpp
-	bezier.cpp
-	biarc.cpp
-	bulge.cpp
+	utils.cpp
 	circle.cpp
-	cubicspline.cpp
+	arc.cpp
 	line.cpp
-	pocketer.cpp
-	polyline.cpp
-	quadraticspline.cpp
 	rect.cpp
+	bulge.cpp
+	polyline.cpp
+	biarc.cpp
+	bezier.cpp
 	spline.cpp
-
-	arc.h
-	bezier.h
-	biarc.h
-	bulge.h
-	circle.h
-	cubicspline.h
-	line.h
-	polyline.h
-	quadraticspline.h
-	spline.h
-	rect.h
-	utils.h
+	cubicspline.cpp
+	quadraticspline.cpp
+	pocketer.cpp
 )
 
 if (WITH_ORTOOLS)
 	list(APPEND SRC
 		orderoptimizer.cpp
-
-		orderoptimizer.h
 	)
 endif()
 
-add_library(geometry ${SRC})
+add_module_library(geometry ${SRC} NON_MODULE_SOURCES cavcutils.h)
+target_link_libraries(geometry PUBLIC common)
 if (WITH_ORTOOLS)
 	target_link_libraries(geometry PUBLIC ortools::ortools)
 	target_compile_definitions(geometry PUBLIC WITH_ORTOOLS)
 endif()
-
 
 add_coverage(geometry)

@@ -62,3 +62,5 @@ void Renderable::toggleSelect()
 }
 
 }
+
+#include "moc_renderable.cpp"

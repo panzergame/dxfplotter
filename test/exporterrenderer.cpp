@@ -2,6 +2,8 @@
 
 #include <exporter/renderer/renderer.h>
 
+import geometry.bulge;
+
 class DepthTrackerVisitor
 {
 public:
@@ -100,5 +102,4 @@ TEST_F(ExporterRendererFixture, shouldCutPathSingleDepth)
 
 	EXPECT_FLOAT_EQ(visitor.depths.front(), -0.1f);
 }
-
 

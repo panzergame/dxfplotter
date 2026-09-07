@@ -1,14 +1,21 @@
 #pragma once
 
 #include <importer/dxf/utils.h>
+#include <stack>
 
 #include <importer/dxf/layer.h>
-#include <geometry/cubicspline.h>
-#include <geometry/quadraticspline.h>
 
 #include <libdxfrw/drw_entities.h>
 
 #include <fmt/format.h>
+
+import geometry.bezier;
+import geometry.biarc;
+import geometry.bulge;
+import geometry.cubicspline;
+import geometry.polyline;
+import geometry.quadraticspline;
+import geometry.utils;
 
 namespace importer::dxf
 {

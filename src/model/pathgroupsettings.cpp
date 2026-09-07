@@ -51,3 +51,5 @@ void PathGroupSettings::setDepth(float depth)
 }
 
 }
+
+#include "moc_pathgroupsettings.cpp"

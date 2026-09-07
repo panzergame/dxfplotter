@@ -8,7 +8,9 @@
 #include <QComboBox>
 
 #include <config/property.h>
-#include <common/aggregable.h>
+
+import common.aggregable;
+import common.enumerate;
 
 namespace view::settings
 {

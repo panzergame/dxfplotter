@@ -2,10 +2,15 @@
 
 #include <model/path.h>
 #include <exporter/gcode/exporter.h>
-#include <common/exception.h>
 
 #include <fmt/format.h>
 #include <sstream>
+
+import common.exception;
+import geometry.bulge;
+import geometry.circle;
+import geometry.line;
+import geometry.utils;
 
 namespace exporter::gcode
 {

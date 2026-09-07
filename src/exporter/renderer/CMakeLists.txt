@@ -7,5 +7,5 @@ set(SRC
 )
 
 add_library(exporter-renderer ${SRC})
-target_link_libraries(exporter-renderer PRIVATE config)
+target_link_libraries(exporter-renderer PUBLIC geometry PRIVATE config)
 add_coverage(exporter-renderer)

@@ -1,4 +1,32 @@
-#include <quadraticspline.h>
+module;
+
+#include <utility>
+#include <QVector2D>
+
+export module geometry.quadraticspline;
+
+import geometry.bezier;
+import geometry.spline;
+import geometry.utils;
+
+export namespace geometry
+{
+
+class QuadraticSpline : public Spline
+{
+private:
+	Point2DList convertClosedToQuadraticBezierPoints() const;
+	Point2DList convertOpenedToQuadraticBezierPoints() const;
+
+	Bezier::List pointsToBeziers(const Point2DList& bezierPoints) const;
+
+public:
+	explicit QuadraticSpline(Point2DList&& points, bool closed);
+
+	Bezier::List toBeziers() const;
+};
+
+}
 
 namespace geometry
 {

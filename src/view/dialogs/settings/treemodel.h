@@ -3,7 +3,8 @@
 #include <QAbstractItemModel>
 
 #include <config/config.h>
-#include <common/aggregable.h>
+
+import common.aggregable;
 
 namespace view::settings
 {

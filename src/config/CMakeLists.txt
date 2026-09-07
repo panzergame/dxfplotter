@@ -13,7 +13,7 @@ set(SRC
 
 add_library(config ${SRC})
 add_dependencies(config generate-config)
-target_link_libraries(config PUBLIC yaml-cpp::yaml-cpp)
+target_link_libraries(config PUBLIC yaml-cpp::yaml-cpp common geometry)
 
 add_custom_command(
 	OUTPUT config.h

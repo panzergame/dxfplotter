@@ -1,8 +1,9 @@
-#include <geometry/utils.h>
-#include <geometry/bulge.h>
 
 #include <QDebug>
 #include <QtMath>
+
+import geometry.bulge;
+import geometry.utils;
 
 int main()
 {

@@ -4,6 +4,8 @@
 
 #include <QDebug>
 
+import geometry.bulge;
+
 config::Tools::Tool tool1mmPass()
 {
 	config::Tools::Tool tool {"tool", YAML::Node()};

@@ -3,10 +3,9 @@
 #include <QVector3D>
 #include <variant>
 
-#include <geometry/arc.h>
-#include <geometry/line.h>
-
-#include <common/aggregable.h>
+import common.aggregable;
+import geometry.arc;
+import geometry.line;
 
 namespace model
 {

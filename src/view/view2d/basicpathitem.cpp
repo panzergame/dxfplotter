@@ -73,3 +73,5 @@ void BasicPathItem::visibilityChanged(bool visible)
 }
 
 }
+
+#include "moc_basicpathitem.cpp"

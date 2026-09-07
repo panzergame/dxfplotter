@@ -1,5 +1,11 @@
 #include <gtest/gtest.h>
-#include <geometry/bulge.h>
+
+#include <cmath>
+#include <QVector2D>
+
+import geometry.arc;
+import geometry.bulge;
+import geometry.utils;
 
 constexpr QVector2D point1(-1.0f, -0.5f);
 constexpr QVector2D point2(1.0f, 0.5f);
