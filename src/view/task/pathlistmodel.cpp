@@ -166,3 +166,5 @@ void PathListModel::selectionChanged(const QItemSelection& selected, const QItem
 }
 
 }
+
+#include "moc_pathlistmodel.cpp"

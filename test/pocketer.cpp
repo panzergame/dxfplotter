@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
-#include <geometry/pocketer.h>
 #include <polylineutils.h>
+
+import geometry.pocketer;
+import geometry.utils;
 
 TEST(PocketerTest, ShouldKeepBorderOrientationWhenBorderCcw)
 {

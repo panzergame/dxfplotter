@@ -4,6 +4,8 @@
 
 #include <QDebug> // TODO
 
+import geometry.bulge;
+
 namespace model
 {
 

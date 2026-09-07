@@ -1,7 +1,8 @@
-#include <geometry/utils.h>
-#include <geometry/bezier.h>
 
 #include <QDebug>
+
+import geometry.bezier;
+import geometry.utils;
 
 void print(const geometry::Bezier &b)
 {
@@ -41,7 +42,6 @@ int main()
 	qInfo() << "..........................";
 	bccw.toBiarc()->toPolyline();
 
-
 	/*geometry::Bezier::Pair p1 = b.splitHalf();
 	geometry::Bezier::Pair p2 = b.split(0.5f);
 
@@ -67,6 +67,5 @@ int main()
 // 	const float s2 = d / (ta.lengthSquared() * tb.lengthSquared());
 // 
 // 	qInfo() << "sin2" << s2;
-
 
 }

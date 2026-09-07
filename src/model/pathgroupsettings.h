@@ -6,7 +6,7 @@
 
 #include <cassert>
 
-#include <common/function.h>
+import common.function;
 
 namespace model
 {

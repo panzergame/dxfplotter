@@ -4,6 +4,8 @@
 
 #include <sstream>
 
+import geometry.bulge;
+
 TEST_F(ExporterFixture, shouldExportNotEmpty)
 {
 

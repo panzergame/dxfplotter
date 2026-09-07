@@ -1,14 +1,13 @@
 #pragma once
 
-#include <geometry/polyline.h>
-
-#include <common/aggregable.h>
-
 #include <model/pathsettings.h>
 
 #include <string>
 
 #include <QObject>
+
+import common.aggregable;
+import geometry.polyline;
 
 namespace model
 {

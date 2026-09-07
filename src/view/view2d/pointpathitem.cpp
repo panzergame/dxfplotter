@@ -44,3 +44,5 @@ void PointPathItem::basePolylineTransformed()
 }
 
 }
+
+#include "moc_pointpathitem.cpp"

@@ -11,5 +11,6 @@ set(SRC
 )
 
 add_library(view-task ${SRC})
-target_link_libraries(view-task PRIVATE config)
+target_link_libraries(view-task PRIVATE config geometry)
 add_dependencies(view-task uic)
+

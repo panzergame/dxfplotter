@@ -12,3 +12,4 @@ set(SRC
 )
 
 add_library(importer-dxf ${SRC})
+target_link_libraries(importer-dxf PUBLIC common geometry)

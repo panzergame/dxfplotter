@@ -1,8 +1,8 @@
 #pragma once
+#include <string>
 
-#include <geometry/polyline.h>
-
-#include <common/aggregable.h>
+import common.aggregable;
+import geometry.polyline;
 
 namespace importer::dxf
 {

@@ -156,3 +156,5 @@ void LayerTreeModel::selectionChanged(const QItemSelection& selected, const QIte
 }
 
 }
+
+#include "moc_layertreemodel.cpp"

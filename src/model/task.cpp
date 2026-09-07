@@ -1,10 +1,11 @@
 #include <task.h>
 
 #include <iterator>
-#include <common/copy.h>
+
+import common.copy;
 
 #ifdef WITH_ORTOOLS
-	#include <geometry/orderoptimizer.h>
+import geometry.orderoptimizer;
 #endif
 
 namespace model
@@ -368,3 +369,5 @@ std::pair<int, int> Task::layerAndPathIndexFor(const Path& path) const
 }
 
 }
+
+#include "moc_task.cpp"

@@ -3,13 +3,13 @@
 #include <importer/dxf/entityimporter.h>
 #include <importer/dxf/layer.h>
 
-#include <geometry/polyline.h>
-
 #include <string>
 #include <unordered_map>
 
 #include <libdxfrw/drw_entities.h>
 #include <libdxfrw/drw_objects.h>
+
+import geometry.polyline;
 
 namespace importer::dxf
 {

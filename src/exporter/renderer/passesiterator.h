@@ -1,6 +1,7 @@
 #pragma once
 
-#include <geometry/polyline.h>
+import geometry.polyline;
+import geometry.utils;
 
 // Return next polyline to convert
 class PassesIterator

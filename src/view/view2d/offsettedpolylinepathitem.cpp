@@ -1,11 +1,11 @@
 #include <offsettedpolylinepathitem.h>
 #include <bulgepainter.h>
 
-#include <geometry/arc.h>
-
 #include <QStyleOptionGraphicsItem>
 #include <QPen>
 #include <QDebug>
+
+import geometry.arc;
 
 namespace view::view2d
 {
@@ -73,3 +73,5 @@ void OffsettedPolylinePathItem::polylinesTransformed()
 }
 
 }
+
+#include "moc_offsettedpolylinepathitem.cpp"

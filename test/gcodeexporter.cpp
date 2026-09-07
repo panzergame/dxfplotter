@@ -4,6 +4,8 @@
 
 #include <sstream>
 
+import geometry.bulge;
+
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
 	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);

@@ -5,7 +5,7 @@
 
 #include <cereal/cereal.hpp>
 
-#include <geometry/bulge.h>
+import geometry.bulge;
 
 namespace serializer
 {

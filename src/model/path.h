@@ -1,9 +1,5 @@
 #pragma once
 
-#include <geometry/polyline.h>
-
-#include <common/aggregable.h>
-
 #include <model/renderable.h>
 #include <model/pathsettings.h>
 #include <model/offsettedpath.h>
@@ -11,6 +7,10 @@
 #include <serializer/access.h>
 
 #include <QTransform>
+
+import common.aggregable;
+import geometry.polyline;
+import geometry.utils;
 
 namespace model
 {

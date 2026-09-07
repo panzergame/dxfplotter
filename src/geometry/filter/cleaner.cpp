@@ -1,8 +1,32 @@
-#include <cleaner.h>
+module;
 
 #include <iterator>
+#include <QDebug>
 
-#include <QDebug> // TODO
+export module geometry.filter.cleaner;
+
+import geometry.bulge;
+import common.aggregable;
+import geometry.polyline;
+import geometry.utils;
+
+export namespace geometry::filter
+{
+
+/** @brief Clean polyline via merging of small bulges.
+ */
+class Cleaner
+{
+private:
+	Polyline::List m_polylines;
+
+public:
+	explicit Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength);
+
+	Polyline::List&& polylines();
+};
+
+}
 
 namespace geometry::filter
 {

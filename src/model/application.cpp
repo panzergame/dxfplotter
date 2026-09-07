@@ -1,23 +1,22 @@
 #include <application.h>
 #include <simulation.h>
 
-#include <geometry/filter/assembler.h>
-#include <geometry/filter/cleaner.h>
-#include <geometry/filter/removeexactduplicate.h>
-
 #include <importer/dxf/importer.h>
 #include <importer/dxfplot/importer.h>
 
 #include <exporter/gcode/exporter.h>
 #include <exporter/dxfplot/exporter.h>
 
-#include <common/exception.h>
-
 #include <QMimeDatabase>
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileInfo>
 #include <QDebug>
+
+import common.exception;
+import geometry.filter.assembler;
+import geometry.filter.cleaner;
+import geometry.filter.removeexactduplicate;
 
 namespace model
 {
@@ -418,3 +417,5 @@ void Application::redoDocumentChanges()
 }
 
 }
+
+#include "moc_application.cpp"

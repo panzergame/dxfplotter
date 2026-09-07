@@ -5,7 +5,7 @@
 #include <QDialog>
 #include <QButtonGroup>
 
-#include <geometry/rect.h>
+import geometry.rect;
 
 namespace view::dialogs
 {

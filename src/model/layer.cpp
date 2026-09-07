@@ -1,6 +1,6 @@
 #include <layer.h>
 
-#include <common/copy.h>
+import common.copy;
 
 namespace model
 {
@@ -60,3 +60,5 @@ int Layer::childIndexFor(const Path& child) const
 }
 
 }
+
+#include "moc_layer.cpp"

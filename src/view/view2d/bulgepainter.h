@@ -4,6 +4,8 @@
 
 #include <QPainterPath>
 
+import geometry.bulge;
+
 namespace view::view2d
 {
 

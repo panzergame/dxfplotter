@@ -3,6 +3,8 @@
 #include <model/document.h>
 #include <exporter/renderer/passesiterator.h>
 
+import geometry.utils;
+
 namespace exporter::renderer
 {
 

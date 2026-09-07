@@ -373,3 +373,5 @@ Viewport::Viewport(model::Application& app)
 }
 
 }
+
+#include "moc_viewport.cpp"

@@ -14,6 +14,6 @@ set(SRC
 )
 
 add_library(view ${SRC})
-target_link_libraries(view PRIVATE config)
+target_link_libraries(view PRIVATE config geometry)
 add_dependencies(view uic)
 

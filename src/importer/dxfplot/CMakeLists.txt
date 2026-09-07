@@ -5,4 +5,4 @@ set(SRC
 )
 
 add_library(importer-dxfplot ${SRC})
-target_link_libraries(importer-dxfplot PRIVATE config)
+target_link_libraries(importer-dxfplot PRIVATE config common geometry)

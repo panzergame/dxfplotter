@@ -1,9 +1,9 @@
 #include <importer.h>
 #include <interface.h>
 
-#include <common/exception.h>
-
 #include <libdxfrw/libdxfrw.h>
+
+import common.exception;
 
 namespace importer::dxf
 {

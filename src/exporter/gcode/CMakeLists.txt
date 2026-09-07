@@ -9,5 +9,5 @@ set(SRC
 )
 
 add_library(exporter-gcode ${SRC})
-target_link_libraries(exporter-gcode PRIVATE config)
+target_link_libraries(exporter-gcode PUBLIC common geometry PRIVATE config)
 add_coverage(exporter-gcode)

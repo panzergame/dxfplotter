@@ -264,3 +264,5 @@ void TreeModel::copyItem(const QModelIndex& index, const QString& newName)
 }
 
 }
+
+#include "moc_treemodel.cpp"

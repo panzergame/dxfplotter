@@ -1,5 +1,5 @@
 #pragma once
 
-#include <geometry/polyline.h>
+import geometry.polyline;
 
 geometry::Polyline createStartPolyline(float innerRadius, float outterRadius, int nbBranches);

@@ -1,5 +1,6 @@
 #include <bulgepainter.h>
-#include <geometry/arc.h>
+
+import geometry.arc;
 
 namespace view::view2d
 {

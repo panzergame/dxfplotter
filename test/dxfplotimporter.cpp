@@ -3,10 +3,10 @@
 #include <exporter/dxfplot/exporter.h>
 #include <importer/dxfplot/importer.h>
 
-#include <common/exception.h>
-
 #include <sstream>
 
+import common.exception;
+import geometry.bulge;
 
 TEST_F(ExporterFixture, shouldThrowExceptionWhenToolNotFound)
 {

@@ -52,3 +52,5 @@ geometry::Rect OffsettedPath::boundingRect() const
 }
 
 }
+
+#include "moc_offsettedpath.cpp"

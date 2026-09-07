@@ -1,13 +1,14 @@
 #pragma once
 
-#include <geometry/polyline.h>
-
-#include <common/aggregable.h>
-
 #include <model/renderable.h>
 #include <model/pathsettings.h>
 
 #include <serializer/access.h>
+
+import common.aggregable;
+import geometry.polyline;
+import geometry.rect;
+import geometry.utils;
 
 namespace model
 {

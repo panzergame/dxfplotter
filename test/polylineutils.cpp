@@ -1,5 +1,11 @@
 #include <polylineutils.h>
 
+#include <cmath>
+#include <QVector2D>
+
+import geometry.bulge;
+import geometry.utils;
+
 geometry::Polyline createStartPolyline(float innerRadius, float outterRadius, int nbBranches)
 {
 	geometry::Point2DList points(nbBranches * 2);

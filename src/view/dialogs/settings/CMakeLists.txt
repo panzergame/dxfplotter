@@ -11,5 +11,5 @@ set(SRC
 )
 
 add_library(view-dialogs-settings ${SRC})
-target_link_libraries(view-dialogs-settings PRIVATE config)
+target_link_libraries(view-dialogs-settings PUBLIC common PRIVATE config geometry)
 add_dependencies(view-dialogs-settings uic-dialogs-settings)
