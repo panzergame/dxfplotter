@@ -17,38 +17,18 @@ private:
 	Orientation m_orientation;
 
 public:
-	explicit Circle(const QVector2D& center, float radius, Orientation orientation);
+	explicit Circle(const QVector2D& center, float radius, Orientation orientation)
+		: m_center(center)
+		, m_radius(radius)
+		, m_orientation(orientation)
+	{
+	}
 
-	const QVector2D& center() const;
-	float radius() const;
-	Orientation orientation() const;
+	const QVector2D& center() const { return m_center; }
+
+	float radius() const { return m_radius; }
+
+	Orientation orientation() const { return m_orientation; }
 };
-
-}
-
-namespace geometry
-{
-
-Circle::Circle(const QVector2D& center, float radius, Orientation orientation)
-	: m_center(center)
-	, m_radius(radius)
-	, m_orientation(orientation)
-{
-}
-
-const QVector2D& Circle::center() const
-{
-	return m_center;
-}
-
-float Circle::radius() const
-{
-	return m_radius;
-}
-
-Orientation Circle::orientation() const
-{
-	return m_orientation;
-}
 
 }

@@ -10,24 +10,6 @@ import common.aggregable;
 import geometry.polyline;
 import geometry.utils;
 
-export namespace geometry::filter
-{
-
-/** @brief Clean polyline via merging of small bulges.
- */
-class Cleaner
-{
-private:
-	Polyline::List m_polylines;
-
-public:
-	explicit Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength);
-
-	Polyline::List&& polylines();
-};
-
-}
-
 namespace geometry::filter
 {
 
@@ -174,22 +156,33 @@ public:
 	Polyline&& polyline() { return std::move(m_polyline); }
 };
 
-Cleaner::Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength)
+}
+
+export namespace geometry::filter
 {
-	for (const Polyline& polyline : polylines) {
-		// Prune small polyline length
-		PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
 
-		// Convert small arcs to lines
-		ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+/** @brief Clean polyline via merging of small bulges.
+ */
+class Cleaner
+{
+private:
+	Polyline::List m_polylines;
 
-		m_polylines.push_back(arcCleaner.polyline());
+public:
+	explicit Cleaner(Polyline::List&& polylines, float minimumPolylineLength, float minimumArcLength)
+	{
+		for (const Polyline& polyline : polylines) {
+			// Prune small polyline length
+			PolylineLengthCleaner lengthCleaner(polyline, minimumPolylineLength);
+
+			// Convert small arcs to lines
+			ArcLengthCleaner arcCleaner(lengthCleaner.polyline(), minimumArcLength);
+
+			m_polylines.push_back(arcCleaner.polyline());
+		}
 	}
-}
 
-Polyline::List&& Cleaner::polylines()
-{
-	return std::move(m_polylines);
-}
+	Polyline::List&& polylines() { return std::move(m_polylines); }
+};
 
 }

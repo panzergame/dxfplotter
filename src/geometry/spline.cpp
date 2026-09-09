@@ -18,32 +18,16 @@ private:
 	bool m_closed;
 
 protected:
-	const Point2DList& controlPoints() const;
-	bool closed() const;
+	const Point2DList& controlPoints() const { return m_controlPoints; }
+
+	bool closed() const { return m_closed; }
 
 public:
-	explicit Spline(Point2DList&& points, bool closed);
+	explicit Spline(Point2DList&& points, bool closed)
+		: m_controlPoints(points)
+		, m_closed(closed)
+	{
+	}
 };
-
-}
-
-namespace geometry
-{
-
-const Point2DList& Spline::controlPoints() const
-{
-	return m_controlPoints;
-}
-
-bool Spline::closed() const
-{
-	return m_closed;
-}
-
-Spline::Spline(Point2DList&& points, bool closed)
-	: m_controlPoints(points)
-	, m_closed(closed)
-{
-}
 
 }

@@ -16,32 +16,17 @@ private:
 	std::string m_description;
 
 public:
-	explicit Node(const std::string& name, const std::string& description);
+	explicit Node(const std::string& name, const std::string& description)
+		: m_name(name)
+		, m_description(description)
+	{
+	}
+
 	Node() = default;
 
-	const std::string& name() const;
-	const std::string& description() const;
+	const std::string& name() const { return m_name; }
+
+	const std::string& description() const { return m_description; }
 };
-
-}
-
-namespace config
-{
-
-Node::Node(const std::string& name, const std::string& description)
-	: m_name(name)
-	, m_description(description)
-{
-}
-
-const std::string& Node::name() const
-{
-	return m_name;
-}
-
-const std::string& Node::description() const
-{
-	return m_description;
-}
 
 }

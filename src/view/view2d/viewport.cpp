@@ -19,181 +19,12 @@ import model.application;
 import model.path;
 import view.view2d.basicpathitem;
 
-export namespace view::view2d
-{
-
-class Viewport : public model::DocumentModelObserver<QGraphicsView>
-{
-	Q_OBJECT;
-
-private:
-	/// Last mouse position in scene.
-	QPoint m_lastMousePosition;
-
-	RubberBand m_rubberBand;
-
-	void setupPathItems();
-
-	void startMovement(const QPoint& mousePos);
-	void updateMovement(const QPoint& mousePos);
-
-	void startRubberBand(const QPoint& mousePos);
-	void updateRubberBand(const QPoint& mousePos);
-	void endRubberBand(const QPoint& mousePos, bool addToSelection);
-
-	void selectAllItems();
-	void deselecteAllItems();
-
-	void setupModel();
-
-	void fitItemsInView();
-
-protected:
-	void documentChanged() override;
-	void newDocumentOpened() override;
-
-	void wheelEvent(QWheelEvent* event) override;
-	void mousePressEvent(QMouseEvent* event) override;
-	void mouseReleaseEvent(QMouseEvent* event) override;
-	void mouseMoveEvent(QMouseEvent* event) override;
-	void keyPressEvent(QKeyEvent* event) override;
-	void drawBackground(QPainter* painter, const QRectF& updatedRect) override;
-
-public:
-	explicit Viewport(model::Application& app);
-
-Q_SIGNALS:
-	void cursorMoved(const QPointF& position);
-};
-
-}
-
 namespace view::view2d
 {
 
 constexpr int rubberBandTolerance = 2;
-// Rectangle extend used when clicking with empty rubber band.
 constexpr QPoint pointSelectionRectExtend(10, 10);
 
-void Viewport::setupPathItems()
-{
-	task().forEachPath([scene = scene()](model::Path& path) {
-		BasicPathItem* item;
-		if (path.isPoint()) {
-			item = new PointPathItem(path);
-		} else {
-			item = new PolylinePathItem(path);
-		}
-		scene->addItem(item);
-	});
-}
-
-void Viewport::startMovement(const QPoint& mousePos)
-{
-	m_lastMousePosition = mousePos;
-}
-
-void Viewport::updateMovement(const QPoint& mousePos)
-{
-	const QPointF delta = mapToScene(mousePos) - mapToScene(m_lastMousePosition);
-
-	// Disable anchor to avoid interferences
-	setTransformationAnchor(NoAnchor);
-
-	translate(delta.x(), delta.y());
-
-	// Restore anchor
-	setTransformationAnchor(AnchorUnderMouse);
-
-	m_lastMousePosition = mousePos;
-}
-
-void Viewport::startRubberBand(const QPoint& mousePos)
-{
-	m_rubberBand.start(mousePos, mapToScene(mousePos));
-}
-
-void Viewport::updateRubberBand(const QPoint& mousePos)
-{
-	m_rubberBand.update(mousePos, mapToScene(mousePos));
-}
-
-void Viewport::endRubberBand(const QPoint& mousePos, bool addToSelection)
-{
-	m_rubberBand.end(mousePos, mapToScene(mousePos));
-
-	// Point selection
-	if (m_rubberBand.empty(rubberBandTolerance)) {
-		// Fake selection area
-		const QRect rect(mousePos - pointSelectionRectExtend, mousePos + pointSelectionRectExtend);
-
-		// Find items in fake selection area
-		const QList<QGraphicsItem*> items = QGraphicsView::items(rect);
-		if (!items.empty()) {
-			// Obtain only the first item.
-			QGraphicsItem* item = items.front();
-
-			if (!addToSelection) {
-				// Clear all and select one in replacive selection
-				scene()->clearSelection();
-				item->setSelected(true);
-			} else {
-				// Toggle selection in additive selection
-				item->setSelected(!item->isSelected());
-			}
-		}
-	}
-	// Area selection
-	else {
-		// Create a path with selection area
-		QPainterPath path;
-		path.addRect(m_rubberBand.rect());
-
-		scene()->setSelectionArea(path, addToSelection ? Qt::AddToSelection : Qt::ReplaceSelection);
-	}
-}
-
-void Viewport::selectAllItems()
-{
-	for (QGraphicsItem* item : scene()->items()) {
-		item->setSelected(true);
-	}
-}
-
-void Viewport::deselecteAllItems()
-{
-	for (QGraphicsItem* item : scene()->selectedItems()) {
-		item->setSelected(false);
-	}
-}
-
-void Viewport::setupModel()
-{
-	setScene(new QGraphicsScene());
-
-	scene()->addItem(&m_rubberBand);
-
-	setupPathItems();
-
-	// Expand scene rect by margin allowing moving out of bound
-	const QRectF originalRect = scene()->itemsBoundingRect();
-	const QRectF expandedRect = originalRect.adjusted(-2000.0f, -2000.0f, 2000.0f, 2000.0f);
-	setSceneRect(expandedRect);
-}
-
-void Viewport::fitItemsInView()
-{
-	setTransformationAnchor(NoAnchor);
-
-	const QRectF boundingRect = scene()->itemsBoundingRect();
-	centerOn(boundingRect.center());
-	fitInView(boundingRect, Qt::KeepAspectRatio);
-
-	setTransformationAnchor(AnchorUnderMouse);
-}
-
-/** @brief Painter for grid and axis into background
- */
 class BackgroundPainter
 {
 private:
@@ -307,134 +138,261 @@ public:
 	}
 };
 
-void Viewport::documentChanged()
-{
-	setupModel();
 }
 
-void Viewport::newDocumentOpened()
+export namespace view::view2d
 {
-	fitItemsInView(); // TODO delay after UI update
-}
 
-void Viewport::wheelEvent(QWheelEvent* event)
+class Viewport : public model::DocumentModelObserver<QGraphicsView>
 {
-	constexpr float SCALE_STEP = 0.2f;
+	Q_OBJECT;
 
-	const float factor = 1.0f + ((event->angleDelta().y() > 0) ? SCALE_STEP : -SCALE_STEP);
+private:
+	/// Last mouse position in scene.
+	QPoint m_lastMousePosition;
 
-	scale(factor, factor);
+	RubberBand m_rubberBand;
 
-	event->accept();
-}
+	void setupPathItems()
+	{
+		task().forEachPath([scene = scene()](model::Path& path) {
+			BasicPathItem* item;
+			if (path.isPoint()) {
+				item = new PointPathItem(path);
+			} else {
+				item = new PolylinePathItem(path);
+			}
+			scene->addItem(item);
+		});
+	}
 
-void Viewport::mousePressEvent(QMouseEvent* event)
-{
-	const QPoint& mousePos = event->pos();
+	void startMovement(const QPoint& mousePos) { m_lastMousePosition = mousePos; }
 
-	switch (event->button()) {
-		case Qt::MiddleButton: {
-			startMovement(mousePos);
-			break;
+	void updateMovement(const QPoint& mousePos)
+	{
+		const QPointF delta = mapToScene(mousePos) - mapToScene(m_lastMousePosition);
+
+		// Disable anchor to avoid interferences
+		setTransformationAnchor(NoAnchor);
+
+		translate(delta.x(), delta.y());
+
+		// Restore anchor
+		setTransformationAnchor(AnchorUnderMouse);
+
+		m_lastMousePosition = mousePos;
+	}
+
+	void startRubberBand(const QPoint& mousePos) { m_rubberBand.start(mousePos, mapToScene(mousePos)); }
+
+	void updateRubberBand(const QPoint& mousePos) { m_rubberBand.update(mousePos, mapToScene(mousePos)); }
+
+	void endRubberBand(const QPoint& mousePos, bool addToSelection)
+	{
+		m_rubberBand.end(mousePos, mapToScene(mousePos));
+
+		// Point selection
+		if (m_rubberBand.empty(rubberBandTolerance)) {
+			// Fake selection area
+			const QRect rect(mousePos - pointSelectionRectExtend, mousePos + pointSelectionRectExtend);
+
+			// Find items in fake selection area
+			const QList<QGraphicsItem*> items = QGraphicsView::items(rect);
+			if (!items.empty()) {
+				// Obtain only the first item.
+				QGraphicsItem* item = items.front();
+
+				if (!addToSelection) {
+					// Clear all and select one in replacive selection
+					scene()->clearSelection();
+					item->setSelected(true);
+				} else {
+					// Toggle selection in additive selection
+					item->setSelected(!item->isSelected());
+				}
+			}
 		}
-		case Qt::LeftButton: {
-			startRubberBand(mousePos);
-			break;
-		}
-		default: {
-			break;
+		// Area selection
+		else {
+			// Create a path with selection area
+			QPainterPath path;
+			path.addRect(m_rubberBand.rect());
+
+			scene()->setSelectionArea(path, addToSelection ? Qt::AddToSelection : Qt::ReplaceSelection);
 		}
 	}
 
-	event->accept();
-}
-
-void Viewport::mouseReleaseEvent(QMouseEvent* event)
-{
-	const QPoint& mousePos = event->pos();
-
-	switch (event->button()) {
-		case Qt::LeftButton: {
-			const bool addToSelection = event->modifiers() & Qt::ControlModifier;
-			endRubberBand(mousePos, addToSelection);
-			break;
-		}
-		default: {
-			break;
+	void selectAllItems()
+	{
+		for (QGraphicsItem* item : scene()->items()) {
+			item->setSelected(true);
 		}
 	}
 
-	event->accept();
-}
-
-void Viewport::mouseMoveEvent(QMouseEvent* event)
-{
-	const QPoint& mousePos = event->pos();
-	const Qt::MouseButtons buttons = event->buttons();
-
-	if (buttons & Qt::MiddleButton) {
-		updateMovement(mousePos);
-	}
-	if (buttons & Qt::LeftButton) {
-		updateRubberBand(mousePos);
+	void deselecteAllItems()
+	{
+		for (QGraphicsItem* item : scene()->selectedItems()) {
+			item->setSelected(false);
+		}
 	}
 
-	// Forward event used for anchors
-	QGraphicsView::mouseMoveEvent(event);
+	void setupModel()
+	{
+		setScene(new QGraphicsScene());
 
-	emit cursorMoved(mapToScene(mousePos));
-}
+		scene()->addItem(&m_rubberBand);
 
-void Viewport::keyPressEvent(QKeyEvent* event)
-{
-	const int key = event->key();
-	const int modifier = event->modifiers();
+		setupPathItems();
 
-	if (key == Qt::Key_A && modifier & Qt::ControlModifier) {
-		selectAllItems();
-	} else if (key == Qt::Key_Escape) {
-		deselecteAllItems();
+		// Expand scene rect by margin allowing moving out of bound
+		const QRectF originalRect = scene()->itemsBoundingRect();
+		const QRectF expandedRect = originalRect.adjusted(-2000.0f, -2000.0f, 2000.0f, 2000.0f);
+		setSceneRect(expandedRect);
 	}
-}
 
-void Viewport::drawBackground(QPainter* painter, const QRectF& updatedRect)
-{
+	void fitItemsInView()
+	{
+		setTransformationAnchor(NoAnchor);
 
-	const QRect screenRect = rect();
-	const QRectF sceneRect = mapToScene(rect()).boundingRect();
+		const QRectF boundingRect = scene()->itemsBoundingRect();
+		centerOn(boundingRect.center());
+		fitInView(boundingRect, Qt::KeepAspectRatio);
 
-	const float pixelRatio = std::max(sceneRect.width() / screenRect.width(), sceneRect.height() / screenRect.height());
+		setTransformationAnchor(AnchorUnderMouse);
+	}
 
-	// Basic background color
-	static const QBrush brush(QColor(0, 0, 0));
-	painter->fillRect(updatedRect, brush);
+protected:
+	void documentChanged() override { setupModel(); }
 
-	BackgroundPainter backgroundPainter(painter, sceneRect, pixelRatio);
-}
+	void newDocumentOpened() override
+	{
+		fitItemsInView(); // TODO delay after UI update
+	}
 
-Viewport::Viewport(model::Application& app)
-	: DocumentModelObserver(app)
-{
-	// Setup default empty scene
-	setScene(new QGraphicsScene());
+	void wheelEvent(QWheelEvent* event) override
+	{
+		constexpr float SCALE_STEP = 0.2f;
 
-	// Invert Y axis
-	scale(1.0f, -1.0f);
+		const float factor = 1.0f + ((event->angleDelta().y() > 0) ? SCALE_STEP : -SCALE_STEP);
 
-	// Disable dragging support
-	setDragMode(NoDrag);
+		scale(factor, factor);
 
-	// Anchor under mouse for zooming
-	setResizeAnchor(AnchorUnderMouse);
-	setTransformationAnchor(AnchorUnderMouse);
+		event->accept();
+	}
 
-	setViewportUpdateMode(FullViewportUpdate);
-	setRenderHints(QPainter::Antialiasing);
+	void mousePressEvent(QMouseEvent* event) override
+	{
+		const QPoint& mousePos = event->pos();
 
-	// Hide scroll bars
-	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
+		switch (event->button()) {
+			case Qt::MiddleButton: {
+				startMovement(mousePos);
+				break;
+			}
+			case Qt::LeftButton: {
+				startRubberBand(mousePos);
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+
+		event->accept();
+	}
+
+	void mouseReleaseEvent(QMouseEvent* event) override
+	{
+		const QPoint& mousePos = event->pos();
+
+		switch (event->button()) {
+			case Qt::LeftButton: {
+				const bool addToSelection = event->modifiers() & Qt::ControlModifier;
+				endRubberBand(mousePos, addToSelection);
+				break;
+			}
+			default: {
+				break;
+			}
+		}
+
+		event->accept();
+	}
+
+	void mouseMoveEvent(QMouseEvent* event) override
+	{
+		const QPoint& mousePos = event->pos();
+		const Qt::MouseButtons buttons = event->buttons();
+
+		if (buttons & Qt::MiddleButton) {
+			updateMovement(mousePos);
+		}
+		if (buttons & Qt::LeftButton) {
+			updateRubberBand(mousePos);
+		}
+
+		// Forward event used for anchors
+		QGraphicsView::mouseMoveEvent(event);
+
+		emit cursorMoved(mapToScene(mousePos));
+	}
+
+	void keyPressEvent(QKeyEvent* event) override
+	{
+		const int key = event->key();
+		const int modifier = event->modifiers();
+
+		if (key == Qt::Key_A && modifier & Qt::ControlModifier) {
+			selectAllItems();
+		} else if (key == Qt::Key_Escape) {
+			deselecteAllItems();
+		}
+	}
+
+	void drawBackground(QPainter* painter, const QRectF& updatedRect) override
+	{
+
+		const QRect screenRect = rect();
+		const QRectF sceneRect = mapToScene(rect()).boundingRect();
+
+		const float pixelRatio
+			= std::max(sceneRect.width() / screenRect.width(), sceneRect.height() / screenRect.height());
+
+		// Basic background color
+		static const QBrush brush(QColor(0, 0, 0));
+		painter->fillRect(updatedRect, brush);
+
+		BackgroundPainter backgroundPainter(painter, sceneRect, pixelRatio);
+	}
+
+public:
+	explicit Viewport(model::Application& app)
+		: DocumentModelObserver(app)
+	{
+		// Setup default empty scene
+		setScene(new QGraphicsScene());
+
+		// Invert Y axis
+		scale(1.0f, -1.0f);
+
+		// Disable dragging support
+		setDragMode(NoDrag);
+
+		// Anchor under mouse for zooming
+		setResizeAnchor(AnchorUnderMouse);
+		setTransformationAnchor(AnchorUnderMouse);
+
+		setViewportUpdateMode(FullViewportUpdate);
+		setRenderHints(QPainter::Antialiasing);
+
+		// Hide scroll bars
+		setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+		setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+	}
+
+Q_SIGNALS:
+	void cursorMoved(const QPointF& position);
+};
 
 }
 

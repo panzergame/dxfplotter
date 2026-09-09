@@ -14,35 +14,18 @@ private:
 	QTransform m_matrix;
 
 public:
-	explicit Mirror();
+	explicit Mirror() { setupUi(this); }
 
-	const QTransform& matrix() const;
+	const QTransform& matrix() const { return m_matrix; }
 
-	void accept() override;
+	void accept() override
+	{
+		QDialog::accept();
+
+		const float scaleX = mirrorX->isChecked() ? -1.0f : 1.0f;
+		const float scaleY = mirrorY->isChecked() ? -1.0f : 1.0f;
+		m_matrix.scale(scaleX, scaleY);
+	}
 };
-
-}
-
-namespace view::dialogs
-{
-
-Mirror::Mirror()
-{
-	setupUi(this);
-}
-
-const QTransform& Mirror::matrix() const
-{
-	return m_matrix;
-}
-
-void Mirror::accept()
-{
-	QDialog::accept();
-
-	const float scaleX = mirrorX->isChecked() ? -1.0f : 1.0f;
-	const float scaleY = mirrorY->isChecked() ? -1.0f : 1.0f;
-	m_matrix.scale(scaleX, scaleY);
-}
 
 }

@@ -14,44 +14,19 @@ private:
 	QVector2D m_end;
 
 public:
-	explicit Line(const QVector2D& start, const QVector2D& end);
+	explicit Line(const QVector2D& start, const QVector2D& end)
+		: m_start(start)
+		, m_end(end)
+	{
+	}
 
-	const QVector2D& start() const;
-	const QVector2D& end() const;
+	const QVector2D& start() const { return m_start; }
 
-	bool lengthNonZero() const;
-	float length() const;
+	const QVector2D& end() const { return m_end; }
+
+	bool lengthNonZero() const { return (m_start != m_end); }
+
+	float length() const { return m_start.distanceToPoint(m_end); }
 };
-
-}
-
-namespace geometry
-{
-
-Line::Line(const QVector2D& start, const QVector2D& end)
-	: m_start(start)
-	, m_end(end)
-{
-}
-
-const QVector2D& Line::start() const
-{
-	return m_start;
-}
-
-const QVector2D& Line::end() const
-{
-	return m_end;
-}
-
-bool Line::lengthNonZero() const
-{
-	return (m_start != m_end);
-}
-
-float Line::length() const
-{
-	return m_start.distanceToPoint(m_end);
-}
 
 }

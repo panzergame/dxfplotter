@@ -14,34 +14,17 @@ private:
 	QTransform m_matrix;
 
 public:
-	explicit Transform();
+	explicit Transform() { setupUi(this); }
 
-	const QTransform& matrix() const;
+	const QTransform& matrix() const { return m_matrix; }
 
-	void accept() override;
+	void accept() override
+	{
+		QDialog::accept();
+
+		m_matrix.translate(offsetXSpinBox->value(), offsetYSpinBox->value());
+		m_matrix.rotate(angleSpinBox->value());
+	}
 };
-
-}
-
-namespace view::dialogs
-{
-
-Transform::Transform()
-{
-	setupUi(this);
-}
-
-const QTransform& Transform::matrix() const
-{
-	return m_matrix;
-}
-
-void Transform::accept()
-{
-	QDialog::accept();
-
-	m_matrix.translate(offsetXSpinBox->value(), offsetYSpinBox->value());
-	m_matrix.rotate(angleSpinBox->value());
-}
 
 }

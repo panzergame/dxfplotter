@@ -10,6 +10,16 @@ import common.aggregable;
 
 namespace ortools = operations_research::sat;
 
+namespace geometry
+{
+
+static int homeNodeId(int nbNodes)
+{
+	return nbNodes;
+}
+
+}
+
 export namespace geometry
 {
 
@@ -29,7 +39,10 @@ public:
 private:
 	std::vector<int> m_order;
 
-	static int nodeDistance(const Node& n1, const Node& n2);
+	static int nodeDistance(const Node& n1, const Node& n2)
+	{
+		return (n1.position - n2.position).lengthSquared() * 1e4; // TODO mutiplier
+	}
 
 	struct ArcTo : common::Aggregable<ArcTo>
 	{
@@ -54,147 +67,117 @@ private:
 		ortools::LinearExpr pathLength;
 		int nbNodes;
 
-		explicit ModelBuilder(int nbNodes);
+		explicit ModelBuilder(int nbNodes)
+			: circuit(builder.AddCircuitConstraint())
+			, arcsByNodes(nbNodes + 1)
+			, nbNodes(nbNodes)
+		{
+		}
 
-		void addArc(const Node& n1, const Node& n2);
-		Model build();
+		void addArc(const Node& n1, const Node& n2)
+		{
+			ortools::BoolVar literal = builder.NewBoolVar();
+			circuit.AddArc(n1.id, n2.id, literal);
+
+			const int distance = nodeDistance(n1, n2);
+			pathLength += literal * distance;
+
+			arcsByNodes[n1.id].push_back({ {}, n2.id, literal });
+		}
+
+		geometry::OrderOptimizer::Model build()
+		{
+			builder.Minimize(pathLength);
+
+			return { builder.Build(), arcsByNodes, nbNodes };
+		}
 	};
 
-	Model buildModel(const NodesPerGroup& nodesPerGroup, int nbNodes) const;
-	std::vector<int> solveAndExtractOrder(const Model& model);
+	OrderOptimizer::Model buildModel(const NodesPerGroup& nodesPerGroup, int nbNodes) const
+	{
+		ModelBuilder modelBuilder(nbNodes);
 
-public:
-	explicit OrderOptimizer(const NodesPerGroup& nodesPerGroup, int nbNodes);
+		const int nbGroup = nodesPerGroup.size();
+		const int lastGroupId = nbGroup - 1;
 
-	const std::vector<int>& order() const;
-};
+		// Group intra connections
+		for (const Node::List& nodes : nodesPerGroup) {
+			for (const Node& n1 : nodes) {
+				for (const Node& n2 : nodes) {
+					if (n1 == n2) {
+						continue;
+					}
 
-}
+					modelBuilder.addArc(n1, n2);
+				}
+			}
+		}
 
-namespace geometry
-{
+		// Group inter connections with group of id + 1
+		for (int groupId = 0; groupId < lastGroupId; ++groupId) {
+			const Node::List& curNodes = nodesPerGroup[groupId];
+			const Node::List& nextNodes = nodesPerGroup[groupId + 1];
 
-int OrderOptimizer::nodeDistance(const Node& n1, const Node& n2)
-{
-	return (n1.position - n2.position).lengthSquared() * 1e4; // TODO mutiplier
-}
+			for (const Node& n1 : curNodes) {
+				for (const Node& n2 : nextNodes) {
+					modelBuilder.addArc(n1, n2);
+				}
+			}
+		}
 
-static int homeNodeId(int nbNodes)
-{
-	return nbNodes;
-}
+		const Node home { {}, homeNodeId(nbNodes), { 0.0f, 0.0f } };
 
-OrderOptimizer::ModelBuilder::ModelBuilder(int nbNodes)
-	: circuit(builder.AddCircuitConstraint())
-	, arcsByNodes(nbNodes + 1)
-	, nbNodes(nbNodes)
-{
-}
+		// Home to first group nodes
+		const Node::List& firstGroupsNodes = nodesPerGroup.front();
+		for (const Node& node : firstGroupsNodes) {
+			modelBuilder.addArc(home, node);
+		}
 
-void OrderOptimizer::ModelBuilder::addArc(const Node& n1, const Node& n2)
-{
-	ortools::BoolVar literal = builder.NewBoolVar();
-	circuit.AddArc(n1.id, n2.id, literal);
+		// Last group nodes to home
+		const Node::List& lastGroupsNodes = nodesPerGroup.back();
+		for (const Node& node : lastGroupsNodes) {
+			modelBuilder.addArc(node, home);
+		}
 
-	const int distance = nodeDistance(n1, n2);
-	pathLength += literal * distance;
+		return modelBuilder.build();
+	}
 
-	arcsByNodes[n1.id].push_back({ {}, n2.id, literal });
-}
+	std::vector<int> solveAndExtractOrder(const Model& model)
+	{
+		const ortools::CpSolverResponse response = ortools::Solve(model.proto);
 
-geometry::OrderOptimizer::Model OrderOptimizer::ModelBuilder::build()
-{
-	builder.Minimize(pathLength);
+		if (response.status() != ortools::CpSolverStatus::OPTIMAL
+			&& response.status() != ortools::CpSolverStatus::FEASIBLE) {
+			return {};
+		}
 
-	return { builder.Build(), arcsByNodes, nbNodes };
-}
+		std::vector<int> order;
 
-OrderOptimizer::Model OrderOptimizer::buildModel(const NodesPerGroup& nodesPerGroup, int nbNodes) const
-{
-	ModelBuilder modelBuilder(nbNodes);
-
-	const int nbGroup = nodesPerGroup.size();
-	const int lastGroupId = nbGroup - 1;
-
-	// Group intra connections
-	for (const Node::List& nodes : nodesPerGroup) {
-		for (const Node& n1 : nodes) {
-			for (const Node& n2 : nodes) {
-				if (n1 == n2) {
+		const ArcsByNodes arcsByNodes = model.arcsByNodes;
+		// Last node id is home
+		const int homeId = homeNodeId(model.nbNodes);
+		int curNodeId = homeId;
+		while (order.size() < homeId) {
+			for (const ArcTo& arc : arcsByNodes[curNodeId]) {
+				if (ortools::SolutionIntegerValue(response, arc.literal)) {
+					curNodeId = arc.target;
+					order.push_back(curNodeId);
 					continue;
 				}
-
-				modelBuilder.addArc(n1, n2);
 			}
 		}
+
+		return order;
 	}
 
-	// Group inter connections with group of id + 1
-	for (int groupId = 0; groupId < lastGroupId; ++groupId) {
-		const Node::List& curNodes = nodesPerGroup[groupId];
-		const Node::List& nextNodes = nodesPerGroup[groupId + 1];
-
-		for (const Node& n1 : curNodes) {
-			for (const Node& n2 : nextNodes) {
-				modelBuilder.addArc(n1, n2);
-			}
-		}
+public:
+	explicit OrderOptimizer(const NodesPerGroup& nodesPerGroup, int nbNodes)
+	{
+		const Model model = buildModel(nodesPerGroup, nbNodes);
+		m_order = solveAndExtractOrder(model);
 	}
 
-	const Node home { {}, homeNodeId(nbNodes), { 0.0f, 0.0f } };
-
-	// Home to first group nodes
-	const Node::List& firstGroupsNodes = nodesPerGroup.front();
-	for (const Node& node : firstGroupsNodes) {
-		modelBuilder.addArc(home, node);
-	}
-
-	// Last group nodes to home
-	const Node::List& lastGroupsNodes = nodesPerGroup.back();
-	for (const Node& node : lastGroupsNodes) {
-		modelBuilder.addArc(node, home);
-	}
-
-	return modelBuilder.build();
-}
-
-std::vector<int> OrderOptimizer::solveAndExtractOrder(const Model& model)
-{
-	const ortools::CpSolverResponse response = ortools::Solve(model.proto);
-
-	if (response.status() != ortools::CpSolverStatus::OPTIMAL
-		&& response.status() != ortools::CpSolverStatus::FEASIBLE) {
-		return {};
-	}
-
-	std::vector<int> order;
-
-	const ArcsByNodes arcsByNodes = model.arcsByNodes;
-	// Last node id is home
-	const int homeId = homeNodeId(model.nbNodes);
-	int curNodeId = homeId;
-	while (order.size() < homeId) {
-		for (const ArcTo& arc : arcsByNodes[curNodeId]) {
-			if (ortools::SolutionIntegerValue(response, arc.literal)) {
-				curNodeId = arc.target;
-				order.push_back(curNodeId);
-				continue;
-			}
-		}
-	}
-
-	return order;
-}
-
-OrderOptimizer::OrderOptimizer(const NodesPerGroup& nodesPerGroup, int nbNodes)
-{
-	const Model model = buildModel(nodesPerGroup, nbNodes);
-	m_order = solveAndExtractOrder(model);
-}
-
-const std::vector<int>& OrderOptimizer::order() const
-{
-	return m_order;
-}
+	const std::vector<int>& order() const { return m_order; }
+};
 
 }

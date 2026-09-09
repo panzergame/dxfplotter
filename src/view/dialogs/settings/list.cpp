@@ -22,8 +22,3 @@ public:
 };
 
 }
-
-namespace view::settings
-{
-
-}
