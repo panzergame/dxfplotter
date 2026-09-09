@@ -23,8 +23,6 @@ import common.copy;
 export namespace model
 {
 
-class Layer;
-
 class Path : public Renderable, public common::Aggregable<Path>
 {
 	Q_OBJECT;
@@ -35,35 +33,26 @@ private:
 	geometry::Polyline m_basePolyline;
 	std::unique_ptr<model::OffsettedPath> m_offsettedPath;
 	PathSettings m_settings;
-	Layer* m_layer;
-	bool m_globallyVisible;
-
-	void updateGlobalVisibility();
 
 public:
 	explicit Path(geometry::Polyline&& basePolyline, const std::string& name, const PathSettings& settings)
 		: Renderable(name)
 		, m_basePolyline(basePolyline)
 		, m_settings(settings)
-		, m_globallyVisible(true)
 	{
-		connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
 	}
 
 	explicit Path(const Path& other)
 		: Renderable(other)
 		, m_basePolyline(other.m_basePolyline)
 		, m_settings(other.m_settings)
-		, m_globallyVisible(other.m_globallyVisible)
 	{
-		connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility);
-
 		if (other.m_offsettedPath) {
 			m_offsettedPath = std::make_unique<OffsettedPath>(*other.m_offsettedPath);
 		}
 	}
 
-	explicit Path() { connect(this, &Path::visibilityChanged, this, &Path::updateGlobalVisibility); }
+	explicit Path() = default;
 
 	static Path::ListUPtr FromPolylines(geometry::Polyline::List&& polylines, const PathSettings& settings,
 										const std::string& layerName)
@@ -79,12 +68,6 @@ public:
 
 		return paths;
 	}
-
-	Layer& layer() { return *m_layer; }
-
-	const Layer& layer() const { return *m_layer; }
-
-	void setLayer(Layer& layer);
 
 	const geometry::Polyline& basePolyline() const { return m_basePolyline; }
 
@@ -167,66 +150,10 @@ public:
 		return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() : geometry::CuttingDirection::FORWARD;
 	}
 
-	bool globallyVisible() const { return m_globallyVisible; }
-
 Q_SIGNALS:
-	void globalVisibilityChanged(bool globallyVisible);
 	void offsettedPathChanged();
 	void basePolylineTransformed();
 };
-
-class Layer : public Renderable, public common::Aggregable<Layer>
-{
-	Q_OBJECT;
-
-	friend serializer::Access<Layer>;
-
-private:
-	Path::ListUPtr m_children;
-
-	void assignSelfToChildren();
-
-public:
-	explicit Layer(const std::string& name, Path::ListUPtr&& children);
-	explicit Layer() = default;
-	explicit Layer(const Layer& other);
-	;
-
-	int childrenCount() const;
-	Path& childrenAt(int index);
-	const Path& childrenAt(int index) const;
-	int childIndexFor(const Path& child) const;
-
-	template<class Functor>
-	void forEachChild(Functor&& functor)
-	{
-		for (Path::UPtr& child : m_children) {
-			functor(*child);
-		}
-	}
-};
-
-}
-
-namespace model
-{
-
-void Path::updateGlobalVisibility()
-{
-	const bool newGloballyVisible = visible() && m_layer->visible();
-	if (m_globallyVisible != newGloballyVisible) {
-		m_globallyVisible = newGloballyVisible;
-
-		emit globalVisibilityChanged(m_globallyVisible);
-	}
-}
-
-void Path::setLayer(Layer& layer)
-{
-	m_layer = &layer;
-	updateGlobalVisibility();
-	connect(m_layer, &Layer::visibilityChanged, this, &Path::updateGlobalVisibility);
-}
 
 }
 

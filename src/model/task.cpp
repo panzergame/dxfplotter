@@ -12,6 +12,7 @@ import common.aggregable;
 import common.copy;
 import geometry.polyline;
 import geometry.rect;
+import model.layer;
 import model.path;
 
 #ifdef WITH_ORTOOLS

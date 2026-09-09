@@ -9,6 +9,7 @@ module;
 export module view.task.layertreemodel;
 
 import model.task;
+import model.layer;
 import model.path;
 import model.renderable;
 
@@ -88,7 +89,7 @@ public:
 
 		model::Renderable* item = static_cast<model::Renderable*>(index.internalPointer());
 		if (model::Path* path = dynamic_cast<model::Path*>(item)) {
-			model::Layer& layer = path->layer();
+			model::Layer& layer = static_cast<model::Layer&>(*path->parent());
 			const int row = m_task.layerIndexFor(layer);
 			return createIndex(row, 0, &layer);
 		}

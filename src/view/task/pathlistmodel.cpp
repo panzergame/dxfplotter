@@ -85,7 +85,7 @@ public:
 		}
 
 		const model::Path& path = m_task.pathAt(index.row());
-		return (path.layer().visible()) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
+		return (path.parent()->visible()) ? Qt::ItemIsEnabled : Qt::NoItemFlags;
 	}
 
 	QModelIndex movePathToDirection(const QModelIndex& index, model::Task::MoveDirection direction)
