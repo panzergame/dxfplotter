@@ -10,6 +10,7 @@ import config.config;
 import geometry.bulge;
 import geometry.polyline;
 import model.document;
+import model.layer;
 import model.path;
 import model.pathsettings;
 import model.simulation;

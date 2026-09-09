@@ -2,6 +2,7 @@
 
 import geometry.polyline;
 import model.document;
+import model.layer;
 import model.path;
 import model.task;
 

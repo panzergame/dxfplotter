@@ -12,6 +12,7 @@ export module serializer.task;
 
 import model.task;
 import serializer.layer;
+import model.layer;
 import model.path;
 
 export namespace serializer

@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 import geometry.polyline;
+import model.layer;
 import model.path;
 import model.pathgroupsettings;
 import model.pathsettings;

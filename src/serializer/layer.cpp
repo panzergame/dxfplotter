@@ -6,6 +6,7 @@ module;
 
 export module serializer.layer;
 
+import model.layer;
 import model.path;
 import model.renderable;
 import serializer.path;

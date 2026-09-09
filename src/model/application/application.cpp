@@ -26,6 +26,7 @@ import model.simulation;
 import geometry.polyline;
 import geometry.rect;
 import importer.dxf.layer;
+import model.layer;
 import model.path;
 import model.pathsettings;
 import model.task;
