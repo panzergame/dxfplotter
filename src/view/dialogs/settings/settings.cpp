@@ -23,147 +23,126 @@ export namespace view::settings
 class Settings : public QDialog, private Ui::Settings
 {
 private:
-	class NodeVisitor;
+	class NodeVisitor
+	{
+	private:
+		QWidget* m_newWidget;
 
-	void setupUi();
+	public:
+		template<class... Child>
+		void operator()(config::Group<Child...>& node)
+		{
+			m_newWidget = new Group(node);
+		}
+
+		template<class Child>
+		void operator()(config::List<Child>& node)
+		{
+			m_newWidget = new List(node);
+		}
+
+		QWidget* newWidget() const { return m_newWidget; }
+	};
+
+	void setupUi()
+	{
+		Ui::Settings::setupUi(this);
+
+		treeView->setModel(m_model.get());
+		treeView->expandAll();
+		treeView->resizeColumnToContents(0);
+	}
 
 	// Modified config
 	config::Config& m_newConfig;
 	std::unique_ptr<TreeModel> m_model;
 
 public:
-	explicit Settings(config::Config& newConfig);
-	~Settings();
+	explicit Settings(config::Config& newConfig)
+		: m_newConfig(newConfig)
+		, m_model(new TreeModel(m_newConfig.root(), this))
+	{
+		setupUi();
+
+		connect(treeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Settings::currentChanged);
+	}
+
+	~Settings() = default;
 
 protected Q_SLOTS:
-	void currentChanged(const QModelIndex& index, const QModelIndex& previous);
-	void addItem(const QModelIndex& index);
-	void removeItem(const QModelIndex& index);
-	void copyItem(const QModelIndex& index);
-};
-
-}
-
-namespace view::settings
-{
-
-/// Node visitor selecting list UI or group UI
-class Settings::NodeVisitor
-{
-private:
-	QWidget* m_newWidget;
-
-public:
-	template<class... Child>
-	void operator()(config::Group<Child...>& node)
+	void currentChanged(const QModelIndex& current, const QModelIndex&)
 	{
-		m_newWidget = new Group(node);
-	}
+		// Create new widget to be displayed at center
+		NodeVisitor visitor;
+		m_model->visit(current, visitor);
 
-	template<class Child>
-	void operator()(config::List<Child>& node)
-	{
-		m_newWidget = new List(node);
-	}
+		// Replace old center widget
+		QWidget* newWidget = visitor.newWidget();
+		QLayoutItem* item = gridLayout->replaceWidget(center, newWidget);
+		center = newWidget;
 
-	QWidget* newWidget() const { return m_newWidget; }
-};
+		// Delete old center widget
+		delete item->widget();
 
-void Settings::setupUi()
-{
-	Ui::Settings::setupUi(this);
+		const bool isList = m_model->isList(current);
+		addButton->disconnect();
+		addButton->setEnabled(isList);
 
-	treeView->setModel(m_model.get());
-	treeView->expandAll();
-	treeView->resizeColumnToContents(0);
-}
+		if (isList) {
+			connect(addButton, &QPushButton::pressed, this, [current, this]() {
+				addItem(current);
+			});
+		}
 
-Settings::Settings(config::Config& newConfig)
-	: m_newConfig(newConfig)
-	, m_model(new TreeModel(m_newConfig.root(), this))
-{
-	setupUi();
+		const bool isItem = m_model->isItem(current);
+		removeButton->disconnect();
+		removeButton->setEnabled(isItem);
+		copyButton->disconnect();
+		copyButton->setEnabled(isItem);
 
-	connect(treeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &Settings::currentChanged);
-}
-
-Settings::~Settings() = default;
-
-void Settings::currentChanged(const QModelIndex& current, const QModelIndex&)
-{
-	// Create new widget to be displayed at center
-	NodeVisitor visitor;
-	m_model->visit(current, visitor);
-
-	// Replace old center widget
-	QWidget* newWidget = visitor.newWidget();
-	QLayoutItem* item = gridLayout->replaceWidget(center, newWidget);
-	center = newWidget;
-
-	// Delete old center widget
-	delete item->widget();
-
-	const bool isList = m_model->isList(current);
-	addButton->disconnect();
-	addButton->setEnabled(isList);
-
-	if (isList) {
-		connect(addButton, &QPushButton::pressed, this, [current, this]() {
-			addItem(current);
-		});
-	}
-
-	const bool isItem = m_model->isItem(current);
-	removeButton->disconnect();
-	removeButton->setEnabled(isItem);
-	copyButton->disconnect();
-	copyButton->setEnabled(isItem);
-
-	if (isItem) {
-		connect(removeButton, &QPushButton::pressed, this, [current, this]() {
-			removeItem(current);
-		});
-		connect(copyButton, &QPushButton::pressed, this, [current, this]() {
-			copyItem(current);
-		});
-	}
-}
-
-void Settings::addItem(const QModelIndex& index)
-{
-	bool ok;
-	const QString text
-		= QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"), QLineEdit::Normal, "", &ok);
-
-	if (ok) {
-		if (text.isEmpty()) {
-			QMessageBox::critical(this, "Error", "Invalid name");
-		} else {
-			m_model->addItem(index, text);
+		if (isItem) {
+			connect(removeButton, &QPushButton::pressed, this, [current, this]() {
+				removeItem(current);
+			});
+			connect(copyButton, &QPushButton::pressed, this, [current, this]() {
+				copyItem(current);
+			});
 		}
 	}
-}
 
-void Settings::removeItem(const QModelIndex& index)
-{
-	m_model->removeItem(index);
-}
+	void addItem(const QModelIndex& index)
+	{
+		bool ok;
+		const QString text
+			= QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"), QLineEdit::Normal, "", &ok);
 
-void Settings::copyItem(const QModelIndex& index)
-{
-	const QString sourceName = m_model->data(index).toString();
-
-	bool ok;
-	const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"), QLineEdit::Normal,
-											   sourceName, &ok);
-
-	if (ok) {
-		if (text.isEmpty() || text == sourceName) {
-			QMessageBox::critical(this, "Error", "Invalid name");
-		} else {
-			m_model->copyItem(index, text);
+		if (ok) {
+			if (text.isEmpty()) {
+				QMessageBox::critical(this, "Error", "Invalid name");
+			} else {
+				m_model->addItem(index, text);
+			}
 		}
 	}
-}
+
+	void removeItem(const QModelIndex& index) { m_model->removeItem(index); }
+
+	void copyItem(const QModelIndex& index)
+	{
+		const QString sourceName = m_model->data(index).toString();
+
+		bool ok;
+		const QString text = QInputDialog::getText(this, tr("QInputDialog::getText()"), tr("New name:"),
+												   QLineEdit::Normal, sourceName, &ok);
+
+		if (ok) {
+			if (text.isEmpty() || text == sourceName) {
+				QMessageBox::critical(this, "Error", "Invalid name");
+			} else {
+				m_model->copyItem(index, text);
+			}
+		}
+	}
+};
 
 }

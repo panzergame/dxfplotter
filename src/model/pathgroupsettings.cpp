@@ -59,70 +59,27 @@ private:
 	}
 
 public:
-	explicit PathGroupSettings(const Task& task);
+	explicit PathGroupSettings(const Task& task)
+		: m_task(task)
+	{
+	}
 
-	std::optional<float> planeFeedRate() const;
-	void setPlaneFeedRate(float planeFeedRate);
+	std::optional<float> planeFeedRate() const { return valueIfAllEqual(&PathSettings::planeFeedRate); }
 
-	std::optional<float> depthFeedRate() const;
-	void setDepthFeedRate(float depthFeedRate);
+	void setPlaneFeedRate(float planeFeedRate) { setValue(&PathSettings::setPlaneFeedRate, planeFeedRate); }
 
-	std::optional<float> intensity() const;
-	void setIntensity(float intensity);
+	std::optional<float> depthFeedRate() const { return valueIfAllEqual(&PathSettings::depthFeedRate); }
 
-	std::optional<float> depth() const;
-	void setDepth(float depth);
+	void setDepthFeedRate(float depthFeedRate) { setValue(&PathSettings::setDepthFeedRate, depthFeedRate); }
+
+	std::optional<float> intensity() const { return valueIfAllEqual(&PathSettings::intensity); }
+
+	void setIntensity(float intensity) { setValue(&PathSettings::setIntensity, intensity); }
+
+	std::optional<float> depth() const { return valueIfAllEqual(&PathSettings::depth); }
+
+	void setDepth(float depth) { setValue(&PathSettings::setDepth, depth); }
 };
-
-}
-
-namespace model
-{
-
-PathGroupSettings::PathGroupSettings(const Task& task)
-	: m_task(task)
-{
-}
-
-std::optional<float> PathGroupSettings::planeFeedRate() const
-{
-	return valueIfAllEqual(&PathSettings::planeFeedRate);
-}
-
-void PathGroupSettings::setPlaneFeedRate(float planeFeedRate)
-{
-	setValue(&PathSettings::setPlaneFeedRate, planeFeedRate);
-}
-
-std::optional<float> PathGroupSettings::depthFeedRate() const
-{
-	return valueIfAllEqual(&PathSettings::depthFeedRate);
-}
-
-void PathGroupSettings::setDepthFeedRate(float depthFeedRate)
-{
-	setValue(&PathSettings::setDepthFeedRate, depthFeedRate);
-}
-
-std::optional<float> PathGroupSettings::intensity() const
-{
-	return valueIfAllEqual(&PathSettings::intensity);
-}
-
-void PathGroupSettings::setIntensity(float intensity)
-{
-	setValue(&PathSettings::setIntensity, intensity);
-}
-
-std::optional<float> PathGroupSettings::depth() const
-{
-	return valueIfAllEqual(&PathSettings::depth);
-}
-
-void PathGroupSettings::setDepth(float depth)
-{
-	setValue(&PathSettings::setDepth, depth);
-}
 
 }
 

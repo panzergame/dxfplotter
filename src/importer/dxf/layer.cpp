@@ -20,38 +20,16 @@ private:
 public:
 	Layer() = default;
 
-	explicit Layer(const std::string& name);
+	explicit Layer(const std::string& name)
+		: m_name(name)
+	{
+	}
 
-	void addPolyline(const geometry::Polyline& polyline);
+	void addPolyline(const geometry::Polyline& polyline) { m_polylines.push_back(polyline); }
 
-	geometry::Polyline::List&& polylines();
+	geometry::Polyline::List&& polylines() { return std::move(m_polylines); }
 
-	const std::string& name() const;
+	const std::string& name() const { return m_name; }
 };
-
-}
-
-namespace importer::dxf
-{
-
-Layer::Layer(const std::string& name)
-	: m_name(name)
-{
-}
-
-void Layer::addPolyline(const geometry::Polyline& polyline)
-{
-	m_polylines.push_back(polyline);
-}
-
-geometry::Polyline::List&& Layer::polylines()
-{
-	return std::move(m_polylines);
-}
-
-const std::string& Layer::name() const
-{
-	return m_name;
-}
 
 }

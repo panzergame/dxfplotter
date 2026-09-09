@@ -14,35 +14,6 @@ import model.path;
 import geometry.polyline;
 import model.offsettedpath;
 
-export namespace view::view2d
-{
-
-class OffsettedPolylinePathItem : public QObject, public QGraphicsPathItem
-{
-	Q_OBJECT;
-
-private:
-	const model::OffsettedPath& m_offsettedPath;
-	QPainterPath m_paintPath;
-
-	QPainterPath paintPath() const;
-
-	QPainterPath shape() const override;
-
-	void setupPaths();
-
-public:
-	explicit OffsettedPolylinePathItem(const model::OffsettedPath& offsettedPath);
-
-	void selected();
-	void deselected();
-
-protected Q_SLOTS:
-	void polylinesTransformed();
-};
-
-}
-
 namespace view::view2d
 {
 
@@ -56,62 +27,69 @@ namespace
 
 }
 
-QPainterPath OffsettedPolylinePathItem::paintPath() const
+}
+
+export namespace view::view2d
 {
-	const geometry::Polyline::List polylines = m_offsettedPath.polylines();
 
-	QPainterPath rootPainter;
+class OffsettedPolylinePathItem : public QObject, public QGraphicsPathItem
+{
+	Q_OBJECT;
 
-	for (const geometry::Polyline& polyline : polylines) {
-		QPainterPath painter(polyline.start().toPointF());
+private:
+	const model::OffsettedPath& m_offsettedPath;
+	QPainterPath m_paintPath;
 
-		BulgePainter functor(painter);
-		polyline.forEachBulge(functor);
+	QPainterPath paintPath() const
+	{
+		const geometry::Polyline::List polylines = m_offsettedPath.polylines();
 
-		rootPainter.addPath(painter);
+		QPainterPath rootPainter;
+
+		for (const geometry::Polyline& polyline : polylines) {
+			QPainterPath painter(polyline.start().toPointF());
+
+			BulgePainter functor(painter);
+			polyline.forEachBulge(functor);
+
+			rootPainter.addPath(painter);
+		}
+
+		return rootPainter;
 	}
 
-	return rootPainter;
-}
+	QPainterPath shape() const override { return QPainterPath(); }
 
-QPainterPath OffsettedPolylinePathItem::shape() const
-{
-	return QPainterPath();
-}
+	void setupPaths()
+	{
+		m_paintPath = paintPath();
+		setPath(m_paintPath);
+	}
 
-void OffsettedPolylinePathItem::setupPaths()
-{
-	m_paintPath = paintPath();
-	setPath(m_paintPath);
-}
+public:
+	explicit OffsettedPolylinePathItem(const model::OffsettedPath& offsettedPath)
+		: QGraphicsPathItem(QPainterPath())
+		, m_offsettedPath(offsettedPath)
+	{
+		setupPaths();
+		setPen(normalPen);
 
-OffsettedPolylinePathItem::OffsettedPolylinePathItem(const model::OffsettedPath& offsettedPath)
-	: QGraphicsPathItem(QPainterPath())
-	, m_offsettedPath(offsettedPath)
-{
-	setupPaths();
-	setPen(normalPen);
+		connect(&offsettedPath, &model::OffsettedPath::polylinesTransformed, this,
+				&OffsettedPolylinePathItem::polylinesTransformed);
+	}
 
-	connect(&offsettedPath, &model::OffsettedPath::polylinesTransformed, this,
-			&OffsettedPolylinePathItem::polylinesTransformed);
-}
+	void selected() { setPen(selectPen); }
 
-void OffsettedPolylinePathItem::selected()
-{
-	setPen(selectPen);
-}
+	void deselected() { setPen(normalPen); }
 
-void OffsettedPolylinePathItem::deselected()
-{
-	setPen(normalPen);
-}
+protected Q_SLOTS:
+	void polylinesTransformed()
+	{
+		setupPaths();
 
-void OffsettedPolylinePathItem::polylinesTransformed()
-{
-	setupPaths();
-
-	update();
-}
+		update();
+	}
+};
 
 }
 

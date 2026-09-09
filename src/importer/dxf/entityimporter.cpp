@@ -39,10 +39,14 @@ protected:
 	Layer& m_layer;
 	const Settings& m_settings;
 
-	void addPolyline(const geometry::Polyline& polyline);
+	void addPolyline(const geometry::Polyline& polyline) { m_layer.addPolyline(polyline); }
 
 public:
-	explicit BaseEntityImporter(Layer& layer, const Settings& settings);
+	explicit BaseEntityImporter(Layer& layer, const Settings& settings)
+		: m_layer(layer)
+		, m_settings(settings)
+	{
+	}
 };
 
 template<typename Entity>
@@ -296,22 +300,6 @@ inline void EntityImporter<DRW_Ellipse>::operator()(const DRW_Ellipse& ellipse)
 	}
 
 	addPolyline(polyline);
-}
-
-}
-
-namespace importer::dxf
-{
-
-BaseEntityImporter::BaseEntityImporter(Layer& layer, const Settings& settings)
-	: m_layer(layer)
-	, m_settings(settings)
-{
-}
-
-void BaseEntityImporter::addPolyline(const geometry::Polyline& polyline)
-{
-	m_layer.addPolyline(polyline);
 }
 
 }
