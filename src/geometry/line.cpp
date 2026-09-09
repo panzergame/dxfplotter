@@ -1,32 +1,32 @@
-#include <line.h>
+module;
 
-namespace geometry
+#include <QVector2D>
+
+export module geometry.line;
+
+export namespace geometry
 {
 
-Line::Line(const QVector2D& start, const QVector2D& end)
-	: m_start(start)
-	, m_end(end)
+class Line
 {
-}
+private:
+	QVector2D m_start;
+	QVector2D m_end;
 
-const QVector2D& Line::start() const
-{
-	return m_start;
-}
+public:
+	explicit Line(const QVector2D& start, const QVector2D& end)
+		: m_start(start)
+		, m_end(end)
+	{
+	}
 
-const QVector2D& Line::end() const
-{
-	return m_end;
-}
+	const QVector2D& start() const { return m_start; }
 
-bool Line::lengthNonZero() const
-{
-	return (m_start != m_end);
-}
+	const QVector2D& end() const { return m_end; }
 
-float Line::length() const
-{
-	return m_start.distanceToPoint(m_end);
-}
+	bool lengthNonZero() const { return (m_start != m_end); }
+
+	float length() const { return m_start.distanceToPoint(m_end); }
+};
 
 }

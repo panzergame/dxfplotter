@@ -1,8 +1,12 @@
-#include <exporterfixture.h>
-
-#include <exporter/dxfplot/exporter.h>
 
 #include <sstream>
+
+#include <QVector2D>
+#include <exporterfixture.h>
+
+import exporter.dxfplot.exporter;
+import geometry.bulge;
+import geometry.polyline;
 
 TEST_F(ExporterFixture, shouldExportNotEmpty)
 {

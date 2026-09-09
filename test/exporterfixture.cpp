@@ -1,5 +1,11 @@
 #include <exporterfixture.h>
 
+import geometry.polyline;
+import model.document;
+import model.layer;
+import model.path;
+import model.task;
+
 void ExporterFixture::createTaskFromPolyline(geometry::Polyline &&polyline)
 {
 	model::Path::UPtr path = std::make_unique<model::Path>(std::move(polyline), "", m_settings);

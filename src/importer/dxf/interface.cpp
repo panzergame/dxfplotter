@@ -1,286 +1,175 @@
-#include <interface.h>
-#include <importer.h>
+module;
 
-#include <iostream>
+#include <libdxfrw/drw_interface.h>
+
+export module importer.dxf.interface;
+
+import importer.dxf.importer;
 
 namespace importer::dxf
 {
 
-Interface::Interface(Importer& importer)
-	: m_importer(importer)
-{
-}
-
 #define PRINT_FUNC // std::cout << __func__ << std::endl;
 
-void Interface::addHeader(const DRW_Header* data)
-{
-	PRINT_FUNC;
 }
 
-void Interface::addLType(const DRW_LType& data)
+export namespace importer::dxf
 {
-	PRINT_FUNC;
-}
 
-void Interface::addLayer(const DRW_Layer& data)
+class Interface : public DRW_Interface
 {
-	m_importer.processEntity(data);
-	PRINT_FUNC;
-}
+private:
+	Importer& m_importer;
 
-void Interface::addDimStyle(const DRW_Dimstyle& data)
-{
-	PRINT_FUNC;
-}
+	void addHeader(const DRW_Header* data) override { PRINT_FUNC; }
 
-void Interface::addVport(const DRW_Vport& data)
-{
-	PRINT_FUNC;
-}
+	void addLType(const DRW_LType& data) override { PRINT_FUNC; }
 
-void Interface::addTextStyle(const DRW_Textstyle& data)
-{
-	PRINT_FUNC;
-}
+	void addLayer(const DRW_Layer& data) override
+	{
+		m_importer.processEntity(data);
+		PRINT_FUNC;
+	}
 
-void Interface::addAppId(const DRW_AppId& data)
-{
-	PRINT_FUNC;
-}
+	void addDimStyle(const DRW_Dimstyle& data) override { PRINT_FUNC; }
 
-void Interface::addBlock(const DRW_Block& data)
-{
-	PRINT_FUNC;
-	m_importer.startBlock();
-}
+	void addVport(const DRW_Vport& data) override { PRINT_FUNC; }
 
-void Interface::setBlock(const int handle)
-{
-	PRINT_FUNC;
-}
+	void addTextStyle(const DRW_Textstyle& data) override { PRINT_FUNC; }
 
-void Interface::endBlock()
-{
-	PRINT_FUNC;
-	m_importer.endBlock();
-}
+	void addAppId(const DRW_AppId& data) override { PRINT_FUNC; }
 
-void Interface::addPoint(const DRW_Point& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void addBlock(const DRW_Block& data) override
+	{
+		PRINT_FUNC;
+		m_importer.startBlock();
+	}
 
-void Interface::addLine(const DRW_Line& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void setBlock(const int handle) override { PRINT_FUNC; }
 
-void Interface::addRay(const DRW_Ray& data)
-{
-	PRINT_FUNC;
-}
+	void endBlock() override
+	{
+		PRINT_FUNC;
+		m_importer.endBlock();
+	}
 
-void Interface::addXline(const DRW_Xline& data)
-{
-	PRINT_FUNC;
-}
+	void addPoint(const DRW_Point& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addArc(const DRW_Arc& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void addLine(const DRW_Line& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addCircle(const DRW_Circle& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void addRay(const DRW_Ray& data) override { PRINT_FUNC; }
 
-void Interface::addEllipse(const DRW_Ellipse& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void addXline(const DRW_Xline& data) override { PRINT_FUNC; }
 
-void Interface::addLWPolyline(const DRW_LWPolyline& data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(data);
-}
+	void addArc(const DRW_Arc& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addPolyline(const DRW_Polyline& data)
-{
-	PRINT_FUNC;
-}
+	void addCircle(const DRW_Circle& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addSpline(const DRW_Spline* data)
-{
-	PRINT_FUNC;
-	m_importer.processEntity(*data);
-}
+	void addEllipse(const DRW_Ellipse& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addKnot(const DRW_Entity& data)
-{
-	PRINT_FUNC;
-}
+	void addLWPolyline(const DRW_LWPolyline& data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(data);
+	}
 
-void Interface::addInsert(const DRW_Insert& data)
-{
-	PRINT_FUNC;
-}
+	void addPolyline(const DRW_Polyline& data) override { PRINT_FUNC; }
 
-void Interface::addTrace(const DRW_Trace& data)
-{
-	PRINT_FUNC;
-}
+	void addSpline(const DRW_Spline* data) override
+	{
+		PRINT_FUNC;
+		m_importer.processEntity(*data);
+	}
 
-void Interface::add3dFace(const DRW_3Dface& data)
-{
-	PRINT_FUNC;
-}
+	void addKnot(const DRW_Entity& data) override { PRINT_FUNC; }
 
-void Interface::addSolid(const DRW_Solid& data)
-{
-	PRINT_FUNC;
-}
+	void addInsert(const DRW_Insert& data) override { PRINT_FUNC; }
 
-void Interface::addMText(const DRW_MText& data)
-{
-	PRINT_FUNC;
-}
+	void addTrace(const DRW_Trace& data) override { PRINT_FUNC; }
 
-void Interface::addText(const DRW_Text& data)
-{
-	PRINT_FUNC;
-}
+	void add3dFace(const DRW_3Dface& data) override { PRINT_FUNC; }
 
-void Interface::addDimAlign(const DRW_DimAligned* data)
-{
-	PRINT_FUNC;
-}
+	void addSolid(const DRW_Solid& data) override { PRINT_FUNC; }
 
-void Interface::addDimLinear(const DRW_DimLinear* data)
-{
-	PRINT_FUNC;
-}
+	void addMText(const DRW_MText& data) override { PRINT_FUNC; }
 
-void Interface::addDimRadial(const DRW_DimRadial* data)
-{
-	PRINT_FUNC;
-}
+	void addText(const DRW_Text& data) override { PRINT_FUNC; }
 
-void Interface::addDimDiametric(const DRW_DimDiametric* data)
-{
-	PRINT_FUNC;
-}
+	void addDimAlign(const DRW_DimAligned* data) override { PRINT_FUNC; }
 
-void Interface::addDimAngular(const DRW_DimAngular* data)
-{
-	PRINT_FUNC;
-}
+	void addDimLinear(const DRW_DimLinear* data) override { PRINT_FUNC; }
 
-void Interface::addDimAngular3P(const DRW_DimAngular3p* data)
-{
-	PRINT_FUNC;
-}
+	void addDimRadial(const DRW_DimRadial* data) override { PRINT_FUNC; }
 
-void Interface::addDimOrdinate(const DRW_DimOrdinate* data)
-{
-	PRINT_FUNC;
-}
+	void addDimDiametric(const DRW_DimDiametric* data) override { PRINT_FUNC; }
 
-void Interface::addLeader(const DRW_Leader* data)
-{
-	PRINT_FUNC;
-}
+	void addDimAngular(const DRW_DimAngular* data) override { PRINT_FUNC; }
 
-void Interface::addHatch(const DRW_Hatch* data)
-{
-	PRINT_FUNC;
-}
+	void addDimAngular3P(const DRW_DimAngular3p* data) override { PRINT_FUNC; }
 
-void Interface::addViewport(const DRW_Viewport& data)
-{
-	PRINT_FUNC;
-}
+	void addDimOrdinate(const DRW_DimOrdinate* data) override { PRINT_FUNC; }
 
-void Interface::addImage(const DRW_Image* data)
-{
-	PRINT_FUNC;
-}
+	void addLeader(const DRW_Leader* data) override { PRINT_FUNC; }
 
-void Interface::linkImage(const DRW_ImageDef* data)
-{
-	PRINT_FUNC;
-}
+	void addHatch(const DRW_Hatch* data) override { PRINT_FUNC; }
 
-void Interface::addComment(const char* comment)
-{
-	PRINT_FUNC;
-}
+	void addViewport(const DRW_Viewport& data) override { PRINT_FUNC; }
 
-void Interface::addPlotSettings(const DRW_PlotSettings* data)
-{
-	PRINT_FUNC;
-}
+	void addImage(const DRW_Image* data) override { PRINT_FUNC; }
 
-void Interface::writeHeader(DRW_Header& data)
-{
-	PRINT_FUNC;
-}
+	void linkImage(const DRW_ImageDef* data) override { PRINT_FUNC; }
 
-void Interface::writeBlocks()
-{
-	PRINT_FUNC;
-}
+	void addComment(const char* comment) override { PRINT_FUNC; }
 
-void Interface::writeBlockRecords()
-{
-	PRINT_FUNC;
-}
+	void addPlotSettings(const DRW_PlotSettings* data) override { PRINT_FUNC; }
 
-void Interface::writeEntities()
-{
-	PRINT_FUNC;
-}
+	void writeHeader(DRW_Header& data) override { PRINT_FUNC; }
 
-void Interface::writeLTypes()
-{
-	PRINT_FUNC;
-}
+	void writeBlocks() override { PRINT_FUNC; }
 
-void Interface::writeLayers()
-{
-	PRINT_FUNC;
-}
+	void writeBlockRecords() override { PRINT_FUNC; }
 
-void Interface::writeTextstyles()
-{
-	PRINT_FUNC;
-}
+	void writeEntities() override { PRINT_FUNC; }
 
-void Interface::writeVports()
-{
-	PRINT_FUNC;
-}
+	void writeLTypes() override { PRINT_FUNC; }
 
-void Interface::writeDimstyles()
-{
-	PRINT_FUNC;
-}
+	void writeLayers() override { PRINT_FUNC; }
 
-void Interface::writeObjects()
-{
-	PRINT_FUNC;
-}
+	void writeTextstyles() override { PRINT_FUNC; }
 
-void Interface::writeAppId()
-{
-	PRINT_FUNC;
-}
+	void writeVports() override { PRINT_FUNC; }
+
+	void writeDimstyles() override { PRINT_FUNC; }
+
+	void writeObjects() override { PRINT_FUNC; }
+
+	void writeAppId() override { PRINT_FUNC; }
+
+public:
+	explicit Interface(Importer& importer)
+		: m_importer(importer)
+	{
+	}
+};
 
 }

@@ -1,8 +1,20 @@
 #include <gtest/gtest.h>
-#include <model/simulation.h>
-#include <model/document.h>
 
 #include <QDebug>
+
+#include <yaml-cpp/yaml.h>
+
+#include <QVector2D>
+
+import config.config;
+import geometry.bulge;
+import geometry.polyline;
+import model.document;
+import model.layer;
+import model.path;
+import model.pathsettings;
+import model.simulation;
+import model.task;
 
 config::Tools::Tool tool1mmPass()
 {

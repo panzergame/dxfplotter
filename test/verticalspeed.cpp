@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <exporter/gcode/exporter.h>
+
+import exporter.gcode.exporter;
 
 TEST(testVerticalSpeed, TestVerticalMovementFeedRate)
 {

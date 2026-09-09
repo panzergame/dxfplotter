@@ -1,8 +1,15 @@
-#include <simulation.h>
-#include <internal/scene.h>
-#include <internal/viewport.h>
+module;
 
+#include "uic/simulation/ui_simulation.h"
+#include <QWidget>
+#include <QTimer>
 #include <QDate>
+
+export module view.simulation.simulation;
+import view.simulation.internal.scene;
+import view.simulation.internal.viewport;
+
+import model.simulation;
 
 namespace view::simulation
 {
@@ -13,62 +20,80 @@ static void setLabelTimeText(QLabel* label, int ms)
 	label->setText(timeText);
 }
 
-void Simulation::moveToolAtTime(int ms)
-{
-	setLabelTimeText(timeLabel, ms);
-
-	const float seconds = float(ms) / 1e3;
-	const model::Simulation::ToolPathPoint3D toolPosition = m_simulation.toolPositionAtTime(seconds);
-
-	m_scene->setToolPosition(toolPosition);
 }
 
-void Simulation::startStopToolAnimation()
+export namespace view::simulation
 {
-	if (m_timer.isActive()) {
-		m_timer.stop();
-		startStopButton->setIcon(QIcon(":/icons/playback-start.svg"));
-	} else {
-		m_timer.start();
-		startStopButton->setIcon(QIcon(":/icons/playback-pause.svg"));
+
+class Simulation : private Ui::Simulation, public QWidget
+{
+private:
+	model::Simulation m_simulation;
+
+	std::unique_ptr<internal::Viewport> m_viewport;
+	std::unique_ptr<internal::Scene> m_scene;
+
+	QTimer m_timer;
+
+protected slots:
+	void moveToolAtTime(int ms)
+	{
+		setLabelTimeText(timeLabel, ms);
+
+		const float seconds = float(ms) / 1e3;
+		const model::Simulation::ToolPathPoint3D toolPosition = m_simulation.toolPositionAtTime(seconds);
+
+		m_scene->setToolPosition(toolPosition);
 	}
-}
 
-Simulation::Simulation()
-	: m_viewport(new internal::Viewport())
-{
-	setupUi(this);
+	void startStopToolAnimation()
+	{
+		if (m_timer.isActive()) {
+			m_timer.stop();
+			startStopButton->setIcon(QIcon(":/icons/playback-start.svg"));
+		} else {
+			m_timer.start();
+			startStopButton->setIcon(QIcon(":/icons/playback-pause.svg"));
+		}
+	}
 
-	connect(timeSlider, &QSlider::valueChanged, this, &Simulation::moveToolAtTime);
-	connect(startStopButton, &QPushButton::clicked, this, &Simulation::startStopToolAnimation);
+public:
+	explicit Simulation()
+		: m_viewport(new internal::Viewport())
+	{
+		setupUi(this);
 
-	addAction(actionPauseResume);
+		connect(timeSlider, &QSlider::valueChanged, this, &Simulation::moveToolAtTime);
+		connect(startStopButton, &QPushButton::clicked, this, &Simulation::startStopToolAnimation);
 
-	container->addWidget(m_viewport->container());
+		addAction(actionPauseResume);
 
-	static const int timerBaseIntervalMs = 30;
-	m_timer.setInterval(timerBaseIntervalMs);
-	m_timer.callOnTimeout([this]() {
-		const int timerIntervalMs = timerBaseIntervalMs * speedSpinBox->value();
-		timeSlider->setSliderPosition(timeSlider->sliderPosition() + timerIntervalMs);
-	});
-}
+		container->addWidget(m_viewport->container());
 
-Simulation::~Simulation() = default;
+		static const int timerBaseIntervalMs = 30;
+		m_timer.setInterval(timerBaseIntervalMs);
+		m_timer.callOnTimeout([this]() {
+			const int timerIntervalMs = timerBaseIntervalMs * speedSpinBox->value();
+			timeSlider->setSliderPosition(timeSlider->sliderPosition() + timerIntervalMs);
+		});
+	}
 
-void Simulation::setSimulation(model::Simulation&& simulation)
-{
-	m_simulation = std::move(simulation);
+	~Simulation() = default;
 
-	internal::Scene* newScene = new internal::Scene(m_simulation);
-	m_viewport->setScene(newScene);
-	m_scene.reset(newScene);
+	void setSimulation(model::Simulation&& simulation)
+	{
+		m_simulation = std::move(simulation);
 
-	const float secondDuration = m_simulation.duration();
-	const int durationMs = secondDuration * 1e3;
-	timeSlider->setMaximum(durationMs);
+		internal::Scene* newScene = new internal::Scene(m_simulation);
+		m_viewport->setScene(newScene);
+		m_scene.reset(newScene);
 
-	setLabelTimeText(totalTimeLabel, durationMs);
-}
+		const float secondDuration = m_simulation.duration();
+		const int durationMs = secondDuration * 1e3;
+		timeSlider->setMaximum(durationMs);
+
+		setLabelTimeText(totalTimeLabel, durationMs);
+	}
+};
 
 }

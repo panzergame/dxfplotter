@@ -1,54 +1,48 @@
-#include <pathsettings.h>
+module;
 
-namespace model
+#include <cstdint>
+#include <serializer/access.h>
+
+export module model.pathsettings;
+
+export namespace model
 {
 
-PathSettings::PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)
-	: m_planeFeedRate(planeFeedRate)
-	, m_depthFeedRate(depthFeedRate)
-	, m_intensity(intensity)
-	, m_depth(depth)
+class PathSettings
 {
-}
+	friend serializer::Access<PathSettings>;
 
-float PathSettings::planeFeedRate() const
-{
-	return m_planeFeedRate;
-}
+private:
+	float m_planeFeedRate;
+	float m_depthFeedRate;
+	float m_intensity;
+	float m_depth;
 
-void PathSettings::setPlaneFeedRate(float planeFeedRate)
-{
-	m_planeFeedRate = planeFeedRate;
-}
+public:
+	explicit PathSettings() = default;
+	explicit PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)
+		: m_planeFeedRate(planeFeedRate)
+		, m_depthFeedRate(depthFeedRate)
+		, m_intensity(intensity)
+		, m_depth(depth)
+	{
+	}
 
-float PathSettings::depthFeedRate() const
-{
-	return m_depthFeedRate;
-}
+	float planeFeedRate() const { return m_planeFeedRate; }
 
-void PathSettings::setDepthFeedRate(float depthFeedRate)
-{
-	m_depthFeedRate = depthFeedRate;
-}
+	void setPlaneFeedRate(float planeFeedRate) { m_planeFeedRate = planeFeedRate; }
 
-float PathSettings::intensity() const
-{
-	return m_intensity;
-}
+	float depthFeedRate() const { return m_depthFeedRate; }
 
-void PathSettings::setIntensity(float intensity)
-{
-	m_intensity = intensity;
-}
+	void setDepthFeedRate(float depthFeedRate) { m_depthFeedRate = depthFeedRate; }
 
-float PathSettings::depth() const
-{
-	return m_depth;
-}
+	float intensity() const { return m_intensity; }
 
-void PathSettings::setDepth(float depth)
-{
-	m_depth = depth;
-}
+	void setIntensity(float intensity) { m_intensity = intensity; }
+
+	float depth() const { return m_depth; }
+
+	void setDepth(float depth) { m_depth = depth; }
+};
 
 }

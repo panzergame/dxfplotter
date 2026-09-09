@@ -1,53 +1,70 @@
-#include <setorigin.h>
+module;
 
-namespace view::dialogs
+#include <uic/dialogs/ui_setorigin.h>
+#include <QDialog>
+#include <QButtonGroup>
+
+export module view.dialogs.setorigin;
+
+import geometry.rect;
+
+export namespace view::dialogs
 {
 
-void SetOrigin::setupButtonGroup()
+class SetOrigin : public QDialog, private Ui::SetOrigin
 {
-	m_buttonGroup.addButton(topLeftCheckBox, static_cast<int>(Corner::TopLeft));
-	m_buttonGroup.addButton(bottomLeftCheckBox, static_cast<int>(Corner::BottomLeft));
-	m_buttonGroup.addButton(topRightCheckBox, static_cast<int>(Corner::TopRight));
-	m_buttonGroup.addButton(bottomRightCheckBox, static_cast<int>(Corner::BottomRight));
-}
+private:
+	const geometry::Rect& m_selectionBoundingRect;
+	QTransform m_matrix;
 
-QVector2D SetOrigin::boundingRectCornerPosition(Corner corner) const
-{
-	switch (corner) {
-		case Corner::TopLeft:
-			return m_selectionBoundingRect.topLeft();
-		case Corner::BottomLeft:
-			return m_selectionBoundingRect.bottomLeft();
-		case Corner::TopRight:
-			return m_selectionBoundingRect.topRight();
-		case Corner::BottomRight:
-		default:
-			return m_selectionBoundingRect.bottomRight();
+	QButtonGroup m_buttonGroup;
+
+	enum class Corner { BottomLeft = 0, TopLeft, BottomRight, TopRight };
+
+	void setupButtonGroup()
+	{
+		m_buttonGroup.addButton(topLeftCheckBox, static_cast<int>(Corner::TopLeft));
+		m_buttonGroup.addButton(bottomLeftCheckBox, static_cast<int>(Corner::BottomLeft));
+		m_buttonGroup.addButton(topRightCheckBox, static_cast<int>(Corner::TopRight));
+		m_buttonGroup.addButton(bottomRightCheckBox, static_cast<int>(Corner::BottomRight));
 	}
-}
 
-SetOrigin::SetOrigin(const geometry::Rect& selectionBoundingRect)
-	: m_selectionBoundingRect(selectionBoundingRect)
-{
-	setupUi(this);
+	QVector2D boundingRectCornerPosition(Corner corner) const
+	{
+		switch (corner) {
+			case Corner::TopLeft:
+				return m_selectionBoundingRect.topLeft();
+			case Corner::BottomLeft:
+				return m_selectionBoundingRect.bottomLeft();
+			case Corner::TopRight:
+				return m_selectionBoundingRect.topRight();
+			case Corner::BottomRight:
+			default:
+				return m_selectionBoundingRect.bottomRight();
+		}
+	}
 
-	setupButtonGroup();
-}
+public:
+	explicit SetOrigin(const geometry::Rect& selectionBoundingRect)
+		: m_selectionBoundingRect(selectionBoundingRect)
+	{
+		setupUi(this);
 
-const QTransform& SetOrigin::matrix() const
-{
-	return m_matrix;
-}
+		setupButtonGroup();
+	}
 
-void SetOrigin::accept()
-{
-	QDialog::accept();
+	const QTransform& matrix() const { return m_matrix; }
 
-	const int buttonId = m_buttonGroup.checkedId();
-	const Corner corner = static_cast<Corner>(buttonId);
-	const QVector2D offset = boundingRectCornerPosition(corner);
+	void accept() override
+	{
+		QDialog::accept();
 
-	m_matrix.translate(-offset.x(), -offset.y());
-}
+		const int buttonId = m_buttonGroup.checkedId();
+		const Corner corner = static_cast<Corner>(buttonId);
+		const QVector2D offset = boundingRectCornerPosition(corner);
+
+		m_matrix.translate(-offset.x(), -offset.y());
+	}
+};
 
 }

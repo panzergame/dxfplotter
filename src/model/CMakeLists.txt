@@ -1,32 +1,17 @@
+add_subdirectory(application)
+
 set(SRC
-	application.cpp
-	document.cpp
-	documenthistory.cpp
-	layer.cpp
+	pathsettings.cpp
+	renderable.cpp
 	offsettedpath.cpp
 	path.cpp
-	pathsettings.cpp
-	pathgroupsettings.cpp
-	renderable.cpp
-	simulation.cpp
+	layer.cpp
 	task.cpp
-
-	application.h
-	document.h
-	documenthistory.h
-	layer.h
-	path.h
-	offsettedpath.h
-	pathsettings.h
-	pathgroupsettings.h
-	renderable.h
-	simulation.h
-	task.h
-	documentmodelobserver.h
+	document.cpp
+	documenthistory.cpp
+	pathgroupsettings.cpp
 )
 
-add_library(model ${SRC})
-target_link_libraries(model PUBLIC geometry PRIVATE config)
+add_module_library(model ${SRC})
+target_link_libraries(model PUBLIC geometry common PRIVATE config geometry-filter)
 add_coverage(model)
-
-add_module_library(model_module module.cpp)

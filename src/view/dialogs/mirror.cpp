@@ -1,25 +1,31 @@
-#include <mirror.h>
+module;
 
-namespace view::dialogs
+#include <uic/dialogs/ui_mirror.h>
+#include <QDialog>
+
+export module view.dialogs.mirror;
+
+export namespace view::dialogs
 {
 
-Mirror::Mirror()
+class Mirror : public QDialog, private Ui::Mirror
 {
-	setupUi(this);
-}
+private:
+	QTransform m_matrix;
 
-const QTransform& Mirror::matrix() const
-{
-	return m_matrix;
-}
+public:
+	explicit Mirror() { setupUi(this); }
 
-void Mirror::accept()
-{
-	QDialog::accept();
+	const QTransform& matrix() const { return m_matrix; }
 
-	const float scaleX = mirrorX->isChecked() ? -1.0f : 1.0f;
-	const float scaleY = mirrorY->isChecked() ? -1.0f : 1.0f;
-	m_matrix.scale(scaleX, scaleY);
-}
+	void accept() override
+	{
+		QDialog::accept();
+
+		const float scaleX = mirrorX->isChecked() ? -1.0f : 1.0f;
+		const float scaleY = mirrorY->isChecked() ? -1.0f : 1.0f;
+		m_matrix.scale(scaleX, scaleY);
+	}
+};
 
 }

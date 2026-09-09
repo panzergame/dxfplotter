@@ -1,101 +1,160 @@
-#include <task.h>
+module;
 
-#include <pathlistmodel.h>
-#include <layertreemodel.h>
-
+#include <uic/ui_task.h>
+#include <QWidget>
+#include <QItemSelectionModel>
 #include <QLabel>
 #include <QDebug>
 
-namespace view::task
+export module view.task.task;
+import view.task.layertreemodel;
+import view.task.pathlistmodel;
+
+import model.documentmodelobserver;
+import model.task;
+import model.application;
+import model.path;
+
+export namespace view::task
 {
 
-Task::Task(model::Application& app)
-	: DocumentModelObserver(app)
-	, m_app(app)
+class Task : public model::DocumentModelObserver<QWidget>, private Ui::Task
 {
-	setupUi(this);
-}
+private:
+	model::Application& m_app;
 
-void Task::setupModel()
-{
-	m_pathListModel = setupTreeViewModel<PathListModel>(pathsTreeView);
-	m_layerTreeModel = setupTreeViewModel<LayerTreeModel>(layersTreeView);
+	std::unique_ptr<PathListModel> m_pathListModel;
+	std::unique_ptr<LayerTreeModel> m_layerTreeModel;
 
-	layersTreeView->expandAll();
-}
+	template<class Model>
+	std::unique_ptr<Model> setupTreeViewModel(QTreeView* treeView)
+	{
+		std::unique_ptr<Model> model = std::make_unique<Model>(task(), this);
+		treeView->setModel(model.get());
 
-void Task::setupController()
-{
-	// Track outside path selection, e.g from graphics view.
-	connect(&task(), &model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
+		QHeaderView* header = treeView->header();
+		header->setStretchLastSection(false);
+		header->setSectionResizeMode(0, QHeaderView::Stretch);
+		header->setSectionResizeMode(1, QHeaderView::ResizeToContents);
 
-	setupTreeViewController(m_pathListModel, pathsTreeView);
-	setupTreeViewController(m_layerTreeModel, layersTreeView);
+		return model;
+	}
 
-	connect(moveUp, &QPushButton::pressed, [this]() {
-		moveCurrentPathToDirection(model::Task::MoveDirection::UP);
-	});
-	connect(moveDown, &QPushButton::pressed, [this]() {
-		moveCurrentPathToDirection(model::Task::MoveDirection::DOWN);
-	});
-	connect(moveTop, &QPushButton::pressed, [this]() {
-		moveCurrentPathToTip(model::Task::MoveTip::Top);
-	});
-	connect(moveBottom, &QPushButton::pressed, [this]() {
-		moveCurrentPathToTip(model::Task::MoveTip::Bottom);
-	});
-}
+	template<class Model>
+	void setupTreeViewController(std::unique_ptr<Model>& model, QTreeView* treeView)
+	{
+		// Synchronize selection in 2D view
+		QItemSelectionModel* selectionModel = treeView->selectionModel();
+		connect(selectionModel, &QItemSelectionModel::selectionChanged, model.get(), &Model::selectionChanged);
 
-void Task::updateItemSelection(const model::Path& path, QItemSelectionModel::SelectionFlag flag)
-{
-	m_pathListModel->updateItemSelection(path, flag, pathsTreeView->selectionModel());
-	m_layerTreeModel->updateItemSelection(path, flag, layersTreeView->selectionModel());
-}
+		connect(treeView, &QTreeView::clicked, model.get(), &Model::itemClicked);
 
-void Task::documentChanged()
-{
-	setupModel();
-	setupController();
-}
+		connect(model.get(), &Model::documentVisibilityChanged, this, &Task::documentVisibilityChanged);
+	}
 
-void Task::pathSelectedChanged(model::Path& path, bool selected)
-{
-	updateItemSelection(path, selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
-}
+	void setupModel()
+	{
+		m_pathListModel = setupTreeViewModel<PathListModel>(pathsTreeView);
+		m_layerTreeModel = setupTreeViewModel<LayerTreeModel>(layersTreeView);
 
-void Task::moveCurrentPathToDirection(model::Task::MoveDirection direction)
-{
-	moveCurrentPath([this, direction](const QModelIndex& index) {
-		m_pathListModel->movePathToDirection(index, direction);
-	});
-}
+		layersTreeView->expandAll();
+	}
 
-void Task::documentVisibilityChanged()
-{
-	m_app.takeDocumentSnapshot();
-}
+	void setupController()
+	{
+		// Track outside path selection, e.g from graphics view.
+		connect(&task(), &model::Task::pathSelectedChanged, this, &Task::pathSelectedChanged);
 
-void Task::moveCurrentPathToTip(model::Task::MoveTip tip)
-{
-	moveCurrentPath([this, tip](const QModelIndex& index) {
-		m_pathListModel->movePathToTip(index, tip);
-	});
-}
+		setupTreeViewController(m_pathListModel, pathsTreeView);
+		setupTreeViewController(m_layerTreeModel, layersTreeView);
 
-void Task::rebuildSelectionFromTask()
-{
-	QItemSelectionModel* pathsTreeSelectionModel = pathsTreeView->selectionModel();
-	QItemSelectionModel* layersTreeSelectionModel = layersTreeView->selectionModel();
+		connect(moveUp, &QPushButton::pressed, [this]() {
+			moveCurrentPathToDirection(model::Task::MoveDirection::UP);
+		});
+		connect(moveDown, &QPushButton::pressed, [this]() {
+			moveCurrentPathToDirection(model::Task::MoveDirection::DOWN);
+		});
+		connect(moveTop, &QPushButton::pressed, [this]() {
+			moveCurrentPathToTip(model::Task::MoveTip::Top);
+		});
+		connect(moveBottom, &QPushButton::pressed, [this]() {
+			moveCurrentPathToTip(model::Task::MoveTip::Bottom);
+		});
+	}
 
-	m_pathListModel->clearSelection(pathsTreeSelectionModel);
-	m_layerTreeModel->clearSelection(layersTreeSelectionModel);
+	void updateItemSelection(const model::Path& path, QItemSelectionModel::SelectionFlag flag)
+	{
+		m_pathListModel->updateItemSelection(path, flag, pathsTreeView->selectionModel());
+		m_layerTreeModel->updateItemSelection(path, flag, layersTreeView->selectionModel());
+	}
 
-	task().forEachSelectedPath([this, pathsTreeSelectionModel, layersTreeSelectionModel](const model::Path& path) {
-		constexpr QItemSelectionModel::SelectionFlag flag = QItemSelectionModel::Select;
+	void moveCurrentPathToDirection(model::Task::MoveDirection direction)
+	{
+		moveCurrentPath([this, direction](const QModelIndex& index) {
+			m_pathListModel->movePathToDirection(index, direction);
+		});
+	}
 
-		m_pathListModel->updateItemSelection(path, flag, pathsTreeSelectionModel);
-		m_layerTreeModel->updateItemSelection(path, flag, layersTreeSelectionModel);
-	});
-}
+	void moveCurrentPathToTip(model::Task::MoveTip tip)
+	{
+		moveCurrentPath([this, tip](const QModelIndex& index) {
+			m_pathListModel->movePathToTip(index, tip);
+		});
+	}
+
+	template<class Func>
+	void moveCurrentPath(Func&& movement)
+	{
+		QItemSelectionModel* selectionModel = pathsTreeView->selectionModel();
+
+		const QModelIndexList selectedItems = selectionModel->selectedIndexes();
+		for (const QModelIndex& selectedIndex : selectedItems) {
+			movement(selectedIndex);
+		}
+
+		rebuildSelectionFromTask();
+
+		m_app.takeDocumentSnapshot();
+	}
+
+	void rebuildSelectionFromTask()
+	{
+		QItemSelectionModel* pathsTreeSelectionModel = pathsTreeView->selectionModel();
+		QItemSelectionModel* layersTreeSelectionModel = layersTreeView->selectionModel();
+
+		m_pathListModel->clearSelection(pathsTreeSelectionModel);
+		m_layerTreeModel->clearSelection(layersTreeSelectionModel);
+
+		task().forEachSelectedPath([this, pathsTreeSelectionModel, layersTreeSelectionModel](const model::Path& path) {
+			constexpr QItemSelectionModel::SelectionFlag flag = QItemSelectionModel::Select;
+
+			m_pathListModel->updateItemSelection(path, flag, pathsTreeSelectionModel);
+			m_layerTreeModel->updateItemSelection(path, flag, layersTreeSelectionModel);
+		});
+	}
+
+public:
+	explicit Task(model::Application& app)
+		: DocumentModelObserver(app)
+		, m_app(app)
+	{
+		setupUi(this);
+	}
+
+protected:
+	void documentChanged()
+	{
+		setupModel();
+		setupController();
+	}
+
+protected Q_SLOTS:
+	void pathSelectedChanged(model::Path& path, bool selected)
+	{
+		updateItemSelection(path, selected ? QItemSelectionModel::Select : QItemSelectionModel::Deselect);
+	}
+
+	void documentVisibilityChanged() { m_app.takeDocumentSnapshot(); }
+};
 
 }

@@ -1,46 +1,62 @@
-#include <pointpathitem.h>
+module;
 
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
+#include <QtCore/qtmochelpers.h>
 
-namespace view::view2d
+export module view.view2d.pointpathitem;
+
+import view.view2d.basicpathitem;
+import view.view2d.offsettedpolylinepathitem;
+import model.path;
+
+export namespace view::view2d
 {
 
-QPainterPath PointPathItem::shapePath() const
+/** @brief Graphics path item meant to display polylines with length.
+ */
+class PointPathItem : public BasicPathItem
 {
-	QPainterPath path;
-	constexpr float width = 0.05f; // TODO const or config
-	path.addEllipse(0.0f, 0.0f, width, width);
+	Q_OBJECT;
 
-	return path;
+private:
+	QPainterPath shapePath() const
+	{
+		QPainterPath path;
+		constexpr float width = 0.05f; // TODO const or config
+		path.addEllipse(0.0f, 0.0f, width, width);
+
+		return path;
+	}
+
+	void setupPosition()
+	{
+		const QPointF point = path().basePolyline().start().toPointF();
+		setPos(point);
+	}
+
+public:
+	explicit PointPathItem(model::Path& path)
+		: BasicPathItem(path)
+	{
+		setPath(shapePath());
+		setFlag(QGraphicsItem::ItemIgnoresTransformations);
+
+		setupPosition();
+	}
+
+	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override
+	{
+		BasicPathItem::paint(painter, option, widget);
+
+		painter->drawLine(-1.0f, 0.0f, 1.0f, 0.0f);
+		painter->drawLine(0.0f, -1.0f, 0.0f, 1.0f);
+	}
+
+protected:
+	void basePolylineTransformed() override { setupPosition(); }
+};
+
 }
 
-void PointPathItem::setupPosition()
-{
-	const QPointF point = path().basePolyline().start().toPointF();
-	setPos(point);
-}
-
-PointPathItem::PointPathItem(model::Path& path)
-	: BasicPathItem(path)
-{
-	setPath(shapePath());
-	setFlag(QGraphicsItem::ItemIgnoresTransformations);
-
-	setupPosition();
-}
-
-void PointPathItem::paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget)
-{
-	BasicPathItem::paint(painter, option, widget);
-
-	painter->drawLine(-1.0f, 0.0f, 1.0f, 0.0f);
-	painter->drawLine(0.0f, -1.0f, 0.0f, 1.0f);
-}
-
-void PointPathItem::basePolylineTransformed()
-{
-	setupPosition();
-}
-
-}
+#include "pointpathitem.moc"

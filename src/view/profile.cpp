@@ -1,49 +1,72 @@
-#include <profile.h>
+module;
 
-#include <config/config.h>
+#include <uic/ui_profile.h>
 
-namespace view
+export module view.profile;
+
+import config.config;
+import model.documentmodelobserver;
+import model.application;
+
+export namespace view
 {
 
-void Profile::updateAllComboBoxesItems()
+class Profile : public model::DocumentModelObserver<QWidget>, public Ui::Profile
 {
-	updateComboBoxItems(m_app.config().root().tools(), toolComboBox);
-	updateComboBoxItems(m_app.config().root().profiles(), profileComboBox);
-}
+private:
+	model::Application& m_app;
 
-Profile::Profile(model::Application& app)
-	: DocumentModelObserver(app)
-	, m_app(app)
-{
-	setupUi(this);
+	template<typename ConfigList>
+	void updateComboBoxItems(const ConfigList& list, QComboBox* comboBox)
+	{
+		// Keep current item selected.
+		const QString& currentItemName = comboBox->currentText();
 
-	updateAllComboBoxesItems();
+		comboBox->clear();
 
-	connect(&app, &model::Application::configChanged, this, &Profile::configChanged);
-	connect(toolComboBox, &QComboBox::currentTextChanged, this, &Profile::currentToolTextChanged);
-	connect(profileComboBox, &QComboBox::currentTextChanged, this, &Profile::currentProfileTextChanged);
-}
+		list.visitChildren([comboBox](const auto& item) {
+			const QString name = QString::fromStdString(item.name());
+			comboBox->addItem(name, name);
+		});
 
-void Profile::documentChanged()
-{
-	toolComboBox->setCurrentText(QString::fromStdString(document()->toolConfig().name()));
-	profileComboBox->setCurrentText(
-		QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
-}
+		// Try to restore selected tool name
+		comboBox->setCurrentText(currentItemName);
+	}
 
-void Profile::configChanged([[maybe_unused]] const config::Config& config)
-{
-	updateAllComboBoxesItems();
-}
+	void updateAllComboBoxesItems()
+	{
+		updateComboBoxItems(m_app.config().root().tools(), toolComboBox);
+		updateComboBoxItems(m_app.config().root().profiles(), profileComboBox);
+	}
 
-void Profile::currentToolTextChanged(const QString& toolName)
-{
-	m_app.selectTool(toolName);
-}
+public:
+	explicit Profile(model::Application& app)
+		: DocumentModelObserver(app)
+		, m_app(app)
+	{
+		setupUi(this);
 
-void Profile::currentProfileTextChanged(const QString& profileName)
-{
-	m_app.selectProfile(profileName);
-}
+		updateAllComboBoxesItems();
+
+		connect(&app, &model::Application::configChanged, this, &Profile::configChanged);
+		connect(toolComboBox, &QComboBox::currentTextChanged, this, &Profile::currentToolTextChanged);
+		connect(profileComboBox, &QComboBox::currentTextChanged, this, &Profile::currentProfileTextChanged);
+	}
+
+protected:
+	void documentChanged() override
+	{
+		toolComboBox->setCurrentText(QString::fromStdString(document()->toolConfig().name()));
+		profileComboBox->setCurrentText(
+			QString::fromStdString(document()->profileConfig().name())); // TODO updateTextFromProfileConfig
+	}
+
+public Q_SLOTS:
+	void configChanged([[maybe_unused]] const config::Config& config) { updateAllComboBoxesItems(); }
+
+	void currentToolTextChanged(const QString& toolName) { m_app.selectTool(toolName); }
+
+	void currentProfileTextChanged(const QString& profileName) { m_app.selectProfile(profileName); }
+};
 
 }

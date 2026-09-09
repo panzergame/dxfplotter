@@ -1,23 +1,32 @@
-#include <node.h>
+module;
+
 #include <algorithm>
+#include <string>
+#include <yaml-cpp/yaml.h>
 
-namespace config
+export module config.node;
+
+export namespace config
 {
 
-Node::Node(const std::string& name, const std::string& description)
-	: m_name(name)
-	, m_description(description)
+class Node
 {
-}
+private:
+	std::string m_name;
+	std::string m_description;
 
-const std::string& Node::name() const
-{
-	return m_name;
-}
+public:
+	explicit Node(const std::string& name, const std::string& description)
+		: m_name(name)
+		, m_description(description)
+	{
+	}
 
-const std::string& Node::description() const
-{
-	return m_description;
-}
+	Node() = default;
+
+	const std::string& name() const { return m_name; }
+
+	const std::string& description() const { return m_description; }
+};
 
 }

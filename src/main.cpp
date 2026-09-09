@@ -1,5 +1,3 @@
-#include <model/application.h>
-#include <view/mainwindow.h>
 
 #include <QApplication>
 #include <QCommandLineParser>
@@ -9,7 +7,8 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
-import model.module;
+import model.application;
+import view.mainwindow;
 
 void setDarkPalette(QApplication& qapp)
 {

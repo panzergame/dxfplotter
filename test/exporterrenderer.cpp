@@ -1,6 +1,10 @@
+
+#include <QVector2D>
 #include <exporterfixture.h>
 
-#include <exporter/renderer/renderer.h>
+import exporter.renderer.renderer;
+import geometry.bulge;
+import geometry.polyline;
 
 class DepthTrackerVisitor
 {
@@ -100,5 +104,4 @@ TEST_F(ExporterRendererFixture, shouldCutPathSingleDepth)
 
 	EXPECT_FLOAT_EQ(visitor.depths.front(), -0.1f);
 }
-
 

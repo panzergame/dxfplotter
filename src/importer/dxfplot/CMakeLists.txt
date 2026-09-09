@@ -1,8 +1,6 @@
 set(SRC
 	importer.cpp
-
-	importer.h
 )
 
-add_library(importer-dxfplot ${SRC})
-target_link_libraries(importer-dxfplot PRIVATE config)
+add_module_library(importer-dxfplot ${SRC})
+target_link_libraries(importer-dxfplot PUBLIC model PRIVATE config common geometry serializer)

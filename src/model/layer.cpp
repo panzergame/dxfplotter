@@ -1,6 +1,54 @@
-#include <layer.h>
+module;
 
-#include <common/copy.h>
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <iterator>
+#include <string>
+#include <serializer/access.h>
+#include <QObject>
+#include <QtCore/qtmochelpers.h>
+
+export module model.layer;
+
+import common.aggregable;
+import common.copy;
+import model.path;
+import model.renderable;
+export namespace model
+{
+
+class Layer : public Renderable, public common::Aggregable<Layer>
+{
+	Q_OBJECT;
+
+	friend serializer::Access<Layer>;
+
+private:
+	Path::ListUPtr m_children;
+
+	void assignSelfToChildren();
+
+public:
+	explicit Layer(const std::string& name, Path::ListUPtr&& children);
+	explicit Layer() = default;
+	explicit Layer(const Layer& other);
+
+	int childrenCount() const;
+	Path& childrenAt(int index);
+	const Path& childrenAt(int index) const;
+	int childIndexFor(const Path& child) const;
+
+	template<class Functor>
+	void forEachChild(Functor&& functor)
+	{
+		for (Path::UPtr& child : m_children) {
+			functor(*child);
+		}
+	}
+};
+
+}
 
 namespace model
 {
@@ -8,7 +56,7 @@ namespace model
 void Layer::assignSelfToChildren()
 {
 	for (Path::UPtr& child : m_children) {
-		child->setLayer(*this);
+		child->setParent(this);
 	}
 }
 
@@ -23,9 +71,7 @@ Layer::Layer(const Layer& other)
 	: Renderable(other)
 	, m_children(common::deepcopy<Path>(other.m_children))
 {
-	for (Path::UPtr& child : m_children) {
-		child->setLayer(*this);
-	}
+	assignSelfToChildren();
 }
 
 int Layer::childrenCount() const
@@ -60,3 +106,5 @@ int Layer::childIndexFor(const Path& child) const
 }
 
 }
+
+#include "layer.moc"

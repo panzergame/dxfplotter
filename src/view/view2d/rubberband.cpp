@@ -1,7 +1,10 @@
-#include <rubberband.h>
+module;
 
+#include <QGraphicsItem>
 #include <QPainter>
 #include <QDebug>
+
+export module view.view2d.rubberband;
 
 namespace view::view2d
 {
@@ -10,52 +13,61 @@ static const QBrush borderBrush(QColor(0, 0, 255, 255));
 static const QBrush fillBrush(QColor(0, 0, 255, 100));
 static const QPen borderPen(borderBrush, 0.0f);
 
-void RubberBand::paint(QPainter* painter, [[maybe_unused]] const QStyleOptionGraphicsItem* option,
-					   [[maybe_unused]] QWidget* widget)
-{
-	painter->setPen(borderPen);
-	painter->drawRect(m_rectf);
-	painter->fillRect(m_rectf, fillBrush);
 }
 
-QRectF RubberBand::boundingRect() const
+export namespace view::view2d
 {
-	return rect();
-}
 
-QRectF RubberBand::rect() const
+class RubberBand : public QGraphicsItem
 {
-	return m_rectf.normalized();
-}
+private:
+	QRect m_rect;
+	QRectF m_rectf;
 
-bool RubberBand::empty(int tolerance) const
-{
-	const QRect normalizedRect = m_rect.normalized();
-	return (normalizedRect.width() < tolerance) && (normalizedRect.height() < tolerance);
-}
+public:
+	explicit RubberBand() = default;
 
-void RubberBand::start(const QPoint& screenStartCorner, const QPointF& sceneStartCorner)
-{
-	setVisible(true);
-	prepareGeometryChange();
+	void paint(QPainter* painter, [[maybe_unused]] const QStyleOptionGraphicsItem* option,
+			   [[maybe_unused]] QWidget* widget) override
+	{
+		painter->setPen(borderPen);
+		painter->drawRect(m_rectf);
+		painter->fillRect(m_rectf, fillBrush);
+	}
 
-	m_rect = QRect(screenStartCorner, screenStartCorner);
-	m_rectf = QRectF(sceneStartCorner, sceneStartCorner);
-}
+	QRectF boundingRect() const override { return rect(); }
 
-void RubberBand::update(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
-{
-	prepareGeometryChange();
+	QRectF rect() const { return m_rectf.normalized(); }
 
-	m_rect.setBottomRight(screenEndCorner);
-	m_rectf.setBottomRight(sceneEndCorner);
-}
+	bool empty(int tolerance) const
+	{
+		const QRect normalizedRect = m_rect.normalized();
+		return (normalizedRect.width() < tolerance) && (normalizedRect.height() < tolerance);
+	}
 
-void RubberBand::end(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
-{
-	update(screenEndCorner, sceneEndCorner);
+	void start(const QPoint& screenStartCorner, const QPointF& sceneStartCorner)
+	{
+		setVisible(true);
+		prepareGeometryChange();
 
-	setVisible(false);
-}
+		m_rect = QRect(screenStartCorner, screenStartCorner);
+		m_rectf = QRectF(sceneStartCorner, sceneStartCorner);
+	}
+
+	void update(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
+	{
+		prepareGeometryChange();
+
+		m_rect.setBottomRight(screenEndCorner);
+		m_rectf.setBottomRight(sceneEndCorner);
+	}
+
+	void end(const QPoint& screenEndCorner, const QPointF& sceneEndCorner)
+	{
+		update(screenEndCorner, sceneEndCorner);
+
+		setVisible(false);
+	}
+};
 
 }

@@ -1,6 +1,11 @@
 #include <gtest/gtest.h>
-#include <geometry/polyline.h>
+
+#include <QVector2D>
 #include <polylineutils.h>
+
+import geometry.bulge;
+import geometry.polyline;
+import geometry.utils;
 
 constexpr QVector2D point1(1.2, 3.4);
 constexpr QVector2D point2(4.5, 6.7);
@@ -21,7 +26,6 @@ TEST(PolylineTest, WithEndAndStartEqualsAndOneBulgeIsPoint)
 	const geometry::Polyline polyline2({bulge1, bulge1invert});
 	EXPECT_FALSE(polyline2.isPoint());
 }
-
 
 TEST(PolylineTest, WithBulgeAndInvertBulgeIsClosed)
 {

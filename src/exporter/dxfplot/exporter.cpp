@@ -1,23 +1,38 @@
-#include <exporter.h>
+module;
 
-#include <serializer/task.h>
+#include <serializer/access.h>
 
-#include <cereal/cereal.hpp>
+#include <fstream>
+#include <cereal/archives/json.hpp>
 
-namespace exporter::dxfplot
+export module exporter.dxfplot.exporter;
+
+import model.document;
+import serializer.task;
+
+export namespace exporter::dxfplot
 {
 
-void Exporter::operator()(const model::Document& document, std::ostream& output) const
+class Exporter
 {
-	Archive archive(output);
-	save(archive, document);
-}
+public:
+	explicit Exporter() = default;
 
-void Exporter::save(Archive& archive, const model::Document& document) const
-{
-	archive(cereal::make_nvp("task", document.task()));
-	archive(cereal::make_nvp("profile_name", document.profileConfig().name()));
-	archive(cereal::make_nvp("tool_name", document.toolConfig().name()));
-}
+	void operator()(const model::Document& document, std::ostream& output) const
+	{
+		Archive archive(output);
+		save(archive, document);
+	}
+
+private:
+	using Archive = cereal::JSONOutputArchive;
+
+	void save(Archive& archive, const model::Document& document) const
+	{
+		archive(cereal::make_nvp("task", document.task()));
+		archive(cereal::make_nvp("profile_name", document.profileConfig().name()));
+		archive(cereal::make_nvp("tool_name", document.toolConfig().name()));
+	}
+};
 
 }

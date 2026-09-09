@@ -1,28 +1,34 @@
-#include <circle.h>
+module;
 
-namespace geometry
+#include <QVector2D>
+
+export module geometry.circle;
+
+import geometry.utils;
+
+export namespace geometry
 {
 
-Circle::Circle(const QVector2D& center, float radius, Orientation orientation)
-	: m_center(center)
-	, m_radius(radius)
-	, m_orientation(orientation)
+class Circle
 {
-}
+private:
+	QVector2D m_center;
+	float m_radius;
+	Orientation m_orientation;
 
-const QVector2D& Circle::center() const
-{
-	return m_center;
-}
+public:
+	explicit Circle(const QVector2D& center, float radius, Orientation orientation)
+		: m_center(center)
+		, m_radius(radius)
+		, m_orientation(orientation)
+	{
+	}
 
-float Circle::radius() const
-{
-	return m_radius;
-}
+	const QVector2D& center() const { return m_center; }
 
-Orientation Circle::orientation() const
-{
-	return m_orientation;
-}
+	float radius() const { return m_radius; }
+
+	Orientation orientation() const { return m_orientation; }
+};
 
 }

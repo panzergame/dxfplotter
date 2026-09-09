@@ -1,24 +1,30 @@
-#include <transform.h>
+module;
 
-namespace view::dialogs
+#include <uic/dialogs/ui_transform.h>
+#include <QDialog>
+
+export module view.dialogs.transform;
+
+export namespace view::dialogs
 {
 
-Transform::Transform()
+class Transform : public QDialog, private Ui::Transform
 {
-	setupUi(this);
-}
+private:
+	QTransform m_matrix;
 
-const QTransform& Transform::matrix() const
-{
-	return m_matrix;
-}
+public:
+	explicit Transform() { setupUi(this); }
 
-void Transform::accept()
-{
-	QDialog::accept();
+	const QTransform& matrix() const { return m_matrix; }
 
-	m_matrix.translate(offsetXSpinBox->value(), offsetYSpinBox->value());
-	m_matrix.rotate(angleSpinBox->value());
-}
+	void accept() override
+	{
+		QDialog::accept();
+
+		m_matrix.translate(offsetXSpinBox->value(), offsetYSpinBox->value());
+		m_matrix.rotate(angleSpinBox->value());
+	}
+};
 
 }

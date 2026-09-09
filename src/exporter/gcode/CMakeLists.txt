@@ -1,13 +1,9 @@
 set(SRC
-	exporter.cpp
 	metadata.cpp
+	exporter.cpp
 	postprocessor.cpp
-
-	exporter.h
-	metadata.h
-	postprocessor.h
 )
 
-add_library(exporter-gcode ${SRC})
-target_link_libraries(exporter-gcode PRIVATE config)
+add_module_library(exporter-gcode ${SRC} NON_MODULE_SOURCES exporterimpl.cpp)
+target_link_libraries(exporter-gcode PUBLIC common geometry model PRIVATE config exporter-renderer)
 add_coverage(exporter-gcode)

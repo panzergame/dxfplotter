@@ -1,8 +1,12 @@
-#include <config.h>
+module;
+
+#include <fstream>
+
+#include <yaml-cpp/yaml.h>
 
 #include <QDebug>
 
-#include <fstream>
+module config.config;
 
 namespace config
 {

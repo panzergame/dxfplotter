@@ -3,13 +3,9 @@ set(SRC
 	task.cpp
 	pathlistmodel.cpp
 	layertreemodel.cpp
-
-	path.h
-	task.h
-	pathlistmodel.h
-	layertreemodel.h
 )
 
-add_library(view-task ${SRC})
-target_link_libraries(view-task PRIVATE config)
+add_module_library(view-task ${SRC})
+target_link_libraries(view-task PUBLIC model model-application PRIVATE config geometry)
 add_dependencies(view-task uic)
+
