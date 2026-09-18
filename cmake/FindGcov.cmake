@@ -111,7 +111,7 @@ function (add_gcov_target TNAME)
 	# We don't have to check, if the target has support for coverage, thus this
 	# will be checked by add_coverage_target in Findcoverage.cmake. Instead we
 	# have to determine which gcov binary to use.
-	get_target_property(TSOURCES ${TNAME} SOURCES)
+	codecov_sources_of_target(${TNAME} TSOURCES)
 	set(SOURCES "")
 	set(TCOMPILER "")
 	foreach (FILE ${TSOURCES})
