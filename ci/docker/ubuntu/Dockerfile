@@ -12,7 +12,7 @@ RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https:
 RUN apt update && apt install -y libglib2.0-bin libdbus-1-3 libgtk-3-0 \
     libxcb* libxkbcommon* \
     freeglut3-dev lcov \
-    build-essential cmake \
+    build-essential cmake ninja-build \
     fuse file
 
 RUN apt update && apt install -y wget unzip git python3-jinja2 python3-pip
