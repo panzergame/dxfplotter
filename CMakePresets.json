@@ -11,8 +11,33 @@
             "binaryDir": "build",
             "generator": "Ninja",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "/home/tps/dev/qt/6.10.0/gcc_64/lib/cmake/",
                 "CMAKE_POLICY_VERSION_MINIMUM": "3.5"
+            }
+        },
+        {
+            "name": "ci-common",
+            "inherits": "common",
+            "cacheVariables": {
+                "CMAKE_PREFIX_PATH": "/opt/qt/6.8.2/gcc_64/lib/cmake/"
+            }
+        },
+        {
+            "name": "ci-build-test-coverage",
+            "inherits": "ci-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "WITH_ORTOOLS": "ON",
+                "ENABLE_COVERAGE": "ON"
+            }
+        },
+        {
+            "name": "ci-deploy",
+            "inherits": "ci-common",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_INSTALL_PREFIX": "/usr",
+                "WITH_ORTOOLS": "ON",
+                "BUILD_TESTING": "OFF"
             }
         }
     ]

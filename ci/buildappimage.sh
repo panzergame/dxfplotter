@@ -3,27 +3,11 @@
 set -x
 set -e
 
-# building in temporary directory to keep system clean
-# use RAM disk if possible (as in: not building on CI system like Travis, and RAM disk is available)
-if [ "$CI" == "" ] && [ -d /dev/shm ]; then
-    TEMP_BASE=/dev/shm
-else
-    TEMP_BASE=/tmp
-fi
-
-BUILD_DIR=$(mktemp -d -p "$TEMP_BASE" appimage-build-XXXXXX)
-
-# make sure to clean up build dir, even if errors occur
-cleanup () {
-    if [ -d "$BUILD_DIR" ]; then
-        rm -rf "$BUILD_DIR"
-    fi
-}
-trap cleanup EXIT
-
 # store repo root as variable
 REPO_ROOT=$(readlink -f $(dirname $(dirname $0)))
-OLD_CWD=$(readlink -f .)
+
+# the preset resolves its binary directory relative to the repo root
+cd "$REPO_ROOT"
 
 git config --global --add safe.directory $REPO_ROOT
 
@@ -32,16 +16,15 @@ COMMIT=$(git rev-parse --short HEAD)
 TAG=$(git describe --tags)
 RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64-linux"
 
-# switch to build dir
-pushd "$BUILD_DIR"
-
 # configure build files with CMake
-# we need to explicitly set the install prefix, as CMake's default is /usr/local for some reason...
-cmake "$REPO_ROOT" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF -DWITH_ORTOOLS=ON -DQt6_DIR=/opt/qt/6.8.2/gcc_64/lib/cmake/Qt6
+cmake --preset ci-deploy
 
 # build project and install files into AppDir
-make -j$(nproc)
-make install DESTDIR=AppDir
+cmake --build build
+DESTDIR="$REPO_ROOT"/build/AppDir cmake --install build
+
+# linuxdeployqt writes its output into the current directory
+cd build
 
 # now, build AppImage using linuxdeployqt
 wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
@@ -56,5 +39,5 @@ cp AppDir/usr/share/icons/hicolor/256x256/apps/dxfplotter.png AppDir/usr/share/a
 # use -unsupported-allow-new-glibc for newest linux distribution
 ./linuxdeployqt-continuous-x86_64.AppImage AppDir/usr/bin/dxfplotter -appimage -extra-plugins=iconengines,platformthemes/libqgtk3.so,renderers/libopenglrenderer.so -unsupported-allow-new-glibc 
 
-# move built AppImage back into original CWD
-mv dxfplotter*.AppImage "$OLD_CWD"/"$RELEASE_NAME".AppImage
+# move built AppImage back into the repo root, where the release job picks it up
+mv dxfplotter*.AppImage "$REPO_ROOT"/"$RELEASE_NAME".AppImage
