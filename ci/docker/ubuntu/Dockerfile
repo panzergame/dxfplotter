@@ -15,6 +15,12 @@ RUN apt update && apt install -y libglib2.0-bin libdbus-1-3 libgtk-3-0 \
     build-essential cmake ninja-build \
     fuse file
 
+# GCC 15 is not packaged in noble; it is required for C++ module dependency
+# scanning and `import std`.
+RUN apt install -y software-properties-common && \
+    add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt update && apt install -y gcc-15 g++-15
+
 RUN apt update && apt install -y wget unzip git python3-jinja2 python3-pip
 RUN pip install aqtinstall --break-system-packages
 

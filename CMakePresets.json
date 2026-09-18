@@ -18,7 +18,9 @@
             "name": "ci-common",
             "inherits": "common",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "/opt/qt/6.8.2/gcc_64/lib/cmake/"
+                "CMAKE_PREFIX_PATH": "/opt/qt/6.8.2/gcc_64/lib/cmake/",
+                "CMAKE_C_COMPILER": "gcc-15",
+                "CMAKE_CXX_COMPILER": "g++-15"
             }
         },
         {
