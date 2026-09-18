@@ -1,5 +1,14 @@
 FROM ubuntu:noble
 
+RUN apt update && apt install -y ca-certificates gnupg wget
+
+RUN wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | \
+    gpg --dearmor - | \
+    tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+
+RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main' | \
+    tee /etc/apt/sources.list.d/kitware.list >/dev/null
+
 RUN apt update && apt install -y libglib2.0-bin libdbus-1-3 libgtk-3-0 \
     libxcb* libxkbcommon* \
     freeglut3-dev lcov \
