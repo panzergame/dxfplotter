@@ -158,6 +158,31 @@ function (codecov_lang_of_source FILE RETURN_VAR)
 endfunction ()
 
 
+# Helper function to get all source files of a target. Sources declared through
+# a CXX_MODULES file set are not reported by the SOURCES property and have to
+# be collected from the file sets themselves.
+function (codecov_sources_of_target TNAME RETURN_VAR)
+	set(RESULT "")
+
+	get_target_property(TSOURCES ${TNAME} SOURCES)
+	if (TSOURCES)
+		list(APPEND RESULT ${TSOURCES})
+	endif ()
+
+	get_target_property(TMODULE_SETS ${TNAME} CXX_MODULE_SETS)
+	if (TMODULE_SETS)
+		foreach (SET_NAME ${TMODULE_SETS})
+			get_target_property(SET_FILES ${TNAME} CXX_MODULE_SET_${SET_NAME})
+			if (SET_FILES)
+				list(APPEND RESULT ${SET_FILES})
+			endif ()
+		endforeach ()
+	endif ()
+
+	set(${RETURN_VAR} "${RESULT}" PARENT_SCOPE)
+endfunction ()
+
+
 # Helper function to get the relative path of the source file destination path.
 # This path is needed by FindGcov and FindLcov cmake files to locate the
 # captured data.
@@ -195,7 +220,7 @@ function(add_coverage_target TNAME)
 	# e.g. C and Fortran mixed and uses different compilers (e.g. clang and
 	# gfortran) this can trigger huge problems, because different compilers may
 	# use different implementations for code coverage.
-	get_target_property(TSOURCES ${TNAME} SOURCES)
+	codecov_sources_of_target(${TNAME} TSOURCES)
 	set(TARGET_COMPILER "")
 	set(ADDITIONAL_FILES "")
 	foreach (FILE ${TSOURCES})
