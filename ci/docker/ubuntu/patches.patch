@@ -1,0 +1,11 @@
+--- QtCore/qtmetamacros.h
++++ QtCore/qtmetamacros.h
+@@ -168,7 +168,7 @@ private: \
+     /* qmake ignore Q_NAMESPACE_EXPORT */
+ #define Q_NAMESPACE_EXPORT(...) \
+     extern __VA_ARGS__ const QMetaObject staticMetaObject; \
+-    template <typename> static constexpr auto qt_create_metaobjectdata(); \
++    template <typename> constexpr auto qt_create_metaobjectdata(); \
+     QT_ANNOTATE_CLASS(qt_qnamespace, "") \
+     /*end*/
+
