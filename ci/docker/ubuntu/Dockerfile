@@ -17,11 +17,18 @@ RUN apt update && apt install -y libglib2.0-bin libdbus-1-3 libgtk-3-0 \
     build-essential cmake ninja-build \
     fuse file
 
-# GCC 15 is not packaged in noble; it is required for C++ module dependency
-# scanning and `import std`.
 RUN apt install -y software-properties-common && \
     add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
-    apt update && apt install -y gcc-15 g++-15
+    apt update && apt install -y libstdc++-15-dev
+
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | \
+    gpg --dearmor - | \
+    tee /usr/share/keyrings/llvm-archive-keyring.gpg >/dev/null
+
+RUN echo 'deb [signed-by=/usr/share/keyrings/llvm-archive-keyring.gpg] https://apt.llvm.org/noble/ llvm-toolchain-noble-20 main' | \
+    tee /etc/apt/sources.list.d/llvm.list >/dev/null
+
+RUN apt update && apt install -y clang-20 llvm-20
 
 RUN apt update && apt install -y wget unzip git patch python3-jinja2 python3-pip
 RUN pip install aqtinstall gcovr --break-system-packages
@@ -30,9 +37,6 @@ RUN aqt install-qt -O /opt/qt linux desktop ${QT_VERSION} \
     --archives icu qtbase qtdeclarative qtsvg qttools \
     --modules qt3d qtshadertools
 
-# Q_NAMESPACE_EXPORT declares qt_create_metaobjectdata() `static`, hence with
-# internal linkage, which GCC 15 rejects in a module purview. qnamespace.h uses
-# it, so every Qt header reaching a module interface unit trips the error.
 COPY patches.patch .
 RUN patch -p0 -d "/opt/qt/${QT_VERSION}/gcc_64/include" < patches.patch
 
