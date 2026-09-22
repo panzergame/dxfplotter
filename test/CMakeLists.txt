@@ -47,7 +47,5 @@ add_executable(dxfplotter-test ${SRC} main.cpp)
 target_include_directories(dxfplotter-test PRIVATE ${Qt5Test_INCLUDE_DIRS})
 target_link_libraries(dxfplotter-test ${LINK_LIBRARIES} Qt6::Test gtest_main)
 
-add_coverage(dxfplotter-test)
-
 enable_testing()
 gtest_add_tests(TARGET dxfplotter-test)

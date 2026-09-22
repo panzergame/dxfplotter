@@ -20,4 +20,3 @@ target_link_libraries(model-application
 		exporter-dxfplot
 		exporter-renderer
 )
-add_coverage(model-application)

@@ -14,4 +14,3 @@ set(SRC
 # so modularising it would make geometry and serializer circular CMake targets.
 add_module_library(serializer ${SRC})
 target_link_libraries(serializer PUBLIC geometry model)
-add_coverage(serializer)

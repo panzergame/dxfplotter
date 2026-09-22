@@ -7,4 +7,3 @@ set(SRC
 )
 
 add_module_library(common ${SRC})
-add_coverage(common)

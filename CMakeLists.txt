@@ -31,6 +31,7 @@ endif()
 project(dxfplotter)
 
 option(WITH_ORTOOLS OFF "Enable ortools support for path optimization")
+option(CODE_COVERAGE "Enable code coverage" OFF)
 
 include(CTest)
 include(CPack)
@@ -44,7 +45,6 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC OFF)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 set(BUILD_TESTS OFF)
 set(BUILD_SAMPLES OFF)
@@ -69,7 +69,27 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TEMPLATE_DIR ${PROJECT_SOURCE_DIR}/template)
 
-find_package(codecov)
+if (CODE_COVERAGE)
+	# gcov must match the compiler that produced the notes files, and plain `gcov`
+	# resolves to the distribution default. Mismatched versions make gcovr reject
+	# every .gcno.
+	string(REGEX MATCH "^[0-9]+" COMPILER_MAJOR_VERSION "${CMAKE_CXX_COMPILER_VERSION}")
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+		find_program(GCOV_PATH NAMES gcov-${COMPILER_MAJOR_VERSION} gcov REQUIRED)
+	elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+		find_program(LLVM_COV_PATH NAMES llvm-cov-${COMPILER_MAJOR_VERSION} llvm-cov REQUIRED)
+		# gcovr splits this option, so the gcov emulation subcommand can be embedded.
+		set(GCOV_PATH "${LLVM_COV_PATH} gcov" CACHE STRING "gcov executable used by gcovr")
+	endif()
+
+	include(cmake/CodeCoverage.cmake)
+	set(GCOVR_ADDITIONAL_ARGS --print-summary --xml coverage.xml --exclude-unreachable-branches)
+
+	append_coverage_compiler_flags()
+
+	# Generated sources (moc, qrc, configgen) live in the binary directory.
+	setup_target_for_coverage_gcovr_html(NAME coverage EXCLUDE thirdparty ${CMAKE_BINARY_DIR})
+endif()
 
 find_package(Python 3.10 REQUIRED)
 if (WITH_ORTOOLS)
@@ -146,7 +166,6 @@ set(CMAKE_CXX_SCAN_FOR_MODULES ${CMAKE_CXX_MODULE_DYNDEP})
 
 include(cmake/modules.cmake)
 
-
 add_subdirectory(resource)
 add_subdirectory(src)
 
@@ -156,8 +175,5 @@ endif()
 
 add_executable(dxfplotter src/main.cpp)
 target_link_libraries(dxfplotter ${LINK_LIBRARIES})
-add_coverage(dxfplotter)
 
 install(TARGETS dxfplotter DESTINATION bin)
-
-coverage_evaluate()

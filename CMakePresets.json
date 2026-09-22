@@ -29,7 +29,7 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug",
                 "WITH_ORTOOLS": "ON",
-                "ENABLE_COVERAGE": "ON"
+                "CODE_COVERAGE": "ON"
             }
         },
         {

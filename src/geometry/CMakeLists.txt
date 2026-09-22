@@ -28,5 +28,3 @@ if (WITH_ORTOOLS)
 	target_link_libraries(geometry PUBLIC ortools::ortools)
 	target_compile_definitions(geometry PUBLIC WITH_ORTOOLS)
 endif()
-
-add_coverage(geometry)

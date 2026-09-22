@@ -11,7 +11,7 @@ RUN echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https:
 
 RUN apt update && apt install -y libglib2.0-bin libdbus-1-3 libgtk-3-0 \
     libxcb* libxkbcommon* \
-    freeglut3-dev lcov \
+    freeglut3-dev \
     build-essential cmake ninja-build \
     fuse file
 
@@ -22,7 +22,7 @@ RUN apt install -y software-properties-common && \
     apt update && apt install -y gcc-15 g++-15
 
 RUN apt update && apt install -y wget unzip git python3-jinja2 python3-pip
-RUN pip install aqtinstall --break-system-packages
+RUN pip install aqtinstall gcovr --break-system-packages
 
 RUN aqt install-qt -O /opt/qt linux desktop 6.8.2 -m qt3d qtshadertools
 ENV PATH="/opt/qt/6.8.2/gcc_64/bin/:$PATH" 
