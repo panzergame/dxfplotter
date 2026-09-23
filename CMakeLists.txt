@@ -64,6 +64,12 @@ else()
 	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
 
+if(MINGW)
+	# Qt pulls -pthread only into targets linking it, and clang rejects importing a BMI
+	# whose POSIX threads setting differs from the importer.
+	add_compile_options(-pthread)
+endif()
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

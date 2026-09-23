@@ -41,6 +41,20 @@
                 "WITH_ORTOOLS": "ON",
                 "BUILD_TESTING": "OFF"
             }
+        },
+        {
+            "name": "ci-mingw",
+            "inherits": "common",
+            "binaryDir": "build-mingw",
+            "toolchainFile": "${sourceDir}/cmake/toolchain-llvm-mingw.cmake",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_PREFIX_PATH": "/opt/qt/6.10.0/llvm-mingw_64",
+                "CMAKE_FIND_ROOT_PATH": "/opt/qt/6.10.0/llvm-mingw_64",
+                "QT_HOST_PATH": "/opt/qt/6.10.0/gcc_64",
+                "WITH_ORTOOLS": "OFF",
+                "BUILD_TESTING": "OFF"
+            }
         }
     ]
 }

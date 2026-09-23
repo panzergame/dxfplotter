@@ -2,14 +2,13 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - "ci/docker/ubuntu/**"
+      - "ci/docker/**"
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}/ubuntu
 
 jobs:
-  build-ubuntu-docker:
+  build-dockers:
     permissions:
       contents: read
       packages: write
@@ -17,6 +16,9 @@ jobs:
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        docker-name: ['ubuntu', 'mingw']
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -31,12 +33,12 @@ jobs:
       id: meta
       uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
       with:
-        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        images: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.docker-name }}
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: ci/docker/ubuntu/ 
-        file: ci/docker/ubuntu/Dockerfile
+        context: ci/docker/ 
+        file: ci/docker/${{ matrix.docker-name }}/Dockerfile
         push: true
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
