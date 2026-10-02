@@ -13,8 +13,9 @@ git config --global --add safe.directory $REPO_ROOT
 
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
-TAG=$(git describe --tags)
-RELEASE_NAME="dxfplotter-$TAG-$COMMIT-x86_64-linux"
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+VERSION=$BRANCH##*/
+RELEASE_NAME="dxfplotter-$VERSION-$COMMIT-x86_64-linux"
 
 # configure build files with CMake
 cmake --preset ci-deploy
