@@ -14,7 +14,7 @@ git config --global --add safe.directory $REPO_ROOT
 # generate release name
 COMMIT=$(git rev-parse --short HEAD)
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-VERSION=$BRANCH##*/
+VERSION=${BRANCH##*/}
 RELEASE_NAME="dxfplotter-$VERSION-$COMMIT-x86_64-linux"
 
 # configure build files with CMake
