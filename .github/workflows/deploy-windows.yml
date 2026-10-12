@@ -5,7 +5,8 @@ on:
       - 'release/v*'
       
 env:
-  Qt_ROOT: ../Qt/6.8.2/msvc2022_64/
+  QT_VERSION: 6.10.0
+  Qt_ROOT: ../Qt/6.10.0/msvc2022_64/
 
 jobs:
   build:
@@ -16,13 +17,13 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ../Qt
-          key: ${{ runner.os }}-QtCache      
+          key: ${{ runner.os }}-QtCache-${{ env.QT_VERSION }}
       - name: Install python packages
         shell: bash
         run: python -m pip install jinja2 aqtinstall
       - name: Install Qt
         shell: bash
-        run: aqt install-qt -O ../Qt windows desktop 6.8.2 win64_msvc2022_64 -m qt3d qtshadertools
+        run: aqt install-qt -O ../Qt windows desktop ${QT_VERSION} win64_msvc2022_64 -m qt3d qtshadertools
       - name: Install zip
         shell: bash
         run: choco install -y zip
