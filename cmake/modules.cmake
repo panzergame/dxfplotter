@@ -1,5 +1,7 @@
 if (MSVC)
     add_compile_options(/translateInclude)
+    # Header units built by MSBuild miss the explicit /fp:precise, which is the default anyway.
+    add_compile_options(/wd5050)
 endif()
 
 function (add_module_library lib_name)

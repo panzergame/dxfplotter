@@ -1,5 +1,6 @@
 module;
 
+#include <algorithm>
 #include <cstdint>
 #include <utility>
 #include <serializer/access.h>
