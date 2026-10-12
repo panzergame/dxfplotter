@@ -59,7 +59,7 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
 
 # Compilation flag with all warnings.
 if(MSVC)
-	add_compile_options(/W4 /Zc:__cplusplus)
+	add_compile_options(/W4 /Zc:__cplusplus /utf-8)
 else()
 	add_compile_options(-fPIC -Wall -Wextra -DNDEBUG)
 endif()
