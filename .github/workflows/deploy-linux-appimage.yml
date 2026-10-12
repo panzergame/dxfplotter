@@ -21,7 +21,13 @@ jobs:
         run: ci/buildappimage.sh
         env:
           LD_LIBRARY_PATH: /opt/lib
+      - name: Compute tag
+        id: tag
+        run: echo "name=${GITHUB_REF_NAME##*/}" >> "$GITHUB_OUTPUT"
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: "dxfplotter*.AppImage"
+          tag_name: ${{ steps.tag.outputs.name }}
+          # Without this, a missing tag is created on the default branch instead of the built commit
+          target_commitish: ${{ github.sha }}

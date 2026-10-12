@@ -1,9 +1,8 @@
 on:
   workflow_dispatch:
   push:
-    # Sequence of patterns matched against refs/tags
-    tags:
-     - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    branches:
+      - 'release/v*'
       
 env:
   Qt_ROOT: ../Qt/6.8.2/msvc2022_64/
@@ -46,8 +45,15 @@ jobs:
       - name: Deploy Qt
         shell: bash
         run: PATH=$PATH:${Qt_ROOT}/bin ci/deploywindows.sh
+      - name: Compute tag
+        id: tag
+        shell: bash
+        run: echo "name=${GITHUB_REF_NAME##*/}" >> "$GITHUB_OUTPUT"
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: "dxfplotter*.zip"
+          tag_name: ${{ steps.tag.outputs.name }}
+          # Without this, a missing tag is created on the default branch instead of the built commit
+          target_commitish: ${{ github.sha }}
 
