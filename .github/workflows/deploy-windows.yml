@@ -20,7 +20,7 @@ jobs:
           key: ${{ runner.os }}-QtCache-${{ env.QT_VERSION }}
       - name: Install python packages
         shell: bash
-        run: python -m pip install jinja2 aqtinstall
+        run: py -m pip install jinja2 aqtinstall
       - name: Install Qt
         shell: bash
         run: aqt install-qt -O ../Qt windows desktop ${QT_VERSION} win64_msvc2022_64 -m qt3d qtshadertools
