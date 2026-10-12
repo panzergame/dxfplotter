@@ -23,7 +23,7 @@ jobs:
         run: py -m pip install jinja2 aqtinstall
       - name: Install Qt
         shell: bash
-        run: aqt install-qt -O ../Qt windows desktop ${QT_VERSION} win64_msvc2022_64 -m qt3d qtshadertools
+        run: py -m aqt install-qt -O ../Qt windows desktop ${QT_VERSION} win64_msvc2022_64 -m qt3d qtshadertools
       - name: Install zip
         shell: bash
         run: choco install -y zip
