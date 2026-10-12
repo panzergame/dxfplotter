@@ -16,13 +16,20 @@ set(SRC
 	pocketer.cpp
 )
 
+set(NON_MODULE_SRC
+	cavcutils.h
+)
+
 if (WITH_ORTOOLS)
 	list(APPEND SRC
+		orderoptimizer.ixx
+	)
+	list(APPEND NON_MODULE_SRC
 		orderoptimizer.cpp
 	)
 endif()
 
-add_module_library(geometry ${SRC} NON_MODULE_SOURCES cavcutils.h)
+add_module_library(geometry ${SRC} NON_MODULE_SOURCES ${NON_MODULE_SRC})
 target_link_libraries(geometry PUBLIC common)
 if (WITH_ORTOOLS)
 	target_link_libraries(geometry PUBLIC ortools::ortools)
