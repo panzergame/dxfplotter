@@ -7,6 +7,7 @@ on:
 env:
   QT_VERSION: 6.10.0
   Qt_ROOT: ../Qt/6.10.0/msvc2022_64/
+  ORTOOLS_ROOT: ../or-tools_x64_VisualStudio2022_cpp_v9.10.4067
 
 jobs:
   build:
@@ -37,15 +38,9 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
-      - name: CMake
+      - name: Build and deploy
         shell: bash
-        run: |
-          cmake -B build -DBUILD_TESTING=OFF -DWITH_ORTOOLS=ON -DQt6_DIR=${Qt_ROOT}/lib/cmake/Qt6 -DCMAKE_PREFIX_PATH=../or-tools_x64_VisualStudio2022_cpp_v9.10.4067
-      - name: Build
-        run: cmake --build build --config Release
-      - name: Deploy Qt
-        shell: bash
-        run: PATH=$PATH:${Qt_ROOT}/bin ci/deploywindows.sh
+        run: ci/buildwindows.sh
       - name: Compute tag
         id: tag
         shell: bash

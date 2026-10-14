@@ -22,7 +22,7 @@ private:
 
 public:
 	explicit DocumentHistory(const Document& initialDocument)
-		: m_currentDocumentIt(m_documentHistory.insert(m_documentHistory.end(), initialDocument))
+		: m_currentDocumentIt(m_documentHistory.emplace(m_documentHistory.end(), initialDocument))
 	{
 	}
 
@@ -37,7 +37,7 @@ public:
 			m_documentHistory.erase(m_documentHistory.begin());
 		}
 
-		m_currentDocumentIt = m_documentHistory.insert(m_documentHistory.end(), currentDocument);
+		m_currentDocumentIt = m_documentHistory.emplace(m_documentHistory.end(), currentDocument);
 	}
 
 	const Document& undo()
