@@ -9,11 +9,12 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD)
 VERSION=${BRANCH##*/}
 RELEASE_NAME="dxfplotter-$VERSION-$COMMIT-x86_64-windows"
 
-BUILD_DIR="build"
+BUILD_DIR=build
 BINARY_NAME="dxfplotter.exe"
 BINARY_PATH="${BUILD_DIR}/Release/${BINARY_NAME}"
 
 DEPLOY_DIR="${RELEASE_NAME}"
+rm -rf $DEPLOY_DIR "${RELEASE_NAME}.zip"
 mkdir $DEPLOY_DIR
 cp $BINARY_PATH $DEPLOY_DIR
 
