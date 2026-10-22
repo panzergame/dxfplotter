@@ -3,7 +3,6 @@ module;
 #include <algorithm>
 #include <cstdint>
 #include <utility>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 #include <cereal/types/map.hpp>
 #include <cereal/types/vector.hpp>
@@ -11,8 +10,9 @@ module;
 
 export module serializer.task;
 
-import model.task;
 import serializer.layer;
+import serializer.access;
+import model.task;
 import model.layer;
 import model.path;
 

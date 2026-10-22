@@ -1,15 +1,25 @@
 module;
 
-#include <serializer/access.h>
-
 #include <fstream>
 #include <cereal/archives/json.hpp>
+#include <cereal/types/map.hpp>
+#include <cereal/types/memory.hpp>
+#include <cereal/types/vector.hpp>
 
 export module importer.dxfplot.importer;
 
 import common.exception;
 import config.config;
 import model.document;
+import serializer.access;
+import serializer.bulge;
+import serializer.layer;
+import serializer.offsettedpath;
+import serializer.path;
+import serializer.pathsettings;
+import serializer.polyline;
+import serializer.qvector2d;
+import serializer.renderable;
 import serializer.task;
 import model.task;
 

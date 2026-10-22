@@ -1,7 +1,6 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <fmt/format.h>
 #include <QObject>
 #include <QTransform>
@@ -20,6 +19,8 @@ import model.offsettedpath;
 import model.pathsettings;
 import model.renderable;
 import common.copy;
+import serializer.access;
+
 export namespace model
 {
 

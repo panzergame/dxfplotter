@@ -6,10 +6,10 @@
 
 #include <QVector2D>
 #include <exporterfixture.h>
-#include <serializer/access.h>
 
 import geometry.bulge;
 import serializer.bulge;
+import serializer.access;
 
 TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
 {
@@ -56,4 +56,3 @@ TEST(Serializer, shouldSerializeBulgeWithNoDataLoose)
 		EXPECT_EQ(bulge, outBulge);
 	}
 }
-

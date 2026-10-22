@@ -1,15 +1,13 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.polyline;
 
 import geometry.polyline;
 import serializer.bulge;
-
-import geometry.polyline;
+import serializer.access;
 
 export namespace serializer
 {

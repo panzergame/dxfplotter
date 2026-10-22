@@ -2,7 +2,6 @@ module;
 
 #include <cstdint>
 #include <iterator>
-#include <serializer/access.h>
 #include <QObject>
 #include <QtCore/qtmochelpers.h>
 
@@ -14,6 +13,7 @@ import geometry.polyline;
 import geometry.rect;
 import model.layer;
 import model.path;
+import serializer.access;
 
 #ifdef WITH_ORTOOLS
 import geometry.orderoptimizer;

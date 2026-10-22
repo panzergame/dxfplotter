@@ -1,13 +1,13 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.offsettedpath;
 
 import model.offsettedpath;
 import serializer.polyline;
+import serializer.access;
 
 export namespace serializer
 {

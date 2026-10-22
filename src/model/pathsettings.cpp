@@ -1,9 +1,9 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 
 export module model.pathsettings;
+import serializer.access;
 
 export namespace model
 {

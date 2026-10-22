@@ -5,7 +5,6 @@ module;
 #include <cstdint>
 #include <iterator>
 #include <string>
-#include <serializer/access.h>
 #include <QObject>
 #include <QtCore/qtmochelpers.h>
 
@@ -15,6 +14,8 @@ import common.aggregable;
 import common.copy;
 import model.path;
 import model.renderable;
+import serializer.access;
+
 export namespace model
 {
 

@@ -2,7 +2,6 @@ module;
 
 #include <string>
 #include <cstdint>
-#include <serializer/access.h>
 #include <QObject>
 #include <QtCore/qtmochelpers.h>
 
@@ -11,6 +10,8 @@ export module model.renderable;
 import common.aggregable;
 import geometry.polyline;
 import model.pathsettings;
+import serializer.access;
+
 export namespace model
 {
 

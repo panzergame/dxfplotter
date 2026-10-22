@@ -1,11 +1,11 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 #include <QVector2D>
 
 export module serializer.qvector2d;
+import serializer.access;
 
 export namespace serializer
 {

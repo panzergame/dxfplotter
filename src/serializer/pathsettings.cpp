@@ -1,7 +1,6 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.pathsettings;
@@ -9,6 +8,7 @@ export module serializer.pathsettings;
 import model.path;
 import model.pathsettings;
 import serializer.polyline;
+import serializer.access;
 
 export namespace serializer
 {

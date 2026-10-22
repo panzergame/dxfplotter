@@ -1,7 +1,6 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.layer;
@@ -10,6 +9,7 @@ import model.layer;
 import model.path;
 import model.renderable;
 import serializer.path;
+import serializer.access;
 
 export namespace serializer
 {

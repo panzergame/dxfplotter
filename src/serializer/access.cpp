@@ -1,16 +1,16 @@
-#pragma once
+module;
 
 #include <cereal/cereal.hpp>
 
-namespace serializer
-{
+export module serializer.access;
 
+export namespace serializer
+{
 template<class Entity>
 struct Access;
-
 }
 
-namespace cereal
+export namespace cereal
 {
 
 template<class Archive, class Entity>

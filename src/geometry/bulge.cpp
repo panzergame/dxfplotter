@@ -7,7 +7,6 @@ module;
 #include <limits>
 #include <geometry/cavcutils.h>
 #include <cavc/plinesegment.hpp>
-#include <serializer/access.h>
 #include <QVector2D>
 #include <QTransform>
 
@@ -19,6 +18,7 @@ import geometry.circle;
 import geometry.line;
 import geometry.rect;
 import geometry.utils;
+import serializer.access;
 
 namespace geometry
 {

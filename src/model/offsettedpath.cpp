@@ -1,7 +1,6 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <QObject>
 #include <QtCore/qtmochelpers.h>
 
@@ -13,6 +12,8 @@ import geometry.rect;
 import geometry.utils;
 import model.pathsettings;
 import model.renderable;
+import serializer.access;
+
 export namespace model
 {
 

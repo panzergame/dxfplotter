@@ -1,11 +1,10 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.renderable;
-
+import serializer.access;
 import model.renderable;
 
 export namespace serializer

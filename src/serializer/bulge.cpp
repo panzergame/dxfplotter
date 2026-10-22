@@ -1,12 +1,12 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.bulge;
 
 import geometry.bulge;
+import serializer.access;
 import serializer.qvector2d;
 
 import geometry.bulge;

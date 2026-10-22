@@ -30,7 +30,7 @@ if (WITH_ORTOOLS)
 endif()
 
 add_module_library(geometry ${SRC} NON_MODULE_SOURCES ${NON_MODULE_SRC})
-target_link_libraries(geometry PUBLIC common)
+target_link_libraries(geometry PRIVATE common serializer_access)
 if (WITH_ORTOOLS)
 	target_link_libraries(geometry PUBLIC ortools::ortools)
 	target_compile_definitions(geometry PUBLIC WITH_ORTOOLS)

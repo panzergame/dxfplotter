@@ -10,7 +10,7 @@ set(SRC
 	task.cpp
 )
 
-# access.h stays a plain header: geometry's module interfaces friend-declare serializer::Access,
-# so modularising it would make geometry and serializer circular CMake targets.
 add_module_library(serializer ${SRC})
-target_link_libraries(serializer PUBLIC geometry model)
+target_link_libraries(serializer PUBLIC geometry model PRIVATE serializer_access)
+
+add_module_library(serializer_access access.cpp)

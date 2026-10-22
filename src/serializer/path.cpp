@@ -1,7 +1,6 @@
 module;
 
 #include <cstdint>
-#include <serializer/access.h>
 #include <cereal/cereal.hpp>
 
 export module serializer.path;
@@ -11,6 +10,7 @@ import serializer.offsettedpath;
 import serializer.pathsettings;
 import model.renderable;
 import serializer.renderable;
+import serializer.access;
 
 export namespace serializer
 {
