@@ -1,7 +1,7 @@
 module;
 
 #include <QWidget>
-#include <QEntity>
+#include <Qt3DCore/QEntity>
 
 export module view.simulation.internal.scene;
 

@@ -1,6 +1,6 @@
 module;
 
-#include <QEntity>
+#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QGoochMaterial>
 #include <Qt3DExtras/QCylinderMesh>

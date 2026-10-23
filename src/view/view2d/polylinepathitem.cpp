@@ -1,16 +1,18 @@
 module;
 
+#include <QGraphicsPathItem>
 #include <QStyleOptionGraphicsItem>
 #include <QPainterPath>
+#include <QPen>
 
 #include <QPainter>
 #include <QDebug>
 #include <QtCore/qtmochelpers.h>
 
 export module view.view2d.polylinepathitem;
-import view.view2d.bulgepainter;
 
 import view.view2d.basicpathitem;
+import view.view2d.bulgepainter;
 import view.view2d.offsettedpolylinepathitem;
 import geometry.polyline;
 import model.offsettedpath;
