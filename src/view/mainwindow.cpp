@@ -19,12 +19,16 @@ import view.dialogs.settings.settings;
 import view.dialogs.transform;
 import view.info;
 import view.profile;
+#ifdef WITH_SIMULATION
 import view.simulation.simulation;
+#endif
 import view.task.path;
 import view.task.task;
 import view.view2d.viewport;
 
+#ifdef WITH_SIMULATION
 import model.simulation;
+#endif
 import geometry.utils;
 import geometry.rect;
 import model.application;
@@ -39,7 +43,9 @@ class MainWindow : public QMainWindow, private Ui::MainWindow
 private:
 	model::Application& m_app;
 
+#ifdef WITH_SIMULATION
 	simulation::Simulation* m_simulation;
+#endif
 
 	QActionGroup m_openedDocumentActions;
 
@@ -60,14 +66,16 @@ private:
 	QWidget* setupCenterPanel()
 	{
 		view2d::Viewport* viewport2d = new view2d::Viewport(m_app);
-		m_simulation = new simulation::Simulation();
 		Info* info = new Info(*viewport2d, m_app);
 
 		QSplitter* splitter = new QSplitter(Qt::Horizontal, this);
 		splitter->addWidget(viewport2d);
+#ifdef WITH_SIMULATION
+		m_simulation = new simulation::Simulation();
 		splitter->addWidget(m_simulation);
-		splitter->setStretchFactor(0, 1);
 		splitter->setStretchFactor(1, 0);
+#endif
+		splitter->setStretchFactor(0, 1);
 
 		QVBoxLayout* layout = new QVBoxLayout();
 		layout->addWidget(splitter);
@@ -123,7 +131,11 @@ private:
 		connect(actionTransformSelection, &QAction::triggered, this, &MainWindow::transformSelection);
 		connect(actionMirrorSelection, &QAction::triggered, this, &MainWindow::mirrorSelection);
 		connect(actionSetSelectionOrigin, &QAction::triggered, this, &MainWindow::setSelectionOrigin);
+#ifdef WITH_SIMULATION
 		connect(actionSimulate, &QAction::triggered, this, &MainWindow::simulate);
+#else
+		actionSimulate->setVisible(false);
+#endif
 		connect(actionUndo, &QAction::triggered, &m_app, &model::Application::undoDocumentChanges);
 		connect(actionRedo, &QAction::triggered, &m_app, &model::Application::redoDocumentChanges);
 		connect(actionOptimizeOrder, &QAction::triggered, this, &MainWindow::optimizeOrder);
@@ -274,7 +286,9 @@ protected Q_SLOTS:
 	{
 		setDocumentToolsEnabled((newDocument != nullptr));
 
+#ifdef WITH_SIMULATION
 		m_simulation->hide();
+#endif
 	}
 
 	void displayError(const QString& message)
@@ -283,12 +297,14 @@ protected Q_SLOTS:
 		messageBox.critical(this, "Error", message);
 	}
 
+#ifdef WITH_SIMULATION
 	void simulate()
 	{
 		model::Simulation simulation = m_app.createSimulation();
 		m_simulation->setSimulation(std::move(simulation));
 		m_simulation->show();
 	}
+#endif
 
 	void optimizeOrder() { m_app.optimizeOrder(); }
 };

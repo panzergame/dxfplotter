@@ -32,6 +32,7 @@ project(dxfplotter)
 
 option(WITH_ORTOOLS OFF "Enable ortools support for path optimization")
 option(CODE_COVERAGE "Enable code coverage" OFF)
+option(WITH_SIMULATION "Enable 3D simulation view (Qt3D)" ON)
 
 include(CTest)
 include(CPack)
@@ -107,9 +108,10 @@ find_package(Qt6 COMPONENTS REQUIRED
 	Widgets
 	Gui
 	Svg
-	3DCore
-	3DExtras
 )
+if (WITH_SIMULATION)
+	find_package(Qt6 COMPONENTS REQUIRED 3DCore 3DExtras)
+endif()
 
 qt_standard_project_setup()
 
@@ -129,8 +131,6 @@ set(INCLUDE_DIRS
 	${CMAKE_BINARY_DIR}/template
 	${Qt6Widgets_INCLUDE_DIRS}
 	${Qt6Gui_INCLUDE_DIRS}
-	${Qt63DCore_INCLUDE_DIRS}
-	${Qt63DExtras_INCLUDE_DIRS}
 )
 
 set(LINK_LIBRARIES
@@ -140,8 +140,6 @@ set(LINK_LIBRARIES
 	view-dialogs-settings
 	view-task
 	view-view2d
-	view-simulation
-	view-simulation-internal
 	model
 	model-application
 	config
@@ -158,9 +156,12 @@ set(LINK_LIBRARIES
 	fmt::fmt
 	Qt6::Widgets
 	Qt6::Svg
-	Qt6::3DCore
-	Qt6::3DExtras
 )
+
+if (WITH_SIMULATION)
+	list(APPEND INCLUDE_DIRS ${Qt63DCore_INCLUDE_DIRS} ${Qt63DExtras_INCLUDE_DIRS})
+	list(APPEND LINK_LIBRARIES view-simulation view-simulation-internal Qt6::3DCore Qt6::3DExtras)
+endif()
 
 include_directories(${INCLUDE_DIRS})
 
