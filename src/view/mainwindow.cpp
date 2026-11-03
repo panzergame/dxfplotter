@@ -13,6 +13,7 @@ module;
 #include <QDebug>
 
 export module view.mainwindow;
+import view.view2d.basicpathitem;
 import view.dialogs.mirror;
 import view.dialogs.setorigin;
 import view.dialogs.settings.settings;

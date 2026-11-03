@@ -6,6 +6,7 @@ module;
 #include <QDebug>
 
 export module view.info;
+import view.view2d.basicpathitem;
 import model.application;
 import view.view2d.viewport;
 
