@@ -9,20 +9,15 @@ module;
 #include <QtCore/qtmochelpers.h>
 
 export module view.view2d.viewport;
+import view.view2d.basicpathitem;
 import view.view2d.pointpathitem;
 import view.view2d.polylinepathitem;
-// MSVC needs the types of PolylinePathItem members reachable to treat it as complete.
-import view.view2d.offsettedpolylinepathitem;
-import view.view2d.bulgepainter;
-import geometry.polyline;
-import model.offsettedpath;
 
 import model.documentmodelobserver;
 import model.task;
 import view.view2d.rubberband;
 import model.application;
 import model.path;
-import view.view2d.basicpathitem;
 
 namespace view::view2d
 {
