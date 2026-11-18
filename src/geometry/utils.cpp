@@ -97,6 +97,20 @@ inline float LineAngle(const QVector2D& line)
 	return std::atan2(line.y(), line.x());
 }
 
+/// Rotate vector counter clockwise by angle
+inline QVector2D RotateVector(const QVector2D& vector, float angle)
+{
+	const float cos = std::cos(angle);
+	const float sin = std::sin(angle);
+	return QVector2D(vector.x() * cos - vector.y() * sin, vector.x() * sin + vector.y() * cos);
+}
+
+/// Return signed angle in [-pi, pi] from vector to vector, positive when counter clockwise
+inline float SignedAngle(const QVector2D& from, const QVector2D& to)
+{
+	return std::atan2(CrossProduct(from, to), QVector2D::dotProduct(from, to));
+}
+
 /** Ensure start < end assuming start and end are angle of a CCW arc.
  * @return new end angle, may remain unchanged
  */
@@ -125,8 +139,6 @@ constexpr Vector Lerp(const Vector& startPoint, const Vector& endPoint, float fa
 }
 }
 
-// Explicit specialisations attach to the module of their primary template, so they must not be
-// marked export; they stay reachable to any importer of this module.
 namespace common::enumerate
 {
 

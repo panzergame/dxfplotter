@@ -10,6 +10,7 @@ import model.documentmodelobserver;
 import model.pathgroupsettings;
 import model.task;
 import config.config;
+import config.enums;
 
 export namespace view::task
 {
@@ -51,7 +52,7 @@ private:
 
 	void updateFieldVisibility(const config::Tools::Tool& tool)
 	{
-		const bool toolHasDepth = !tool.general().laser();
+		const bool toolHasDepth = tool.general().type() != config::ToolType::Laser;
 		Ui::Path::depth->setVisible(toolHasDepth);
 		depthLabel->setVisible(toolHasDepth);
 	}

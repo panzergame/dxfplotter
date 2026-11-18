@@ -30,6 +30,7 @@ set(SRC
 	serializer.cpp
 	simulation.cpp
 	task.cpp
+	utils.cpp
 	verticalspeed.cpp
 
 	exporterfixture.h

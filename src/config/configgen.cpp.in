@@ -9,6 +9,7 @@ export module config.config;
 
 import config.group;
 import geometry.utils;
+import config.enums;
 import config.list;
 import config.node;
 import config.property;

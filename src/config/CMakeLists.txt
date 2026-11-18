@@ -1,4 +1,5 @@
 set(MODULE_SRC
+	enums.cpp
 	node.cpp
 	group.cpp
 	list.cpp

@@ -70,3 +70,41 @@ TEST(BulgeTest, EqualsInverse)
 	EXPECT_TRUE(b1.equalsInversed(b2));
 	EXPECT_FALSE(b1.equalsInversed(b1));
 }
+
+static void ExpectVectorNear(const QVector2D& actual, const QVector2D& expected)
+{
+	EXPECT_NEAR(actual.x(), expected.x(), 1e-5f);
+	EXPECT_NEAR(actual.y(), expected.y(), 1e-5f);
+}
+
+TEST(BulgeTest, LineTangentsAreChordDirection)
+{
+	const QVector2D direction = (point2 - point1).normalized();
+
+	ExpectVectorNear(bulge1.startTangent(), direction);
+	ExpectVectorNear(bulge1.endTangent(), direction);
+}
+
+TEST(BulgeTest, CounterClockwiseHalfCircleTangents)
+{
+	const geometry::Bulge bulge(QVector2D(1, 0), QVector2D(-1, 0), 1.0f);
+
+	ExpectVectorNear(bulge.startTangent(), QVector2D(0, 1));
+	ExpectVectorNear(bulge.endTangent(), QVector2D(0, -1));
+}
+
+TEST(BulgeTest, ClockwiseHalfCircleTangents)
+{
+	const geometry::Bulge bulge(QVector2D(1, 0), QVector2D(-1, 0), -1.0f);
+
+	ExpectVectorNear(bulge.startTangent(), QVector2D(0, -1));
+	ExpectVectorNear(bulge.endTangent(), QVector2D(0, 1));
+}
+
+TEST(BulgeTest, CounterClockwiseQuarterCircleTangents)
+{
+	const geometry::Bulge bulge(QVector2D(1, 0), QVector2D(0, 1), std::tan(M_PI / 8.0));
+
+	ExpectVectorNear(bulge.startTangent(), QVector2D(0, 1));
+	ExpectVectorNear(bulge.endTangent(), QVector2D(-1, 0));
+}

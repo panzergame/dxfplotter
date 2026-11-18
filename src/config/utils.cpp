@@ -8,9 +8,7 @@ export module config.utils;
 
 import common.enumerate;
 import geometry.utils;
-
-import common.enumerate;
-import geometry.utils;
+import config.enums;
 
 export namespace config
 {

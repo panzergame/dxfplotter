@@ -207,6 +207,14 @@ public:
 
 	bool isArc() const { return !isLine(); }
 
+	// Arc tangents make half the arc angle with the chord, arc angle being 4 * atan(tangent).
+	QVector2D startTangent() const
+	{
+		return RotateVector((m_end - m_start).normalized(), -2.0f * std::atan(m_tangent));
+	}
+
+	QVector2D endTangent() const { return RotateVector((m_end - m_start).normalized(), 2.0f * std::atan(m_tangent)); }
+
 	Orientation orientation() const { return (m_tangent < 0.0f) ? Orientation::CW : Orientation::CCW; }
 
 	Circle toCircle() const

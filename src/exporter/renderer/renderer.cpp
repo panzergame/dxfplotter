@@ -5,6 +5,7 @@ module;
 export module exporter.renderer.renderer;
 
 import config.config;
+import config.enums;
 import exporter.renderer.passesiterator;
 import geometry.utils;
 import model.document;
@@ -22,7 +23,7 @@ class Renderer
 private:
 	const config::Tools::Tool& m_tool;
 	const config::Profiles::Profile& m_profile;
-	const bool m_laser;
+	const bool m_hasDepth;
 	const float m_depthPerCut;
 	const float m_maximumStartDepth;
 	const float m_depthToRetract;
@@ -70,9 +71,7 @@ private:
 
 		m_visitor.startOperation((*iterator).start(), intensity);
 
-		if (m_laser) {
-			m_visitor.processPathAtDepth(*iterator, 0.0f, planeFeedRate, depthFeedRate);
-		} else {
+		if (m_hasDepth) {
 			const float maxDepth = settings.depth();
 			const float startDepth = std::min(m_maximumStartDepth, maxDepth);
 			for (float depth = startDepth; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut, ++iterator) {
@@ -80,8 +79,9 @@ private:
 
 				m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
 			}
+		} else {
+			m_visitor.processPathAtDepth(*iterator, 0.0f, planeFeedRate, depthFeedRate);
 		}
-
 		m_visitor.endOperation(m_depthToRetract);
 	}
 
@@ -89,10 +89,10 @@ public:
 	explicit Renderer(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Visitor& visitor)
 		: m_tool(tool)
 		, m_profile(profile)
-		, m_laser(m_tool.general().laser())
+		, m_hasDepth(m_tool.general().type() != config::ToolType::Laser)
 		, m_depthPerCut(m_tool.general().depthPerCut())
 		, m_maximumStartDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut)
-		, m_depthToRetract(m_laser ? 0.0f : m_tool.general().retractDepth())
+		, m_depthToRetract(m_hasDepth ? m_tool.general().retractDepth() : 0.0f)
 		, m_visitor(visitor)
 	{
 	}
