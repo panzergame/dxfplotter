@@ -2,6 +2,7 @@ module;
 
 #include <algorithm>
 #include <cmath>
+#include <optional>
 #include <vector>
 #include <geometry/cavcutils.h>
 #include <cavc/polylineoffset.hpp>
@@ -231,6 +232,62 @@ public:
 					   });
 
 		return offsettedPolylines;
+	}
+
+	/** Holder path of a drag knife whose blade tip trails by bladeOffset: shift every bulge forward along its
+	 * tangent so the tip follows this polyline, and pivot the holder around each vertex where the tangent breaks.
+	 */
+	Polyline dragKnifeCompensated(float bladeOffset, float minimumSwivelAngle) const
+	{
+		Bulge::List bulges;
+		std::optional<QVector2D> previousTangent;
+		std::optional<QVector2D> firstTangent;
+
+		// Below the minimum swivel angle the gap is bladeOffset * angle, closed by moving the next bulge start.
+		const auto joint = [&](const QVector2D& vertex, const QVector2D& fromTangent, const QVector2D& toTangent) {
+			const float turn = SignedAngle(fromTangent, toTangent);
+			if (std::abs(turn) > minimumSwivelAngle) {
+				bulges.emplace_back(vertex + fromTangent * bladeOffset, vertex + toTangent * bladeOffset,
+									std::tan(turn / 4.0f));
+			}
+		};
+
+		forEachBulge([&](const Bulge& bulge) {
+			// Zero length bulges have no tangent.
+			if (bulge.start() == bulge.end()) {
+				return;
+			}
+
+			const QVector2D startTangent = bulge.startTangent();
+			const QVector2D endTangent = bulge.endTangent();
+
+			if (previousTangent) {
+				joint(bulge.start(), *previousTangent, startTangent);
+			} else {
+				firstTangent = startTangent;
+			}
+
+			// Arc keeps its center and sweep angle, so its bulge tangent is unchanged.
+			Bulge shifted(bulge.start() + startTangent * bladeOffset, bulge.end() + endTangent * bladeOffset,
+						  bulge.tangent());
+			if (!bulges.empty()) {
+				shifted.start() = bulges.back().end();
+			}
+			bulges.push_back(shifted);
+
+			previousTangent = endTangent;
+		});
+
+		if (bulges.empty()) {
+			return *this;
+		}
+
+		if (isClosed()) {
+			joint(start(), *previousTangent, *firstTangent);
+			bulges.front().start() = bulges.back().end();
+		}
+
+		return Polyline(std::move(bulges));
 	}
 
 	void transform(const QTransform& matrix)

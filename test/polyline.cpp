@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
 #include <QVector2D>
 #include <polylineutils.h>
 
 import geometry.bulge;
+import geometry.circle;
 import geometry.polyline;
 import geometry.utils;
 
@@ -178,4 +180,118 @@ TEST(PolylineTest, TestEquals)
 	ASSERT_TRUE(polyline1.equals(polyline2, false));
 	ASSERT_TRUE(polyline1.equals(polyline3, true));
 	ASSERT_FALSE(polyline1.equals(polyline3, false));
+}
+
+namespace
+{
+
+constexpr float bladeOffset = 0.5f;
+constexpr float smallSwivelAngle = 0.1f;
+const float quarterTurnBulge = std::tan(M_PI / 8.0);
+
+void ExpectVectorNear(const QVector2D& actual, const QVector2D& expected)
+{
+	EXPECT_NEAR(actual.x(), expected.x(), 1e-5f);
+	EXPECT_NEAR(actual.y(), expected.y(), 1e-5f);
+}
+
+void ExpectBulgeNear(const geometry::Bulge& actual, const QVector2D& start, const QVector2D& end, float tangent)
+{
+	ExpectVectorNear(actual.start(), start);
+	ExpectVectorNear(actual.end(), end);
+	EXPECT_NEAR(actual.tangent(), tangent, 1e-5f);
+}
+
+geometry::Bulge::List Bulges(const geometry::Polyline& polyline)
+{
+	geometry::Bulge::List bulges;
+	polyline.forEachBulge([&bulges](const geometry::Bulge& bulge) {
+		bulges.push_back(bulge);
+	});
+	return bulges;
+}
+
+const geometry::Polyline lPolyline({ geometry::Bulge(QVector2D(0, 0), QVector2D(10, 0), 0.0f),
+									 geometry::Bulge(QVector2D(10, 0), QVector2D(10, 10), 0.0f) });
+
+}
+
+TEST(PolylineTest, DragKnifeLineIsShiftedForward)
+{
+	const geometry::Polyline polyline({ geometry::Bulge(QVector2D(0, 0), QVector2D(10, 0), 0.0f) });
+
+	const geometry::Bulge::List bulges = Bulges(polyline.dragKnifeCompensated(bladeOffset, smallSwivelAngle));
+
+	ASSERT_EQ(bulges.size(), 1);
+	ExpectBulgeNear(bulges[0], QVector2D(0.5, 0), QVector2D(10.5, 0), 0.0f);
+}
+
+TEST(PolylineTest, DragKnifeCornerAddsSwivelAroundVertex)
+{
+	const geometry::Bulge::List bulges = Bulges(lPolyline.dragKnifeCompensated(bladeOffset, smallSwivelAngle));
+
+	ASSERT_EQ(bulges.size(), 3);
+	ExpectBulgeNear(bulges[0], QVector2D(0.5, 0), QVector2D(10.5, 0), 0.0f);
+	ExpectBulgeNear(bulges[1], QVector2D(10.5, 0), QVector2D(10, 0.5), quarterTurnBulge);
+	ExpectBulgeNear(bulges[2], QVector2D(10, 0.5), QVector2D(10, 10.5), 0.0f);
+}
+
+TEST(PolylineTest, DragKnifeCornerBelowMinimumSwivelAngleJoinsBulges)
+{
+	const geometry::Bulge::List bulges = Bulges(lPolyline.dragKnifeCompensated(bladeOffset, M_PI_2 + 0.1f));
+
+	ASSERT_EQ(bulges.size(), 2);
+	ExpectBulgeNear(bulges[0], QVector2D(0.5, 0), QVector2D(10.5, 0), 0.0f);
+	ExpectBulgeNear(bulges[1], QVector2D(10.5, 0), QVector2D(10, 10.5), 0.0f);
+}
+
+TEST(PolylineTest, DragKnifeArcKeepsCenterAndSweep)
+{
+	const geometry::Polyline polyline({ geometry::Bulge(QVector2D(1, 0), QVector2D(0, 1), quarterTurnBulge) });
+
+	const geometry::Bulge::List bulges = Bulges(polyline.dragKnifeCompensated(bladeOffset, smallSwivelAngle));
+
+	ASSERT_EQ(bulges.size(), 1);
+	ExpectBulgeNear(bulges[0], QVector2D(1, 0.5), QVector2D(-0.5, 1), quarterTurnBulge);
+
+	const geometry::Circle circle = bulges[0].toCircle();
+	ExpectVectorNear(circle.center(), QVector2D(0, 0));
+	EXPECT_NEAR(circle.radius(), std::sqrt(1.0f + bladeOffset * bladeOffset), 1e-5f);
+}
+
+TEST(PolylineTest, DragKnifeClosedPolylineSwivelsAtClosingVertex)
+{
+	const geometry::Polyline polyline({ geometry::Bulge(QVector2D(0, 0), QVector2D(10, 0), 0.0f),
+										geometry::Bulge(QVector2D(10, 0), QVector2D(10, 10), 0.0f),
+										geometry::Bulge(QVector2D(10, 10), QVector2D(0, 10), 0.0f),
+										geometry::Bulge(QVector2D(0, 10), QVector2D(0, 0), 0.0f) });
+
+	const geometry::Polyline compensated = polyline.dragKnifeCompensated(bladeOffset, smallSwivelAngle);
+	EXPECT_TRUE(compensated.isClosed());
+
+	const geometry::Bulge::List bulges = Bulges(compensated);
+	ASSERT_EQ(bulges.size(), 8);
+	ExpectBulgeNear(bulges[7], QVector2D(0, -0.5), QVector2D(0.5, 0), quarterTurnBulge);
+}
+
+TEST(PolylineTest, DragKnifeTangentContinuousBulgesHaveNoSwivel)
+{
+	const geometry::Polyline polyline({ geometry::Bulge(QVector2D(0, 0), QVector2D(1, 0), 0.0f),
+										geometry::Bulge(QVector2D(1, 0), QVector2D(2, 1), quarterTurnBulge) });
+
+	const geometry::Bulge::List bulges = Bulges(polyline.dragKnifeCompensated(bladeOffset, 0.0f));
+
+	ASSERT_EQ(bulges.size(), 2);
+	ExpectBulgeNear(bulges[0], QVector2D(0.5, 0), QVector2D(1.5, 0), 0.0f);
+	ExpectBulgeNear(bulges[1], QVector2D(1.5, 0), QVector2D(2, 1.5), quarterTurnBulge);
+}
+
+TEST(PolylineTest, DragKnifePointIsUnchanged)
+{
+	const geometry::Polyline polyline({ geometry::Bulge(QVector2D(1, 2), QVector2D(1, 2), 0.0f) });
+
+	const geometry::Bulge::List bulges = Bulges(polyline.dragKnifeCompensated(bladeOffset, smallSwivelAngle));
+
+	ASSERT_EQ(bulges.size(), 1);
+	ExpectBulgeNear(bulges[0], QVector2D(1, 2), QVector2D(1, 2), 0.0f);
 }
