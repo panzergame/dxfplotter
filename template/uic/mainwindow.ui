@@ -50,8 +50,8 @@
     <property name="title">
      <string>Edit</string>
     </property>
-    <addaction name="actionLeftCutterCompensation"/>
-    <addaction name="actionRightCutterCompensation"/>
+    <addaction name="actionLeftToolOperation"/>
+    <addaction name="actionRightToolOperation"/>
     <addaction name="actionResetCutterCompensation"/>
     <addaction name="actionPocketSelection"/>
     <addaction name="separator"/>
@@ -87,8 +87,8 @@
    <addaction name="actionExportFile"/>
    <addaction name="actionExportAsFile"/>
    <addaction name="separator"/>
-   <addaction name="actionLeftCutterCompensation"/>
-   <addaction name="actionRightCutterCompensation"/>
+   <addaction name="actionLeftToolOperation"/>
+   <addaction name="actionRightToolOperation"/>
    <addaction name="actionResetCutterCompensation"/>
    <addaction name="actionPocketSelection"/>
    <addaction name="separator"/>
@@ -150,25 +150,25 @@
     <string>Settings</string>
    </property>
   </action>
-  <action name="actionLeftCutterCompensation">
+  <action name="actionLeftToolOperation">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
      <normaloff>:/icons/path-outset.svg</normaloff>:/icons/path-outset.svg</iconset>
    </property>
    <property name="text">
-    <string>Left Cutter Compensation</string>
+    <string>Left Tool Operation</string>
    </property>
    <property name="shortcut">
     <string>L</string>
    </property>
   </action>
-  <action name="actionRightCutterCompensation">
+  <action name="actionRightToolOperation">
    <property name="icon">
     <iconset resource="../../resource/resource.qrc">
      <normaloff>:/icons/path-inset.svg</normaloff>:/icons/path-inset.svg</iconset>
    </property>
    <property name="text">
-    <string>Right Cutter Compensation</string>
+    <string>Right Tool Operation</string>
    </property>
    <property name="shortcut">
     <string>R</string>

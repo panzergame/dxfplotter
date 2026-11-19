@@ -10,20 +10,24 @@ export namespace geometry::tooloperation
 {
 
 /** Holder path of a drag knife whose blade tip trails by bladeOffset.
- * Compensation depends on travel direction, so the polyline is inverted beforehand for a backward profile cut
- * direction; returning that same direction cancels the inversion done at export.
+ * sideDirection plays the role of the side for Offset: the path is travelled along
+ * sideDirection | profileDirection. Compensation depends on travel direction, so the polyline is inverted
+ * beforehand when travelling backward; returning the profile direction cancels the inversion done at export.
  */
 class DragKnife : public ToolOperation
 {
 private:
 	float m_bladeOffset;
 	float m_minimumSwivelAngle;
+	CuttingDirection m_sideDirection;
 	CuttingDirection m_profileDirection;
 
 public:
-	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, CuttingDirection profileDirection)
+	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, CuttingDirection sideDirection,
+		CuttingDirection profileDirection)
 		: m_bladeOffset(bladeOffset)
 		, m_minimumSwivelAngle(minimumSwivelAngle)
+		, m_sideDirection(sideDirection)
 		, m_profileDirection(profileDirection)
 	{
 	}
@@ -31,7 +35,7 @@ public:
 	Result generate(const Polyline& polyline) const override
 	{
 		Polyline directed = polyline;
-		if (m_profileDirection == CuttingDirection::BACKWARD) {
+		if ((m_sideDirection | m_profileDirection) == CuttingDirection::BACKWARD) {
 			directed.invert();
 		}
 

@@ -1,6 +1,7 @@
 module;
 
 #include <fstream>
+#include <memory>
 import importer.dxf.importer;
 import importer.dxfplot.importer;
 import exporter.gcode.exporter;
@@ -17,6 +18,7 @@ export module model.application;
 
 import common.exception;
 import config.config;
+import config.enums;
 import geometry.filter.assembler;
 import geometry.filter.cleaner;
 import geometry.filter.removeexactduplicate;
@@ -27,6 +29,7 @@ import geometry.polyline;
 import geometry.rect;
 import geometry.tooloperation.dragknife;
 import geometry.tooloperation.offset;
+import geometry.tooloperation.tooloperation;
 import geometry.utils;
 import importer.dxf.layer;
 import model.layer;
@@ -127,16 +130,45 @@ private:
 		return nullptr;
 	}
 
-	void cutterCompensation(float scale)
+	enum class Side { Left, Right };
+
+	std::unique_ptr<geometry::tooloperation::ToolOperation> createToolOperation(Side side) const
 	{
-		const config::Import::Dxf& dxf = m_config.root().import().dxf();
+		const config::Tools::Tool& tool = m_openedDocument->toolConfig();
 
-		const float radius = m_openedDocument->toolConfig().general().radius();
-		const float scaledRadius = radius * scale;
+		switch (tool.type()) {
+			case config::ToolType::Rotary:
+			case config::ToolType::Laser: {
+				const config::Import::Dxf& dxf = m_config.root().import().dxf();
+				const float radius = tool.general().radius();
+				const float margin = (side == Side::Left) ? radius : -radius;
 
-		const geometry::tooloperation::Offset operation(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
-		Task& task = m_openedDocument->task();
-		task.createToolPathSelection(operation);
+				return std::make_unique<geometry::tooloperation::Offset>(margin, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+			}
+			case config::ToolType::DragKnife: {
+				// Same side to direction mapping as Offset.
+				const geometry::CuttingDirection sideDirection
+					= (side == Side::Left) ? geometry::CuttingDirection::FORWARD : geometry::CuttingDirection::BACKWARD;
+				const geometry::CuttingDirection profileDirection = m_openedDocument->profileConfig().cut().direction();
+				const config::Tools::Tool::DragKnife& dragKnife = tool.dragKnife();
+
+				return std::make_unique<geometry::tooloperation::DragKnife>(dragKnife.bladeOffset(), dragKnife.minimumSwivelAngle(),
+					sideDirection, profileDirection);
+			}
+		}
+
+		return nullptr;
+	}
+
+	void applyToolOperation(Side side)
+	{
+		const std::unique_ptr<geometry::tooloperation::ToolOperation> operation = createToolOperation(side);
+		if (operation) {
+			Task& task = m_openedDocument->task();
+			task.createToolPathSelection(*operation);
+
+			takeDocumentSnapshot();
+		}
 	}
 
 	geometry::Polyline::List postProcessImportedPolylines(geometry::Polyline::List&& rawPolylines) const
@@ -374,30 +406,14 @@ public:
 		return saved;
 	}
 
-	void leftCutterCompensation()
+	void leftToolOperation()
 	{
-		cutterCompensation(1.0f);
-
-		takeDocumentSnapshot();
+		applyToolOperation(Side::Left);
 	}
 
-	void rightCutterCompensation()
+	void rightToolOperation()
 	{
-		cutterCompensation(-1.0f);
-
-		takeDocumentSnapshot();
-	}
-
-	void dragKnifeCompensation()
-	{
-		const config::Tools::Tool::DragKnife& dragKnife = m_openedDocument->toolConfig().dragKnife();
-		const geometry::CuttingDirection profileDirection = m_openedDocument->profileConfig().cut().direction();
-
-		const geometry::tooloperation::DragKnife operation(dragKnife.bladeOffset(), dragKnife.minimumSwivelAngle(), profileDirection);
-		Task& task = m_openedDocument->task();
-		task.createToolPathSelection(operation);
-
-		takeDocumentSnapshot();
+		applyToolOperation(Side::Right);
 	}
 
 	void resetCutterCompensation()

@@ -121,9 +121,8 @@ private:
 		connect(actionOpenSettings, &QAction::triggered, this, &MainWindow::openSettings);
 
 		// Edit actions
-		connect(actionLeftCutterCompensation, &QAction::triggered, &m_app, &model::Application::leftCutterCompensation);
-		connect(actionRightCutterCompensation, &QAction::triggered, &m_app,
-				&model::Application::rightCutterCompensation);
+		connect(actionLeftToolOperation, &QAction::triggered, &m_app, &model::Application::leftToolOperation);
+		connect(actionRightToolOperation, &QAction::triggered, &m_app, &model::Application::rightToolOperation);
 		connect(actionResetCutterCompensation, &QAction::triggered, &m_app,
 				&model::Application::resetCutterCompensation);
 		connect(actionPocketSelection, &QAction::triggered, &m_app, &model::Application::pocketSelection);
@@ -148,8 +147,8 @@ private:
 		m_openedDocumentActions.addAction(actionExportAsFile);
 		m_openedDocumentActions.addAction(actionSaveFile);
 		m_openedDocumentActions.addAction(actionSaveAsFile);
-		m_openedDocumentActions.addAction(actionLeftCutterCompensation);
-		m_openedDocumentActions.addAction(actionRightCutterCompensation);
+		m_openedDocumentActions.addAction(actionLeftToolOperation);
+		m_openedDocumentActions.addAction(actionRightToolOperation);
 		m_openedDocumentActions.addAction(actionResetCutterCompensation);
 		m_openedDocumentActions.addAction(actionPocketSelection);
 		m_openedDocumentActions.addAction(actionHideSelection);

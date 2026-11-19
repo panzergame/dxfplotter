@@ -45,6 +45,7 @@ geometry::Bulge::List Bulges(const geometry::Polyline& polyline)
 TEST(DragKnifeTest, ForwardIsCompensatedInPolylineDirection)
 {
 	const geometry::tooloperation::DragKnife dragKnife(bladeOffset, smallSwivelAngle,
+													   geometry::CuttingDirection::FORWARD,
 													   geometry::CuttingDirection::FORWARD);
 
 	const geometry::tooloperation::DragKnife::Result result = dragKnife.generate(lPolyline);
@@ -62,6 +63,7 @@ TEST(DragKnifeTest, ForwardIsCompensatedInPolylineDirection)
 TEST(DragKnifeTest, BackwardIsCompensatedInCuttingDirection)
 {
 	const geometry::tooloperation::DragKnife dragKnife(bladeOffset, smallSwivelAngle,
+													   geometry::CuttingDirection::FORWARD,
 													   geometry::CuttingDirection::BACKWARD);
 
 	const geometry::tooloperation::DragKnife::Result result = dragKnife.generate(lPolyline);
@@ -75,4 +77,40 @@ TEST(DragKnifeTest, BackwardIsCompensatedInCuttingDirection)
 	ExpectBulgeNear(bulges[0], QVector2D(10, 9.5), QVector2D(10, -0.5), 0.0f);
 	ExpectBulgeNear(bulges[1], QVector2D(10, -0.5), QVector2D(9.5, 0), -quarterTurnBulge);
 	ExpectBulgeNear(bulges[2], QVector2D(9.5, 0), QVector2D(-0.5, 0), 0.0f);
+}
+
+TEST(DragKnifeTest, BackwardSideIsCompensatedAgainstPolylineDirection)
+{
+	const geometry::tooloperation::DragKnife dragKnife(bladeOffset, smallSwivelAngle,
+													   geometry::CuttingDirection::BACKWARD,
+													   geometry::CuttingDirection::FORWARD);
+
+	const geometry::tooloperation::DragKnife::Result result = dragKnife.generate(lPolyline);
+
+	EXPECT_EQ(result.cuttingDirection, geometry::CuttingDirection::FORWARD);
+	ASSERT_EQ(result.polylines.size(), 1);
+
+	const geometry::Bulge::List bulges = Bulges(result.polylines.front());
+	ASSERT_EQ(bulges.size(), 3);
+	ExpectBulgeNear(bulges[0], QVector2D(10, 9.5), QVector2D(10, -0.5), 0.0f);
+	ExpectBulgeNear(bulges[1], QVector2D(10, -0.5), QVector2D(9.5, 0), -quarterTurnBulge);
+	ExpectBulgeNear(bulges[2], QVector2D(9.5, 0), QVector2D(-0.5, 0), 0.0f);
+}
+
+TEST(DragKnifeTest, BackwardSideAndBackwardProfileCancel)
+{
+	const geometry::tooloperation::DragKnife dragKnife(bladeOffset, smallSwivelAngle,
+													   geometry::CuttingDirection::BACKWARD,
+													   geometry::CuttingDirection::BACKWARD);
+
+	const geometry::tooloperation::DragKnife::Result result = dragKnife.generate(lPolyline);
+
+	EXPECT_EQ(result.cuttingDirection, geometry::CuttingDirection::BACKWARD);
+	ASSERT_EQ(result.polylines.size(), 1);
+
+	const geometry::Bulge::List bulges = Bulges(result.polylines.front());
+	ASSERT_EQ(bulges.size(), 3);
+	ExpectBulgeNear(bulges[0], QVector2D(0.5, 0), QVector2D(10.5, 0), 0.0f);
+	ExpectBulgeNear(bulges[1], QVector2D(10.5, 0), QVector2D(10, 0.5), quarterTurnBulge);
+	ExpectBulgeNear(bulges[2], QVector2D(10, 0.5), QVector2D(10, 10.5), 0.0f);
 }
