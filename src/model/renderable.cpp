@@ -23,22 +23,18 @@ class Renderable : public QObject
 
 private:
 	std::string m_name;
-	Renderable* m_parent;
+	Renderable* m_parent = nullptr;
 
 	struct
 	{
-		bool m_selected : 1;
-		bool m_visible : 1;
-		bool m_globallyVisible : 1;
+		bool m_selected : 1 = false;
+		bool m_visible : 1 = true;
+		bool m_globallyVisible : 1 = true;
 	};
 
 public:
 	explicit Renderable(const std::string& name)
 		: m_name(name)
-		, m_parent(nullptr)
-		, m_selected(false)
-		, m_visible(true)
-		, m_globallyVisible(true)
 	{
 	}
 
