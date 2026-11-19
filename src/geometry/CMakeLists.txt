@@ -1,4 +1,5 @@
 add_subdirectory(filter)
+add_subdirectory(tooloperation)
 
 set(SRC
 	utils.cpp

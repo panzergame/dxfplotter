@@ -150,6 +150,7 @@ set(LINK_LIBRARIES
 	exporter-renderer
 	geometry
 	geometry-filter
+	geometry-tooloperation
 	common
 	serializer
 	libdxfrw

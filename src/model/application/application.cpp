@@ -25,6 +25,9 @@ import model.documenthistory;
 import model.simulation;
 import geometry.polyline;
 import geometry.rect;
+import geometry.tooloperation.dragknife;
+import geometry.tooloperation.offset;
+import geometry.utils;
 import importer.dxf.layer;
 import model.layer;
 import model.path;
@@ -131,8 +134,9 @@ private:
 		const float radius = m_openedDocument->toolConfig().general().radius();
 		const float scaledRadius = radius * scale;
 
+		const geometry::tooloperation::Offset operation(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
 		Task& task = m_openedDocument->task();
-		task.cutterCompensationSelection(scaledRadius, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+		task.createToolPathSelection(operation);
 	}
 
 	geometry::Polyline::List postProcessImportedPolylines(geometry::Polyline::List&& rawPolylines) const
@@ -384,10 +388,22 @@ public:
 		takeDocumentSnapshot();
 	}
 
+	void dragKnifeCompensation()
+	{
+		const config::Tools::Tool::DragKnife& dragKnife = m_openedDocument->toolConfig().dragKnife();
+		const geometry::CuttingDirection profileDirection = m_openedDocument->profileConfig().cut().direction();
+
+		const geometry::tooloperation::DragKnife operation(dragKnife.bladeOffset(), dragKnife.minimumSwivelAngle(), profileDirection);
+		Task& task = m_openedDocument->task();
+		task.createToolPathSelection(operation);
+
+		takeDocumentSnapshot();
+	}
+
 	void resetCutterCompensation()
 	{
 		Task& task = m_openedDocument->task();
-		task.resetCutterCompensationSelection();
+		task.resetToolPathSelection();
 
 		takeDocumentSnapshot();
 	}

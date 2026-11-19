@@ -30,6 +30,9 @@ set(SRC
 	serializer.cpp
 	simulation.cpp
 	task.cpp
+	tooloperationdragknife.cpp
+	tooloperationoffset.cpp
+	tooloperationpocket.cpp
 	utils.cpp
 	verticalspeed.cpp
 

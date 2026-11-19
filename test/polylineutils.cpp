@@ -28,3 +28,14 @@ geometry::Polyline createStartPolyline(float innerRadius, float outterRadius, in
 
 	return geometry::Polyline(std::move(bulges));
 }
+
+geometry::Polyline createSquarePolyline(const QVector2D& min, float size)
+{
+	const QVector2D p1 = min;
+	const QVector2D p2 = min + QVector2D(size, 0);
+	const QVector2D p3 = min + QVector2D(size, size);
+	const QVector2D p4 = min + QVector2D(0, size);
+
+	return geometry::Polyline({ geometry::Bulge(p1, p2, 0.0f), geometry::Bulge(p2, p3, 0.0f),
+								geometry::Bulge(p3, p4, 0.0f), geometry::Bulge(p4, p1, 0.0f) });
+}

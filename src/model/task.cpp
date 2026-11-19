@@ -11,6 +11,8 @@ import common.aggregable;
 import common.copy;
 import geometry.polyline;
 import geometry.rect;
+import geometry.tooloperation.pocket;
+import geometry.tooloperation.tooloperation;
 import model.layer;
 import model.path;
 import serializer.access;
@@ -262,17 +264,17 @@ public:
 		}
 	}
 
-	void resetCutterCompensationSelection()
+	void resetToolPathSelection()
 	{
 		forEachSelectedPath([](model::Path& path) {
-			path.resetOffset();
+			path.resetToolPath();
 		});
 	}
 
-	void cutterCompensationSelection(float scaledRadius, float minimumPolylineLength, float minimumArcLength)
+	void createToolPathSelection(const geometry::tooloperation::ToolOperation& operation)
 	{
-		forEachSelectedPath([scaledRadius, minimumPolylineLength, minimumArcLength](Path& path) {
-			path.offset(scaledRadius, minimumPolylineLength, minimumArcLength);
+		forEachSelectedPath([&operation](Path& path) {
+			path.createToolPath(operation);
 		});
 	}
 
@@ -291,11 +293,16 @@ public:
 			return;
 		}
 
-		Path::ListCPtr islands;
-		std::copy_if(borderIt + 1, end, std::back_inserter(islands), isSelectedPred);
+		geometry::Polyline::ListCPtr islands;
+		std::for_each(borderIt + 1, end, [&islands, &isSelectedPred](const Path* path) {
+			if (isSelectedPred(path)) {
+				islands.push_back(&path->basePolyline());
+			}
+		});
 
+		const geometry::tooloperation::Pocket operation(islands, radius, minimumPolylineLength, minimumArcLength);
 		Path* border = *borderIt;
-		border->pocket(islands, radius, minimumPolylineLength, minimumArcLength);
+		border->createToolPath(operation);
 	}
 
 	void transformSelection(const QTransform& matrix)

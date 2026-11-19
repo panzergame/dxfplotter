@@ -7,6 +7,7 @@
 import exporter.gcode.exporter;
 import geometry.bulge;
 import geometry.polyline;
+import geometry.tooloperation.offset;
 import model.path;
 
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
@@ -42,7 +43,7 @@ TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 	createTaskFromPolyline(std::move(polyline));
 
 	m_task->forEachPath([](model::Path& path){
-		path.offset(-0.2f, 0.0f, 0.0f);
+		path.createToolPath(geometry::tooloperation::Offset(-0.2f, 0.0f, 0.0f));
 	});
 
 	const exporter::gcode::Exporter exporter(m_tool, m_profile);
@@ -73,7 +74,7 @@ TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 	createTaskFromPolyline(std::move(polyline));
 
 	m_task->forEachPath([](model::Path& path){
-		path.offset(0.2f, 0.0f, 0.0f);
+		path.createToolPath(geometry::tooloperation::Offset(0.2f, 0.0f, 0.0f));
 	});
 
 	const exporter::gcode::Exporter exporter(m_tool, m_profile);

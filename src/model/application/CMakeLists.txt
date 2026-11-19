@@ -14,6 +14,7 @@ target_link_libraries(model-application
 		common
 		geometry
 		geometry-filter
+		geometry-tooloperation
 		importer-dxf
 		importer-dxfplot
 		exporter-gcode
