@@ -12,7 +12,7 @@ import model.document;
 import serializer.access;
 import serializer.bulge;
 import serializer.layer;
-import serializer.offsettedpath;
+import serializer.toolpath;
 import serializer.path;
 import serializer.pathsettings;
 import serializer.polyline;

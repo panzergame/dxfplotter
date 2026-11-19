@@ -15,7 +15,7 @@ import geometry.pocketer;
 import geometry.polyline;
 import geometry.rect;
 import geometry.utils;
-import model.offsettedpath;
+import model.toolpath;
 import model.pathsettings;
 import model.renderable;
 import common.copy;
@@ -32,7 +32,7 @@ class Path : public Renderable, public common::Aggregable<Path>
 
 private:
 	geometry::Polyline m_basePolyline;
-	std::unique_ptr<model::OffsettedPath> m_offsettedPath;
+	std::unique_ptr<model::ToolPath> m_toolPath;
 	PathSettings m_settings;
 
 public:
@@ -48,8 +48,8 @@ public:
 		, m_basePolyline(other.m_basePolyline)
 		, m_settings(other.m_settings)
 	{
-		if (other.m_offsettedPath) {
-			m_offsettedPath = std::make_unique<OffsettedPath>(*other.m_offsettedPath);
+		if (other.m_toolPath) {
+			m_toolPath = std::make_unique<ToolPath>(*other.m_toolPath);
 		}
 	}
 
@@ -74,32 +74,32 @@ public:
 
 	geometry::Polyline::List finalPolylines() const
 	{
-		return m_offsettedPath ? m_offsettedPath->polylines() : geometry::Polyline::List { m_basePolyline };
+		return m_toolPath ? m_toolPath->polylines() : geometry::Polyline::List { m_basePolyline };
 	}
 
-	model::OffsettedPath* offsettedPath() const { return m_offsettedPath.get(); }
+	model::ToolPath* toolPath() const { return m_toolPath.get(); }
 
 	void offset(float margin, float minimumPolylineLength, float minimumArcLength)
 	{
 		geometry::Polyline::List offsettedPolylines = m_basePolyline.offsetted(margin);
 		geometry::filter::Cleaner cleaner(std::move(offsettedPolylines), minimumPolylineLength, minimumArcLength);
 
-		const OffsettedPath::Direction direction
-			= (margin > 0.0f) ? OffsettedPath::Direction::LEFT : OffsettedPath::Direction::RIGHT;
+		const geometry::CuttingDirection direction
+			= (margin > 0.0f) ? geometry::CuttingDirection::FORWARD : geometry::CuttingDirection::BACKWARD;
 
 		geometry::Polyline::List cleanedPolylines = cleaner.polylines();
 		if (!cleanedPolylines.empty()) {
-			m_offsettedPath = std::make_unique<OffsettedPath>(std::move(cleanedPolylines), direction);
+			m_toolPath = std::make_unique<ToolPath>(std::move(cleanedPolylines), direction);
 		}
 
-		emit offsettedPathChanged();
+		emit toolPathChanged();
 	}
 
 	void resetOffset()
 	{
-		m_offsettedPath.reset();
+		m_toolPath.reset();
 
-		emit offsettedPathChanged();
+		emit toolPathChanged();
 	}
 
 	void pocket(const Path::ListCPtr& islands, float scaledRadius, float minimumPolylineLength, float minimumArcLength)
@@ -113,16 +113,16 @@ public:
 		geometry::filter::Cleaner cleaner(std::move(pocketer.polylines()), minimumPolylineLength, minimumArcLength);
 
 		// Pocket is left when polyline is CCW winded.
-		static const OffsettedPath::Direction basePolylineOrientationToPocketDirection[] = {
-			OffsettedPath::Direction::RIGHT, // Orientation::CW
-			OffsettedPath::Direction::LEFT // Orientation::CCW
+		static const geometry::CuttingDirection basePolylineOrientationToPocketDirection[] = {
+			geometry::CuttingDirection::BACKWARD, // Orientation::CW
+			geometry::CuttingDirection::FORWARD // Orientation::CCW
 		};
-		const OffsettedPath::Direction direction
+		const geometry::CuttingDirection direction
 			= basePolylineOrientationToPocketDirection[static_cast<int>(pocketer.borderOrientation())];
 
-		m_offsettedPath = std::make_unique<OffsettedPath>(cleaner.polylines(), direction);
+		m_toolPath = std::make_unique<ToolPath>(cleaner.polylines(), direction);
 
-		emit offsettedPathChanged();
+		emit toolPathChanged();
 	}
 
 	void transform(const QTransform& matrix)
@@ -130,14 +130,14 @@ public:
 		m_basePolyline.transform(matrix);
 		emit basePolylineTransformed();
 
-		if (m_offsettedPath) {
-			m_offsettedPath->transform(matrix);
+		if (m_toolPath) {
+			m_toolPath->transform(matrix);
 		}
 	}
 
 	geometry::Rect boundingRect() const
 	{
-		return (m_offsettedPath) ? m_offsettedPath->boundingRect() : m_basePolyline.boundingRect();
+		return (m_toolPath) ? m_toolPath->boundingRect() : m_basePolyline.boundingRect();
 	}
 
 	bool isPoint() const { return m_basePolyline.isPoint(); }
@@ -148,7 +148,7 @@ public:
 
 	geometry::CuttingDirection cuttingDirection() const
 	{
-		return (m_offsettedPath) ? m_offsettedPath->cuttingDirection() : geometry::CuttingDirection::FORWARD;
+		return (m_toolPath) ? m_toolPath->cuttingDirection() : geometry::CuttingDirection::FORWARD;
 	}
 
 	/** Holder path of a drag knife whose blade tip trails by bladeOffset, for final polylines cut in direction.
@@ -169,7 +169,7 @@ public:
 	}
 
 Q_SIGNALS:
-	void offsettedPathChanged();
+	void toolPathChanged();
 	void basePolylineTransformed();
 };
 

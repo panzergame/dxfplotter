@@ -13,9 +13,9 @@ export module view.view2d.polylinepathitem;
 
 import view.view2d.basicpathitem;
 import view.view2d.bulgepainter;
-import view.view2d.offsettedpolylinepathitem;
+import view.view2d.toolpathitem;
 import geometry.polyline;
-import model.offsettedpath;
+import model.toolpath;
 import model.path;
 
 export namespace view::view2d
@@ -31,8 +31,7 @@ private:
 	QPainterPath m_paintPath;
 	QPainterPath m_shapePath;
 
-	// Item of offsetted polylines of the same path.
-	std::unique_ptr<OffsettedPolylinePathItem> m_offsettedPath;
+	std::unique_ptr<ToolPathItem> m_toolPath;
 
 	QPainterPath paintPath() const
 	{
@@ -63,15 +62,15 @@ private:
 		m_shapePath = shapePath(m_paintPath);
 	}
 
-	void updateOffsetedPath()
+	void updateToolPath()
 	{
-		model::OffsettedPath* offsettedPath = path().offsettedPath();
-		if (offsettedPath) {
-			m_offsettedPath = std::make_unique<OffsettedPolylinePathItem>(*offsettedPath);
+		model::ToolPath* toolPath = path().toolPath();
+		if (toolPath) {
+			m_toolPath = std::make_unique<ToolPathItem>(*toolPath);
 			// Link our offsetted path item for drawing
-			m_offsettedPath->setParentItem(this); // TODO use QGraphicsItemGroup
+			m_toolPath->setParentItem(this); // TODO use QGraphicsItemGroup
 		} else {
-			m_offsettedPath.reset();
+			m_toolPath.reset();
 		}
 	}
 
@@ -80,8 +79,8 @@ private:
 	{
 		BasicPathItem::setSelected(selected);
 
-		if (m_offsettedPath) {
-			m_offsettedPath->setSelected(selected);
+		if (m_toolPath) {
+			m_toolPath->setSelected(selected);
 		}
 	}
 
@@ -91,9 +90,9 @@ public:
 	{
 		setupPaths();
 
-		updateOffsetedPath();
+		updateToolPath();
 
-		connect(&path, &model::Path::offsettedPathChanged, this, &PolylinePathItem::updateOffsetedPath);
+		connect(&path, &model::Path::toolPathChanged, this, &PolylinePathItem::updateToolPath);
 	}
 
 	void paint(QPainter* painter, const QStyleOptionGraphicsItem* option, QWidget* widget) override

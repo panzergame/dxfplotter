@@ -7,7 +7,7 @@ module;
 export module view.view2d.pointpathitem;
 
 import view.view2d.basicpathitem;
-import view.view2d.offsettedpolylinepathitem;
+import view.view2d.toolpathitem;
 import model.path;
 
 export namespace view::view2d

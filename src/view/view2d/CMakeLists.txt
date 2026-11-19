@@ -1,7 +1,7 @@
 set(SRC
 	basicpathitem.cpp
 	bulgepainter.cpp
-	offsettedpolylinepathitem.cpp
+	toolpathitem.cpp
 	pointpathitem.cpp
 	polylinepathitem.cpp
 	rubberband.cpp

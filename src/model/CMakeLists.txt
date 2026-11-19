@@ -3,7 +3,7 @@ add_subdirectory(application)
 set(SRC
 	pathsettings.cpp
 	renderable.cpp
-	offsettedpath.cpp
+	toolpath.cpp
 	path.cpp
 	layer.cpp
 	task.cpp

@@ -6,7 +6,7 @@ module;
 export module serializer.path;
 
 import model.path;
-import serializer.offsettedpath;
+import serializer.toolpath;
 import serializer.pathsettings;
 import model.renderable;
 import serializer.renderable;
@@ -23,7 +23,7 @@ struct Access<model::Path>
 	{
 		archive(cereal::make_nvp("renderable", cereal::base_class<model::Renderable>(&path)));
 		archive(cereal::make_nvp("base_polyline", path.m_basePolyline));
-		archive(cereal::make_nvp("offsetted_path", path.m_offsettedPath));
+		archive(cereal::make_nvp("tool_path", path.m_toolPath));
 		archive(cereal::make_nvp("settings", path.m_settings));
 	}
 };
