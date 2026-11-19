@@ -89,7 +89,7 @@ public:
 	explicit Renderer(const config::Tools::Tool& tool, const config::Profiles::Profile& profile, Visitor& visitor)
 		: m_tool(tool)
 		, m_profile(profile)
-		, m_hasDepth(m_tool.general().type() != config::ToolType::Laser)
+		, m_hasDepth(m_tool.type() != config::ToolType::Laser)
 		, m_depthPerCut(m_tool.general().depthPerCut())
 		, m_maximumStartDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut)
 		, m_depthToRetract(m_hasDepth ? m_tool.general().retractDepth() : 0.0f)

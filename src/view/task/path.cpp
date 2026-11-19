@@ -52,7 +52,7 @@ private:
 
 	void updateFieldVisibility(const config::Tools::Tool& tool)
 	{
-		const bool toolHasDepth = tool.general().type() != config::ToolType::Laser;
+		const bool toolHasDepth = tool.type() != config::ToolType::Laser;
 		Ui::Path::depth->setVisible(toolHasDepth);
 		depthLabel->setVisible(toolHasDepth);
 	}
