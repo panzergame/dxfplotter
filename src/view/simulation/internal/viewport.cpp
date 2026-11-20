@@ -67,10 +67,10 @@ public:
 
 	QWidget* container() { return QWidget::createWindowContainer(this); }
 
-	void setScene(Scene* scene)
-	{
-		setRootEntity(scene);
+	void setScene(Scene* scene) { setRootEntity(scene); }
 
+	void resetCamera()
+	{
 		camera()->setPosition(QVector3D(0, 0, 40.0f));
 		camera()->viewAll();
 		camera()->setViewCenter(QVector3D(0.0f, 0.0f, 0.0f));

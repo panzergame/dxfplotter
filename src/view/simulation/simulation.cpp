@@ -60,6 +60,7 @@ protected slots:
 public:
 	explicit Simulation()
 		: m_viewport(new internal::Viewport())
+		, m_scene(new internal::Scene())
 	{
 		setupUi(this);
 
@@ -69,6 +70,7 @@ public:
 		addAction(actionPauseResume);
 
 		container->addWidget(m_viewport->container());
+		m_viewport->setScene(m_scene.get());
 
 		static const int timerBaseIntervalMs = 30;
 		m_timer.setInterval(timerBaseIntervalMs);
@@ -84,9 +86,8 @@ public:
 	{
 		m_simulation = std::move(simulation);
 
-		internal::Scene* newScene = new internal::Scene(m_simulation);
-		m_viewport->setScene(newScene);
-		m_scene.reset(newScene);
+		m_scene->setSimulation(m_simulation);
+		m_viewport->resetCamera();
 
 		const float secondDuration = m_simulation.duration();
 		const int durationMs = secondDuration * 1e3;

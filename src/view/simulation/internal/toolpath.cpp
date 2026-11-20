@@ -35,12 +35,6 @@ struct PackedVector3D
 class ToolPath : public Qt3DCore::QEntity
 {
 private:
-	double m_boundingBox[6];
-
-	std::unique_ptr<PackedVector3D[]> m_packedPoints;
-	std::unique_ptr<uint32_t[]> m_colors;
-	std::unique_ptr<uint32_t[]> m_indices;
-
 	void createPolylineFromPoints(const model::Simulation::ToolPathPoint3D::List& points)
 	{
 		static const uint32_t colorsByMoveType[]
@@ -48,31 +42,28 @@ private:
 
 		const int nbPoints = points.size();
 
-		m_packedPoints = std::make_unique<PackedVector3D[]>(nbPoints);
-		m_colors = std::make_unique<uint32_t[]>(nbPoints);
-		m_indices = std::make_unique<uint32_t[]>(nbPoints);
+		QByteArray packedPointsArray(sizeof(PackedVector3D) * nbPoints, Qt::Uninitialized);
+		QByteArray colorsArray(sizeof(uint32_t) * nbPoints, Qt::Uninitialized);
+		QByteArray indicesArray(sizeof(uint32_t) * nbPoints, Qt::Uninitialized);
+		PackedVector3D* const packedPoints = std::bit_cast<PackedVector3D*>(packedPointsArray.data());
+		uint32_t* const colors = std::bit_cast<uint32_t*>(colorsArray.data());
+		uint32_t* const indices = std::bit_cast<uint32_t*>(indicesArray.data());
 
 		for (int i = 0; i < nbPoints; ++i) {
 			const model::Simulation::ToolPathPoint3D& point = points[i];
-			m_packedPoints[i] = PackedVector3D(point.position);
-			m_colors[i] = colorsByMoveType[static_cast<int>(point.moveType)];
-			m_indices[i] = i;
+			packedPoints[i] = PackedVector3D(point.position);
+			colors[i] = colorsByMoveType[static_cast<int>(point.moveType)];
+			indices[i] = i;
 		}
 
 		Qt3DCore::QGeometry* geometry = new Qt3DCore::QGeometry(this);
 
-		const QByteArray vertexData
-			= QByteArray::fromRawData((const char*)m_packedPoints.get(), sizeof(PackedVector3D) * nbPoints);
 		Qt3DCore::QBuffer* vertexBuffer = new Qt3DCore::QBuffer(geometry);
-		vertexBuffer->setData(vertexData);
-
-		const QByteArray colorData = QByteArray::fromRawData((const char*)m_colors.get(), sizeof(uint32_t) * nbPoints);
+		vertexBuffer->setData(packedPointsArray);
 		Qt3DCore::QBuffer* colorBuffer = new Qt3DCore::QBuffer(geometry);
-		colorBuffer->setData(colorData);
-
-		const QByteArray indexData = QByteArray::fromRawData((const char*)m_indices.get(), sizeof(uint32_t) * nbPoints);
+		colorBuffer->setData(colorsArray);
 		Qt3DCore::QBuffer* indexBuffer = new Qt3DCore::QBuffer(geometry);
-		indexBuffer->setData(indexData);
+		indexBuffer->setData(indicesArray);
 
 		Qt3DCore::QAttribute* vertexAttribute
 			= new Qt3DCore::QAttribute(vertexBuffer, Qt3DCore::QAttribute::defaultPositionAttributeName(),
@@ -85,7 +76,7 @@ private:
 		colorAttribute->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
 
 		Qt3DCore::QAttribute* indexAttribute
-			= new Qt3DCore::QAttribute(indexBuffer, Qt3DCore::QAttribute::UnsignedInt, 3, nbPoints);
+			= new Qt3DCore::QAttribute(indexBuffer, Qt3DCore::QAttribute::UnsignedInt, 1, nbPoints);
 		indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
 
 		geometry->addAttribute(vertexAttribute);
@@ -111,8 +102,6 @@ public:
 	}
 
 	~ToolPath() = default;
-
-	const double (&boundingBox() const)[6] { return m_boundingBox; }
 };
 
 }

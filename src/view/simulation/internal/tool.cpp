@@ -17,26 +17,28 @@ class Tool : public Qt3DCore::QEntity
 private:
 	Qt3DCore::QTransform* m_transform;
 	Qt3DExtras::QGoochMaterial* m_material;
+	Qt3DExtras::QCylinderMesh* m_mesh;
 	const QVector3D m_halfHeight;
 
 public:
-	explicit Tool(Qt3DCore::QEntity* parent, float radius, float height)
+	explicit Tool(Qt3DCore::QEntity* parent, float height)
 		: Qt3DCore::QEntity(parent)
 		, m_transform(new Qt3DCore::QTransform(this))
 		, m_material(new Qt3DExtras::QGoochMaterial(this))
+		, m_mesh(new Qt3DExtras::QCylinderMesh(this))
 		, m_halfHeight(0.0f, 0.0f, height / 2.0f)
 	{
-		Qt3DExtras::QCylinderMesh* mesh = new Qt3DExtras::QCylinderMesh(this);
-		mesh->setRadius(radius);
-		mesh->setLength(height);
+		m_mesh->setLength(height);
 
 		m_transform->setRotationX(90);
 		m_transform->setTranslation(m_halfHeight);
 
 		addComponent(m_transform);
-		addComponent(mesh);
+		addComponent(m_mesh);
 		addComponent(m_material);
 	}
+
+	void setRadius(float radius) { m_mesh->setRadius(radius); }
 
 	void setPosition(const model::Simulation::ToolPathPoint3D& position)
 	{
