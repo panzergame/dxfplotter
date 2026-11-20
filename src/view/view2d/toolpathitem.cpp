@@ -12,6 +12,7 @@ import view.view2d.bulgepainter;
 import geometry.arc;
 import model.path;
 import geometry.polyline;
+import geometry.tooloperation.tooloperation;
 import model.toolpath;
 
 namespace view::view2d
@@ -42,17 +43,22 @@ private:
 
 	QPainterPath paintPath() const
 	{
-		const geometry::Polyline::List polylines = m_toolPath.polylines();
-
 		QPainterPath rootPainter;
 
-		for (const geometry::Polyline& polyline : polylines) {
+		const auto addPolyline = [&rootPainter](const geometry::Polyline& polyline) {
 			QPainterPath painter(polyline.start().toPointF());
 
 			BulgePainter functor(painter);
 			polyline.forEachBulge(functor);
 
 			rootPainter.addPath(painter);
+		};
+
+		for (const geometry::tooloperation::ToolPolyline& toolPolyline : m_toolPath.polylines()) {
+			if (toolPolyline.entry) {
+				addPolyline(*toolPolyline.entry);
+			}
+			addPolyline(toolPolyline.polyline);
 		}
 
 		return rootPainter;

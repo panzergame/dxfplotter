@@ -4,6 +4,7 @@ set(SRC
 	polyline.cpp
 	renderable.cpp
 	pathsettings.cpp
+	toolpolyline.cpp
 	toolpath.cpp
 	path.cpp
 	layer.cpp

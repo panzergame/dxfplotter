@@ -1,6 +1,7 @@
 
 #include <cereal/cereal.hpp>
 #include <cereal/archives/json.hpp>
+#include <cereal/types/vector.hpp>
 
 #include <sstream>
 
@@ -8,7 +9,12 @@
 #include <exporterfixture.h>
 
 import geometry.bulge;
+import geometry.polyline;
+import geometry.tooloperation.tooloperation;
+import geometry.utils;
+import model.toolpath;
 import serializer.bulge;
+import serializer.toolpath;
 import serializer.access;
 
 TEST(Serializer, shouldSerializeVectorWithNoDataLoose)
@@ -54,5 +60,35 @@ TEST(Serializer, shouldSerializeBulgeWithNoDataLoose)
 		archive(outBulge);
 
 		EXPECT_EQ(bulge, outBulge);
+	}
+}
+
+TEST(Serializer, shouldSerializeToolPathEntries)
+{
+	const geometry::Polyline polyline({geometry::Bulge(QVector2D(0, 0), QVector2D(1, 1), 0)});
+	const geometry::Polyline entry({geometry::Bulge(QVector2D(-1, -1), QVector2D(0, 0), 0)});
+	model::ToolPath toolPath({{polyline, entry}, {polyline, std::nullopt}}, geometry::CuttingDirection::BACKWARD);
+
+	std::ostringstream output;
+
+	{
+		cereal::JSONOutputArchive archive(output);
+		archive(toolPath);
+	}
+
+	std::istringstream input;
+	input.str(output.str());
+
+	{
+		cereal::JSONInputArchive archive(input);
+		model::ToolPath outToolPath;
+		archive(outToolPath);
+
+		ASSERT_EQ(outToolPath.polylines().size(), 2);
+		EXPECT_EQ(outToolPath.polylines()[0].polyline, polyline);
+		EXPECT_EQ(outToolPath.polylines()[0].entry, entry);
+		EXPECT_EQ(outToolPath.polylines()[1].polyline, polyline);
+		EXPECT_FALSE(outToolPath.polylines()[1].entry);
+		EXPECT_EQ(outToolPath.cuttingDirection(), geometry::CuttingDirection::BACKWARD);
 	}
 }

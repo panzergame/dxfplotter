@@ -35,7 +35,7 @@ public:
 
 		const CuttingDirection direction = (m_margin > 0.0f) ? CuttingDirection::FORWARD : CuttingDirection::BACKWARD;
 
-		return { cleaner.polylines(), direction };
+		return { ToolPolyline::FromPolylines(cleaner.polylines()), direction };
 	}
 };
 

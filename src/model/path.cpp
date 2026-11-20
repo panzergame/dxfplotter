@@ -1,6 +1,7 @@
 module;
 
 #include <cstdint>
+#include <optional>
 #include <fmt/format.h>
 #include <QObject>
 #include <QTransform>
@@ -71,9 +72,10 @@ public:
 
 	const geometry::Polyline& basePolyline() const { return m_basePolyline; }
 
-	geometry::Polyline::List finalPolylines() const
+	geometry::tooloperation::ToolPolyline::List finalPolylines() const
 	{
-		return m_toolPath ? m_toolPath->polylines() : geometry::Polyline::List { m_basePolyline };
+		return m_toolPath ? m_toolPath->polylines()
+						  : geometry::tooloperation::ToolPolyline::List { { m_basePolyline, std::nullopt } };
 	}
 
 	model::ToolPath* toolPath() const { return m_toolPath.get(); }

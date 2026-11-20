@@ -57,7 +57,7 @@ TEST(OffsetTest, OutwardOffsetGrowsBoundingRect)
 	const geometry::tooloperation::Offset::Result result = offset.generate(cwSquare);
 
 	ASSERT_EQ(result.polylines.size(), 1);
-	const geometry::Polyline& polyline = result.polylines.front();
+	const geometry::Polyline& polyline = result.polylines.front().polyline;
 	EXPECT_TRUE(polyline.isClosed());
 
 	const geometry::Rect rect = polyline.boundingRect();
@@ -84,7 +84,7 @@ TEST(OffsetTest, OutwardOffsetRoundsCorners)
 	const geometry::tooloperation::Offset::Result result = offset.generate(cwSquare);
 
 	ASSERT_EQ(result.polylines.size(), 1);
-	EXPECT_EQ(ArcCount(result.polylines.front()), 4);
+	EXPECT_EQ(ArcCount(result.polylines.front().polyline), 4);
 }
 
 TEST(OffsetTest, CornerArcsShorterThanMinimumArcLengthAreStraightened)
@@ -95,5 +95,5 @@ TEST(OffsetTest, CornerArcsShorterThanMinimumArcLengthAreStraightened)
 	const geometry::tooloperation::Offset::Result result = offset.generate(cwSquare);
 
 	ASSERT_EQ(result.polylines.size(), 1);
-	EXPECT_EQ(ArcCount(result.polylines.front()), 0);
+	EXPECT_EQ(ArcCount(result.polylines.front().polyline), 0);
 }

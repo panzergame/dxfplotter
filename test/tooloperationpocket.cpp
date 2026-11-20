@@ -61,7 +61,7 @@ TEST(PocketTest, PolylinesStayInsideBorderShrunkByRadius)
 	const geometry::tooloperation::Pocket::Result result = pocket.generate(ccwBorder);
 
 	ASSERT_FALSE(result.polylines.empty());
-	for (const geometry::Polyline& polyline : result.polylines) {
+	for (const auto& [polyline, entry] : result.polylines) {
 		const geometry::Rect rect = polyline.boundingRect();
 		EXPECT_GE(rect.min().x(), radius - epsilon);
 		EXPECT_GE(rect.min().y(), radius - epsilon);
@@ -81,7 +81,7 @@ TEST(PocketTest, PolylinesKeepRadiusAwayFromIsland)
 	const geometry::tooloperation::Pocket::Result result = pocket.generate(ccwBorder);
 
 	ASSERT_FALSE(result.polylines.empty());
-	for (const geometry::Polyline& polyline : result.polylines) {
+	for (const auto& [polyline, entry] : result.polylines) {
 		polyline.forEachBulge([&](const geometry::Bulge& bulge) {
 			EXPECT_GE(DistanceToRect(bulge.start(), islandMin, islandMax), radius - epsilon);
 		});

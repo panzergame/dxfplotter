@@ -45,7 +45,7 @@ public:
 		const CuttingDirection direction
 			= borderOrientationToPocketDirection[static_cast<int>(pocketer.borderOrientation())];
 
-		return { cleaner.polylines(), direction };
+		return { ToolPolyline::FromPolylines(cleaner.polylines()), direction };
 	}
 };
 
