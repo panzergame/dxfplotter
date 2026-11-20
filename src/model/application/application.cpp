@@ -143,7 +143,8 @@ private:
 				const float radius = tool.general().radius();
 				const float margin = (side == Side::Left) ? radius : -radius;
 
-				return std::make_unique<geometry::tooloperation::Offset>(margin, dxf.minimumPolylineLength(), dxf.minimumArcLength());
+				return std::make_unique<geometry::tooloperation::Offset>(margin, dxf.minimumPolylineLength(),
+																		 dxf.minimumArcLength());
 			}
 			case config::ToolType::DragKnife: {
 				// Same side to direction mapping as Offset.
@@ -152,7 +153,8 @@ private:
 				const geometry::CuttingDirection profileDirection = m_openedDocument->profileConfig().cut().direction();
 				const config::Tools::Tool::DragKnife& dragKnife = tool.dragKnife();
 
-				return std::make_unique<geometry::tooloperation::DragKnife>(dragKnife.bladeOffset(), dragKnife.minimumSwivelAngle(),
+				return std::make_unique<geometry::tooloperation::DragKnife>(
+					dragKnife.bladeOffset(), qDegreesToRadians(dragKnife.minimumSwivelAngle()),
 					sideDirection, profileDirection);
 			}
 		}
@@ -406,15 +408,9 @@ public:
 		return saved;
 	}
 
-	void leftToolOperation()
-	{
-		applyToolOperation(Side::Left);
-	}
+	void leftToolOperation() { applyToolOperation(Side::Left); }
 
-	void rightToolOperation()
-	{
-		applyToolOperation(Side::Right);
-	}
+	void rightToolOperation() { applyToolOperation(Side::Right); }
 
 	void resetCutterCompensation()
 	{
