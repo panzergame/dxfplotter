@@ -137,6 +137,12 @@ constexpr Vector Lerp(const Vector& startPoint, const Vector& endPoint, float fa
 {
 	return startPoint * (1.0f - factor) + endPoint * factor;
 }
+
+constexpr float Winding(const QVector2D& start, const QVector2D& end)
+{
+	return (end.x() - start.x()) * (end.y() + start.y());
+}
+
 }
 
 namespace common::enumerate

@@ -217,6 +217,8 @@ public:
 
 	Orientation orientation() const { return (m_tangent < 0.0f) ? Orientation::CW : Orientation::CCW; }
 
+	float winding() const { return Winding(start(), end()); }
+
 	Circle toCircle() const
 	{
 		const Orientation ori = orientation();
@@ -260,6 +262,36 @@ public:
 	bool equalsInversed(const Bulge& other) const
 	{
 		return m_start == other.m_end && m_end == other.m_start && m_tangent == -other.m_tangent;
+	}
+
+	// Holder arc of a drag knife pivoting around its blade tip at vertex.
+	static Bulge swivel(const QVector2D& vertex, const QVector2D& fromTangent, const QVector2D& toTangent, float turn,
+						float bladeOffset)
+	{
+		return Bulge(vertex + fromTangent * bladeOffset, vertex + toTangent * bladeOffset, std::tan(turn / 4.0f));
+	}
+
+	/** Direction of a drag knife alignment stroke ending at a closed polyline start, kept on the waste side.
+	 * The backward extension of the first tangent lies outside the start turn, outside the incoming arc at a smooth
+	 * start, and on the contour itself after a straight smooth start.
+	 */
+	QVector2D closedAlignmentTangent(const QVector2D& firstTangent, bool wasteOnLeft) const
+	{
+		static constexpr float smoothTurn = 1e-3f;
+
+		const QVector2D lastTangent = endTangent();
+		const float turn = SignedAngle(lastTangent, firstTangent);
+		const bool smooth = std::abs(turn) <= smoothTurn;
+		const float bend = smooth ? tangent() : turn;
+		if (bend == 0.0f || (bend < 0.0f) == wasteOnLeft) {
+			return firstTangent;
+		}
+
+		// A smooth start has no corner bisector, the waste side normal takes its place.
+		const QVector2D leftNormal = PerpendicularLine(firstTangent);
+		const QVector2D wasteDirection
+			= smooth ? (wasteOnLeft ? leftNormal : -leftNormal) : (firstTangent - lastTangent).normalized();
+		return -wasteDirection;
 	}
 };
 

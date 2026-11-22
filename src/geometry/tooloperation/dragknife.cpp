@@ -30,7 +30,7 @@ private:
 
 public:
 	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, float alignmentLength,
-		CuttingDirection sideDirection, CuttingDirection profileDirection)
+					   CuttingDirection sideDirection, CuttingDirection profileDirection)
 		: m_bladeOffset(bladeOffset)
 		, m_minimumSwivelAngle(minimumSwivelAngle)
 		, m_alignmentLength(alignmentLength)
@@ -42,16 +42,13 @@ public:
 	Result generate(const Polyline& polyline) const override
 	{
 		const bool inverted = (m_sideDirection | m_profileDirection) == CuttingDirection::BACKWARD;
-		Polyline directed = polyline;
-		if (inverted) {
-			directed.invert();
-		}
+		const Polyline directed = inverted ? polyline : polyline.inverse();
 
 		// Forward side is the left one, as for Offset, and inversion swaps sides relative to travel.
 		const bool wasteOnLeft = (m_sideDirection == CuttingDirection::FORWARD) != inverted;
 
 		ToolPolyline toolPolyline { directed.dragKnifeCompensated(m_bladeOffset, m_minimumSwivelAngle),
-			directed.dragKnifeAlignment(m_bladeOffset, m_alignmentLength, wasteOnLeft) };
+									directed.dragKnifeAlignment(m_bladeOffset, m_alignmentLength, wasteOnLeft) };
 
 		return { { std::move(toolPolyline) }, m_profileDirection };
 	}

@@ -17,51 +17,6 @@ import geometry.bulge;
 import geometry.rect;
 import geometry.utils;
 
-namespace geometry
-{
-
-inline float winding(const QVector2D& start, const QVector2D& end)
-{
-	return (end.x() - start.x()) * (end.y() + start.y());
-}
-
-inline float winding(const Bulge& bulge)
-{
-	return winding(bulge.start(), bulge.end());
-}
-
-// Holder arc of a drag knife pivoting around its blade tip at vertex.
-inline Bulge swivelBulge(const QVector2D& vertex, const QVector2D& fromTangent, const QVector2D& toTangent,
-						 float turn, float bladeOffset)
-{
-	return Bulge(vertex + fromTangent * bladeOffset, vertex + toTangent * bladeOffset, std::tan(turn / 4.0f));
-}
-
-/** Direction of a drag knife alignment stroke ending at a closed polyline start, kept on the waste side.
- * The backward extension of the first tangent lies outside the start turn, outside the incoming arc at a smooth
- * start, and on the contour itself after a straight smooth start.
- */
-inline QVector2D closedAlignmentTangent(const Bulge& last, const QVector2D& firstTangent, bool wasteOnLeft)
-{
-	static constexpr float smoothTurn = 1e-3f;
-
-	const QVector2D lastTangent = last.endTangent();
-	const float turn = SignedAngle(lastTangent, firstTangent);
-	const bool smooth = std::abs(turn) <= smoothTurn;
-	const float bend = smooth ? last.tangent() : turn;
-	if (bend == 0.0f || (bend < 0.0f) == wasteOnLeft) {
-		return firstTangent;
-	}
-
-	// A smooth start has no corner bisector, the waste side normal takes its place.
-	const QVector2D leftNormal = PerpendicularLine(firstTangent);
-	const QVector2D wasteDirection
-		= smooth ? (wasteOnLeft ? leftNormal : -leftNormal) : (firstTangent - lastTangent).normalized();
-	return -wasteDirection;
-}
-
-}
-
 export namespace geometry
 {
 
@@ -189,7 +144,7 @@ public:
 
 		const float windingSum
 			= std::accumulate(m_bulges.begin(), m_bulges.end(), 0.0f, [](float sum, const Bulge& bulge) {
-				  return sum + winding(bulge);
+				  return sum + bulge.winding();
 			  });
 
 		return (windingSum > 0) ? Orientation::CW : Orientation::CCW;
@@ -277,7 +232,7 @@ public:
 		const auto joint = [&](const QVector2D& vertex, const QVector2D& fromTangent, const QVector2D& toTangent) {
 			const float turn = SignedAngle(fromTangent, toTangent);
 			if (std::abs(turn) > minimumSwivelAngle) {
-				bulges.push_back(swivelBulge(vertex, fromTangent, toTangent, turn, bladeOffset));
+				bulges.push_back(Bulge::swivel(vertex, fromTangent, toTangent, turn, bladeOffset));
 			}
 		};
 
@@ -343,14 +298,14 @@ public:
 		const QVector2D& start = first->start();
 		const QVector2D firstTangent = first->startTangent();
 		const QVector2D strokeTangent
-			= isClosed() ? closedAlignmentTangent(last, firstTangent, wasteOnLeft) : firstTangent;
+			= isClosed() ? last.closedAlignmentTangent(firstTangent, wasteOnLeft) : firstTangent;
 
 		const QVector2D strokeEnd = start + strokeTangent * bladeOffset;
 		Bulge::List bulges { Bulge(strokeEnd - strokeTangent * alignmentLength, strokeEnd, 0.0f) };
 
 		if (strokeTangent != firstTangent) {
-			bulges.push_back(swivelBulge(start, strokeTangent, firstTangent, SignedAngle(strokeTangent, firstTangent),
-										 bladeOffset));
+			bulges.push_back(Bulge::swivel(start, strokeTangent, firstTangent, SignedAngle(strokeTangent, firstTangent),
+										   bladeOffset));
 		}
 
 		return Polyline(std::move(bulges));
