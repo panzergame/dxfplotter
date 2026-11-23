@@ -274,43 +274,6 @@ public:
 		return Polyline(std::move(bulges));
 	}
 
-	/** Holder entry ending where dragKnifeCompensated() starts. A straight stroke settles a blade of unknown
-	 * heading onto its direction, as a trailing blade converges to the travel direction. When the stroke can not
-	 * follow the first tangent, a swivel around the start follows, the blade heading being known by then.
-	 * @param wasteOnLeft Side of the travel direction where a closed polyline stroke may cut.
-	 */
-	std::optional<Polyline> dragKnifeAlignment(float bladeOffset, float alignmentLength, bool wasteOnLeft) const
-	{
-		if (alignmentLength <= 0.0f) {
-			return std::nullopt;
-		}
-
-		// Same zero length bulge skipping as dragKnifeCompensated() to find the tangents.
-		const auto hasLength = [](const Bulge& bulge) {
-			return bulge.start() != bulge.end();
-		};
-		const Bulge::List::const_iterator first = std::find_if(m_bulges.begin(), m_bulges.end(), hasLength);
-		if (first == m_bulges.end()) {
-			return std::nullopt;
-		}
-		const Bulge& last = *std::find_if(m_bulges.rbegin(), m_bulges.rend(), hasLength);
-
-		const QVector2D& start = first->start();
-		const QVector2D firstTangent = first->startTangent();
-		const QVector2D strokeTangent
-			= isClosed() ? last.closedAlignmentTangent(firstTangent, wasteOnLeft) : firstTangent;
-
-		const QVector2D strokeEnd = start + strokeTangent * bladeOffset;
-		Bulge::List bulges { Bulge(strokeEnd - strokeTangent * alignmentLength, strokeEnd, 0.0f) };
-
-		if (strokeTangent != firstTangent) {
-			bulges.push_back(Bulge::swivel(start, strokeTangent, firstTangent, SignedAngle(strokeTangent, firstTangent),
-										   bladeOffset));
-		}
-
-		return Polyline(std::move(bulges));
-	}
-
 	void transform(const QTransform& matrix)
 	{
 		transformBulge([&matrix](Bulge& bulge) {

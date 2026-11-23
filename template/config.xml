@@ -49,7 +49,8 @@
 			<group name="drag knife">
 				<property name="blade offset" type="float" default="0.5"/>
 				<property name="minimum swivel angle" type="float" default="15"/>
-				<property name="alignment length" type="float" default="1"/>
+				<property name="flip tolerance" type="float" default="0.1"/>
+				<property name="alignment tolerance" type="float" default="1"/>
 				<property name="alignment depth" type="float" default="0.1"/>
 			</group>
 		</group>

@@ -1,5 +1,6 @@
 
 #include <QVector2D>
+#include <QtMath>
 #include <exporterfixture.h>
 
 import exporter.renderer.renderer;
@@ -90,14 +91,20 @@ protected:
 		m_dragKnifeProfile.cut().direction() = geometry::CuttingDirection::FORWARD;
 	}
 
+	// Start of the entry, its shape is covered by the drag knife tests.
+	QVector2D m_entryStart;
+
 	std::vector<Event> renderDragKnife(geometry::Polyline &&polyline)
 	{
+		// Blade offset 0.5 and waste on the left.
+		const geometry::tooloperation::DragKnife dragKnife(0.5f, 0.1f, qDegreesToRadians(0.1f), qDegreesToRadians(1.0f),
+			geometry::CuttingDirection::FORWARD, geometry::CuttingDirection::FORWARD);
+		m_entryStart = dragKnife.generate(polyline).polylines.front().entry->start();
+
 		createTaskFromPolyline(std::move(polyline));
 
-		m_task->forEachPath([](model::Path& path){
-			// Blade offset 0.5, alignment length 1 and waste on the left.
-			path.createToolPath(geometry::tooloperation::DragKnife(0.5f, 0.1f, 1.0f,
-				geometry::CuttingDirection::FORWARD, geometry::CuttingDirection::FORWARD));
+		m_task->forEachPath([&dragKnife](model::Path& path){
+			path.createToolPath(dragKnife);
 		});
 
 		EventTrackerVisitor visitor;
@@ -187,15 +194,15 @@ TEST_F(ExporterRendererFixture, shouldCutPathSingleDepth)
 
 TEST_F(ExporterRendererFixture, shouldAlignOnceBeforeClosedPolylinePasses)
 {
-	// Clockwise, so the waste on the left is outside and the stroke follows the first tangent.
+	// Clockwise, so the waste on the left is outside.
 	geometry::Polyline polyline({geometry::Bulge(QVector2D(0, 0), QVector2D(0, 10), 0),
 		geometry::Bulge(QVector2D(0, 10), QVector2D(10, 0), 0), geometry::Bulge(QVector2D(10, 0), QVector2D(0, 0), 0)});
 
 	const std::vector<Event> events = renderDragKnife(std::move(polyline));
 
 	ASSERT_EQ(events.size(), 5);
-	ExpectEvent(events[0], Event::Type::StartOperation, QVector2D(0, -0.5));
-	ExpectEvent(events[1], Event::Type::Path, QVector2D(0, -0.5), -0.02f);
+	ExpectEvent(events[0], Event::Type::StartOperation, m_entryStart);
+	ExpectEvent(events[1], Event::Type::Path, m_entryStart, -0.02f);
 	ExpectEvent(events[2], Event::Type::Path, QVector2D(0, 0.5), -0.05f);
 	ExpectEvent(events[3], Event::Type::Path, QVector2D(0, 0.5), -0.1f);
 	ExpectEvent(events[4], Event::Type::EndOperation);
@@ -210,8 +217,8 @@ TEST_F(ExporterRendererFixture, shouldAlignOnceInsideCircle)
 	const std::vector<Event> events = renderDragKnife(std::move(polyline));
 
 	ASSERT_EQ(events.size(), 5);
-	ExpectEvent(events[0], Event::Type::StartOperation, QVector2D(9.5, 0));
-	ExpectEvent(events[1], Event::Type::Path, QVector2D(9.5, 0), -0.02f);
+	ExpectEvent(events[0], Event::Type::StartOperation, m_entryStart);
+	ExpectEvent(events[1], Event::Type::Path, m_entryStart, -0.02f);
 	ExpectEvent(events[2], Event::Type::Path, QVector2D(10, 0.5), -0.05f);
 	ExpectEvent(events[3], Event::Type::Path, QVector2D(10, 0.5), -0.1f);
 	ExpectEvent(events[4], Event::Type::EndOperation);
@@ -224,12 +231,12 @@ TEST_F(ExporterRendererFixture, shouldReenterOpenPolylineForEachPass)
 	const std::vector<Event> events = renderDragKnife(std::move(polyline));
 
 	ASSERT_EQ(events.size(), 8);
-	ExpectEvent(events[0], Event::Type::StartOperation, QVector2D(-0.5, 0));
-	ExpectEvent(events[1], Event::Type::Path, QVector2D(-0.5, 0), -0.02f);
+	ExpectEvent(events[0], Event::Type::StartOperation, m_entryStart);
+	ExpectEvent(events[1], Event::Type::Path, m_entryStart, -0.02f);
 	ExpectEvent(events[2], Event::Type::Path, QVector2D(0.5, 0), -0.05f);
 	ExpectEvent(events[3], Event::Type::EndOperation);
-	ExpectEvent(events[4], Event::Type::StartOperation, QVector2D(-0.5, 0));
-	ExpectEvent(events[5], Event::Type::Path, QVector2D(-0.5, 0), -0.02f);
+	ExpectEvent(events[4], Event::Type::StartOperation, m_entryStart);
+	ExpectEvent(events[5], Event::Type::Path, m_entryStart, -0.02f);
 	ExpectEvent(events[6], Event::Type::Path, QVector2D(0.5, 0), -0.1f);
 	ExpectEvent(events[7], Event::Type::EndOperation);
 }
@@ -243,6 +250,6 @@ TEST_F(ExporterRendererFixture, shouldNotAlignDeeperThanFirstPass)
 	const std::vector<Event> events = renderDragKnife(std::move(polyline));
 
 	ASSERT_GE(events.size(), 3);
-	ExpectEvent(events[1], Event::Type::Path, QVector2D(-0.5, 0), 0.0f);
+	ExpectEvent(events[1], Event::Type::Path, m_entryStart, 0.0f);
 	ExpectEvent(events[2], Event::Type::Path, QVector2D(0.5, 0), 0.0f);
 }

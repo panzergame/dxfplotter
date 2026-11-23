@@ -1,10 +1,12 @@
 module;
 
+#include <optional>
 #include <utility>
 
 export module geometry.tooloperation.dragknife;
 
 import geometry.polyline;
+import geometry.tooloperation.dragknifeentry;
 import geometry.tooloperation.tooloperation;
 import geometry.utils;
 
@@ -15,25 +17,25 @@ export namespace geometry::tooloperation
  * sideDirection plays the role of the side for Offset: the path is travelled along
  * sideDirection | profileDirection. Compensation depends on travel direction, so the polyline is inverted
  * beforehand when travelling backward; returning the profile direction cancels the inversion done at export.
- * The blade heading is unknown before cutting, so the entry is an alignment stroke of alignmentLength. A knife has
- * no width, the side instead designates the waste side, as the material an offset tool would remove, where the
- * stroke of a closed polyline is kept.
+ * The blade heading is unknown before cutting, so the entry is an L shaped pair of strokes aligning every heading
+ * outside π ± flipTolerance within alignmentTolerance of the start tangent. A knife has no width, the side instead
+ * designates the waste side, as the material an offset tool would remove, where the entry may mark.
  */
 class DragKnife : public ToolOperation
 {
 private:
 	float m_bladeOffset;
 	float m_minimumSwivelAngle;
-	float m_alignmentLength;
+	DragKnifeLengths m_entryLengths;
 	CuttingDirection m_sideDirection;
 	CuttingDirection m_profileDirection;
 
 public:
-	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, float alignmentLength,
+	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, float flipTolerance, float alignmentTolerance,
 					   CuttingDirection sideDirection, CuttingDirection profileDirection)
 		: m_bladeOffset(bladeOffset)
 		, m_minimumSwivelAngle(minimumSwivelAngle)
-		, m_alignmentLength(alignmentLength)
+		, m_entryLengths(DragKnifeEntryLengths(bladeOffset, flipTolerance, alignmentTolerance))
 		, m_sideDirection(sideDirection)
 		, m_profileDirection(profileDirection)
 	{
@@ -47,8 +49,12 @@ public:
 		// Forward side is the left one, as for Offset, and inversion swaps sides relative to travel.
 		const bool wasteOnLeft = (m_sideDirection == CuttingDirection::FORWARD) != inverted;
 
-		ToolPolyline toolPolyline { directed.dragKnifeCompensated(m_bladeOffset, m_minimumSwivelAngle),
-									directed.dragKnifeAlignment(m_bladeOffset, m_alignmentLength, wasteOnLeft) };
+		ToolPolyline toolPolyline { directed.dragKnifeCompensated(m_bladeOffset, m_minimumSwivelAngle), std::nullopt };
+		const std::optional<DragKnifeEntryCandidate> entry
+			= DragKnifeEntrySelect(directed, wasteOnLeft, m_entryLengths, m_bladeOffset);
+		if (entry) {
+			toolPolyline.entry = DragKnifeEntry(*entry, m_entryLengths, m_bladeOffset);
+		}
 
 		return { { std::move(toolPolyline) }, m_profileDirection };
 	}

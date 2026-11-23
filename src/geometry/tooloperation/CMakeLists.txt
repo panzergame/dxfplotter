@@ -2,6 +2,7 @@ set(SRC
 	tooloperation.cpp
 	offset.cpp
 	pocket.cpp
+	dragknifeentry.cpp
 	dragknife.cpp
 )
 

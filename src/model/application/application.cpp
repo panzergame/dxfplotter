@@ -155,7 +155,8 @@ private:
 
 				return std::make_unique<geometry::tooloperation::DragKnife>(
 					dragKnife.bladeOffset(), qDegreesToRadians(dragKnife.minimumSwivelAngle()),
-					dragKnife.alignmentLength(), sideDirection, profileDirection);
+					qDegreesToRadians(dragKnife.flipTolerance()),
+					qDegreesToRadians(dragKnife.alignmentTolerance()), sideDirection, profileDirection);
 			}
 		}
 
