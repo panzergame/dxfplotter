@@ -42,7 +42,7 @@ public:
 	Result generate(const Polyline& polyline) const override
 	{
 		const bool inverted = (m_sideDirection | m_profileDirection) == CuttingDirection::BACKWARD;
-		const Polyline directed = inverted ? polyline : polyline.inverse();
+		const Polyline directed = inverted ? polyline.inverse() : polyline;
 
 		// Forward side is the left one, as for Offset, and inversion swaps sides relative to travel.
 		const bool wasteOnLeft = (m_sideDirection == CuttingDirection::FORWARD) != inverted;
