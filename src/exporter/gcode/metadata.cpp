@@ -80,8 +80,15 @@ public:
 	std::string toComment() const
 	{
 		const QJsonDocument& jsonDocument = toJson();
+		const QString jsonStr = jsonDocument.toJson();
 
-		return "; metadata_json = " + jsonDocument.toJson(QJsonDocument::Compact).toStdString() + "\n";
+		QString commentBlock = "; metadata_json =\n";
+		for (const QString& line : jsonStr.split("\n")) {
+			commentBlock += "; ";
+			commentBlock += line;
+			commentBlock += "\n";
+		}
+		return commentBlock.toStdString();
 	}
 };
 

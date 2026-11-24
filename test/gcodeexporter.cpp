@@ -5,6 +5,7 @@
 #include <exporterfixture.h>
 
 import exporter.gcode.exporter;
+import exporter.gcode.metadata;
 import geometry.bulge;
 import geometry.polyline;
 import geometry.tooloperation.offset;
@@ -13,7 +14,7 @@ import model.path;
 TEST_F(ExporterFixture, shouldRenderAllPathsWhenAllVisible)
 {
 	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
-	geometry::Polyline polyline({bulge});
+	geometry::Polyline polyline({ bulge });
 
 	createTaskFromPolyline(std::move(polyline));
 
@@ -28,7 +29,8 @@ G1 X 1.000 Y 1.000 F 10.000
 G0 Z 1.000
 M5
 G0 X 0.000 Y 0.000
-)", m_output.str());
+)",
+			  m_output.str());
 }
 
 TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
@@ -36,13 +38,13 @@ TEST_F(ExporterFixture, shouldRenderOffsetedRightCwTriangleBeCutBackward)
 	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
 	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
-	geometry::Polyline polyline({b1, b2, b3});
+	geometry::Polyline polyline({ b1, b2, b3 });
 
 	ASSERT_TRUE(polyline.isClosed());
 
 	createTaskFromPolyline(std::move(polyline));
 
-	m_task->forEachPath([](model::Path& path){
+	m_task->forEachPath([](model::Path& path) {
 		path.createToolPath(geometry::tooloperation::Offset(-0.2f, 0.0f, 0.0f));
 	});
 
@@ -59,7 +61,8 @@ G1 X 0.483 Y 0.200 F 10.000
 G0 Z 1.000
 M5
 G0 X 0.000 Y 0.000
-)", m_output.str());
+)",
+			  m_output.str());
 }
 
 TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
@@ -67,13 +70,13 @@ TEST_F(ExporterFixture, shouldRenderOffsetedLeftCwTriangleBeCutForward)
 	const geometry::Bulge b1(QVector2D(0, 0), QVector2D(1, 1), 0);
 	const geometry::Bulge b2(QVector2D(1, 1), QVector2D(1, 0), 0);
 	const geometry::Bulge b3(QVector2D(1, 0), QVector2D(0, 0), 0);
-	geometry::Polyline polyline({b1, b2, b3});
+	geometry::Polyline polyline({ b1, b2, b3 });
 
 	ASSERT_TRUE(polyline.isClosed());
 
 	createTaskFromPolyline(std::move(polyline));
 
-	m_task->forEachPath([](model::Path& path){
+	m_task->forEachPath([](model::Path& path) {
 		path.createToolPath(geometry::tooloperation::Offset(0.2f, 0.0f, 0.0f));
 	});
 
@@ -93,5 +96,36 @@ G2 X -0.141 Y 0.141 I 0.000 J 0.200 F 10.000
 G0 Z 1.000
 M5
 G0 X 0.000 Y 0.000
-)", m_output.str());
+)",
+			  m_output.str());
+}
+
+TEST_F(ExporterFixture, shouldIntegrateMultilineMetadataJson)
+{
+	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 1), 0);
+	geometry::Polyline polyline({ bulge });
+
+	createTaskFromPolyline(std::move(polyline));
+
+	exporter::gcode::Metadata metadata(*m_document, m_gcode, 1.0f);
+
+	const std::string comment = metadata.toComment();
+	std::cout << comment << std::endl;
+	EXPECT_EQ(
+		R"(; metadata_json =
+; {
+;     "bounding_rect_gcodes": [
+;         "G0 Z 1.000\n",
+;         "G0 X 0.000 Y 0.000\n",
+;         "G0 X 1.000 Y 0.000\n",
+;         "G0 X 1.000 Y 1.000\n",
+;         "G0 X 0.000 Y 1.000\n",
+;         "G0 X 0.000 Y 0.000\n",
+;         "G0 X 0.000 Y 0.000\n",
+;         "G0 Z 0.000\n"
+;     ]
+; }
+; 
+)",
+		comment);
 }
