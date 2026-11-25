@@ -9,7 +9,7 @@ import model.pathsettings;
 
 TEST(PathTest, ShouldEmitSignalsWhenSelected)
 {
-	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1));
+	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1, 1));
 
 	QSignalSpy spy(&path, &model::Path::selectedChanged);
 
@@ -21,7 +21,7 @@ TEST(PathTest, ShouldEmitSignalsWhenSelected)
 
 TEST(PathTest, ShouldEmitSignalsWhenDeselected)
 {
-	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1));
+	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1, 1));
 	path.setSelected(true);
 
 	QSignalSpy spy(&path, &model::Path::selectedChanged);
@@ -34,7 +34,7 @@ TEST(PathTest, ShouldEmitSignalsWhenDeselected)
 
 TEST(PathTest, ShouldNoEmitSignalsWhenReselected)
 {
-	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1));
+	model::Path path(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1, 1));
 	path.setSelected(true);
 
 	QSignalSpy spy(&path, &model::Path::selectedChanged);

@@ -1,5 +1,6 @@
 module;
 
+#include <cmath>
 #include <optional>
 #include <QVector2D>
 
@@ -27,8 +28,8 @@ private:
 	const config::Profiles::Profile& m_profile;
 	const bool m_hasDepth;
 	const float m_depthPerCut;
-	const float m_maximumStartDepth;
-	const float m_depthToRetract;
+	const float m_startDepth;
+	const float m_retractDepth;
 	const float m_alignmentDepth;
 	Visitor& m_visitor;
 
@@ -37,7 +38,7 @@ private:
 		const QVector2D home(0.0f, 0.0f);
 
 		// Retract tool before work piece
-		m_visitor.start(home, m_depthToRetract);
+		m_visitor.start(home, m_retractDepth);
 
 		task.forEachPathInStack([this](const model::Path& path) {
 			if (path.globallyVisible()) {
@@ -46,7 +47,7 @@ private:
 		});
 
 		// Back to home
-		m_visitor.end(home, m_depthToRetract);
+		m_visitor.end(home, m_retractDepth);
 	}
 
 	void render(const model::Path& path) const
@@ -71,38 +72,44 @@ private:
 		const float depthFeedRate = settings.depthFeedRate();
 		const std::optional<geometry::Polyline>& entry = toolPolyline.entry;
 
-		PassesIterator iterator(toolPolyline.polyline, cuttingDirection);
+		/* An entry only conditions the tool for the polyline start, which a closed polyline ends at. An open
+		 * polyline ends elsewhere, so each pass re-enters instead of travelling backward.
+		 */
+		const bool reenter = entry && !toolPolyline.polyline.isClosed();
+
+		PassesIterator iterator(toolPolyline.polyline, cuttingDirection, !reenter);
 
 		m_visitor.startOperation(entry ? entry->start() : (*iterator).start(), intensity);
 
+		// Alignment depth is a fixed blade setting, independent of the passes and their offset.
 		const auto processEntry = [&](float depth) {
-			m_visitor.processPathAtDepth(*entry, -std::fminf(m_alignmentDepth, depth), planeFeedRate, depthFeedRate);
+			m_visitor.processPathAtDepth(*entry, -depth, planeFeedRate, depthFeedRate);
 		};
 
 		if (m_hasDepth) {
-			/* An entry only conditions the tool for the polyline start, which a closed polyline ends at. An open
-			 * polyline ends elsewhere, so each pass re-enters instead of travelling backward.
-			 */
-			const bool reenter = entry && !toolPolyline.polyline.isClosed();
-			const float maxDepth = settings.depth();
-			const float startDepth = std::min(m_maximumStartDepth, maxDepth);
 			if (entry) {
-				processEntry(startDepth);
+				processEntry(m_alignmentDepth);
 			}
-			for (float depth = startDepth; depth < maxDepth + m_depthPerCut; depth += m_depthPerCut) {
-				const float boundDepth = std::fminf(depth, maxDepth);
+			const float depthShift = settings.depth();
+			const float depthOffset = settings.depthOffset();
+			const float startDepth = depthOffset + m_startDepth;
+			const float finalDepth = depthOffset + depthShift;
 
-				if (reenter && depth != startDepth) {
-					m_visitor.endOperation(m_depthToRetract);
+			// Epsilon prevents a quotient like 3.0000002 from adding a duplicated pass at max depth.
+			const int passCount = int(std::ceil((depthShift - m_startDepth) / m_depthPerCut - 1e-4f)) + 1;
+
+			for (int pass = 0; pass < passCount; ++pass) {
+				const float depth = std::fminf(startDepth + pass * m_depthPerCut, finalDepth);
+
+				if (reenter && pass > 0) {
+					m_visitor.endOperation(m_retractDepth);
 					m_visitor.startOperation(entry->start(), intensity);
-					processEntry(boundDepth);
+					processEntry(m_alignmentDepth);
 				}
 
-				m_visitor.processPathAtDepth(*iterator, -boundDepth, planeFeedRate, depthFeedRate);
+				m_visitor.processPathAtDepth(*iterator, -depth, planeFeedRate, depthFeedRate);
 
-				if (!reenter) {
-					++iterator;
-				}
+				++iterator;
 			}
 		} else {
 			if (entry) {
@@ -110,7 +117,7 @@ private:
 			}
 			m_visitor.processPathAtDepth(*iterator, 0.0f, planeFeedRate, depthFeedRate);
 		}
-		m_visitor.endOperation(m_depthToRetract);
+		m_visitor.endOperation(m_retractDepth);
 	}
 
 public:
@@ -119,8 +126,8 @@ public:
 		, m_profile(profile)
 		, m_hasDepth(m_tool.type() != config::ToolType::Laser)
 		, m_depthPerCut(m_tool.general().depthPerCut())
-		, m_maximumStartDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut)
-		, m_depthToRetract(m_hasDepth ? m_tool.general().retractDepth() : 0.0f)
+		, m_startDepth(m_profile.cut().passAtZeroDepth() ? 0.0f : m_depthPerCut)
+		, m_retractDepth(m_hasDepth ? m_tool.general().retractDepth() : 0.0f)
 		, m_alignmentDepth(m_tool.dragKnife().alignmentDepth())
 		, m_visitor(visitor)
 	{

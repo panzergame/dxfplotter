@@ -79,6 +79,10 @@ public:
 	std::optional<float> depth() const { return valueIfAllEqual(&PathSettings::depth); }
 
 	void setDepth(float depth) { setValue(&PathSettings::setDepth, depth); }
+
+	std::optional<float> depthOffset() const { return valueIfAllEqual(&PathSettings::depthOffset); }
+
+	void setDepthOffset(float depthOffset) { setValue(&PathSettings::setDepthOffset, depthOffset); }
 };
 
 }

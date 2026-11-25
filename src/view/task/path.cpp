@@ -31,6 +31,7 @@ private:
 			updateFieldValue(depthFeedRate, m_groupSettings->depthFeedRate());
 			updateFieldValue(intensity, m_groupSettings->intensity());
 			updateFieldValue(Ui::Path::depth, m_groupSettings->depth());
+			updateFieldValue(depthOffset, m_groupSettings->depthOffset());
 
 			stackedWidget->setCurrentWidget(pagePathSelected);
 		}
@@ -55,6 +56,8 @@ private:
 		const bool toolHasDepth = tool.type() != config::ToolType::Laser;
 		Ui::Path::depth->setVisible(toolHasDepth);
 		depthLabel->setVisible(toolHasDepth);
+		depthOffset->setVisible(toolHasDepth);
+		depthOffsetLabel->setVisible(toolHasDepth);
 	}
 
 	template<typename ValueType, class Field>
@@ -98,6 +101,9 @@ private:
 		});
 		connectOnFieldChanged<double>(Ui::Path::depth, [this](double value) {
 			m_groupSettings->setDepth(value);
+		});
+		connectOnFieldChanged<double>(depthOffset, [this](double value) {
+			m_groupSettings->setDepthOffset(value);
 		});
 	}
 

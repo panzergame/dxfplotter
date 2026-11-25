@@ -16,7 +16,7 @@ protected:
 	const config::Tools::Tool m_tool{"tool", YAML::Node()};
 	const config::Profiles::Profile::Gcode m_gcode{"gcode", YAML::Node()};
 	const config::Profiles::Profile m_profile{"profile", YAML::Node()};
-	const model::PathSettings m_settings{10, 10, 10, 0.1};
+	const model::PathSettings m_settings{10, 10, 10, 0.1, 0};
 	model::Task *m_task;
 	model::Document::UPtr m_document;
 	std::ostringstream m_output;

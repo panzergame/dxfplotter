@@ -49,7 +49,7 @@ TEST(SimulationTest, shouldHasMultiLayerDepth)
 	const geometry::Bulge bulge(QVector2D(1, 0), QVector2D(1, 1), 0);
 	geometry::Polyline polyline({bulge});
 
-	const model::PathSettings settings{10, 10, 10, nbCut};
+	const model::PathSettings settings{10, 10, 10, nbCut, 0};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document, 100.0f);
@@ -66,7 +66,7 @@ TEST(SimulationTest, shouldNotContainsDuplicatePoints)
 	const geometry::Bulge bulge2(QVector2D(1, 1), QVector2D(-1, 1), -0.5);
 	geometry::Polyline polyline({bulge});
 
-	const model::PathSettings settings{10, 10, 10, nbCut - 1};
+	const model::PathSettings settings{10, 10, 10, nbCut - 1, 0};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document, 100.0f);
@@ -87,7 +87,7 @@ TEST(SimulationTest, shouldMatchPositionAtStartAndEndTime)
 	const geometry::Bulge bulge(QVector2D(0, 0), QVector2D(1, 0), 0);
 	geometry::Polyline polyline({bulge});
 
-	const model::PathSettings settings{10, 10, 10, 1};
+	const model::PathSettings settings{10, 10, 10, 1, 0};
 	model::Document::UPtr document = documentFromPolylines(std::move(polyline), settings);
 
 	model::Simulation simulation(*document, 100.0f);

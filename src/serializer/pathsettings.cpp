@@ -24,6 +24,7 @@ struct Access<model::PathSettings>
 		archive(cereal::make_nvp("depth_feed_rate", pathSettings.m_depthFeedRate));
 		archive(cereal::make_nvp("intensity", pathSettings.m_intensity));
 		archive(cereal::make_nvp("depth", pathSettings.m_depth));
+		archive(cereal::make_nvp("depth_offset", pathSettings.m_depthOffset));
 	}
 };
 

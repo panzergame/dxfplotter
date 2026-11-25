@@ -35,6 +35,7 @@
 				<property name="depth feed rate" type="float" default="20"/>
 				<property name="intensity" type="float" default="50"/>
 				<property name="depth" type="float" default="1"/>
+				<property name="depth offset" type="float" default="0"/>
 			</group>
 		</group>
 	</list>

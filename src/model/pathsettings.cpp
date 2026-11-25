@@ -17,14 +17,17 @@ private:
 	float m_depthFeedRate;
 	float m_intensity;
 	float m_depth;
+	float m_depthOffset;
 
 public:
 	explicit PathSettings() = default;
-	explicit PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth)
+	explicit PathSettings(float planeFeedRate, float depthFeedRate, float intensity, float depth,
+						  float depthOffset)
 		: m_planeFeedRate(planeFeedRate)
 		, m_depthFeedRate(depthFeedRate)
 		, m_intensity(intensity)
 		, m_depth(depth)
+		, m_depthOffset(depthOffset)
 	{
 	}
 
@@ -43,6 +46,10 @@ public:
 	float depth() const { return m_depth; }
 
 	void setDepth(float depth) { m_depth = depth; }
+
+	float depthOffset() const { return m_depthOffset; }
+
+	void setDepthOffset(float depthOffset) { m_depthOffset = depthOffset; }
 };
 
 }

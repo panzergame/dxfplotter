@@ -11,8 +11,8 @@ import model.task;
 
 TEST(TaskTest, ShouldEmitSignalsWhenOnePathSelected)
 {
-	model::Path::UPtr path1 = std::make_unique<model::Path>(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1));
-	model::Path::UPtr path2 = std::make_unique<model::Path>(geometry::Polyline(), "2", model::PathSettings(2, 2, 2, 2));
+	model::Path::UPtr path1 = std::make_unique<model::Path>(geometry::Polyline(), "1", model::PathSettings(1, 1, 1, 1, 1));
+	model::Path::UPtr path2 = std::make_unique<model::Path>(geometry::Polyline(), "2", model::PathSettings(2, 2, 2, 2, 2));
 
 	model::Path::ListUPtr paths;
 	paths.push_back(std::move(path1));

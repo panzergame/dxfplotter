@@ -107,7 +107,7 @@ private:
 	{
 		const config::Profiles::Profile::DefaultPath& defaultPath = m_defaultProfileConfig->defaultPath();
 		return PathSettings(defaultPath.planeFeedRate(), defaultPath.depthFeedRate(), defaultPath.intensity(),
-							defaultPath.depth());
+							defaultPath.depth(), defaultPath.depthOffset());
 	}
 
 	const config::Tools::Tool* findTool(const std::string& name) const
