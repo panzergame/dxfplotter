@@ -28,6 +28,7 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 * Multi passes with depth
 * Scale and translate paths
 * 3D path simulation of the file
+* Drag knife compensation and entry path
 
 <p align="center">
 	<img src="doc/pocket.gif" width="80%"/>
@@ -35,6 +36,10 @@ It targets only laser and router CNC following every lines and arcs from DXF fil
 
 <p align="center">
 	<img src="doc/simulation.gif" width="80%"/>
+</p>
+
+<p align="center">
+	<img src="doc/drag_knife.png" width="80%"/>
 </p>
 
 ## Execution
