@@ -39,7 +39,7 @@ public:
 	{
 		setChildren({
 		{% for child in node.children %}
-			{{ child.class_name }}({% if child.__class__ == Property %}"{{ child.name }}", "{{ child.description }}", {{ child.default_value }}, {% endif %}yamlNode["{{ child.name }}"]){{ ", " if not loop.last }}
+			{{ child.class_name }}({% if child.__class__ == Property %}"{{ child.name }}", "{{ child.description }}", {{ child.default_value }}, {% endif %}yamlNode["{{ child.name }}"]{% if child.__class__ == Property and child.minimum %}, {{ child.minimum }}{% endif %}){{ ", " if not loop.last }}
 		{% endfor %}
 		});
 	}

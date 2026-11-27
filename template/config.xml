@@ -3,7 +3,7 @@
 		<group name="dxf">
 			<property name="spline to arc precision" type="float" default="0.001"/>
 			<property name="assemble tolerance" type="float" default="0.001"/>
-			<property name="minimum polyline length" type="float" default="0.01"/>
+			<property name="minimum polyline length" type="float" default="0.01" minimum="0.0001"/>
 			<property name="minimum spline length" type="float" default="0.01"/>
 			<property name="minimum arc length" type="float" default="0.01"/>
 			<property name="sort path by length" type="bool" default="false"/>

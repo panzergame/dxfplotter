@@ -42,6 +42,9 @@ public:
 	{
 		setMaximum(1e8);
 		setDecimals(4);
+		if (m_property.minimum()) {
+			setMinimum(*m_property.minimum());
+		}
 		setValue((float)m_property);
 	}
 

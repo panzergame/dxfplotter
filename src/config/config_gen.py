@@ -44,13 +44,14 @@ class List(Node):
 
 
 class Property(Node):
-	def __init__(self, name, base_type, default_value):
+	def __init__(self, name, base_type, default_value, minimum):
 		super().__init__(name)
 
 		# Final type, mainly std::string, float or int
 		self.base_type = base_type
 		# Default value in case of empty configuration file
 		self.default_value = default_value
+		self.minimum = minimum
 
 		if self.base_type == "std::string":
 			self.default_value = '"' + self.default_value + '"'
@@ -73,7 +74,8 @@ def load_from_node(xml_node, nodes):
 		# Parse additional information
 		base_type = xml_node.attrib["type"]
 		default_value = xml_node.attrib["default"]
-		node = Property(name, base_type, default_value)
+		minimum = xml_node.attrib.get("minimum")
+		node = Property(name, base_type, default_value, minimum)
 	else:
 		raise(ValueError("Node tag not implemented"))
 
