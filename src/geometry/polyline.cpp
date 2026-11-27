@@ -4,8 +4,6 @@ module;
 #include <cmath>
 #include <optional>
 #include <vector>
-#include <geometry/cavcutils.h>
-#include <cavc/polylineoffset.hpp>
 #include <QVector2D>
 #include <QTransform>
 
@@ -14,6 +12,7 @@ export module geometry.polyline;
 import common.aggregable;
 import serializer.access;
 import geometry.bulge;
+import geometry.cavc;
 import geometry.rect;
 import geometry.utils;
 

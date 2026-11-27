@@ -10,6 +10,7 @@ set(SRC
 	bulge.cpp
 	polyline.cpp
 	biarc.cpp
+	cavc.cpp
 	bezier.cpp
 	spline.cpp
 	cubicspline.cpp
@@ -17,9 +18,7 @@ set(SRC
 	pocketer.cpp
 )
 
-set(NON_MODULE_SRC
-	cavcutils.h
-)
+set(NON_MODULE_SRC)
 
 if (WITH_ORTOOLS)
 	list(APPEND SRC

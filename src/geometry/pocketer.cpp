@@ -2,11 +2,10 @@ module;
 
 #include <algorithm>
 #include <vector>
-#include <geometry/cavcutils.h>
-#include <cavc/polylineoffsetislands.hpp>
 
 export module geometry.pocketer;
 
+import geometry.cavc;
 import geometry.polyline;
 import geometry.utils;
 

@@ -5,8 +5,6 @@ module;
 #include <iomanip>
 #include <iterator>
 #include <limits>
-#include <geometry/cavcutils.h>
-#include <cavc/plinesegment.hpp>
 #include <QVector2D>
 #include <QTransform>
 
@@ -14,6 +12,7 @@ export module geometry.bulge;
 
 import common.aggregable;
 import geometry.arc;
+import geometry.cavc;
 import geometry.circle;
 import geometry.line;
 import geometry.rect;
