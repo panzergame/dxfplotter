@@ -1,5 +1,6 @@
 module;
 
+#include <cassert>
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
@@ -206,13 +207,55 @@ public:
 
 	bool isArc() const { return !isLine(); }
 
+	bool isPoint() const { return m_start == m_end; }
+
 	// Arc tangents make half the arc angle with the chord, arc angle being 4 * atan(tangent).
 	QVector2D startTangent() const
 	{
+		assert(!isPoint());
+
 		return RotateVector((m_end - m_start).normalized(), -2.0f * std::atan(m_tangent));
 	}
 
-	QVector2D endTangent() const { return RotateVector((m_end - m_start).normalized(), 2.0f * std::atan(m_tangent)); }
+	QVector2D endTangent() const
+	{
+		assert(!isPoint());
+
+		return RotateVector((m_end - m_start).normalized(), 2.0f * std::atan(m_tangent));
+	}
+
+	/// True when predicate holds for a point sampled along the bulge, samples being at most step apart, ends included.
+	/// Stops at the first sample the predicate accepts.
+	template<class Predicate>
+	bool anySample(float step, Predicate&& predicate) const
+	{
+		// Point at arc length s: start + sin(ks)/k·T + (1 − cos(ks))/k·N, k the signed curvature.
+		const QVector2D tangent = startTangent();
+		const QVector2D normal = PerpendicularLine(tangent);
+		const float chord = m_start.distanceToPoint(m_end);
+		const float sweep = 4.0f * std::atan(m_tangent);
+		const bool line = isLine();
+		const float curvature = line ? 0.0f : 2.0f * std::sin(sweep / 2.0f) / chord;
+		const float total = length();
+
+		const int count = std::max(1, int(std::ceil(total / step)));
+		for (int i = 0; i <= count; ++i) {
+			const float s = total * i / count;
+			QVector2D point;
+			if (line) {
+				point = m_start + tangent * s;
+			} else {
+				point = m_start + tangent * (std::sin(curvature * s) / curvature)
+					+ normal * ((1.0f - std::cos(curvature * s)) / curvature);
+			}
+
+			if (predicate(point)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	Orientation orientation() const { return (m_tangent < 0.0f) ? Orientation::CW : Orientation::CCW; }
 

@@ -111,6 +111,11 @@ inline float SignedAngle(const QVector2D& from, const QVector2D& to)
 	return std::atan2(CrossProduct(from, to), QVector2D::dotProduct(from, to));
 }
 
+inline float Sech(float x)
+{
+	return 1.0f / std::cosh(x);
+}
+
 /** Ensure start < end assuming start and end are angle of a CCW arc.
  * @return new end angle, may remain unchanged
  */

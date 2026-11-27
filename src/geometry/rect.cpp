@@ -66,6 +66,12 @@ public:
 
 	Rect operator|(const Rect& other) const { return Rect(minVect(min(), other.min()), maxVect(max(), other.max())); }
 
+	bool intersects(const Rect& other) const
+	{
+		return m_max.x() >= other.m_min.x() && m_min.x() <= other.m_max.x() && m_max.y() >= other.m_min.y()
+			&& m_min.y() <= other.m_max.y();
+	}
+
 	Rect& operator|=(const Rect& other)
 	{
 		m_min = minVect(min(), other.min());

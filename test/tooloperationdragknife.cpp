@@ -156,7 +156,7 @@ SimulationResult SimulateEntry(const geometry::Polyline& entry, const geometry::
 geometry::tooloperation::DragKnifeEntryCandidate ExpectValidEntry(const geometry::Polyline& contour, bool wasteOnLeft)
 {
 	const std::optional<geometry::tooloperation::DragKnifeEntryCandidate> candidate
-		= geometry::tooloperation::DragKnifeEntrySelect(contour, wasteOnLeft, lengths, bladeOffset);
+		= geometry::tooloperation::DragKnifeEntrySelect(contour, wasteOnLeft, lengths);
 	EXPECT_TRUE(candidate);
 	if (!candidate) {
 		return {};
@@ -165,10 +165,10 @@ geometry::tooloperation::DragKnifeEntryCandidate ExpectValidEntry(const geometry
 	const QVector2D leftNormal = geometry::PerpendicularLine(candidate->startTangent);
 	const QVector2D waste = wasteOnLeft ? leftNormal : -leftNormal;
 	// B arrives from the waste side.
-	EXPECT_GE(QVector2D::dotProduct(-candidate->direction, waste), -1e-5f);
+	EXPECT_GE(QVector2D::dotProduct(-candidate->direction(), waste), -1e-5f);
 
-	const geometry::Polyline entry = geometry::tooloperation::DragKnifeEntry(*candidate, lengths, bladeOffset);
-	const geometry::tooloperation::DragKnifeTipZone zone(*candidate, lengths, bladeOffset, false);
+	const geometry::Polyline entry = geometry::tooloperation::DragKnifeEntry(*candidate, lengths);
+	const geometry::tooloperation::DragKnifeTipZone zone(*candidate, lengths, false);
 	for (const float heading : { pi - flipTolerance, pi + flipTolerance, 0.0f, pi / 2.0f, -pi / 2.0f }) {
 		const SimulationResult result = SimulateEntry(entry, zone, candidate->startTangent, heading);
 		EXPECT_LT(result.error, alignmentTolerance + 0.05f * degree) << heading;
@@ -199,14 +199,13 @@ geometry::tooloperation::ToolPolyline GeneratedToolPolyline(const geometry::Poly
 }
 
 // Candidate along +x ending on the origin, A coming from +y.
-const geometry::tooloperation::DragKnifeEntryCandidate xCandidate { QVector2D(0, 0), QVector2D(1, 0), QVector2D(1, 0),
-																	QVector2D(0, 1), 0.0f };
+const geometry::tooloperation::DragKnifeEntryCandidate xCandidate { QVector2D(0, 0), QVector2D(1, 0), QVector2D(0, 1),
+																	0.0f };
 const float xStrokeBStart = bladeOffset - lengths.b;
 
 bool XCandidateClear(const geometry::Polyline& contour, bool stuckBlades)
 {
-	return geometry::tooloperation::DragKnifeEntryClear(contour, xCandidate, lengths, bladeOffset, clearanceTolerance,
-														stuckBlades);
+	return geometry::tooloperation::DragKnifeEntryClear(contour, xCandidate, lengths, clearanceTolerance, stuckBlades);
 }
 
 geometry::Polyline Segment(const QVector2D& start, const QVector2D& end)
@@ -297,12 +296,11 @@ TEST(DragKnifeEntryTest, EntryIsPerpendicularStrokesThenSwivel)
 	const QVector2D start(3, 4);
 	const QVector2D startTangent(0, 1);
 	const QVector2D direction = geometry::RotateVector(startTangent, -pi / 3.0f);
-	const geometry::tooloperation::DragKnifeEntryCandidate candidate { start, startTangent, direction,
+	const geometry::tooloperation::DragKnifeEntryCandidate candidate { start, startTangent,
 																	   geometry::PerpendicularLine(direction),
 																	   pi / 3.0f };
 
-	const geometry::Bulge::List bulges
-		= Bulges(geometry::tooloperation::DragKnifeEntry(candidate, lengths, bladeOffset));
+	const geometry::Bulge::List bulges = Bulges(geometry::tooloperation::DragKnifeEntry(candidate, lengths));
 	ASSERT_EQ(bulges.size(), 3);
 
 	const QVector2D strokeA = bulges[0].end() - bulges[0].start();
@@ -322,8 +320,7 @@ TEST(DragKnifeEntryTest, EntryIsPerpendicularStrokesThenSwivel)
 
 TEST(DragKnifeEntryTest, EntryWithoutSwivelEndsAlongStartTangent)
 {
-	const geometry::Bulge::List bulges
-		= Bulges(geometry::tooloperation::DragKnifeEntry(xCandidate, lengths, bladeOffset));
+	const geometry::Bulge::List bulges = Bulges(geometry::tooloperation::DragKnifeEntry(xCandidate, lengths));
 	ASSERT_EQ(bulges.size(), 2);
 	ExpectBulgeNear(bulges[0], QVector2D(xStrokeBStart, lengths.a), QVector2D(xStrokeBStart, 0), 0.0f);
 	ExpectBulgeNear(bulges[1], QVector2D(xStrokeBStart, 0), QVector2D(bladeOffset, 0), 0.0f);
@@ -382,24 +379,21 @@ TEST(DragKnifeEntryTest, SquareWithInsideWasteSwivelsFromInside)
 	// Waste wedge is the first quadrant, B can not follow the start tangent.
 	EXPECT_GE(std::abs(candidate.swivel), pi / 2.0f - 1e-4f);
 	EXPECT_LT(std::abs(candidate.swivel), pi);
-	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwSquare, candidate, lengths, bladeOffset,
-															 clearanceTolerance, true));
+	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwSquare, candidate, lengths, clearanceTolerance, true));
 }
 
 TEST(DragKnifeEntryTest, HexagonWithInsideWasteSwivelsFromInside)
 {
 	const geometry::tooloperation::DragKnifeEntryCandidate candidate = ExpectValidEntry(ccwHexagon, true);
 	EXPECT_GE(std::abs(candidate.swivel), pi / 3.0f - 1e-4f);
-	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwHexagon, candidate, lengths, bladeOffset,
-															 clearanceTolerance, true));
+	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwHexagon, candidate, lengths, clearanceTolerance, true));
 }
 
 TEST(DragKnifeEntryTest, CircleWithInsideWasteSwivelsFromInside)
 {
 	const geometry::tooloperation::DragKnifeEntryCandidate candidate = ExpectValidEntry(ccwCircle, true);
 	EXPECT_GT(std::abs(candidate.swivel), 0.0f);
-	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwCircle, candidate, lengths, bladeOffset,
-															 clearanceTolerance, true));
+	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(ccwCircle, candidate, lengths, clearanceTolerance, true));
 }
 
 TEST(DragKnifeEntryTest, CircleTravelledBackwardKeepsWasteSideOfPolyline)
@@ -433,8 +427,7 @@ TEST(DragKnifeEntryTest, StraightClosedStartSwivelsAwayFromContour)
 		= CcwPolygon({ QVector2D(5, 0), QVector2D(10, 0), QVector2D(10, 10), QVector2D(0, 10), QVector2D(0, 0) });
 	const geometry::tooloperation::DragKnifeEntryCandidate candidate = ExpectValidEntry(polyline, false);
 	EXPECT_NE(candidate.swivel, 0.0f);
-	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(polyline, candidate, lengths, bladeOffset,
-															 clearanceTolerance, true));
+	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(polyline, candidate, lengths, clearanceTolerance, true));
 }
 
 TEST(DragKnifeEntryTest, ObstacleOnBackwardRayForcesSwivel)
@@ -444,22 +437,20 @@ TEST(DragKnifeEntryTest, ObstacleOnBackwardRayForcesSwivel)
 		= CcwPolygon({ QVector2D(0, 0), QVector2D(10, 0), QVector2D(10, 10), QVector2D(-4, 10), QVector2D(-4, -6),
 					   QVector2D(-2, -6), QVector2D(-2, -1), QVector2D(-1, -1), QVector2D(-1, 5), QVector2D(0, 5) });
 	EXPECT_FALSE(geometry::tooloperation::DragKnifeEntryClear(
-		polyline, { QVector2D(0, 0), QVector2D(1, 0), QVector2D(1, 0), QVector2D(0, -1), 0.0f }, lengths, bladeOffset,
-		clearanceTolerance, false));
+		polyline, { QVector2D(0, 0), QVector2D(1, 0), QVector2D(0, -1), 0.0f }, lengths, clearanceTolerance, false));
 
 	const geometry::tooloperation::DragKnifeEntryCandidate candidate = ExpectValidEntry(polyline, false);
 	EXPECT_NE(candidate.swivel, 0.0f);
-	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(polyline, candidate, lengths, bladeOffset,
-															 clearanceTolerance, true));
+	EXPECT_TRUE(geometry::tooloperation::DragKnifeEntryClear(polyline, candidate, lengths, clearanceTolerance, true));
 }
 
 TEST(DragKnifeEntryTest, FallbackIsFirstCandidateFromWaste)
 {
 	const std::optional<geometry::tooloperation::DragKnifeEntryCandidate> candidate
-		= geometry::tooloperation::DragKnifeEntrySelect(tinyCcwSquare, true, lengths, bladeOffset);
+		= geometry::tooloperation::DragKnifeEntrySelect(tinyCcwSquare, true, lengths);
 	ASSERT_TRUE(candidate);
-	EXPECT_FALSE(geometry::tooloperation::DragKnifeEntryClear(tinyCcwSquare, *candidate, lengths, bladeOffset,
-															  clearanceTolerance, false));
+	EXPECT_FALSE(
+		geometry::tooloperation::DragKnifeEntryClear(tinyCcwSquare, *candidate, lengths, clearanceTolerance, false));
 	// Smallest swivel within the waste wedge, B along the incoming edge.
 	EXPECT_NEAR(std::abs(candidate->swivel), pi / 2.0f, 1e-4f);
 }
@@ -469,11 +460,11 @@ TEST(DragKnifeEntryTest, EveryHeadingOutsideFlipToleranceAligns)
 	for (const auto& [contour, wasteOnLeft] :
 		 { std::pair { &ccwSquare, false }, std::pair { &ccwSquare, true }, std::pair { &lPolyline, true } }) {
 		const std::optional<geometry::tooloperation::DragKnifeEntryCandidate> candidate
-			= geometry::tooloperation::DragKnifeEntrySelect(*contour, wasteOnLeft, lengths, bladeOffset);
+			= geometry::tooloperation::DragKnifeEntrySelect(*contour, wasteOnLeft, lengths);
 		ASSERT_TRUE(candidate);
 
-		const geometry::Polyline entry = geometry::tooloperation::DragKnifeEntry(*candidate, lengths, bladeOffset);
-		const geometry::tooloperation::DragKnifeTipZone zone(*candidate, lengths, bladeOffset, false);
+		const geometry::Polyline entry = geometry::tooloperation::DragKnifeEntry(*candidate, lengths);
+		const geometry::tooloperation::DragKnifeTipZone zone(*candidate, lengths, false);
 
 		float worst = 0.0f;
 		constexpr int headingCount = 720;

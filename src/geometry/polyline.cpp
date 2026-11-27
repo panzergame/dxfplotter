@@ -107,6 +107,20 @@ public:
 		return m_bulges.back().end();
 	}
 
+	QVector2D startTangent() const
+	{
+		assert(!m_bulges.empty());
+
+		return m_bulges.front().startTangent();
+	}
+
+	QVector2D endTangent() const
+	{
+		assert(!m_bulges.empty());
+
+		return m_bulges.back().endTangent();
+	}
+
 	bool isClosed() const
 	{
 		assert(!m_bulges.empty());
@@ -191,6 +205,12 @@ public:
 		}
 	}
 
+	template<class Predicate>
+	bool anyBulge(Predicate&& predicate) const
+	{
+		return std::ranges::any_of(m_bulges, predicate);
+	}
+
 	template<class Functor>
 	void transformBulge(Functor&& functor)
 	{
@@ -223,9 +243,12 @@ public:
 	 */
 	Polyline dragKnifeCompensated(float bladeOffset, float minimumSwivelAngle) const
 	{
+		if (isPoint()) {
+			return *this;
+		}
+
 		Bulge::List bulges;
 		std::optional<QVector2D> previousTangent;
-		std::optional<QVector2D> firstTangent;
 
 		// Below the minimum swivel angle the gap is bladeOffset * angle, closed by moving the next bulge start.
 		const auto joint = [&](const QVector2D& vertex, const QVector2D& fromTangent, const QVector2D& toTangent) {
@@ -236,18 +259,11 @@ public:
 		};
 
 		forEachBulge([&](const Bulge& bulge) {
-			// Zero length bulges have no tangent.
-			if (bulge.start() == bulge.end()) {
-				return;
-			}
-
 			const QVector2D startTangent = bulge.startTangent();
 			const QVector2D endTangent = bulge.endTangent();
 
 			if (previousTangent) {
 				joint(bulge.start(), *previousTangent, startTangent);
-			} else {
-				firstTangent = startTangent;
 			}
 
 			// Arc keeps its center and sweep angle, so its bulge tangent is unchanged.
@@ -261,12 +277,8 @@ public:
 			previousTangent = endTangent;
 		});
 
-		if (bulges.empty()) {
-			return *this;
-		}
-
 		if (isClosed()) {
-			joint(start(), *previousTangent, *firstTangent);
+			joint(start(), endTangent(), startTangent());
 			bulges.front().start() = bulges.back().end();
 		}
 

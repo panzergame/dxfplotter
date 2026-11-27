@@ -24,7 +24,6 @@ export namespace geometry::tooloperation
 class DragKnife : public ToolOperation
 {
 private:
-	float m_bladeOffset;
 	float m_minimumSwivelAngle;
 	DragKnifeLengths m_entryLengths;
 	CuttingDirection m_sideDirection;
@@ -33,8 +32,7 @@ private:
 public:
 	explicit DragKnife(float bladeOffset, float minimumSwivelAngle, float flipTolerance, float alignmentTolerance,
 					   CuttingDirection sideDirection, CuttingDirection profileDirection)
-		: m_bladeOffset(bladeOffset)
-		, m_minimumSwivelAngle(minimumSwivelAngle)
+		: m_minimumSwivelAngle(minimumSwivelAngle)
 		, m_entryLengths(DragKnifeEntryLengths(bladeOffset, flipTolerance, alignmentTolerance))
 		, m_sideDirection(sideDirection)
 		, m_profileDirection(profileDirection)
@@ -49,12 +47,11 @@ public:
 		// Forward side is the left one, as for Offset, and inversion swaps sides relative to travel.
 		const bool wasteOnLeft = (m_sideDirection == CuttingDirection::FORWARD) != inverted;
 
-		ToolPolyline toolPolyline { directed.dragKnifeCompensated(m_bladeOffset, m_minimumSwivelAngle), std::nullopt };
-		const std::optional<DragKnifeEntryCandidate> entry
-			= DragKnifeEntrySelect(directed, wasteOnLeft, m_entryLengths, m_bladeOffset);
-		if (entry) {
-			toolPolyline.entry = DragKnifeEntry(*entry, m_entryLengths, m_bladeOffset);
-		}
+		ToolPolyline toolPolyline { directed.dragKnifeCompensated(m_entryLengths.bladeOffset, m_minimumSwivelAngle),
+									DragKnifeEntrySelect(directed, wasteOnLeft, m_entryLengths)
+										.transform([this](const DragKnifeEntryCandidate& candidate) {
+											return DragKnifeEntry(candidate, m_entryLengths);
+										}) };
 
 		return { { std::move(toolPolyline) }, m_profileDirection };
 	}
